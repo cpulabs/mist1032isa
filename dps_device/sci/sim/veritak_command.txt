@@ -1,0 +1,1 @@
+VERITAK2 --F --R --C0 --M0 --w --a --ST --W "C:\altera\project\MIST1032ISA\src\processor\dps_device\sci\sim"  "dps_uart_sim.v" "../dps_sci.v" "../sci_clock_divider_49m5120_9600.v" "../uart.v" "../../../../lib/sync_fifo.v" "../../../../lib/async_fifo.v"

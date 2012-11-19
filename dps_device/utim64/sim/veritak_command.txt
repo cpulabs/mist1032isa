@@ -1,0 +1,1 @@
+VERITAK2 --F --C0 --M0 --w --a --ST --W "C:\Freescale\MIST1032ISA\src\processor\dps_device\utim64\sim"  "dps_utim64_sim.v" "../comparator_counter.v" "../dps_utim64.v" "../main_counter.v" "../utim64.v" "../../../../lib/async_fifo.v" "../../../../lib/sync_fifo.v"
