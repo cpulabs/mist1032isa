@@ -57,17 +57,7 @@ module dps_sci(
 		end
 	end
 	
-	
-	/**********************************
-	SCI Clock Generator
-	**********************************/
-	wire		sci_clock_9600;
-	sci_clock_divider_49m5120_9600 SCI_CLOCK(
-		.inRESET(inRESET),
-		.iCLOCK(iDPS_BASE_CLOCK),
-		.oCLOCK(sci_clock_9600)
-	);
-	
+
 	
 	/**********************************
 	SCI Module
@@ -76,10 +66,9 @@ module dps_sci(
 	wire			uart_mod_empty;
 	wire	[7:0]	uart_mod_data;
 	wire			uart_mod_irq;
-	uart UARTMOD(
+	dps_uart UARTMOD(
 		//Clock
-		.iIF_CLOCK(iIF_CLOCK),
-		.iUART_CLOCK(sci_clock_9600),
+		.iCLOCK(iIF_CLOCK),
 		.inRESET(inRESET),
 		//Request
 		.iTX_EN(b_scicfg_ten),

@@ -221,13 +221,32 @@ module l1_data_cache(
 					end
 				L_PARAM_MEMGET:	//Get Wait State
 					begin
-						if(b_get_state == 4'h8)begin
-							b_get_state <= 4'h0;
-							b_req_main_state <= L_PARAM_OUTDATA;
+						//Cache ON
+						if(`DATA_L1_CACHE_ON)begin
+							if(b_get_state == 4'h8)begin
+								b_get_state <= 4'h0;
+								b_req_main_state <= L_PARAM_OUTDATA;
+							end
+							else if(iDATA_VALID)begin
+								b_get_state <= b_get_state + 4'h1;
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_data <= iDATA_DATA[31:0];
+									end
+									else begin
+										b_mem_result_data <= iDATA_DATA[63:32];
+									end
+								end
+							end
 						end
-						else if(iDATA_VALID)begin
-							b_get_state <= b_get_state + 4'h1;
-							if(b_req_addr[5:3] == b_get_state[3:0])begin
+						//Cache OFF
+						else begin
+							if(b_get_state == 4'h1)begin
+								b_get_state <= 4'h0;
+								b_req_main_state <= L_PARAM_OUTDATA;
+							end
+							else if(iDATA_VALID)begin
+								b_get_state <= 4'h1;
 								if(!b_req_addr[2])begin
 									b_mem_result_data <= iDATA_DATA[31:0];
 								end
@@ -385,7 +404,16 @@ module l1_data_cache(
 	assign oDATA_TID = b_req_tid;
 	assign oDATA_MMUMOD = b_req_mmumod;
 	assign oDATA_PDT = b_req_pdt;
-	assign oDATA_ADDR = (b_req_main_state == L_PARAM_WR_MEMREQ)? b_req_addr : {b_req_addr[31:6], b_req_state[2:0], 3'h0};
+	generate 
+		//Cache ON
+		if(`DATA_L1_CACHE_ON)begin
+			assign oDATA_ADDR = (b_req_main_state == L_PARAM_WR_MEMREQ)? b_req_addr : {b_req_addr[31:6], b_req_state[2:0], 3'h0};
+		end
+		//Cache OFF
+		else begin
+			assign oDATA_ADDR = (b_req_main_state == L_PARAM_WR_MEMREQ)? b_req_addr : {b_req_addr[31:3], 1'b0, b_req_addr[1:0]};
+		end
+	endgenerate
 	assign oDATA_DATA = b_req_data;
 	
 	assign oLDST_BUSY = data_request_lock || io_request_lock || cache_req_busy || (b_req_main_state != L_PARAM_IDLE) || (cache_result_valid && !cache_result_hit);
