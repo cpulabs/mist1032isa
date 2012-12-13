@@ -47,7 +47,7 @@ module default_peripheral_system(
 	wire			utim64_condition;
 	wire			sci_condition;
 	assign			utim64_condition		=	!utim64_busy && !sci_busy && iDPS_REQ && (iDPS_ADDR <= 32'h74);
-	assign			sci_condition			=	!utim64_busy && !sci_busy && iDPS_REQ && ((iDPS_ADDR == 100) || (iDPS_ADDR == 108));
+	assign			sci_condition			=	!utim64_busy && !sci_busy && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h108));
 	
 	wire			utim64_busy;
 	wire			sci_busy;

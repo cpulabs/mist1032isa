@@ -39,7 +39,8 @@ module test_dps;
 	Device
 	****************************************/
 	wire oSCI_TXD;
-	reg iSCI_RXD;
+	//reg iSCI_RXD;
+	wire iSCI_RXD;
 	
 	//Clock
 	always#(`CYCLE/2)begin
@@ -90,6 +91,11 @@ module test_dps;
 		end
 	endtask
 	
+	
+	
+	
+	assign iSCI_RXD = oSCI_TXD;	//Loop Back
+	
 	initial begin
 		#0 begin
 			iCLOCK = 0;
@@ -105,7 +111,7 @@ module test_dps;
 			iDPS_ADDR = 32'h0;
 			iDPS_DATA = 32'b0;
 			iDPS_IRQ_ACK = 0;
-			iSCI_RXD = 1'b1;
+			//iSCI_RXD = 1'b1;
 		end
 		#1 begin
 			inRESET = 1;
@@ -145,6 +151,21 @@ module test_dps;
 			//UTIM32A_CC0R Start Counter:Enable, Interrupt:On, BitMode:64bit, CountMode:Periodic 
 			#(`CYCLE)
 			dps_request_write(1, 31'h0000002C, 32'h0000000F);		
+			
+			//SCICFG Uart Enable | RIRE:0x02
+			#(`CYCLE)
+			dps_request_write(1, 31'h00000108, 32'h00000103);		
+			//SCITXD Uart TXD 
+			#(`CYCLE)
+			dps_request_write(1, 31'h00000100, 32'h000000AA);	
+			//SCITXD Uart TXD 
+			#(`CYCLE)
+			dps_request_write(1, 31'h00000100, 32'h00000003);	
+			//SCITXD Uart TXD 
+			#(`CYCLE)
+			dps_request_write(1, 31'h00000100, 32'h00000004);	
+			
+			
 		end
 	end
 	

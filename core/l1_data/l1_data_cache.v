@@ -196,26 +196,35 @@ module l1_data_cache(
 				L_PARAM_MEMREQ:	//Request State
 					begin
 						//Request
-						if(b_req_state == 4'h8)begin
-							b_req_main_state <= L_PARAM_MEMGET;
-							b_req_state <= 4'h0;
-						end
-						else begin
-							//Load Requset
-							if(!data_request_lock)begin
-								b_req_state <= b_req_state + 4'h1;
+						if(`DATA_L1_CACHE_ON)begin
+							if(b_req_state == 4'h8)begin
+								b_req_main_state <= L_PARAM_MEMGET;
+								b_req_state <= 4'h0;
+							end
+							else begin
+								//Load Requset
+								if(!data_request_lock)begin
+									b_req_state <= b_req_state + 4'h1;
+								end
+							end
+							//Get Check
+							if(iDATA_VALID)begin
+								b_get_state <= b_get_state + 4'h1;
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_data <= iDATA_DATA[31:0];
+									end
+									else begin
+										b_mem_result_data <= iDATA_DATA[63:32];
+									end
+								end
 							end
 						end
-						//Get Check
-						if(iDATA_VALID)begin
-							b_get_state <= b_get_state + 4'h1;
-							if(b_req_addr[5:3] == b_get_state[3:0])begin
-								if(!b_req_addr[2])begin
-									b_mem_result_data <= iDATA_DATA[31:0];
-								end
-								else begin
-									b_mem_result_data <= iDATA_DATA[63:32];
-								end
+						//Cache OFF
+						else begin
+							if(!data_request_lock)begin
+								b_req_main_state <= L_PARAM_MEMGET;
+								b_req_state <= 4'h0;
 							end
 						end
 					end
@@ -241,12 +250,9 @@ module l1_data_cache(
 						end
 						//Cache OFF
 						else begin
-							if(b_get_state == 4'h1)begin
+							if(iDATA_VALID)begin
 								b_get_state <= 4'h0;
 								b_req_main_state <= L_PARAM_OUTDATA;
-							end
-							else if(iDATA_VALID)begin
-								b_get_state <= 4'h1;
 								if(!b_req_addr[2])begin
 									b_mem_result_data <= iDATA_DATA[31:0];
 								end

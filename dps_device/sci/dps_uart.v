@@ -1,39 +1,62 @@
 `default_nettype none
 
+/* Baudrate Select
+	0x0		:	9600 (Reset After)
+	0x1		:	110
+	0x2		:	300
+	0x3		:	600
+	0x4		:	1200
+	0x5		:	2400
+	0x6		:	4800
+	0x7		:	14400
+	0x8		:	19200
+	0x9		:	38400
+	0xA		:	57600
+	0xB		:	115200
+	0xC		:	230400
+	0xD		:	460800
+	0xE		:	921600
+	0xF		:	Reserved
+*/
+	
 
 
 module dps_uart(
-						//Clock
-						input			iCLOCK,
-						input			inRESET,
-						//Request
-						input			iTX_EN,
-						input			iTX_REQ,
-						output			oTX_BUSY,
-						input	[7:0]	iTX_DATA,	
-						input			iRX_EN,
-						input			iRX_REQ,
-						output			oRX_EMPTY,
-						output	[7:0]	oRX_DATA,
-						//IRQ
-						output			oIRQ_VALID,
-						//UART
-						output			oUART_TXD,
-						input			iUART_RXD
+		//Clock
+		input iCLOCK,
+		input inRESET,
+		//Request
+		input [3:0] iBAUDRATE,
+		input iTX_EN,
+		input iTX_CLEAR,
+		input iTX_REQ,
+		output oTX_BUSY,
+		input [7:0] iTX_DATA,
+		output [3:0] oTX_BUFF_CNT,
+		output oTX_TRANSMIT,
+		input iRX_EN,
+		input iRX_CLEAR,
+		input iRX_REQ,
+		output oRX_EMPTY,
+		output [7:0] oRX_DATA,
+		output [3:0] oRX_BUFF_CNT,
+		output oRX_RECEIVE,
+		//IRQ
+		output oIRQ_VALID,
+		//UART
+		output oUART_TXD,
+		input iUART_RXD
 	);
 
-
-	parameter BAUDRATE_VALUE = 16'd5208;
-	
-
-	
 	//Baudrate Counter
-	reg [15:0] b_baudrate_counter;
+	reg [18:0] b_baudrate_counter;
 	reg b_baudrate_enable;
 	//FIFO
 	wire [7:0] txd_fifo2state_data;
 	wire txd_fifo2state_empty;
+	wire [3:0] txd_fifo2state_fifo_count;
 	wire rxd_fifo2state_full;
+	wire [3:0] rxd_fifo2state_fifo_count;
 	//Transmiter
 	reg [3:0] b_txd_state;
 	reg [7:0] b_txd_data;
@@ -42,26 +65,43 @@ module dps_uart(
 	reg [7:0] b_rxd_data;
 	
 	
-	
-	
-	
-	
 	/*********************************************
 	* Baudrate Enable
 	*********************************************/
+	reg [18:0] baudrate_compare;
+	always @* begin
+		case(iBAUDRATE)
+			4'h0: baudrate_compare <= 19'd5208;		//9600
+			4'h1: baudrate_compare <= 19'd454545;	//110
+			4'h2: baudrate_compare <= 19'd166666;	//300
+			4'h3: baudrate_compare <= 19'd83333;	//600
+			4'h4: baudrate_compare <= 19'd41666;	//1200
+			4'h5: baudrate_compare <= 19'd20833;	//2400
+			4'h6: baudrate_compare <= 19'd10416;	//4800
+			4'h7: baudrate_compare <= 19'd3472;		//14400
+			4'h8: baudrate_compare <= 19'd2604;		//19200
+			4'h9: baudrate_compare <= 19'd1302;		//38400
+			4'hA: baudrate_compare <= 19'd868;		//57600
+			4'hB: baudrate_compare <= 19'd434;		//115200
+			4'hC: baudrate_compare <= 19'd217;		//230400
+			4'hD: baudrate_compare <= 19'd109;		//460800
+			4'hE: baudrate_compare <= 19'd45;		//921600
+			default: baudrate_compare <= 19'd5208;	//921600
+		endcase
+	end
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_baudrate_counter <= 16'h0;
+			b_baudrate_counter <= 19'h0;
 			b_baudrate_enable <= 1'b0;
 		end
 		else begin
-			if(BAUDRATE_VALUE == b_baudrate_counter)begin
-				b_baudrate_counter <= 16'h0;
+			if(baudrate_compare == b_baudrate_counter)begin
+				b_baudrate_counter <= 19'h0;
 				b_baudrate_enable <= 1'b1;
 			end
 			else begin
-				b_baudrate_counter <= b_baudrate_counter + 16'h1;
+				b_baudrate_counter <= b_baudrate_counter + 19'h1;
 				b_baudrate_enable <= 1'b0;
 			end
 		end
@@ -71,19 +111,18 @@ module dps_uart(
 	/*********************************************
 	* IO FIFO
 	*********************************************/
-	
 	sync_fifo #(8, 16, 4) TX_FIFO(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iREMOVE(1'b0),
-		.oCOUNT(),
+		.iREMOVE(iTX_CLEAR),
+		.oCOUNT(txd_fifo2state_fifo_count),
 		//WR
 		.iWR_EN(iTX_EN && iTX_REQ),
 		.iWR_DATA(iTX_DATA),
 		.oWR_FULL(oTX_BUSY),
 		//RD
-		.iRD_EN(b_txd_state == TXD_STATE_IDLE),
+		.iRD_EN(!txd_fifo2state_empty && b_txd_state == TXD_STATE_IDLE),
 		.oRD_DATA(txd_fifo2state_data),
 		.oRD_EMPTY(txd_fifo2state_empty)
 	);
@@ -92,8 +131,8 @@ module dps_uart(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iREMOVE(1'b0),
-		.oCOUNT(),
+		.iREMOVE(iRX_CLEAR),
+		.oCOUNT(rxd_fifo2state_fifo_count),
 		//WR
 		.iWR_EN(b_rxd_state == RXD_STATE_STOP_BIT && !rxd_fifo2state_full),
 		.iWR_DATA(b_rxd_data),
@@ -129,7 +168,7 @@ module dps_uart(
 			case(b_txd_state)
 				TXD_STATE_IDLE:
 					begin
-						if(txd_fifo2state_empty)begin
+						if(!txd_fifo2state_empty)begin
 							b_txd_state <= TXD_STATE_STATE_BIT;
 							b_txd_data <= txd_fifo2state_data;
 						end
@@ -245,7 +284,13 @@ module dps_uart(
 	end
 	assign oUART_TXD = uart_tr_single;
 	
-	assign oIRQ_VALID = (b_rxd_state == RXD_STATE_STOP_BIT);
+	assign oTX_TRANSMIT = (b_txd_state == TXD_STATE_STOP_BIT);
+	
+	assign oRX_RECEIVE = (b_rxd_state == RXD_STATE_STOP_BIT);
+	
+	assign oTX_BUFF_CNT = txd_fifo2state_fifo_count;
+	
+	assign oRX_BUFF_CNT = rxd_fifo2state_fifo_count;
 		
 endmodule
 
