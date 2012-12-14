@@ -82,7 +82,7 @@ module execute(
 		 output [31:0] oDEBUG_REG_OUT_FLAGR
 	);
 	
-	wire lock_condition = (b_state != L_PARAM_STT_NORMAL) || b_div_wait || b_debug_stop || iDATAIO_BUSY;
+	wire lock_condition = (b_state != L_PARAM_STT_NORMAL) || b_div_wait || b_debug_stop;// || iDATAIO_BUSY;
 	wire io_lock_condition = iDATAIO_BUSY;
 	assign oPREVIOUS_LOCK = lock_condition || iFREE_PIPELINE_STOP;
 	

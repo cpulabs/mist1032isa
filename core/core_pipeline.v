@@ -423,29 +423,6 @@ module core_pipeline
 		.oEXCEPT_IRQ_BUSY(exception2cim_irq_lock)
 	);
 
-	
-	//Interrupt Lock
-	/*
-	interrupt_lock INT_LOCK(
-		.i1D_LOCK_CC((decoder2dispatch_valid && decoder2dispatch_ex_branch || !decoder2dispatch_valid) && !dispatch_exception_lock),
-		.i2D_LOCK_CC(1'b0),
-		.iDISPATCH_LOCK(dispatch_exception_lock),
-		.iEXECUTE_LOCK(execute_exception_lock),
-		//Output
-		.oINT_LOCK(interrupt_lock)
-	);
-	*/
-	
-	/*
-	interrupt_lock INT_LOCK(
-		.i1ST_BRANCH(decoder2dispatch_valid && decoder2dispatch_ex_branch),
-		.i2D_BRANCH(dispatch2execution_valid && dispatch2execution_ex_branch),
-		.iDISPATCH_LOCK(dispatch_exception_lock),
-		.iEXECUTE_LOCK(execute_exception_lock),
-		//Output
-		.oINT_LOCK(interrupt_lock)
-	);
-	*/
 	assign interrupt_lock = execute_exception_lock || dispatch_exception_lock;
 	
 	

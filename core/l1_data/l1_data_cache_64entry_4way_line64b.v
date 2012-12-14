@@ -18,38 +18,37 @@ module l1_data_cache_64entry_4way_line64b_bus_8b_damy(
 					/********************************
 					System
 					********************************/
-					input				iCLOCK,
-					input				inRESET,
+					input iCLOCK,
+					input inRESET,
 					//Remove
-					input				iREMOVE,
+					input iREMOVE,
 					/********************************
 					Search
 					********************************/
 					//Search Request 
-					input				iRD_REQ,
-					output				oRD_BUSY,		
-					input	[31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+					input iRD_REQ,
+					output oRD_BUSY,		
+					input [31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 					//Search Output Result
-					output				oRD_VALID,
-					output				oRD_HIT,
-					input				iRD_BUSY,		
-					output	[31:0] oRD_DATA,	
+					output oRD_VALID,
+					output oRD_HIT,
+					input iRD_BUSY,		
+					output [31:0] oRD_DATA,	
 					/********************************
 					Upload
 					********************************/
-					input				iUP_REQ,
-					output				oUP_BUSY,
-					input	[1:0] iUP_ORDER,
-					input	[31:0] iUP_ADDR,				
-					input	[31:0] iUP_DATA,
+					input iUP_REQ,
+					output oUP_BUSY,
+					input [1:0] iUP_ORDER,
+					input [31:0] iUP_ADDR,				
+					input [31:0] iUP_DATA,
 					/********************************
 					Write Request
 					********************************/
-					input				iWR_REQ,
-					output				oWR_BUSY,
-					input	[2:0] iWR_LINE,
-					input	[31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-					input	[63:0] iWR_DATA
+					input iWR_REQ,
+					output oWR_BUSY,
+					input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+					input [511:0] iWR_DATA
 	);
 			
 	assign			oRD_BUSY		=		1'b0;
@@ -80,41 +79,40 @@ endmodule
 
 
 module l1_data_cache_64entry_4way_line64b_bus_8b(
-					/********************************
-					System
-					********************************/
-					input				iCLOCK,
-					input				inRESET,
-					//Remove
-					input				iREMOVE,
-					/********************************
-					Search
-					********************************/
-					//Search Request 
-					input				iRD_REQ,
-					output				oRD_BUSY,		
-					input	[31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-					//Search Output Result
-					output				oRD_VALID,
-					output				oRD_HIT,
-					input				iRD_BUSY,		
-					output	[31:0] oRD_DATA,	
-					/********************************
-					Upload
-					********************************/
-					input				iUP_REQ,
-					output				oUP_BUSY,
-					input	[1:0] iUP_ORDER,
-					input	[31:0] iUP_ADDR,				
-					input	[31:0] iUP_DATA,
-					/********************************
-					Write Request
-					********************************/
-					input				iWR_REQ,
-					output				oWR_BUSY,
-					input	[2:0] iWR_LINE,
-					input	[31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-					input	[63:0] iWR_DATA
+		/********************************
+		System
+		********************************/
+		input iCLOCK,
+		input inRESET,
+		//Remove
+		input iREMOVE,
+		/********************************
+		Search
+		********************************/
+		//Search Request 
+		input iRD_REQ,
+		output oRD_BUSY,		
+		input [31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+		//Search Output Result
+		output oRD_VALID,
+		output oRD_HIT,
+		input iRD_BUSY,		
+		output [31:0] oRD_DATA,	
+		/********************************
+		Upload
+		********************************/
+		input iUP_REQ,
+		output oUP_BUSY,
+		input [1:0] iUP_ORDER,
+		input [31:0] iUP_ADDR,				
+		input [31:0] iUP_DATA,
+		/********************************
+		Write Request
+		********************************/
+		input iWR_REQ,
+		output oWR_BUSY,
+		input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+		input [511:0] iWR_DATA
 	);
 			
 	
@@ -139,7 +137,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	wire [1:0] read_way;
 	wire [3:0] write_pointer;
 	wire [1:0] write_way;	
-	//Memory Block
+	//Memory Data Block
 	wire [511:0] memory_way0_out_data;
 	wire [511:0] memory_way1_out_data;
 	wire [511:0] memory_way2_out_data;
@@ -150,10 +148,17 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	wire memory_write_way3_condition;
 	
 	wire [63:0] memory_write_byte_enable;
-	
 	wire [511:0] memory_write_data;
+	//MMU Flag Block
+	wire [255:0] memory_mmuflag_way0_out_data;
+	wire [255:0] memory_mmuflag_way1_out_data;
+	wire [255:0] memory_mmuflag_way2_out_data;
+	wire [255:0] memory_mmuflag_way3_out_data;
+	wire [255:0] memory_mmuflag_write_data;	
+	wire [31:0] memory_mmuflag_write_byte_enable;
+	
 	//Generate
-	integer			i;
+	integer i;
 	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 	reg [23:0] tag0[0:15];	//LRU_Status:2bit | AddressTag:22bit
 	reg [23:0] tag1[0:15];	//LRU_Status:2bit | AddressTag:22bit
@@ -167,23 +172,22 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	assign this_read_lock = iRD_BUSY;
 	assign this_write_lock = iUP_REQ;
 	
-	
 	/********************************************
 	LRU Control - Timer
 	********************************************/
 	wire lru_valid;
-	reg		[15:0] 	b_lru_timer;
-	assign					lru_valid		=		(b_lru_timer == 16'hFFFF)? 1'b1 : 1'b0;
+	reg [15:0] b_lru_timer;
+	assign lru_valid = (b_lru_timer == 16'hFFFF)? 1'b1 : 1'b0;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_lru_timer			<=		16'h0;
+			b_lru_timer <= 16'h0;
 		end
 		else if(iREMOVE)begin
-			b_lru_timer			<=		16'h0;
+			b_lru_timer <= 16'h0;
 		end
 		else begin
 			if(!this_read_lock)begin
-				b_lru_timer			<=		b_lru_timer		+	16'h1;
+				b_lru_timer <= b_lru_timer + 16'h1;
 			end
 		end
 	end
@@ -193,33 +197,43 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	/********************************************
 	Control
 	********************************************/
-	assign				{upload_need, upload_way}	=		func_upload_check(iUP_ADDR[31:10], tag0[upload_pointer], tag1[upload_pointer], tag2[upload_pointer], tag3[upload_pointer]);
-	assign				upload_pointer				=		iUP_ADDR[9:6];
-	assign				read_pointer				=		iRD_ADDR[9:6];
-	assign				{read_hit, read_way}		=		func_hit_check(iRD_ADDR[31:10], tag0[read_pointer], tag1[read_pointer], tag2[read_pointer], tag3[read_pointer]);
-	assign				write_pointer				=		iWR_ADDR[9:6];
-	assign				write_way					=		func_write_way_search(
-																iWR_ADDR[31:10],
-																func_get_address_tag(tag0[write_pointer]),
-																func_get_address_tag(tag1[write_pointer]),
-																func_get_address_tag(tag2[write_pointer]),
-																func_get_address_tag(tag3[write_pointer]),
-																func_get_status_tag(tag0[write_pointer]), 
-																func_get_status_tag(tag1[write_pointer]), 
-																func_get_status_tag(tag2[write_pointer]), 
-																func_get_status_tag(tag3[write_pointer])
-															);
-	
+	assign {upload_need, upload_way} = func_upload_check(iUP_ADDR[31:10], tag0[upload_pointer], tag1[upload_pointer], tag2[upload_pointer], tag3[upload_pointer]);
+	assign upload_pointer = iUP_ADDR[9:6];
+	assign read_pointer = iRD_ADDR[9:6];
+	assign {read_hit, read_way} = func_hit_check(iRD_ADDR[31:10], tag0[read_pointer], tag1[read_pointer], tag2[read_pointer], tag3[read_pointer]);
+	assign write_pointer = iWR_ADDR[9:6];
+	assign write_way = func_write_way_search(
+												iWR_ADDR[31:10],
+												func_get_address_tag(tag0[write_pointer]),
+												func_get_address_tag(tag1[write_pointer]),
+												func_get_address_tag(tag2[write_pointer]),
+												func_get_address_tag(tag3[write_pointer]),
+												func_get_status_tag(tag0[write_pointer]), 
+												func_get_status_tag(tag1[write_pointer]), 
+												func_get_status_tag(tag2[write_pointer]), 
+												func_get_status_tag(tag3[write_pointer])
+											);
+
 	/********************************************
 	Data Memory Block
 	********************************************/	
-	assign				memory_write_way0_condition				=		(!this_write_lock && iWR_REQ && write_way == 2'h0) || (iUP_REQ && upload_need && upload_way == 2'h0);
-	assign				memory_write_way1_condition				=		(!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
-	assign				memory_write_way2_condition				=		(!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
-	assign				memory_write_way3_condition				=		(!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
-	assign				memory_write_byte_enable				=		(iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[3:0], iUP_ORDER) : func_write_enable_byte_gen(iWR_LINE);
+	assign memory_write_way0_condition = (!this_write_lock && iWR_REQ && write_way == 2'h0) || (iUP_REQ && upload_need && upload_way == 2'h0);
+	assign memory_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
+	assign memory_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
+	assign memory_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
+	assign memory_write_byte_enable = (iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[3:0], iUP_ORDER) : {64{1'b1}};
+	assign memory_write_data = (iUP_REQ)? {8{iUP_DATA}} : iWR_DATA;
 	
-	assign				memory_write_data						=		(iUP_REQ)? {8{iUP_DATA}} : {8{iWR_DATA}};
+	wire memory_mmuflag_write_way0_condition;
+	wire memory_mmuflag_write_way1_condition;
+	wire memory_mmuflag_write_way2_condition;
+	wire memory_mmuflag_write_way3_condition;
+	assign memory_mmuflag_write_way0_condition = (!this_write_lock && iWR_REQ && write_way == 2'h0) || (iUP_REQ && upload_need && upload_way == 2'h0);
+	assign memory_mmuflag_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
+	assign memory_mmuflag_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
+	assign memory_mmuflag_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
+	assign memory_mmuflag_write_byte_enable = (iUP_REQ)? {32{1'b0}} : {32{1'b1}};
+	assign memory_mmuflag_write_data = {8{4'h0, iWR_MMU_FLAGS[23:12], 4'h0, iWR_MMU_FLAGS[11:0]}};
 	
 	
 	/*--------------------------------------- 
@@ -274,32 +288,85 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		.q(memory_way3_out_data)				//512bit
 	);
 	
+	
+	/*--------------------------------------- 
+	Altera Quartus II MegaWizard
+	
+	Name			: MMU Flag RAM
+	Type			: RAM
+	Port			: Dual Port(1Read+1Write)
+	ReadPort		: None Latch
+	Memory Word		: 128W
+	Data Bit		: 12bit
+	Byte Enable		: YES(8bit)
+	Read==Write		: Dont care
+	---------------------------------------*/
+	cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK0(
+		.clock(iCLOCK),
+		.byteena_a(memory_mmuflag_write_byte_enable),
+		.data(memory_mmuflag_write_data),		//256bit
+		.rdaddress(read_pointer),				//4bit
+		.wraddress(write_pointer),				//4bit
+		.wren(memory_mmuflag_write_way0_condition),
+		.q(memory_mmuflag_way0_out_data)		//256bit
+	);
+	
+	cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK1(
+		.clock(iCLOCK),
+		.byteena_a(memory_mmuflag_write_byte_enable),
+		.data(memory_mmuflag_write_data),		//256bit
+		.rdaddress(read_pointer),				//4bit
+		.wraddress(write_pointer),				//4bit
+		.wren(memory_mmuflag_write_way1_condition),
+		.q(memory_mmuflag_way1_out_data)		//256bit
+	);
+	
+	cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK2(
+		.clock(iCLOCK),
+		.byteena_a(memory_mmuflag_write_byte_enable),
+		.data(memory_mmuflag_write_data),		//256bit
+		.rdaddress(read_pointer),				//4bit
+		.wraddress(write_pointer),				//4bit
+		.wren(memory_mmuflag_write_way2_condition),
+		.q(memory_mmuflag_way2_out_data)		//256bit
+	);
+	
+	cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK3(
+		.clock(iCLOCK),
+		.byteena_a(memory_mmuflag_write_byte_enable),
+		.data(memory_mmuflag_write_data),		//256bit
+		.rdaddress(read_pointer),				//4bit
+		.wraddress(write_pointer),				//4bit
+		.wren(memory_mmuflag_write_way3_condition),
+		.q(memory_mmuflag_way3_out_data)		//256bit
+	);
+	
 
 	/********************************************
 	Function
 	********************************************/
 	//Upload Check
 	function [2:0] func_upload_check;	//[2]:Upload Need Flag  |  [1:0] Upload Way
-		input	[21:0] func_request_addr;
-		input	[23:0] func_way0;
-		input	[23:0] func_way1;
-		input	[23:0] func_way2;
-		input	[23:0] func_way3;
+		input [21:0] func_request_addr;
+		input [23:0] func_way0;
+		input [23:0] func_way1;
+		input [23:0] func_way2;
+		input [23:0] func_way3;
 		begin
 			if(func_request_addr == func_way0[21:0] && func_way0[23:22] != 2'h0)begin
-				func_upload_check	=	{1'b1, 2'h0};
+				func_upload_check = {1'b1, 2'h0};
 			end
 			else if(func_request_addr == func_way1[21:0] && func_way0[23:22] != 2'h0)begin
-				func_upload_check	=	{1'b1, 2'h1};
+				func_upload_check = {1'b1, 2'h1};
 			end
 			else if(func_request_addr == func_way2[21:0] && func_way0[23:22] != 2'h0)begin
-				func_upload_check	=	{1'b1, 2'h2};
+				func_upload_check = {1'b1, 2'h2};
 			end
 			else if(func_request_addr == func_way3[21:0] && func_way0[23:22] != 2'h0)begin
-				func_upload_check	=	{1'b1, 2'h3};
+				func_upload_check = {1'b1, 2'h3};
 			end
 			else begin
-				func_upload_check	=	3'h0;
+				func_upload_check = 3'h0;
 			end
 		end
 	endfunction
@@ -318,103 +385,86 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			endcase
 		end
 	endfunction
-	
-	//Write Byte Enable Generate
-	function [63:0] func_write_enable_byte_gen;
-		input [2:0] func_addr;
-		begin
-			case(func_addr)
-				3'h0 : func_write_enable_byte_gen = 64'h00000000000000FF;
-				3'h1 : func_write_enable_byte_gen = 64'h000000000000FF00;
-				3'h2 : func_write_enable_byte_gen = 64'h0000000000FF0000;
-				3'h3 : func_write_enable_byte_gen = 64'h00000000FF000000;
-				3'h4 : func_write_enable_byte_gen = 64'h000000FF00000000;
-				3'h5 : func_write_enable_byte_gen = 64'h0000FF0000000000;
-				3'h6 : func_write_enable_byte_gen = 64'h00FF000000000000;
-				3'h7 : func_write_enable_byte_gen = 64'hFF00000000000000;
-			endcase
-		end
-	endfunction
 
-	
+
 	
 	//Low Pryority Line Search
 	function [1:0] func_write_way_search;
-		input	[21:0]	write_addr;
-		input	[21:0]	way0_adder_tag;
-		input	[21:0]	way1_adder_tag;
-		input	[21:0]	way2_adder_tag;
-		input	[21:0]	way3_adder_tag;
-		input	[1:0]	way0_status;
-		input	[1:0]	way1_status;
-		input	[1:0]	way2_status;
-		input	[1:0]	way3_status;
+		input [21:0] write_addr;
+		input [21:0] way0_adder_tag;
+		input [21:0] way1_adder_tag;
+		input [21:0] way2_adder_tag;
+		input [21:0] way3_adder_tag;
+		input [1:0] way0_status;
+		input [1:0] way1_status;
+		input [1:0] way2_status;
+		input [1:0] way3_status;
 		begin
 			//LINE Update
 			if(write_addr == way0_adder_tag)begin
-				func_write_way_search	=	2'h0;
+				func_write_way_search = 2'h0;
 			end
 			else if(write_addr == way1_adder_tag)begin
-				func_write_way_search	=	2'h1;
+				func_write_way_search = 2'h1;
 			end
 			else if(write_addr == way2_adder_tag)begin
-				func_write_way_search	=	2'h2;
+				func_write_way_search = 2'h2;
 			end
 			else if(write_addr == way3_adder_tag)begin
-				func_write_way_search	=	2'h3;
+				func_write_way_search = 2'h3;
 			end
 			//New Write
 			else if(way0_status == 2'h0)
-				func_write_way_search	=	2'h0;
+				func_write_way_search = 2'h0;
 			else if(way1_status == 2'h0)
-				func_write_way_search	=	2'h1;
+				func_write_way_search = 2'h1;
 			else if(way2_status == 2'h0)
-				func_write_way_search	=	2'h2;
+				func_write_way_search = 2'h2;
 			else if(way3_status == 2'h0)
-				func_write_way_search	=	2'h3;
+				func_write_way_search = 2'h3;
 			else if(way0_status == 2'h1)
-				func_write_way_search	=	2'h0;
+				func_write_way_search = 2'h0;
 			else if(way1_status == 2'h1)
-				func_write_way_search	=	2'h1;
+				func_write_way_search = 2'h1;
 			else if(way2_status == 2'h1)
-				func_write_way_search	=	2'h2;
+				func_write_way_search = 2'h2;
 			else if(way3_status == 2'h1)
-				func_write_way_search	=	2'h3;
+				func_write_way_search = 2'h3;
 			else if(way0_status == 2'h2)
-				func_write_way_search	=	2'h0;
+				func_write_way_search = 2'h0;
 			else if(way1_status == 2'h2)
-				func_write_way_search	=	2'h1;
+				func_write_way_search = 2'h1;
 			else if(way2_status == 2'h2)
-				func_write_way_search	=	2'h2;
+				func_write_way_search = 2'h2;
 			else if(way3_status == 2'h2)
-				func_write_way_search	=	2'h3;
+				func_write_way_search = 2'h3;
 			else
-				func_write_way_search	=	2'h3;
+				func_write_way_search = 2'h3;
 		end
 	endfunction
 	
 	function [2:0] func_hit_check;	//[2]:Hit  |  [1:0] Hit Way
-		input	[21:0]	func_request_addr;
-		input	[23:0]	func_way0;
-		input	[23:0]	func_way1;
-		input	[23:0]	func_way2;
-		input	[23:0]	func_way3;
+		input [21:0] func_request_addr;
+		input [23:0] func_way0;
+		input [23:0] func_way1;
+		input [23:0] func_way2;
+		input [23:0] func_way3;
 		begin
 			if(func_request_addr == func_way0[21:0] && func_way0[23:22] != 2'h0)begin
-				func_hit_check	=	{1'b1, 2'h0};
+				func_hit_check = {1'b1, 2'h0};
 			end
 			else if(func_request_addr == func_way1[21:0] && func_way1[23:22] != 2'h0)begin
-				func_hit_check	=	{1'b1, 2'h1};
+				func_hit_check = {1'b1, 2'h1};
 			end
 			else if(func_request_addr == func_way2[21:0] && func_way2[23:22] != 2'h0)begin
-				func_hit_check	=	{1'b1, 2'h2};
+				func_hit_check = {1'b1, 2'h2};
 			end
 			else if(func_request_addr == func_way3[21:0] && func_way3[23:22] != 2'h0)begin
-				func_hit_check	=	{1'b1, 2'h3};
+				func_hit_check = {1'b1, 2'h3};
 			end
 			else begin
 				//No Hit
-				func_hit_check	=	{1'b0, 2'h0};
+				func_hit_check = {1'b0, 2'h0};
 			end
 		end
 	endfunction
@@ -423,7 +473,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	function [1:0] func_get_status_tag;
 		input	[23:0] func_tag;
 		begin
-			func_get_status_tag		=	func_tag[23:22];
+			func_get_status_tag = func_tag[23:22];
 		end
 	endfunction
 	
@@ -431,7 +481,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	function [21:0] func_get_address_tag;
 		input	[23:0] func_tag;
 		begin
-			func_get_address_tag	=	func_tag[21:0];
+			func_get_address_tag = func_tag[21:0];
 		end
 	endfunction
 	
@@ -467,61 +517,61 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		if(!inRESET)begin
 			for(i = 0; i < 16; i = i + 1)begin
 				if(`DATA_RESET_ENABLE)begin
-					tag0[i] 			<=	tag0[i] & 24'h000000;		//Clear LRU_Status bit
-					tag1[i] 			<=	tag1[i] & 24'h000000;		//Clear LRU_Status bit
-					tag2[i] 			<=	tag2[i] & 24'h000000;		//Clear LRU_Status bit
-					tag3[i] 			<=	tag3[i] & 24'h000000;		//Clear LRU_Status bit
+					tag0[i] <= tag0[i] & 24'h000000;		//Clear LRU_Status bit
+					tag1[i] <= tag1[i] & 24'h000000;		//Clear LRU_Status bit
+					tag2[i] <= tag2[i] & 24'h000000;		//Clear LRU_Status bit
+					tag3[i] <= tag3[i] & 24'h000000;		//Clear LRU_Status bit
 				end
 				else begin
-					tag0[i] 			<=	tag0[i] & 24'h3FFFFF;		//Clear LRU_Status bit
-					tag1[i] 			<=	tag1[i] & 24'h3FFFFF;		//Clear LRU_Status bit
-					tag2[i] 			<=	tag2[i] & 24'h3FFFFF;		//Clear LRU_Status bit
-					tag3[i] 			<=	tag3[i] & 24'h3FFFFF;		//Clear LRU_Status bit
+					tag0[i] <= tag0[i] & 24'h3FFFFF;		//Clear LRU_Status bit
+					tag1[i] <= tag1[i] & 24'h3FFFFF;		//Clear LRU_Status bit
+					tag2[i] <= tag2[i] & 24'h3FFFFF;		//Clear LRU_Status bit
+					tag3[i] <= tag3[i] & 24'h3FFFFF;		//Clear LRU_Status bit
 				end
 			end
-			b_load_req_valid			<=	1'b0;
+			b_load_req_valid <= 1'b0;
 		end
 		else if(iREMOVE)begin
 			for(i = 0; i < 16; i = i + 1)begin
 				if(`DATA_RESET_ENABLE)begin
-					tag0[i] 			<=	tag0[i] & 24'h000000;		//Clear LRU_Status bit
-					tag1[i] 			<=	tag1[i] & 24'h000000;		//Clear LRU_Status bit
-					tag2[i] 			<=	tag2[i] & 24'h000000;		//Clear LRU_Status bit
-					tag3[i] 			<=	tag3[i] & 24'h000000;		//Clear LRU_Status bit
+					tag0[i] <= tag0[i] & 24'h000000;		//Clear LRU_Status bit
+					tag1[i] <= tag1[i] & 24'h000000;		//Clear LRU_Status bit
+					tag2[i] <= tag2[i] & 24'h000000;		//Clear LRU_Status bit
+					tag3[i] <= tag3[i] & 24'h000000;		//Clear LRU_Status bit
 				end
 				else begin
-					tag0[i] 			<=	tag0[i] & 24'h3FFFFF;		//Clear LRU_Status bit
-					tag1[i] 			<=	tag1[i] & 24'h3FFFFF;		//Clear LRU_Status bit
-					tag2[i] 			<=	tag2[i] & 24'h3FFFFF;		//Clear LRU_Status bit
-					tag3[i] 			<=	tag3[i] & 24'h3FFFFF;		//Clear LRU_Status bit
+					tag0[i] <= tag0[i] & 24'h3FFFFF;		//Clear LRU_Status bit
+					tag1[i] <= tag1[i] & 24'h3FFFFF;		//Clear LRU_Status bit
+					tag2[i] <= tag2[i] & 24'h3FFFFF;		//Clear LRU_Status bit
+					tag3[i] <= tag3[i] & 24'h3FFFFF;		//Clear LRU_Status bit
 				end
 			end
-			b_load_req_valid			<=	1'b0;
+			b_load_req_valid <= 1'b0;
 		end
 		else begin
 			//Request Valid
 			if(!this_read_lock)begin
-				b_load_req_valid			<=	iRD_REQ;
+				b_load_req_valid <= iRD_REQ;
 			end
 			
 			//Upload
 			if(iUP_REQ)begin
 				if(upload_need)begin
 					case(upload_way)
-						2'h0:	tag0[write_pointer] <=	{((func_get_status_tag(tag0[upload_pointer]) != 2'b11)? func_get_status_tag(tag0[upload_pointer]) + 2'h1 : func_get_status_tag(tag0[upload_pointer])), func_get_address_tag(tag0[upload_pointer])};
-						2'h1:	tag1[write_pointer] <=	{((func_get_status_tag(tag1[upload_pointer]) != 2'b11)? func_get_status_tag(tag1[upload_pointer]) + 2'h1 : func_get_status_tag(tag1[upload_pointer])), func_get_address_tag(tag1[upload_pointer])};
-						2'h2:	tag2[write_pointer] <=	{((func_get_status_tag(tag2[upload_pointer]) != 2'b11)? func_get_status_tag(tag2[upload_pointer]) + 2'h1 : func_get_status_tag(tag2[upload_pointer])), func_get_address_tag(tag2[upload_pointer])};
-						2'h3:	tag3[write_pointer] <=	{((func_get_status_tag(tag3[upload_pointer]) != 2'b11)? func_get_status_tag(tag3[upload_pointer]) + 2'h1 : func_get_status_tag(tag3[upload_pointer])), func_get_address_tag(tag3[upload_pointer])};
+						2'h0:	tag0[write_pointer] <= {((func_get_status_tag(tag0[upload_pointer]) != 2'b11)? func_get_status_tag(tag0[upload_pointer]) + 2'h1 : func_get_status_tag(tag0[upload_pointer])), func_get_address_tag(tag0[upload_pointer])};
+						2'h1:	tag1[write_pointer] <= {((func_get_status_tag(tag1[upload_pointer]) != 2'b11)? func_get_status_tag(tag1[upload_pointer]) + 2'h1 : func_get_status_tag(tag1[upload_pointer])), func_get_address_tag(tag1[upload_pointer])};
+						2'h2:	tag2[write_pointer] <= {((func_get_status_tag(tag2[upload_pointer]) != 2'b11)? func_get_status_tag(tag2[upload_pointer]) + 2'h1 : func_get_status_tag(tag2[upload_pointer])), func_get_address_tag(tag2[upload_pointer])};
+						2'h3:	tag3[write_pointer] <= {((func_get_status_tag(tag3[upload_pointer]) != 2'b11)? func_get_status_tag(tag3[upload_pointer]) + 2'h1 : func_get_status_tag(tag3[upload_pointer])), func_get_address_tag(tag3[upload_pointer])};
 					endcase
 				end
 			end
 			//Write
 			else if(iWR_REQ)begin
 				case(write_way)		
-					2'h0:	tag0[write_pointer] <=	{2'b11, iWR_ADDR[31:10]};
-					2'h1:	tag1[write_pointer] <=	{2'b11, iWR_ADDR[31:10]};
-					2'h2:	tag2[write_pointer] <=	{2'b11, iWR_ADDR[31:10]};
-					2'h3:	tag3[write_pointer] <=	{2'b11, iWR_ADDR[31:10]};
+					2'h0:	tag0[write_pointer] <= {2'b11, iWR_ADDR[31:10]};
+					2'h1:	tag1[write_pointer] <= {2'b11, iWR_ADDR[31:10]};
+					2'h2:	tag2[write_pointer] <= {2'b11, iWR_ADDR[31:10]};
+					2'h3:	tag3[write_pointer] <= {2'b11, iWR_ADDR[31:10]};
 				endcase
 			end
 			else begin
@@ -531,38 +581,38 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 						for(i = 0; i < 16; i = i + 1)begin
 							//TAG0
 							if(read_pointer == i[3:0] && read_way == 2'h0)begin
-								tag0[read_pointer]	<=	{2'b11, func_get_address_tag(tag0[read_pointer])};
+								tag0[read_pointer] <= {2'b11, func_get_address_tag(tag0[read_pointer])};
 							end
 							else begin
 								if(func_get_status_tag(tag0[i[3:0]]) != 2'h0 && func_get_status_tag(tag0[i[3:0]]) != 2'h1)begin
-									tag0[i[3:0]] <=	{(func_get_status_tag(tag0[i[3:0]]) - 2'h1), func_get_address_tag(tag0[i[3:0]])};
+									tag0[i[3:0]] <= {(func_get_status_tag(tag0[i[3:0]]) - 2'h1), func_get_address_tag(tag0[i[3:0]])};
 								end
 							end
 							//TAG1
 							if(read_pointer == i[3:0] && read_way == 2'h1)begin
-								tag1[read_pointer]	<=	{2'b11, func_get_address_tag(tag1[read_pointer])};
+								tag1[read_pointer] <= {2'b11, func_get_address_tag(tag1[read_pointer])};
 							end
 							else begin
 								if(func_get_status_tag(tag1[i[3:0]]) != 2'h0 && func_get_status_tag(tag1[i[3:0]]) != 2'h1)begin
-									tag1[i[3:0]] <=	{(func_get_status_tag(tag1[i[3:0]]) - 2'h1), func_get_address_tag(tag1[i[3:0]])};
+									tag1[i[3:0]] <= {(func_get_status_tag(tag1[i[3:0]]) - 2'h1), func_get_address_tag(tag1[i[3:0]])};
 								end
 							end
 							//TAG2
 							if(read_pointer == i[3:0] && read_way == 2'h2)begin
-								tag2[read_pointer]	<=	{2'b11, func_get_address_tag(tag2[read_pointer])};
+								tag2[read_pointer] <= {2'b11, func_get_address_tag(tag2[read_pointer])};
 							end
 							else begin
 								if(func_get_status_tag(tag2[i[3:0]]) != 2'h0 && func_get_status_tag(tag2[i[3:0]]) != 2'h1)begin
-									tag2[i[3:0]] <=	{(func_get_status_tag(tag2[i[3:0]]) - 2'h1), func_get_address_tag(tag2[i[3:0]])};
+									tag2[i[3:0]] <= {(func_get_status_tag(tag2[i[3:0]]) - 2'h1), func_get_address_tag(tag2[i[3:0]])};
 								end
 							end
 							//TAG3
 							if(read_pointer == i[3:0] && read_way == 2'h3)begin
-								tag3[read_pointer]	<=	{2'b11, func_get_address_tag(tag3[read_pointer])};
+								tag3[read_pointer] <= {2'b11, func_get_address_tag(tag3[read_pointer])};
 							end
 							else begin
 								if(func_get_status_tag(tag3[i[3:0]]) != 2'h0 && func_get_status_tag(tag3[i[3:0]]) != 2'h1)begin
-									tag3[i[3:0]] <=	{(func_get_status_tag(tag3[i[3:0]]) - 2'h1), func_get_address_tag(tag3[i[3:0]])};
+									tag3[i[3:0]] <= {(func_get_status_tag(tag3[i[3:0]]) - 2'h1), func_get_address_tag(tag3[i[3:0]])};
 								end
 							end
 						end
@@ -573,25 +623,25 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 							2'h0	:
 								begin
 									if(func_get_status_tag(tag0[read_pointer]) != 2'b11)begin
-										tag0[read_pointer]	<=	{2'b11/*(func_get_status_tag(tag0[read_pointer]) + 2'h1)*/, func_get_address_tag(tag0[read_pointer])};
+										tag0[read_pointer] <= {2'b11/*(func_get_status_tag(tag0[read_pointer]) + 2'h1)*/, func_get_address_tag(tag0[read_pointer])};
 									end
 								end
 							2'h1	:
 								begin
 									if(func_get_status_tag(tag1[read_pointer]) != 2'b11)begin
-										tag1[read_pointer]	<=	{2'b11, func_get_address_tag(tag1[read_pointer])};
+										tag1[read_pointer] <= {2'b11, func_get_address_tag(tag1[read_pointer])};
 									end
 								end
 							2'h2	:
 								begin
 									if(func_get_status_tag(tag2[read_pointer]) != 2'b11)begin
-										tag2[read_pointer]	<=	{2'b11, func_get_address_tag(tag2[read_pointer])};
+										tag2[read_pointer] <= {2'b11, func_get_address_tag(tag2[read_pointer])};
 									end
 								end
 							2'h3	:
 								begin
 									if(func_get_status_tag(tag3[read_pointer]) != 2'b11)begin
-										tag3[read_pointer]	<=	{2'b11, func_get_address_tag(tag3[read_pointer])};
+										tag3[read_pointer] <= {2'b11, func_get_address_tag(tag3[read_pointer])};
 									end
 								end
 						endcase
@@ -601,19 +651,19 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 						for(i = 0; i < 16; i = i + 1)begin
 							//TAG0
 							if(func_get_status_tag(tag0[i[3:0]]) != 2'h0 && func_get_status_tag(tag0[i[3:0]]) != 2'h1)begin
-								tag0[i[3:0]] <=	{(func_get_status_tag(tag0[i[3:0]]) - 2'h1), func_get_address_tag(tag0[i[3:0]])};
+								tag0[i[3:0]] <= {(func_get_status_tag(tag0[i[3:0]]) - 2'h1), func_get_address_tag(tag0[i[3:0]])};
 							end
 							//TAG1
 							if(func_get_status_tag(tag1[i[3:0]]) != 2'h0 && func_get_status_tag(tag1[i[3:0]]) != 2'h1)begin
-								tag1[i[3:0]] <=	{(func_get_status_tag(tag1[i[3:0]]) - 2'h1), func_get_address_tag(tag1[i[3:0]])};
+								tag1[i[3:0]] <= {(func_get_status_tag(tag1[i[3:0]]) - 2'h1), func_get_address_tag(tag1[i[3:0]])};
 							end
 							//TAG2
 							if(func_get_status_tag(tag2[i[3:0]]) != 2'h0 && func_get_status_tag(tag2[i[3:0]]) != 2'h1)begin
-								tag2[i[3:0]] <=	{(func_get_status_tag(tag2[i[3:0]]) - 2'h1), func_get_address_tag(tag2[i[3:0]])};
+								tag2[i[3:0]] <= {(func_get_status_tag(tag2[i[3:0]]) - 2'h1), func_get_address_tag(tag2[i[3:0]])};
 							end
 							//TAG3
 							if(func_get_status_tag(tag3[i[3:0]]) != 2'h0 && func_get_status_tag(tag3[i[3:0]]) != 2'h1)begin
-								tag3[i[3:0]] <=	{(func_get_status_tag(tag3[i[3:0]]) - 2'h1), func_get_address_tag(tag3[i[3:0]])};
+								tag3[i[3:0]] <= {(func_get_status_tag(tag3[i[3:0]]) - 2'h1), func_get_address_tag(tag3[i[3:0]])};
 							end
 						end
 					end
@@ -660,15 +710,15 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	********************************************/
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_rd_hit		<=		1'h0;
-			b_rd_way		<=		2'h0;
-			b_rd_addr		<=		32'h0;
+			b_rd_hit <= 1'h0;
+			b_rd_way <= 2'h0;
+			b_rd_addr <= 32'h0;
 		end
 		else begin
 			if(!this_read_lock)begin
-				b_rd_hit		<=		read_hit;
-				b_rd_way		<=		read_way;
-				b_rd_addr		<=		iRD_ADDR;
+				b_rd_hit <= read_hit;
+				b_rd_way <= read_way;
+				b_rd_addr <= iRD_ADDR;
 			end
 		end
 	end
@@ -676,19 +726,19 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	/*****************************************************
 	Output Assign
 	*****************************************************/
-	assign			oRD_BUSY		=	iRD_BUSY || (iRD_REQ && iWR_REQ && iRD_ADDR == iWR_ADDR);	
-	assign			oRD_VALID		=	b_load_req_valid && !this_read_lock;
-	assign			oRD_HIT			=	b_load_req_valid && !this_read_lock && b_rd_hit;
-	assign			oRD_DATA		=	(b_load_req_valid && !this_read_lock && b_rd_hit)? (
+	assign oRD_BUSY = iRD_BUSY || (iRD_REQ && iWR_REQ && iRD_ADDR == iWR_ADDR);	
+	assign oRD_VALID = b_load_req_valid && !this_read_lock;
+	assign oRD_HIT = b_load_req_valid && !this_read_lock && b_rd_hit;
+	assign oRD_DATA = (b_load_req_valid && !this_read_lock && b_rd_hit)? (
 											(b_rd_way == 2'h0)? func_data_selector(b_rd_addr[5:2], memory_way0_out_data) : (
 												(b_rd_way == 2'h1)? func_data_selector(b_rd_addr[5:2], memory_way1_out_data) : (
 													(b_rd_way == 2'h2)? func_data_selector(b_rd_addr[5:2], memory_way2_out_data) : func_data_selector(b_rd_addr[5:2], memory_way3_out_data)
 												)
 											)
 										) : 64'h0;		
-	assign			oWR_BUSY		=	this_write_lock;
+	assign oWR_BUSY = this_write_lock;
 	
-	assign			oUP_BUSY = iWR_REQ;
+	assign oUP_BUSY = iWR_REQ;
 	
 				
 	
