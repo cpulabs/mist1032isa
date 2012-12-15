@@ -27,7 +27,7 @@ module l1_data_cache(
 		input	[31:0]			iLDST_DATA,
 		//Cache -> Load Store
 		output					oLDST_VALID,
-		output	[31:0]			oiLDST_DATA,
+		output	[31:0]			oLDST_DATA,
 		/****************************************
 		Data Memory
 		****************************************/
@@ -149,7 +149,7 @@ module l1_data_cache(
 			b_cache_req_pdt <= 32'h0;
 			b_cache_req_addr <= 32'h0;
 			b_cache_req_data <= 32'h0;
-			b_cache_result_data <= 64'h0;
+			b_cache_result_data <= 512'h0;
 		end	
 		else begin
 			//Memory State
@@ -220,30 +220,6 @@ module l1_data_cache(
 									end
 								end
 							end
-							/*
-							if(b_req_state == 4'h8)begin
-								b_req_main_state <= L_PARAM_MEMGET;
-								b_req_state <= 4'h0;
-							end
-							else begin
-								//Load Requset
-								if(!data_request_lock)begin
-									b_req_state <= b_req_state + 4'h1;
-								end
-							end
-							//Get Check
-							if(iDATA_VALID)begin
-								b_get_state <= b_get_state + 4'h1;
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_data <= iDATA_DATA[31:0];
-									end
-									else begin
-										b_mem_result_data <= iDATA_DATA[63:32];
-									end
-								end
-							end
-							*/
 						end
 						//Cache OFF
 						else begin
@@ -282,23 +258,6 @@ module l1_data_cache(
 									b_get_state <= b_get_state + 4'h1;
 								end
 							end
-							/*
-							if(b_get_state == 4'h8)begin
-								b_get_state <= 4'h0;
-								b_req_main_state <= L_PARAM_OUTDATA;
-							end
-							else if(iDATA_VALID)begin
-								b_get_state <= b_get_state + 4'h1;
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_data <= iDATA_DATA[31:0];
-									end
-									else begin
-										b_mem_result_data <= iDATA_DATA[63:32];
-									end
-								end
-							end
-							*/
 						end
 						//Cache OFF
 						else begin
@@ -344,6 +303,18 @@ module l1_data_cache(
 	end
 	
 	
+	//Cache Hit Counter
+	wire [6:0] cache_hit_counter;
+	l1_data_cache_counter L1_CACHE_HIT_COUNTER(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		//Hit Infomation
+		.iCACHE_VALID(cache_result_valid),
+		.iCACHE_HIT(cache_result_hit),
+		//Infomation
+		.oINFO_COUNT(cache_hit_counter)
+	);
+	
 	wire cache_req_busy;
 	wire cache_result_valid;
 	wire cache_result_hit;
@@ -352,7 +323,7 @@ module l1_data_cache(
 
 	generate
 		if(`DATA_L1_CACHE_ON)begin
-			l1_cache_64entry_4way_line64b_bus_8b CACHE_MODULE(
+			l1_data_cache_64entry_4way_line64b_bus_8b CACHE_MODULE(
 				/********************************
 				System
 				********************************/
@@ -366,7 +337,7 @@ module l1_data_cache(
 				//Search Request 
 				.iRD_REQ((b_req_main_state == L_PARAM_IDLE) && !data_request_lock && data_request && !iLDST_RW),
 				.oRD_BUSY(cache_req_busy),		
-				.iRD_ADDR({iLDST_ADDR[31:3], 3'h0}),		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+				.iRD_ADDR({iLDST_ADDR[31:2], 2'h0}),		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 				//Search Output Result
 				.oRD_VALID(cache_result_valid),
 				.oRD_HIT(cache_result_hit),
@@ -386,13 +357,13 @@ module l1_data_cache(
 				********************************/
 				.iWR_REQ(b_req_main_state == L_PARAM_OUTDATA),
 				.oWR_BUSY(),
-				.iWR_ADDR({b_req_addr[31:3], 3'h0}),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-				.iWR_DATA(b_cache_result_data)
-				//.iWR_MMU_FLAGS(/*temp*/2'h0)
+				.iWR_ADDR({b_req_addr[31:6], 6'h0}),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+				.iWR_DATA(b_cache_result_data),
+				.iWR_MMU_FLAGS(/*temp*/24'h0)
 			);
 		end
 		else begin
-			l1_cache_64entry_4way_line64b_bus_8b_damy CACHE_MODULE_DAMY(
+			l1_data_cache_64entry_4way_line64b_bus_8b_damy CACHE_MODULE_DAMY(
 				/********************************
 				System
 				********************************/
@@ -482,7 +453,7 @@ module l1_data_cache(
 	
 	//This -> Load Store Module
 	assign oLDST_VALID = next_data_valid || iIO_VALID;
-	assign oiLDST_DATA = (iIO_VALID)? iIO_DATA : next_data_inst;
+	assign oLDST_DATA = (iIO_VALID)? iIO_DATA : next_data_inst;
 	
 endmodule
 

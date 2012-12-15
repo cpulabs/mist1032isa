@@ -166,7 +166,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	wire [255:0] memory_mmuflag_write_data;	
 	wire [31:0] memory_mmuflag_write_byte_enable;
 	//Generate
-	integer			i;
+	integer i;
 	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 	reg [23:0] tag0[0:15];	//LRU_Status:2bit | AddressTag:22bit
 	reg [23:0] tag1[0:15];	//LRU_Status:2bit | AddressTag:22bit
@@ -179,24 +179,23 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	**********************************************/
 	assign this_read_lock = iRD_BUSY;
 	assign this_write_lock = iUP_REQ;
-	
-	
+		
 	/********************************************
 	LRU Control - Timer
 	********************************************/
 	wire lru_valid;
-	reg		[15:0] 	b_lru_timer;
-	assign					lru_valid		=		(b_lru_timer == 16'hFFFF)? 1'b1 : 1'b0;
+	reg [15:0] b_lru_timer;
+	assign lru_valid = (b_lru_timer == 16'hFFFF)? 1'b1 : 1'b0;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_lru_timer			<=		16'h0;
+			b_lru_timer <= 16'h0;
 		end
 		else if(iREMOVE)begin
-			b_lru_timer			<=		16'h0;
+			b_lru_timer <= 16'h0;
 		end
 		else begin
 			if(!this_read_lock)begin
-				b_lru_timer			<=		b_lru_timer		+	16'h1;
+				b_lru_timer <= b_lru_timer + 16'h1;
 			end
 		end
 	end
@@ -615,38 +614,38 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 						for(i = 0; i < 16; i = i + 1)begin
 							//TAG0
 							if(read_pointer == i[3:0] && read_way == 2'h0)begin
-								tag0[read_pointer]	<=	{2'b11, func_get_address_tag(tag0[read_pointer])};
+								tag0[read_pointer] <= {2'b11, func_get_address_tag(tag0[read_pointer])};
 							end
 							else begin
 								if(func_get_status_tag(tag0[i[3:0]]) != 2'h0 && func_get_status_tag(tag0[i[3:0]]) != 2'h1)begin
-									tag0[i[3:0]] <=	{(func_get_status_tag(tag0[i[3:0]]) - 2'h1), func_get_address_tag(tag0[i[3:0]])};
+									tag0[i[3:0]] <= {(func_get_status_tag(tag0[i[3:0]]) - 2'h1), func_get_address_tag(tag0[i[3:0]])};
 								end
 							end
 							//TAG1
 							if(read_pointer == i[3:0] && read_way == 2'h1)begin
-								tag1[read_pointer]	<=	{2'b11, func_get_address_tag(tag1[read_pointer])};
+								tag1[read_pointer] <= {2'b11, func_get_address_tag(tag1[read_pointer])};
 							end
 							else begin
 								if(func_get_status_tag(tag1[i[3:0]]) != 2'h0 && func_get_status_tag(tag1[i[3:0]]) != 2'h1)begin
-									tag1[i[3:0]] <=	{(func_get_status_tag(tag1[i[3:0]]) - 2'h1), func_get_address_tag(tag1[i[3:0]])};
+									tag1[i[3:0]] <= {(func_get_status_tag(tag1[i[3:0]]) - 2'h1), func_get_address_tag(tag1[i[3:0]])};
 								end
 							end
 							//TAG2
 							if(read_pointer == i[3:0] && read_way == 2'h2)begin
-								tag2[read_pointer]	<=	{2'b11, func_get_address_tag(tag2[read_pointer])};
+								tag2[read_pointer] <= {2'b11, func_get_address_tag(tag2[read_pointer])};
 							end
 							else begin
 								if(func_get_status_tag(tag2[i[3:0]]) != 2'h0 && func_get_status_tag(tag2[i[3:0]]) != 2'h1)begin
-									tag2[i[3:0]] <=	{(func_get_status_tag(tag2[i[3:0]]) - 2'h1), func_get_address_tag(tag2[i[3:0]])};
+									tag2[i[3:0]] <= {(func_get_status_tag(tag2[i[3:0]]) - 2'h1), func_get_address_tag(tag2[i[3:0]])};
 								end
 							end
 							//TAG3
 							if(read_pointer == i[3:0] && read_way == 2'h3)begin
-								tag3[read_pointer]	<=	{2'b11, func_get_address_tag(tag3[read_pointer])};
+								tag3[read_pointer] <= {2'b11, func_get_address_tag(tag3[read_pointer])};
 							end
 							else begin
 								if(func_get_status_tag(tag3[i[3:0]]) != 2'h0 && func_get_status_tag(tag3[i[3:0]]) != 2'h1)begin
-									tag3[i[3:0]] <=	{(func_get_status_tag(tag3[i[3:0]]) - 2'h1), func_get_address_tag(tag3[i[3:0]])};
+									tag3[i[3:0]] <= {(func_get_status_tag(tag3[i[3:0]]) - 2'h1), func_get_address_tag(tag3[i[3:0]])};
 								end
 							end
 						end
@@ -657,25 +656,25 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 							2'h0	:
 								begin
 									if(func_get_status_tag(tag0[read_pointer]) != 2'b11)begin
-										tag0[read_pointer]	<=	{2'b11/*(func_get_status_tag(tag0[read_pointer]) + 2'h1)*/, func_get_address_tag(tag0[read_pointer])};
+										tag0[read_pointer] <= {2'b11/*(func_get_status_tag(tag0[read_pointer]) + 2'h1)*/, func_get_address_tag(tag0[read_pointer])};
 									end
 								end
 							2'h1	:
 								begin
 									if(func_get_status_tag(tag1[read_pointer]) != 2'b11)begin
-										tag1[read_pointer]	<=	{2'b11, func_get_address_tag(tag1[read_pointer])};
+										tag1[read_pointer] <= {2'b11, func_get_address_tag(tag1[read_pointer])};
 									end
 								end
 							2'h2	:
 								begin
 									if(func_get_status_tag(tag2[read_pointer]) != 2'b11)begin
-										tag2[read_pointer]	<=	{2'b11, func_get_address_tag(tag2[read_pointer])};
+										tag2[read_pointer] <= {2'b11, func_get_address_tag(tag2[read_pointer])};
 									end
 								end
 							2'h3	:
 								begin
 									if(func_get_status_tag(tag3[read_pointer]) != 2'b11)begin
-										tag3[read_pointer]	<=	{2'b11, func_get_address_tag(tag3[read_pointer])};
+										tag3[read_pointer] <= {2'b11, func_get_address_tag(tag3[read_pointer])};
 									end
 								end
 						endcase

@@ -98,6 +98,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		output oRD_HIT,
 		input iRD_BUSY,		
 		output [31:0] oRD_DATA,	
+		output [23:0] oRD_MMU_FLAGS,
 		/********************************
 		Upload
 		********************************/
@@ -112,10 +113,11 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		input iWR_REQ,
 		output oWR_BUSY,
 		input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-		input [511:0] iWR_DATA
+		input [511:0] iWR_DATA,
+		input [23:0] iWR_MMU_FLAGS
 	);
 			
-	
+	assign oRD_MMU_FLAGS = 24'h0;
 
 			
 	/**********************************************
@@ -126,7 +128,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	wire this_write_lock;
 	//Output Buffer
 	reg b_rd_hit;
-	reg [6:0] b_rd_way;
+	reg [1:0] b_rd_way;
 	reg [31:0] b_rd_addr;
 	//Cache Control
 	wire upload_need;		
@@ -177,7 +179,8 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	********************************************/
 	wire lru_valid;
 	reg [15:0] b_lru_timer;
-	assign lru_valid = (b_lru_timer == 16'hFFFF)? 1'b1 : 1'b0;
+	//assign lru_valid = (b_lru_timer == 16'hFFFF)? 1'b1 : 1'b0;
+	assign lru_valid = (b_lru_timer[7:0] == 8'hFF)? 1'b1 : 1'b0;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_lru_timer <= 16'h0;
@@ -221,8 +224,8 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	assign memory_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
 	assign memory_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
 	assign memory_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
-	assign memory_write_byte_enable = (iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[3:0], iUP_ORDER) : {64{1'b1}};
-	assign memory_write_data = (iUP_REQ)? {8{iUP_DATA}} : iWR_DATA;
+	assign memory_write_byte_enable = (iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[5:2], iUP_ORDER) : {64{1'b1}};
+	assign memory_write_data = (iUP_REQ)? {16{iUP_DATA}} : iWR_DATA;
 	
 	wire memory_mmuflag_write_way0_condition;
 	wire memory_mmuflag_write_way1_condition;
@@ -375,13 +378,12 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	function [63:0] func_upload_enable_byte_gen;
 		input	[3:0] func_addr;
 		input	[1:0] func_order;
-		reg [63:0] func_local_data;
 		begin
-			case(func_order == 2'h0)
-				2'h0 : func_local_data = 64'h0000000000000001 << func_addr;
-				2'h1 : func_local_data = 64'h0000000000000003 << func_addr;
-				2'h2 : func_local_data = 64'h000000000000000F << func_addr;
-				default : func_local_data = 64'h0000000000000000;
+			case(func_order)
+				2'h0 : func_upload_enable_byte_gen = 64'h0000000000000001 << (func_addr*4);
+				2'h1 : func_upload_enable_byte_gen = 64'h0000000000000003 << (func_addr*4);
+				2'h2 : func_upload_enable_byte_gen = 64'h000000000000000F << (func_addr*4);
+				default : func_upload_enable_byte_gen = 64'h0000000000000000;
 			endcase
 		end
 	endfunction
@@ -492,12 +494,13 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			case(func_select)
 				4'h0 : func_data_selector = func_data[31:0];
 				4'h1 : func_data_selector = func_data[63:32];
-				4'h2 : func_data_selector = func_data[195:64];
+				4'h2 : func_data_selector = func_data[95:64];
 				4'h3 : func_data_selector = func_data[127:96];
 				4'h4 : func_data_selector = func_data[159:128];
 				4'h5 : func_data_selector = func_data[191:160];
 				4'h6 : func_data_selector = func_data[223:192];
 				4'h7 : func_data_selector = func_data[255:224];
+				
 				4'h8 : func_data_selector = func_data[287:256];
 				4'h9 : func_data_selector = func_data[319:288];
 				4'ha : func_data_selector = func_data[351:320];
@@ -509,7 +512,19 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			endcase
 		end
 	endfunction
- 
+	
+	function [23:0] func_lru_control;
+		input [23:0] func_tag;
+		begin
+			if(func_tag[23:22] != 2'h0 && func_tag[23:22] != 2'h1)begin
+				func_lru_control = {(func_tag[23:22] - 2'h1), func_tag[21:0]};
+			end
+			else begin
+				func_lru_control = func_tag;
+			end
+		end
+	endfunction
+	
 	/********************************************
 	Tag Pryority & Tag Control
 	********************************************/
@@ -553,7 +568,6 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			if(!this_read_lock)begin
 				b_load_req_valid <= iRD_REQ;
 			end
-			
 			//Upload
 			if(iUP_REQ)begin
 				if(upload_need)begin
@@ -578,7 +592,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 				//Read & LRU Controal
 				if(!this_read_lock)begin
 					if(iRD_REQ && read_hit && lru_valid)begin
-						for(i = 0; i < 16; i = i + 1)begin
+						for(i = 0; i < 16; i = i + 1)begin : READ_AND_RLU
 							//TAG0
 							if(read_pointer == i[3:0] && read_way == 2'h0)begin
 								tag0[read_pointer] <= {2'b11, func_get_address_tag(tag0[read_pointer])};
@@ -649,22 +663,10 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 					//LRU Controal
 					else if(lru_valid)begin
 						for(i = 0; i < 16; i = i + 1)begin
-							//TAG0
-							if(func_get_status_tag(tag0[i[3:0]]) != 2'h0 && func_get_status_tag(tag0[i[3:0]]) != 2'h1)begin
-								tag0[i[3:0]] <= {(func_get_status_tag(tag0[i[3:0]]) - 2'h1), func_get_address_tag(tag0[i[3:0]])};
-							end
-							//TAG1
-							if(func_get_status_tag(tag1[i[3:0]]) != 2'h0 && func_get_status_tag(tag1[i[3:0]]) != 2'h1)begin
-								tag1[i[3:0]] <= {(func_get_status_tag(tag1[i[3:0]]) - 2'h1), func_get_address_tag(tag1[i[3:0]])};
-							end
-							//TAG2
-							if(func_get_status_tag(tag2[i[3:0]]) != 2'h0 && func_get_status_tag(tag2[i[3:0]]) != 2'h1)begin
-								tag2[i[3:0]] <= {(func_get_status_tag(tag2[i[3:0]]) - 2'h1), func_get_address_tag(tag2[i[3:0]])};
-							end
-							//TAG3
-							if(func_get_status_tag(tag3[i[3:0]]) != 2'h0 && func_get_status_tag(tag3[i[3:0]]) != 2'h1)begin
-								tag3[i[3:0]] <= {(func_get_status_tag(tag3[i[3:0]]) - 2'h1), func_get_address_tag(tag3[i[3:0]])};
-							end
+							tag0[i] <= func_lru_control(tag0[i]);
+							tag1[i] <= func_lru_control(tag1[i]);
+							tag2[i] <= func_lru_control(tag2[i]);
+							tag3[i] <= func_lru_control(tag3[i]);
 						end
 					end
 				end //End !Lock
@@ -672,37 +674,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		end
 	end //always
 	
-	/*
-	wire [1:0] debug_lru_0[0:15];
-	wire [1:0] debug_lru_1[0:15];
-	wire [1:0] debug_lru_2[0:15];
-	wire [1:0] debug_lru_3[0:15];
-	genvar j;
-	generate 
-		for(j = 0; j < 16; j = j + 1)begin : debug1
-			assign debug_lru_0[j] = func_get_status_tag(tag0[j]);
-			assign debug_lru_1[j] = func_get_status_tag(tag1[j]);
-			assign debug_lru_2[j] = func_get_status_tag(tag2[j]);
-			assign debug_lru_3[j] = func_get_status_tag(tag3[j]);
-		end
-	endgenerate
-	
-	
-	
-	wire [21:0] debug_tag_0[0:15];
-	wire [21:0] debug_tag_1[0:15];
-	wire [21:0] debug_tag_2[0:15];
-	wire [21:0] debug_tag_3[0:15];
-	genvar j;
-	generate 
-		for(j = 0; j < 16; j = j + 1)begin : debug2
-			assign debug_tag_0[j] = func_get_address_tag(tag0[j]);
-			assign debug_tag_1[j] = func_get_address_tag(tag1[j]);
-			assign debug_tag_2[j] = func_get_address_tag(tag2[j]);
-			assign debug_tag_3[j] = func_get_address_tag(tag3[j]);
-		end
-	endgenerate
-	*/
+
 	
 	
 	/********************************************
@@ -735,11 +707,31 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 													(b_rd_way == 2'h2)? func_data_selector(b_rd_addr[5:2], memory_way2_out_data) : func_data_selector(b_rd_addr[5:2], memory_way3_out_data)
 												)
 											)
-										) : 64'h0;		
+										) : 64'h0;	
 	assign oWR_BUSY = this_write_lock;
 	
 	assign oUP_BUSY = iWR_REQ;
 	
+				
+				
+	wire [31:0] data0 = memory_way0_out_data[31:0];
+	wire [31:0] data1 = memory_way0_out_data[63:32];
+	wire [31:0] data2 = memory_way0_out_data[95:64];
+	wire [31:0] data3 = memory_way0_out_data[127:96];
+	wire [31:0] data4 = memory_way0_out_data[159:128];
+	wire [31:0] data5 = memory_way0_out_data[191:160];
+	wire [31:0] data6 = memory_way0_out_data[223:192];
+	wire [31:0] data7 = memory_way0_out_data[255:224];
+				
+	wire [31:0] data8 = memory_way0_out_data[287:256];
+	wire [31:0] data9 = memory_way0_out_data[319:288];
+	wire [31:0] data10 = memory_way0_out_data[351:320];
+	wire [31:0] data11 = memory_way0_out_data[383:352];
+	wire [31:0] data12 = memory_way0_out_data[415:384];
+	wire [31:0] data13 = memory_way0_out_data[447:416];
+	wire [31:0] data14 = memory_way0_out_data[479:448];
+	wire [31:0] data15 = memory_way0_out_data[511:480];
+				
 				
 	
 endmodule

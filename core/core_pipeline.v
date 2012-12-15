@@ -863,7 +863,7 @@ module core_pipeline
 		.iLDST_DATA(ldst_arbiter2d_cache_data),
 		//Cache -> Load Store
 		.oLDST_VALID(d_cache2ldst_arbiter_valid),
-		.oiLDST_DATA(d_cache2ldst_arbiter_data),
+		.oLDST_DATA(d_cache2ldst_arbiter_data),
 		/****************************************
 		Data Memory
 		****************************************/
