@@ -1,0 +1,1 @@
+VERITAK2 --F --R --C0 --M0 --w --a --ST --W "C:\Users\takahiro\Desktop\MIST1032SA\processor\mmu\simulation\tlb"  "tlb_test.v" "../../source/tlb.v"

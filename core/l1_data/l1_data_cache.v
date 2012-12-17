@@ -5,60 +5,61 @@
 
 
 module l1_data_cache(
-		input					iCLOCK,
-		input					inRESET,
+		input iCLOCK,
+		input inRESET,
 		//Remove
-		input					iREMOVE,
+		input iREMOVE,
+		input iCACHE_FLASH,
 		//IOSR
-		input					iSYSINFO_IOSR_VALID,
-		input	[31:0]			iSYSINFO_IOSR,
+		input iSYSINFO_IOSR_VALID,
+		input [31:0] iSYSINFO_IOSR,
 		/****************************************
 		Load/Store Module
 		****************************************/
 		//Load Store -> Cache
-		input					iLDST_REQ,
-		output					oLDST_BUSY,
-		input	[1:0]			iLDST_ORDER,
-		input					iLDST_RW,
-		input	[31:0]			iLDST_TID,
-		input	[1:0]			iLDST_MMUMOD,
-		input	[31:0]			iLDST_PDT,
-		input	[31:0]			iLDST_ADDR,
-		input	[31:0]			iLDST_DATA,
+		input iLDST_REQ,
+		output oLDST_BUSY,
+		input [1:0] iLDST_ORDER,
+		input iLDST_RW,
+		input [31:0] iLDST_TID,
+		input [1:0] iLDST_MMUMOD,
+		input [31:0] iLDST_PDT,
+		input [31:0] iLDST_ADDR,
+		input [31:0] iLDST_DATA,
 		//Cache -> Load Store
-		output					oLDST_VALID,
-		output	[31:0]			oLDST_DATA,
+		output oLDST_VALID,
+		output [31:0] oLDST_DATA,
 		/****************************************
 		Data Memory
 		****************************************/
 		//Req
-		output					oDATA_REQ,
-		input					iDATA_LOCK,
-		output	[1:0]			oDATA_ORDER,
-		output					oDATA_RW,		//0=Write 1=Read
-		output	[13:0]			oDATA_TID,
-		output	[1:0]			oDATA_MMUMOD,
-		output	[31:0]			oDATA_PDT,
-		output	[31:0]			oDATA_ADDR,
+		output oDATA_REQ,
+		input iDATA_LOCK,
+		output [1:0] oDATA_ORDER,
+		output oDATA_RW,		//0=Write 1=Read
+		output [13:0] oDATA_TID,
+		output [1:0] oDATA_MMUMOD,
+		output [31:0] oDATA_PDT,
+		output [31:0] oDATA_ADDR,
 		//This -> Data RAM
-		output	[31:0]			oDATA_DATA,
+		output [31:0] oDATA_DATA,
 		//Data RAM -> This
-		input					iDATA_VALID,
-		input	[63:0]			iDATA_DATA,
+		input iDATA_VALID,
+		input [63:0] iDATA_DATA,
 		/****************************************
 		IO
 		****************************************/
 		//Req
-		output					oIO_REQ,
-		input					iIO_BUSY,
-		output	[1:0]			oIO_ORDER,
-		output					oIO_RW,			//0=Write 1=Read
-		output	[31:0]			oIO_ADDR,
+		output oIO_REQ,
+		input iIO_BUSY,
+		output [1:0] oIO_ORDER,
+		output oIO_RW,			//0=Write 1=Read
+		output [31:0] oIO_ADDR,
 		//Write
-		output	[31:0]			oIO_DATA,
+		output [31:0] oIO_DATA,
 		//Rec
-		input					iIO_VALID,
-		input	[31:0]			iIO_DATA		
+		input iIO_VALID,
+		input [31:0] iIO_DATA		
 	);
 	
 	//IO Start Address Buffer
@@ -330,7 +331,7 @@ module l1_data_cache(
 				.iCLOCK(iCLOCK),
 				.inRESET(inRESET),
 				//Remove
-				.iREMOVE(/*iREMOVE*/1'b0),
+				.iREMOVE(iCACHE_FLASH),
 				/********************************
 				Search
 				********************************/
@@ -370,7 +371,7 @@ module l1_data_cache(
 				.iCLOCK(iCLOCK),
 				.inRESET(inRESET),
 				//Remove
-				.iREMOVE(iREMOVE),
+				.iREMOVE(iCACHE_FLASH),
 				/********************************
 				Search
 				********************************/
@@ -397,10 +398,9 @@ module l1_data_cache(
 				********************************/
 				.iWR_REQ(1'b0),
 				.oWR_BUSY(),
-				.iWR_LINE(b_get_state[3:0]),
 				.iWR_ADDR(32'h0),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-				.iWR_DATA({512{1'b0}})
-				//.iWR_MMU_FLAGS(2'b00)
+				.iWR_DATA({512{1'b0}}),
+				.iWR_MMU_FLAGS(24'h000000)
 			);
 		end
 	endgenerate

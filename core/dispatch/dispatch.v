@@ -9,99 +9,102 @@ module dispatch
 		parameter		CORE_ID		=		0
 	)(
 		//System 
-		input					iCLOCK,
-		input					inRESET,
-		input					iFREE_REGISTER_LOCK,
-		input					iFREE_PIPELINE_STOP,
-		input					iFREE_REFRESH,
+		input iCLOCK,
+		input inRESET,
+		input iFREE_REGISTER_LOCK,
+		input iFREE_PIPELINE_STOP,
+		input iFREE_REFRESH,
 		//Exception Lock
-		output					oEXCEPTION_LOCK,
+		output oEXCEPTION_LOCK,
 		//IOSR
-		input					iSYSREGINFO_IOSR_VALID,
-		input	[31:0]			iSYSREGINFO_IOSR,
+		input iSYSREGINFO_IOSR_VALID,
+		input [31:0] iSYSREGINFO_IOSR,
 		//System Register
-		input					iFREE_SYSREG_SET_IRQ_MODE,
-		input					iFREE_SYSREG_CLR_IRQ_MODE,		
+		input iFREE_SYSREG_SET_IRQ_MODE,
+		input iFREE_SYSREG_CLR_IRQ_MODE,		
 		//PPCR Set
-		input					iFREE_PPCR_SET,
-		input	[31:0]			iFREE_PPCR,
+		input iFREE_PPCR_SET,
+		input [31:0] iFREE_PPCR,
 		//System Register
-		output	[31:0]			oSYSREG_PCR,
-		output	[31:0]			oSYSREG_IDTR,
-		output	[31:0]			oSYSREG_TISR,
-		output	[31:0]			oSYSREG_TIDR,
-		output	[31:0]			oSYSREG_PSR,
-		output	[31:0]			oSYSREG_PPSR,
-		output	[31:0]			oSYSREG_PPCR,
-		output	[31:0]			oSYSREG_SPR,
+		output [31:0] oSYSREG_PCR,
+		output [31:0] oSYSREG_IDTR,
+		output [31:0] oSYSREG_TISR,
+		output [31:0] oSYSREG_TIDR,
+		output [31:0] oSYSREG_PSR,
+		output [31:0] oSYSREG_PPSR,
+		output [31:0] oSYSREG_PPCR,
+		output [31:0] oSYSREG_SPR,
 		//Pipeline 
-		input					iPREVIOUS_VALID,
-		input					iPREVIOUS_SOURCE0_ACTIVE,			
-		input					iPREVIOUS_SOURCE1_ACTIVE,		
-		input					iPREVIOUS_SOURCE0_SYSREG,		
-		input					iPREVIOUS_SOURCE1_SYSREG,		
-		input					iPREVIOUS_DESTINATION_SYSREG,
-		input	[4:0]			iPREVIOUS_DESTINATION,			
-		input					iPREVIOUS_WRITEBACK,	
-		input					iPREVIOUS_FLAGS_WRITEBACK,	
-		input	[4:0]			iPREVIOUS_CMD,
-		input	[3:0]			iPREVIOUS_CC_AFE,
-		input	[4:0]			iPREVIOUS_SOURCE0,
-		input	[31:0]			iPREVIOUS_SOURCE1,
-		input					iPREVIOUS_SOURCE0_FLAGS,
-		input					iPREVIOUS_SOURCE1_IMM,	
-		input					iPREVIOUS_EX_SYS_REG,		
-		input					iPREVIOUS_EX_SYS_LDST,		
-		input					iPREVIOUS_EX_LOGIC,
-		input					iPREVIOUS_EX_SHIFT,
-		input					iPREVIOUS_EX_ADDER,
-		input					iPREVIOUS_EX_MUL,
-		input					iPREVIOUS_EX_SDIV,
-		input					iPREVIOUS_EX_UDIV,
-		input					iPREVIOUS_EX_LDST,
-		input					iPREVIOUS_EX_BRANCH,
-		input	[31:0]			iPREVIOUS_PC,
-		output					oPREVIOUS_LOCK,
+		input iPREVIOUS_VALID,
+		input iPREVIOUS_SOURCE0_ACTIVE,			
+		input iPREVIOUS_SOURCE1_ACTIVE,		
+		input iPREVIOUS_SOURCE0_SYSREG,		
+		input iPREVIOUS_SOURCE1_SYSREG,		
+		input iPREVIOUS_DESTINATION_SYSREG,
+		input [4:0] iPREVIOUS_DESTINATION,			
+		input iPREVIOUS_WRITEBACK,	
+		input iPREVIOUS_FLAGS_WRITEBACK,	
+		input [4:0] iPREVIOUS_CMD,
+		input [3:0] iPREVIOUS_CC_AFE,
+		input [4:0] iPREVIOUS_SOURCE0,
+		input [31:0] iPREVIOUS_SOURCE1,
+		input iPREVIOUS_SOURCE0_FLAGS,
+		input iPREVIOUS_SOURCE1_IMM,	
+		input iPREVIOUS_EX_SYS_REG,		
+		input iPREVIOUS_EX_SYS_LDST,		
+		input iPREVIOUS_EX_LOGIC,
+		input iPREVIOUS_EX_SHIFT,
+		input iPREVIOUS_EX_ADDER,
+		input iPREVIOUS_EX_MUL,
+		input iPREVIOUS_EX_SDIV,
+		input iPREVIOUS_EX_UDIV,
+		input iPREVIOUS_EX_LDST,
+		input iPREVIOUS_EX_BRANCH,
+		input [31:0] iPREVIOUS_PC,
+		output oPREVIOUS_LOCK,
 		//Next
-		output					oNEXT_VALID,	
-		output					oNEXT_DESTINATION_SYSREG,
-		output	[4:0]			oNEXT_DESTINATION,			
-		output					oNEXT_WRITEBACK,	
-		output					oNEXT_FLAGS_WRITEBACK,	
-		output	[4:0]			oNEXT_CMD,
-		output	[3:0]			oNEXT_CC_AFE,			
-		output	[31:0]			oNEXT_SPR,	
-		output	[31:0]			oNEXT_SOURCE0,
-		output	[31:0]			oNEXT_SOURCE1,	
-		output	[4:0]			oNEXT_SOURCE0_POINTER,
-		output	[4:0]			oNEXT_SOURCE1_POINTER,
-		output					oNEXT_SOURCE0_SYSREG,
-		output					oNEXT_SOURCE1_SYSREG,
-		output					oNEXT_SOURCE1_IMM,
-		output					oNEXT_SOURCE0_FLAGS,
-		output					oNEXT_EX_SYS_REG,		
-		output					oNEXT_EX_SYS_LDST,		
-		output					oNEXT_EX_LOGIC,
-		output					oNEXT_EX_SHIFT,
-		output					oNEXT_EX_ADDER,
-		output					oNEXT_EX_MUL,
-		output					oNEXT_EX_SDIV,
-		output					oNEXT_EX_UDIV,
-		output					oNEXT_EX_LDST,
-		output					oNEXT_EX_BRANCH,
-		output	[31:0]			oNEXT_PC,
-		input					iNEXT_LOCK,
+		output oNEXT_VALID,	
+		output [31:0] oNEXT_SYSREG_PSR,	
+		output [31:0] oNEXT_SYSREG_TIDR,	
+		output [31:0] oNEXT_SYSREG_PDTR,
+		output oNEXT_DESTINATION_SYSREG,
+		output [4:0] oNEXT_DESTINATION,			
+		output oNEXT_WRITEBACK,	
+		output oNEXT_FLAGS_WRITEBACK,	
+		output [4:0] oNEXT_CMD,
+		output [3:0] oNEXT_CC_AFE,			
+		output [31:0] oNEXT_SPR,	
+		output [31:0] oNEXT_SOURCE0,
+		output [31:0] oNEXT_SOURCE1,	
+		output [4:0] oNEXT_SOURCE0_POINTER,
+		output [4:0] oNEXT_SOURCE1_POINTER,
+		output oNEXT_SOURCE0_SYSREG,
+		output oNEXT_SOURCE1_SYSREG,
+		output oNEXT_SOURCE1_IMM,
+		output oNEXT_SOURCE0_FLAGS,
+		output oNEXT_EX_SYS_REG,		
+		output oNEXT_EX_SYS_LDST,		
+		output oNEXT_EX_LOGIC,
+		output oNEXT_EX_SHIFT,
+		output oNEXT_EX_ADDER,
+		output oNEXT_EX_MUL,
+		output oNEXT_EX_SDIV,
+		output oNEXT_EX_UDIV,
+		output oNEXT_EX_LDST,
+		output oNEXT_EX_BRANCH,
+		output [31:0] oNEXT_PC,
+		input iNEXT_LOCK,
 		//Write Back
-		input					iWB_VALID,
-		input	[31:0]			iWB_DATA,
-		input	[4:0]			iWB_DESTINATION,
-		input					iWB_DESTINATION_SYSREG,
-		input					iWB_WRITEBACK,
-		input					iWB_SPR_WRITEBACK,
-		input	[31:0]			iWB_SPR,
-		input	[31:0]			iWB_PC,
-		input					iWB_BRANCH,
-		input	[31:0]			iWB_BRANCH_PC,
+		input iWB_VALID,
+		input [31:0] iWB_DATA,
+		input [4:0] iWB_DESTINATION,
+		input iWB_DESTINATION_SYSREG,
+		input iWB_WRITEBACK,
+		input iWB_SPR_WRITEBACK,
+		input [31:0] iWB_SPR,
+		input [31:0] iWB_PC,
+		input iWB_BRANCH,
+		input [31:0] iWB_BRANCH_PC,
 		//Debug Module
 		output [31:0] oDEBUG_REG_OUT_GR0,
 		output [31:0] oDEBUG_REG_OUT_GR1,
@@ -911,45 +914,48 @@ module dispatch
 	
 	
 	//Assign
-	assign	oNEXT_VALID					=	b_valid && !iNEXT_LOCK;
-	assign	oNEXT_DESTINATION_SYSREG	=	b_destination_sysreg;
-	assign	oNEXT_DESTINATION			=	b_destination;
-	assign	oNEXT_WRITEBACK				=	b_writeback;
-	assign	oNEXT_FLAGS_WRITEBACK		=	b_flag_writeback;
-	assign	oNEXT_CMD					=	b_cmd;
-	assign	oNEXT_CC_AFE				=	b_cc_afe;
-	assign	oNEXT_SPR					=	w_sysreg_spr_info_data;
-	assign	oNEXT_SOURCE0				=	b_source0;
-	assign	oNEXT_SOURCE1				=	b_source1;
+	assign oNEXT_VALID =	b_valid && !iNEXT_LOCK;
+	assign oNEXT_SYSREG_PSR = w_sysreg_psr_info_data;
+	assign oNEXT_SYSREG_TIDR = w_sysreg_tidr_info_data;
+	assign oNEXT_SYSREG_PDTR = w_sysreg_pdtr_info_data;
+	assign oNEXT_DESTINATION_SYSREG	= b_destination_sysreg;
+	assign oNEXT_DESTINATION = b_destination;
+	assign oNEXT_WRITEBACK = b_writeback;
+	assign oNEXT_FLAGS_WRITEBACK = b_flag_writeback;
+	assign oNEXT_CMD = b_cmd;
+	assign oNEXT_CC_AFE = b_cc_afe;
+	assign oNEXT_SPR = w_sysreg_spr_info_data;
+	assign oNEXT_SOURCE0 = b_source0;
+	assign oNEXT_SOURCE1 = b_source1;
 	
-	assign	oNEXT_SOURCE0_POINTER		=	b_source0_pointer;
-	assign	oNEXT_SOURCE1_POINTER		=	b_source1_pointer;
-	assign	oNEXT_SOURCE0_SYSREG		=	b_source0_sysreg;
-	assign	oNEXT_SOURCE1_SYSREG		=	b_source1_sysreg;
-	assign	oNEXT_SOURCE1_IMM			=	b_source1_imm;
+	assign oNEXT_SOURCE0_POINTER = b_source0_pointer;
+	assign oNEXT_SOURCE1_POINTER = b_source1_pointer;
+	assign oNEXT_SOURCE0_SYSREG = b_source0_sysreg;
+	assign oNEXT_SOURCE1_SYSREG = b_source1_sysreg;
+	assign oNEXT_SOURCE1_IMM = b_source1_imm;
 	
-	assign	oNEXT_SOURCE0_FLAGS			=	b_source0_flags;
-	assign	oNEXT_EX_SYS_REG			=	b_ex_sys_reg;
-	assign	oNEXT_EX_SYS_LDST			=	b_ex_sys_ldst;
-	assign	oNEXT_EX_LOGIC				=	b_ex_logic;
-	assign	oNEXT_EX_SHIFT				=	b_ex_shift;
-	assign	oNEXT_EX_ADDER				=	b_ex_adder;
-	assign	oNEXT_EX_MUL				=	b_ex_mul;
-	assign	oNEXT_EX_SDIV				=	b_ex_sdiv;
-	assign	oNEXT_EX_UDIV				=	b_ex_udiv;
-	assign	oNEXT_EX_LDST				=	b_ex_ldst;
-	assign	oNEXT_EX_BRANCH				=	b_ex_branch;
-	assign	oNEXT_PC					=	b_pc;
+	assign oNEXT_SOURCE0_FLAGS = b_source0_flags;
+	assign oNEXT_EX_SYS_REG = b_ex_sys_reg;
+	assign oNEXT_EX_SYS_LDST = b_ex_sys_ldst;
+	assign oNEXT_EX_LOGIC = b_ex_logic;
+	assign oNEXT_EX_SHIFT = b_ex_shift;
+	assign oNEXT_EX_ADDER = b_ex_adder;
+	assign oNEXT_EX_MUL = b_ex_mul;
+	assign oNEXT_EX_SDIV = b_ex_sdiv;
+	assign oNEXT_EX_UDIV = b_ex_udiv;
+	assign oNEXT_EX_LDST = b_ex_ldst;
+	assign oNEXT_EX_BRANCH = b_ex_branch;
+	assign oNEXT_PC = b_pc;
 	//System Register
-	assign	oSYSREG_IDTR				=	w_sysreg_idtr_info_data;
-	assign	oSYSREG_TISR				=	w_sysreg_tisr_info_data;
-	assign	oSYSREG_TIDR				=	w_sysreg_tidr_info_data;
-	assign	oSYSREG_PSR					=	w_sysreg_psr_info_data;
-	assign	oSYSREG_PPSR				=	w_sysreg_ppsr_info_data;
-	assign	oSYSREG_PPCR				=	w_sysreg_ppcr_info_data;
-	assign	oSYSREG_SPR					=	w_sysreg_spr_info_data;
+	assign oSYSREG_IDTR = w_sysreg_idtr_info_data;
+	assign oSYSREG_TISR = w_sysreg_tisr_info_data;
+	assign oSYSREG_TIDR = w_sysreg_tidr_info_data;
+	assign oSYSREG_PSR = w_sysreg_psr_info_data;
+	assign oSYSREG_PPSR = w_sysreg_ppsr_info_data;
+	assign oSYSREG_PPCR = w_sysreg_ppcr_info_data;
+	assign oSYSREG_SPR = w_sysreg_spr_info_data;
 	
-	assign	oPREVIOUS_LOCK				=	iNEXT_LOCK;//this_lock;
+	assign	oPREVIOUS_LOCK = iNEXT_LOCK;//this_lock;
 	
 endmodule
 

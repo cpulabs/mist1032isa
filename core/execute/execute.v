@@ -11,12 +11,13 @@ module execute(
 		 input iFREE_REGISTER_LOCK,
 		 input iFREE_PIPELINE_STOP,
 		 input iFREE_REFRESH,
-		 //System Register
-		 //output	[31:0]			oSYSREG_PCR,
 		 //Lock
 		 output oEXCEPTION_LOCK,
 		 //Pipeline 
 		 input iPREVIOUS_VALID,	
+		 input [31:0] iPREVIOUS_SYSREG_PSR,
+		 input [31:0] iPREVIOUS_SYSREG_TIDR,
+		 input [31:0] iPREVIOUS_SYSREG_PDTR,
 		 input iPREVIOUS_DESTINATION_SYSREG,
 		 input [4:0] iPREVIOUS_DESTINATION,			
 		 input iPREVIOUS_WRITEBACK,	
@@ -67,6 +68,8 @@ module execute(
 		 output [31:0] oNEXT_PC,
 		 output oNEXT_BRANCH,
 		 output [31:0] oNEXT_BRANCH_PC,
+		 //System Register Write
+		 output oPDTR_WRITEBACK,
 		 //Branch
 		 output [31:0] oBRANCH_ADDR,
 		 output oJUMP_VALID,
@@ -676,32 +679,38 @@ module execute(
 	localparam L_PARAM_STT_HALT = 3'h6;
 	
 	
-	reg				b_valid;
-	reg	[2:0]		b_state;
-	reg				b_load_store;
-	reg				b_writeback;
-	reg				b_destination_sysreg;
-	reg	[4:0]		b_destination;
-	reg	[31:0]		b_r_data;
-	reg				b_spr_writeback;
-	reg	[31:0]		b_r_spr;
-	reg				b_ldst_pipe_valid;
-	reg	[1:0]		b_ldst_pipe_order;
-	reg	[31:0]		b_ldst_pipe_addr;
-	reg	[31:0]		b_ldst_pipe_data;
-	reg	[1:0]		b_load_pipe_shift;
-	reg	[1:0]		b_load_pipe_mask;
+	reg b_valid;
+	reg [31:0] b_sysreg_psr;
+	reg [31:0] b_sysreg_tidr;
+	reg [31:0] b_sysreg_pdtr;
+	reg [2:0] b_state;
+	reg b_load_store;
+	reg b_writeback;
+	reg b_destination_sysreg;
+	reg [4:0] b_destination;
+	reg [31:0] b_r_data;
+	reg b_spr_writeback;
+	reg [31:0] b_r_spr;
+	reg b_ldst_pipe_valid;
+	reg [1:0] b_ldst_pipe_order;
+	reg [31:0] b_ldst_pipe_addr;
+	reg [31:0] b_ldst_pipe_data;
+	reg [1:0] b_load_pipe_shift;
+	reg [1:0] b_load_pipe_mask;
 	reg b_exception_valid;
 	reg [6:0] b_exception_num;
-	reg				b_jump;
-	reg				b_idts;
-	reg				b_ib;
-	reg	[31:0]		b_branch_addr;
-	reg	[31:0]		b_pc;
+	reg b_jump;
+	reg b_idts;
+	reg b_ib;
+	reg [31:0] b_branch_addr;
+	reg [31:0] b_pc;
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_valid <= 1'b0;
+			b_sysreg_psr <= 32'h0;
+			b_sysreg_tidr <= 32'h0;
+			b_sysreg_pdtr <= 32'h0;
 			b_state <= L_PARAM_STT_NORMAL;
 			b_load_store <= 1'b0;
 			b_writeback <= 1'b0;
@@ -726,6 +735,9 @@ module execute(
 		end
 		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
 			b_valid <= 1'b0;
+			b_sysreg_psr <= 32'h0;
+			b_sysreg_tidr <= 32'h0;
+			b_sysreg_pdtr <= 32'h0;
 			b_state <= L_PARAM_STT_NORMAL;
 			b_load_store <= 1'b0;
 			b_writeback <= 1'b0;
@@ -790,6 +802,9 @@ module execute(
 								if(!ldst_pipe_rw)begin
 									//Load
 									b_valid <= 1'b0;
+									b_sysreg_psr <= iPREVIOUS_SYSREG_PSR;
+									b_sysreg_tidr <= iPREVIOUS_SYSREG_TIDR;
+									b_sysreg_pdtr <= iPREVIOUS_SYSREG_PDTR;
 									b_writeback <= iPREVIOUS_WRITEBACK;
 									b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
 									b_destination <= iPREVIOUS_DESTINATION;
@@ -804,6 +819,9 @@ module execute(
 								end
 								else begin
 									//Store 
+									b_sysreg_psr <= iPREVIOUS_SYSREG_PSR;
+									b_sysreg_tidr <= iPREVIOUS_SYSREG_TIDR;
+									b_sysreg_pdtr <= iPREVIOUS_SYSREG_PDTR;
 									b_writeback <= iPREVIOUS_WRITEBACK;
 									b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
 									b_destination <= 5'h0;
@@ -1142,32 +1160,35 @@ module execute(
 	
 	
 	//Writeback
-	assign		oNEXT_VALID					=		b_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
-	assign		oNEXT_DATA					=		b_r_data;
-	assign		oNEXT_DESTINATION			=		b_destination;
-	assign		oNEXT_DESTINATION_SYSREG	=		b_destination_sysreg;
-	assign		oNEXT_WRITEBACK				=		b_writeback;
-	assign		oNEXT_SPR_WRITEBACK			=		b_spr_writeback;
-	assign		oNEXT_SPR					=		b_r_spr;
+	assign oNEXT_VALID = b_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
+	assign oNEXT_DATA = b_r_data;
+	assign oNEXT_DESTINATION = b_destination;
+	assign oNEXT_DESTINATION_SYSREG = b_destination_sysreg;
+	assign oNEXT_WRITEBACK = b_writeback;
+	assign oNEXT_SPR_WRITEBACK = b_spr_writeback;
+	assign oNEXT_SPR = b_r_spr;
 	
 	//Load Store Pipe
-	assign		oDATAIO_REQ					=		(/*b_state == L_PARAM_STT_NORMAL || */b_state == L_PARAM_STT_LOAD || b_state == L_PARAM_STT_STORE)? b_ldst_pipe_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK && !io_lock_condition : 1'b0;
-	assign		oDATAIO_ORDER				=		b_ldst_pipe_order;
-	assign		oDATAIO_RW					=		(b_state == L_PARAM_STT_STORE)? 1'b1 : 1'b0;
-	assign		oDATAIO_TID					=		14'h0;
-	assign		oDATAIO_MMUMOD				=		2'h0;
-	assign		oDATAIO_PDT					=		32'h0;
-	assign		oDATAIO_ADDR				=		b_ldst_pipe_addr;
-	assign		oDATAIO_DATA				=		b_ldst_pipe_data;
+	assign oDATAIO_REQ = (/*b_state == L_PARAM_STT_NORMAL || */b_state == L_PARAM_STT_LOAD || b_state == L_PARAM_STT_STORE)? b_ldst_pipe_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK && !io_lock_condition : 1'b0;
+	assign oDATAIO_ORDER = b_ldst_pipe_order;
+	assign oDATAIO_RW = (b_state == L_PARAM_STT_STORE)? 1'b1 : 1'b0;
+	assign oDATAIO_TID = b_sysreg_tidr[13:0];
+	assign oDATAIO_MMUMOD = b_sysreg_psr[1:0];
+	assign oDATAIO_PDT = b_sysreg_pdtr;
+	assign oDATAIO_ADDR = b_ldst_pipe_addr;
+	assign oDATAIO_DATA = b_ldst_pipe_data;
+	
 	
 	//Exception
-	assign		oBRANCH_ADDR				=		b_branch_addr;
-	assign		oJUMP_VALID					=		b_jump;// && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
-	assign		oIDTSET_VALID				=		b_idts;// && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
-	assign		oINTR_VALID					=		b_ib;// && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
+	assign oBRANCH_ADDR = b_branch_addr;
+	assign oJUMP_VALID = b_jump;
+	assign oIDTSET_VALID = b_idts;
+	assign oINTR_VALID = b_ib;
 	
+	//System Register Writeback
+	assign oPDTR_WRITEBACK = b_destination_sysreg && b_writeback && (b_destination == `SYSREG_PDTR);
 	
-	assign		oEXCEPTION_LOCK				=		b_load_store || (b_state != L_PARAM_STT_NORMAL)? 1'b1 : 1'b0;	
+	assign oEXCEPTION_LOCK = b_load_store || (b_state != L_PARAM_STT_NORMAL)? 1'b1 : 1'b0;	
 	
 	assign oNEXT_PC = b_pc;
 	assign oNEXT_BRANCH = b_jump || b_idts || b_ib;

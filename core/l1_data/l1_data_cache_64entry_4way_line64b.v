@@ -33,7 +33,8 @@ module l1_data_cache_64entry_4way_line64b_bus_8b_damy(
 					output oRD_VALID,
 					output oRD_HIT,
 					input iRD_BUSY,		
-					output [31:0] oRD_DATA,	
+					output [31:0] oRD_DATA,
+					output [23:0] oRD_MMU_FLAGS,
 					/********************************
 					Upload
 					********************************/
@@ -48,7 +49,8 @@ module l1_data_cache_64entry_4way_line64b_bus_8b_damy(
 					input iWR_REQ,
 					output oWR_BUSY,
 					input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-					input [511:0] iWR_DATA
+					input [511:0] iWR_DATA,
+					input [23:0] iWR_MMU_FLAGS
 	);
 			
 	assign			oRD_BUSY		=		1'b0;
@@ -179,8 +181,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	********************************************/
 	wire lru_valid;
 	reg [15:0] b_lru_timer;
-	//assign lru_valid = (b_lru_timer == 16'hFFFF)? 1'b1 : 1'b0;
-	assign lru_valid = (b_lru_timer[7:0] == 8'hFF)? 1'b1 : 1'b0;
+	assign lru_valid = (b_lru_timer == 16'hFFFF)? 1'b1 : 1'b0;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_lru_timer <= 16'h0;

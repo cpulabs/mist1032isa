@@ -8,38 +8,39 @@
 module l1_instruction_cache/*(
 		parameter CACHE_ON = 1'b1
 	)*/(
-		input					iCLOCK,
-		input					inRESET,
+		input iCLOCK,
+		input inRESET,
 		//Remove
-		input					iREMOVE,
+		input iREMOVE,
+		input iCACHE_FLASH,
 		/****************************************
 		Memory Port Memory
 		****************************************/
 		//Req
-		output					oINST_REQ,
-		input					iINST_LOCK,
-		output	[1:0]			oINST_MMUMOD,
-		output	[31:0]			oINST_ADDR,
+		output oINST_REQ,
+		input iINST_LOCK,
+		output [1:0] oINST_MMUMOD,
+		output [31:0] oINST_ADDR,
 		//
-		input					iINST_VALID,
-		output					oINST_BUSY,		//new
-		input	[63:0]			iINST_DATA,
-		input	[23:0]			iINST_MMU_FLAGS,		//Bug
+		input iINST_VALID,
+		output oINST_BUSY,		//new
+		input [63:0] iINST_DATA,
+		input [23:0] iINST_MMU_FLAGS,		//Bug
 		/****************************************
 		Fetch Module
 		****************************************/
 		//From Fetch
-		input					iNEXT_FETCH_REQ,
-		input	[31:0]			iNEXT_FETCH_ADDR,
-		output					oNEXT_FETCH_LOCK,
+		input iNEXT_FETCH_REQ,
+		input [31:0] iNEXT_FETCH_ADDR,
+		output oNEXT_FETCH_LOCK,
 		//To Fetch
-		output					oNEXT_0_INST_VALID,
-		output	[5:0]			oNEXT_0_MMU_FLAGS,
-		output	[31:0]			oNEXT_0_INST,
-		output					oNEXT_1_INST_VALID,
-		output	[5:0]			oNEXT_1_MMU_FLAGS,
-		output	[31:0]			oNEXT_1_INST,
-		input					iNEXT_LOCK
+		output oNEXT_0_INST_VALID,
+		output [5:0] oNEXT_0_MMU_FLAGS,
+		output [31:0] oNEXT_0_INST,
+		output oNEXT_1_INST_VALID,
+		output [5:0] oNEXT_1_MMU_FLAGS,
+		output [31:0] oNEXT_1_INST,
+		input iNEXT_LOCK
 	);
 	
 	wire request_lock = iINST_LOCK;
@@ -203,7 +204,7 @@ module l1_instruction_cache/*(
 				.iCLOCK(iCLOCK),
 				.inRESET(inRESET),
 				//Remove
-				.iREMOVE(/*iREMOVE*/1'b0),
+				.iREMOVE(iCACHE_FLASH),
 				/********************************
 				Search
 				********************************/
@@ -244,7 +245,7 @@ module l1_instruction_cache/*(
 				.iCLOCK(iCLOCK),
 				.inRESET(inRESET),
 				//Remove
-				.iREMOVE(iREMOVE),
+				.iREMOVE(iCACHE_FLASH),
 				/********************************
 				Search
 				********************************/

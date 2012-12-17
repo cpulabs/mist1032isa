@@ -8,8 +8,6 @@
 `default_nettype none	
 `include "global.h"
 
-
-
 module mist1032isa(
 				/****************************************
 				System
@@ -36,7 +34,7 @@ module mist1032isa(
 				output	[31:0]		oMEMORY_DATA,
 				//Data RAM -> This
 				input				iMEMORY_VALID,
-				output				oMEMORY_BUSY,		//new
+				output				oMEMORY_BUSY,
 				input	[63:0]		iMEMORY_DATA,	
 				/****************************************
 				GCI BUS
@@ -256,6 +254,9 @@ module mist1032isa(
 		.oDEBUG_CMD_DATA(processor2debuger_cmd_data)
 	);
 	
+	
+	wire mmu_lock = iMEMORY_LOCK;
+	
 	wire debuger2processor_cmd_req;
 	wire processor2debuger_cmd_busy;
 	wire [3:0] debuger2processor_cmd_command;
@@ -288,40 +289,49 @@ module mist1032isa(
 	/********************************************************************************
 	MMU
 	********************************************************************************/
-/*	
-	mmu MMU_MODULE(			
-		//System
-		.iBUS_CLOCK(iBUS_CLOCK),
+
+/*
+	mmu MMU_MODULE(
+		.iCLOCK(iBUS_CLOCK),
 		.inRESET(inRESET),
 		//TLB Flash
 		.iTLB_FLASH(),
-		//Req IRQ
-		.oINTERRUPT_VALID(),
-		//CORE REGISTER
-		.iCOREINFO_MODE(),			//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
-		.iCOREINFO_PDT(),			//Page Directory Table 
-		.iCOREINFO_TID(),			//Task Id 
-		//LOGIC Address Request
-		.iLOGIC_REQ(),
-		.iLOGIC_RW(),				//0=Read 1=Write
-		.iLOGIC_TYPE(),			//0:Data 1:Instruction	
-		.iLOGIC_ADDR(),
+		//Logic Address Request
+		.iLOGIC_REQ(b_core2mem_req),
 		.oLOGIC_LOCK(),
-		//Physical Output
-		.oPHYSICAL_VALID(),
-		.iPHYSICAL_LOCK(),
-		.oPHYSICAL_ADDR(),
-		//Memory <--->
-		//Req
+		.iLOGIC_MODE(b_core2mem_mmumod),			//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		.iLOGIC_PDT(b_core2mem_pdt),			//Page Directory Table 
+		.iLOGIC_TID(b_core2mem_tid),			//Task Id 
+		.iLOGIC_ORDER(b_core2mem_order),			//0=Byte 1=Haff Word 2=Word
+		.iLOGIC_RW(b_core2mem_rw),					//0=Read 1=Write
+		.iLOGIC_TYPE(),					//0:Data 1:Instruction	
+		.iLOGIC_ADDR(b_core2mem_addr),
+		.iLOGIC_DATA(b_core2mem_data),
+		//Memory-REQ
+		.oMEMORY_PDT_READ(),
 		.oMEMORY_REQ(),
-		.iMEMORY_LOCK(),
+		.iMEMORY_LOCK(iMEMORY_LOCK),
+		.oMEMORY_ORDER(),
+		.oMEMORY_RW(),
 		.oMEMORY_ADDR(),
-		//Data RAM -> This
+		.oMEMORY_DATA(),
+		.oMEMORY_FLAGS(),
+		//Memory-GET
 		.iMEMORY_VALID(),
 		.oMEMORY_LOCK(),
 		.iMEMORY_DATA()
 	);
-	*/
+*/
+	
+	assign		oMEMORY_REQ		=	b_core2mem_req;
+	assign		oMEMORY_ORDER	=	b_core2mem_order;
+	assign		oMEMORY_RW		=	b_core2mem_rw;
+	assign		oMEMORY_ADDR	=	b_core2mem_addr;
+	assign		oMEMORY_DATA	=	b_core2mem_data;
+	assign		oMEMORY_BUSY	=	(!matching_bridge_rd_type && core2mem_inst_lock) || (matching_bridge_rd_type && core2mem_data_lock);
+	
+	
+	
 	
 	/********************************************************************************
 	IO Interface
@@ -447,7 +457,7 @@ module mist1032isa(
 		//Flash
 		.iFLASH(1'b0),
 		//Write
-		.iWR_REQ(!matching_bridfe_wr_full && !iMEMORY_LOCK && (core2mem_inst_condition || (core2mem_data_condition && !core2mem_data_rw))),
+		.iWR_REQ(!matching_bridfe_wr_full && !mmu_lock && (core2mem_inst_condition || (core2mem_data_condition && !core2mem_data_rw))),
 		.iWR_TYPE(core2mem_data_condition),		//0:Inst, 1:Data
 		.oWR_FULL(matching_bridfe_wr_full),
 		//Read
@@ -470,7 +480,7 @@ module mist1032isa(
 			case(b_memory_write_ack)
 				1'b0:
 					begin
-						if(!iMEMORY_LOCK && core2mem_data_condition && core2mem_data_rw)begin
+						if(!mmu_lock && core2mem_data_condition && core2mem_data_rw)begin
 							b_memory_write_ack <= 1'b1;
 						end
 					end
@@ -509,8 +519,8 @@ module mist1032isa(
 	Buffer & Assign(Core -> Memory)
 	*********************************************************/
 	//assign
-	assign				mem2core_inst_lock				=		iMEMORY_LOCK || matching_bridfe_wr_full || core2mem_data_condition;
-	assign				mem2core_data_lock				=		iMEMORY_LOCK || matching_bridfe_wr_full || core2mem_inst_condition;
+	assign				mem2core_inst_lock				=		mmu_lock || matching_bridfe_wr_full || core2mem_data_condition;
+	assign				mem2core_data_lock				=		mmu_lock || matching_bridfe_wr_full || core2mem_inst_condition;
 
 	assign				core2mem_inst_condition			=		!core2mem_data_req && core2mem_inst_req;
 	assign				core2mem_data_condition			=		core2mem_data_req;
@@ -527,7 +537,7 @@ module mist1032isa(
 			b_core2mem_data		<=		{32{1'b0}};
 		end
 		else begin
-			if(!iMEMORY_LOCK)begin
+			if(!mmu_lock)begin
 				//if(b_io_startaddr_valid )
 				if(core2mem_data_condition)begin
 					b_core2mem_req		<=		1'b1;
@@ -596,14 +606,16 @@ module mist1032isa(
 	assign			mem2core_data_valid		=		b_mem2core_data_valid && !core2mem_data_lock;
 	assign			mem2core_data_data		=		b_mem2core_data_data;
 	
-	
 	//Assign
+	/* to MMU
 	assign		oMEMORY_REQ		=	b_core2mem_req;
 	assign		oMEMORY_ORDER	=	b_core2mem_order;
 	assign		oMEMORY_RW		=	b_core2mem_rw;
 	assign		oMEMORY_ADDR	=	b_core2mem_addr;
 	assign		oMEMORY_DATA	=	b_core2mem_data;
 	assign		oMEMORY_BUSY	=	(!matching_bridge_rd_type && core2mem_inst_lock) || (matching_bridge_rd_type && core2mem_data_lock);
+	*/
+	
 	
 endmodule
 

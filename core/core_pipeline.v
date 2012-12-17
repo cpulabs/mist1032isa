@@ -109,6 +109,7 @@ module core_pipeline
 	wire fetch2icache_req;
 	wire [31:0] fetch2icache_addr;
 	wire icache2fetch_lock;
+	wire cache_flash;
 	//Free
 	wire				free_pc_set;
 	wire	[31:0]		free_pc;
@@ -165,6 +166,9 @@ module core_pipeline
 	wire			dispatch2decoder_lock;
 	//Execution
 	wire			dispatch2execution_valid;
+	wire [31:0] dispatch2execution_sysreg_psr;
+	wire [31:0] dispatch2execution_sysreg_tidr;
+	wire [31:0] dispatch2execution_sysreg_pdtr;
 	wire			dispatch2execution_destination_sysreg;
 	wire			dispatch2execution_writeback;
 	wire			dispatch2execution_flags_writeback;
@@ -228,39 +232,41 @@ module core_pipeline
 	wire	[31:0]	sysreg_ppcr;
 	
 	//Interrupt Lock
-	wire			interrupt_lock;
-	wire			dispatch_exception_lock;
-	wire			execute_exception_lock;
+	wire interrupt_lock;
+	wire dispatch_exception_lock;
+	wire execute_exception_lock;
 	
 	//Exception Manager
-	wire				exception2ldst_ldst_use;
-	wire				exception2ldst_ldst_req;
-	wire				ldst2exception_ldst_busy;
-	wire	[1:0]		exception2ldst_ldst_order;
-	wire				exception2ldst_ldst_rw;
-	wire	[13:0]		exception2ldst_ldst_tid;
-	wire	[1:0]		exception2ldst_ldst_mmumod;
-	wire	[31:0]		exception2ldst_ldst_pdt;
-	wire	[31:0]		exception2ldst_ldst_addr;
-	wire	[31:0]		exception2ldst_ldst_data;
-	wire				ldst2exception_ldst_req;
-	wire	[31:0]		ldst2exception_ldst_data;
-	wire				exception_jump_valid;
-	wire	[31:0]		exception_branch_addr;
-	wire				exception_intr_valid;
-	wire				exception2cim_ict_req;
-	wire	[5:0]		exception2cim_ict_entry;
-	wire				exception2cim_ict_conf_mask;
-	wire				exception2cim_ict_conf_valid;
-	wire	[1:0]		exception2cim_ict_conf_level;
+	wire exception2ldst_ldst_use;
+	wire exception2ldst_ldst_req;
+	wire ldst2exception_ldst_busy;
+	wire [1:0] exception2ldst_ldst_order;
+	wire exception2ldst_ldst_rw;
+	wire [13:0] exception2ldst_ldst_tid;
+	wire [1:0] exception2ldst_ldst_mmumod;
+	wire [31:0] exception2ldst_ldst_pdt;
+	wire [31:0] exception2ldst_ldst_addr;
+	wire [31:0] exception2ldst_ldst_data;
+	wire ldst2exception_ldst_req;
+	wire [31:0] ldst2exception_ldst_data;
+	wire exception_jump_valid;
+	wire [31:0] exception_branch_addr;
+	wire exception_intr_valid;
+	wire exception2cim_ict_req;
+	wire [5:0] exception2cim_ict_entry;
+	wire exception2cim_ict_conf_mask;
+	wire exception2cim_ict_conf_valid;
+	wire [1:0] exception2cim_ict_conf_level;
 	
-	wire				exception2cim_irq_lock;	
-	wire				cim2exception_irq_req;
-	wire	[6:0]		cim2exception_irq_num;
-	wire				exception2cim_irq_ack;
-	wire				exception_idtset_valid;
+	wire exception2cim_irq_lock;	
+	wire cim2exception_irq_req;
+	wire [6:0] cim2exception_irq_num;
+	wire exception2cim_irq_ack;
+	wire exception_idtset_valid;
 	wire exception_swi_valid;
 	wire [6:0] exception_swi_num;
+	
+	wire sysreg_write_pdtr;
 	
 	//Debug
 	wire [31:0] debug_register2debug_gr0;
@@ -426,7 +432,12 @@ module core_pipeline
 	assign interrupt_lock = execute_exception_lock || dispatch_exception_lock;
 	
 	
-	
+	core_paging_support PAGING_SUPPORT(
+		.iSYSREG_PSR(sysreg_psr),
+		.iPDTR_WRITEBACK(sysreg_write_pdtr),
+		//Cache
+		.oCACHE_FLASH(cache_flash)
+	);
 	
 	
 	//Cache
@@ -435,6 +446,7 @@ module core_pipeline
 		.inRESET(inRESET),
 		//Remove
 		.iREMOVE(free_refresh),
+		.iCACHE_FLASH(cache_flash),
 		/****************************************
 		Memory Port Memory
 		****************************************/
@@ -626,6 +638,9 @@ module core_pipeline
 		.oPREVIOUS_LOCK(dispatch2decoder_lock),
 		//Next
 		.oNEXT_VALID(dispatch2execution_valid),	
+		.oNEXT_SYSREG_PSR(dispatch2execution_sysreg_psr),
+		.oNEXT_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
+		.oNEXT_SYSREG_PDTR(dispatch2execution_sysreg_pdtr),
 		.oNEXT_DESTINATION_SYSREG(dispatch2execution_destination_sysreg),
 		.oNEXT_DESTINATION(dispatch2execution_destination),			
 		.oNEXT_WRITEBACK(dispatch2execution_writeback),	
@@ -718,6 +733,9 @@ module core_pipeline
 		.oEXCEPTION_LOCK(execute_exception_lock),
 		//Pipeline 
 		.iPREVIOUS_VALID(dispatch2execution_valid),	
+		.iPREVIOUS_SYSREG_PSR(dispatch2execution_sysreg_psr),
+		.iPREVIOUS_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
+		.iPREVIOUS_SYSREG_PDTR(dispatch2execution_sysreg_tidr),
 		.iPREVIOUS_DESTINATION_SYSREG(dispatch2execution_destination_sysreg),
 		.iPREVIOUS_DESTINATION(dispatch2execution_destination),			
 		.iPREVIOUS_WRITEBACK(dispatch2execution_writeback),	
@@ -768,6 +786,8 @@ module core_pipeline
 		.oNEXT_PC(execution2dispatch_pc),
 		.oNEXT_BRANCH(execution2dispatch_branch),
 		.oNEXT_BRANCH_PC(execution2dispatch_branch_pc),
+		//System Register Write
+		.oPDTR_WRITEBACK(sysreg_write_pdtr),
 		//Branch
 		.oBRANCH_ADDR(exception_branch_addr),
 		.oJUMP_VALID(exception_jump_valid),
@@ -845,6 +865,7 @@ module core_pipeline
 		.inRESET(inRESET),
 		//Remove
 		.iREMOVE(free_refresh),
+		.iCACHE_FLASH(cache_flash),
 		//IOSR
 		.iSYSINFO_IOSR_VALID(iSYSINFO_IOSR_VALID),
 		.iSYSINFO_IOSR(iSYSINFO_IOSR),
@@ -896,7 +917,7 @@ module core_pipeline
 		.iIO_VALID(iIO_VALID),
 		.iIO_DATA(iIO_DATA)
 	);
-
+	
 	
 	core_debug CORE_DEBUG_MODULE(
 		.iCLOCK(iCLOCK),
