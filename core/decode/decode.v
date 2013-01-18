@@ -4,7 +4,7 @@
 	
 	
 	Make	:	2011/01/20
-	Update	:	2011/01/23
+	Update	:	2013/01/23
 ****************************************/
 `include "core.h"
 `default_nettype none			
@@ -17,14 +17,18 @@ module decoder(
 				//Free
 				input					iFREE_DEFAULT,	
 				//Previous
-				input					iPREVIOUS_INST_VALID,
-				input	[5:0]			iPREVIOUS_MMU_FLAGS,
-				input	[31:0]			iPREVIOUS_INST,
-				input	[31:0]			iPREVIOUS_PC,
-				output					oPREVIOUS_LOCK,
+				input iPREVIOUS_INST_VALID,
+				input [13:0] iPREVIOUS_MMU_FLAGS,
+				input iPREVIOUS_PAGING_ENA,
+				input iPREVIOUS_KERNEL_ACCESS,
+				input [31:0] iPREVIOUS_INST,
+				input [31:0] iPREVIOUS_PC,
+				output oPREVIOUS_LOCK,
 				//Next-0		
 				output					oNEXT_VALID,
-				output	[5:0]			oNEXT_MMU_FLAGS,
+				output oNEXT_FAULT_PAGE_FAULT,
+				output oNEXT_FAULT_PRIVILEGE_ERROR,
+				output oNEXT_FAULT_INVALID_INST,
 				output					oNEXT_SOURCE0_ACTIVE,			
 				output					oNEXT_SOURCE1_ACTIVE,		
 				output					oNEXT_SOURCE0_SYSREG,		
@@ -59,7 +63,10 @@ module decoder(
 	
 	//Pipeline 
 	reg					b_valid;	
-	reg		[5:0]		b_mmu_flags;
+	reg b_fault_page_fault;
+	reg b_fault_page_privilege_error;
+	reg b_fault_page_invalid_inst;
+	reg		[13:0]		b_mmu_flags;
 	reg					b_destination_sysreg;			
 	reg					b_dest_rename;			
 	reg					b_writeback;	
@@ -94,8 +101,10 @@ module decoder(
 	
 	always@(posedge iCLOCK, negedge inRESET)begin
 		if(!inRESET)begin
-			b_valid					<=		1'b0;			
-			b_mmu_flags				<=		6'h0;		
+			b_valid					<=		1'b0;	
+			b_fault_page_fault <= 1'b0;
+			b_fault_page_privilege_error <= 1'b0;
+			b_fault_page_invalid_inst <= 1'b0;			
 			b_source0_active			<=		1'b0;			
 			b_source1_active			<=		1'b0;	
 			b_source0_sysreg			<=		1'b0;	
@@ -128,8 +137,10 @@ module decoder(
 			b_pc						<=		1'b0;
 		end
 		else if(iFREE_DEFAULT)begin
-			b_valid					<=		1'b0;			
-			b_mmu_flags				<=		6'h0;		
+			b_valid					<=		1'b0;	
+			b_fault_page_fault <= 1'b0;
+			b_fault_page_privilege_error <= 1'b0;
+			b_fault_page_invalid_inst <= 1'b0;		
 			b_source0_active			<=		1'b0;			
 			b_source1_active			<=		1'b0;	
 			b_source0_sysreg			<=		1'b0;	
@@ -165,7 +176,14 @@ module decoder(
 			if(!iNEXT_LOCK)begin
 				//Pipeline 1
 				b_valid					<=		iPREVIOUS_INST_VALID;
-				b_mmu_flags				<=		iPREVIOUS_MMU_FLAGS;
+				//Fault
+				{
+					b_fault_page_fault,
+					b_fault_page_privilege_error,
+					b_fault_page_invalid_inst
+				}							<=		func_mmu_flags_fault_check(iPREVIOUS_PAGING_ENA, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_MMU_FLAGS[5:0]) || 
+													(func_instruction_fault_check(iPREVIOUS_INST, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_MMU_FLAGS[5:0]) << 1'b1);
+				//Inst
 				{
 					b_error, b_commit_wait_inst, b_cc_afe,
 					b_source0, b_source1, b_source0_flags, b_source1_imm,
@@ -184,7 +202,75 @@ module decoder(
 	end //always
 			
 	
-	
+	/***************
+	[0]	:	IRQ40 Invalid page.(Page fault)
+	[1]	:	IRQ41 Privilege error.(Page)
+	[2]	:	IRQ42 Invalid instruction.(Page)
+	***************/
+	function [2:0] func_mmu_flags_fault_check;
+		input func_paging;
+		input func_kernel;				//1:kernel mode
+		input [5:0] func_mmu_flags;
+		begin
+			if(func_paging)begin
+				//Page fault check
+				if(!func_mmu_flags[0])begin
+					func_mmu_flags_fault_check = 3'h1;
+				end
+				//Invalid instruction check
+				if(!func_mmu_flags[3])begin
+					func_mmu_flags_fault_check = 3'h4;
+				end
+				//Privilege error check
+				else begin
+					//Page check
+					if(func_kernel)begin			//Kernell Mode
+						func_mmu_flags_fault_check = 3'h0;
+					end
+					else begin	//User Mode
+						if(func_mmu_flags[5:4] != 2'h0)begin
+							func_mmu_flags_fault_check = 3'h0;
+						end
+						else begin
+							func_mmu_flags_fault_check = 3'h2;	//Privilege Error
+						end
+					end
+				end
+			end
+			else begin
+				func_mmu_flags_fault_check = 3'h0;
+			end
+		end
+	endfunction
+		
+		
+	/***************
+	[0]	:	IRQ41 Privilege error.(Page)
+	***************/
+	function func_instruction_fault_check;
+		input [31:0] func_instruction;
+		input func_kernel;				//[1]Kernel
+		input [5:0] func_mmu_flags;
+		begin
+			if(func_kernel)begin			//Kernell Mode
+				func_instruction_fault_check = 1'b0;
+			end
+			else begin
+				case(func_instruction[30:21])
+					`FAULT_INSTRUCTION_SRTISR,
+					`FAULT_INSTRUCTION_SRKPDTR,
+					`FAULT_INSTRUCTION_SRIEIW,
+					`FAULT_INSTRUCTION_SRTISW,
+					`FAULT_INSTRUCTION_SRKPDTW,
+					`FAULT_INSTRUCTION_SRMMUW,
+					`FAULT_INSTRUCTION_HALT,
+					`FAULT_INSTRUCTION_IDTS	:	func_instruction_fault_check = 1'b1;
+					default					:	func_instruction_fault_check = 1'b0;
+				endcase
+			end
+		end
+	endfunction
+
 	
 	function [74:0]	f_decode;
 		input	[31:0]			f_decode_inst;
@@ -3349,7 +3435,9 @@ module decoder(
 	****************************************/
 	//Pipeline1
 	assign					oNEXT_VALID					=		b_valid;
-	assign					oNEXT_MMU_FLAGS				=		b_mmu_flags;
+	assign oNEXT_FAULT_PAGE_FAULT = b_fault_page_fault;
+	assign oNEXT_FAULT_PRIVILEGE_ERROR = b_fault_page_privilege_error;
+	assign oNEXT_FAULT_INVALID_INST = b_fault_page_invalid_inst;
 	assign					oNEXT_SOURCE0_ACTIVE			=		b_source0_active;
 	assign					oNEXT_SOURCE1_ACTIVE			=		b_source1_active;
 	assign					oNEXT_SOURCE0_SYSREG			=		b_source0_sysreg;

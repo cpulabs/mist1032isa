@@ -5,9 +5,7 @@
 
 
 
-module l1_instruction_cache/*(
-		parameter CACHE_ON = 1'b1
-	)*/(
+module l1_instruction_cache(
 		input iCLOCK,
 		input inRESET,
 		//Remove
@@ -23,27 +21,28 @@ module l1_instruction_cache/*(
 		output [31:0] oINST_ADDR,
 		//
 		input iINST_VALID,
-		output oINST_BUSY,		//new
+		output oINST_BUSY,	
 		input [63:0] iINST_DATA,
-		input [23:0] iINST_MMU_FLAGS,		//Bug
+		input [27:0] iINST_MMU_FLAGS,	
 		/****************************************
 		Fetch Module
 		****************************************/
 		//From Fetch
 		input iNEXT_FETCH_REQ,
-		input [31:0] iNEXT_FETCH_ADDR,
 		output oNEXT_FETCH_LOCK,
+		input [1:0] iNEXT_MMUMOD,
+		input [31:0] iNEXT_FETCH_ADDR,
 		//To Fetch
 		output oNEXT_0_INST_VALID,
-		output [5:0] oNEXT_0_MMU_FLAGS,
+		output [13:0] oNEXT_0_MMU_FLAGS,
 		output [31:0] oNEXT_0_INST,
 		output oNEXT_1_INST_VALID,
-		output [5:0] oNEXT_1_MMU_FLAGS,
+		output [13:0] oNEXT_1_MMU_FLAGS,
 		output [31:0] oNEXT_1_INST,
 		input iNEXT_LOCK
 	);
 	
-	wire request_lock = iINST_LOCK;
+	wire request_lock = iINST_LOCK && (b_req_main_state != L_PARAM_IDLE);///
 	wire load_lock = iINST_LOCK;
 	wire out_lock = iNEXT_LOCK;
 	
@@ -51,21 +50,21 @@ module l1_instruction_cache/*(
 	/****************************************
 	Instruction Access 
 	****************************************/
-	parameter L_PARAM_IDLE = 2'h0;
-	parameter L_PARAM_MEMREQ = 2'h1;
-	parameter L_PARAM_MEMGET = 2'h2;
-	parameter L_PARAM_OUTINST = 2'h3;
-	
-	
+	localparam L_PARAM_IDLE = 2'h0;
+	localparam L_PARAM_MEMREQ = 2'h1;
+	localparam L_PARAM_MEMGET = 2'h2;
+	localparam L_PARAM_OUTINST = 2'h3;
+		
 	//Controlor
 	reg [1:0] b_req_main_state;
 	reg [3:0] b_req_state;
 	reg [3:0] b_get_state;
 	reg [31:0] b_req_addr;
+	reg [1:0] b_req_mmumod;
 	reg b_mem_result_0_valid;
 	reg b_mem_result_1_valid;
 	reg [63:0] b_mem_result_data;
-	reg [23:0] b_mem_result_mmu_flags; 
+	reg [27:0] b_mem_result_mmu_flags; 
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -73,15 +72,17 @@ module l1_instruction_cache/*(
 			b_req_state <= 4'h0;
 			b_get_state <= 4'h0;
 			b_req_addr <= {32{1'b0}};
+			b_req_mmumod <= 2'h0;
 			b_mem_result_0_valid <= 1'b0;
 			b_mem_result_1_valid <= 1'b0;
 			b_mem_result_data <= 64'h0;
-			b_mem_result_mmu_flags <= 24'h0;
+			b_mem_result_mmu_flags <= 28'h0;
 		end	
 		else begin
 			//Buffer 
 			if(!request_lock && iNEXT_FETCH_REQ && (b_req_main_state == L_PARAM_IDLE) && !out_lock)begin
-				b_req_addr		<=		iNEXT_FETCH_ADDR;
+				b_req_addr <= iNEXT_FETCH_ADDR;
+				b_req_mmumod <= iNEXT_MMUMOD;
 			end
 			//Memory State
 			case(b_req_main_state) 
@@ -93,45 +94,137 @@ module l1_instruction_cache/*(
 					end
 				L_PARAM_MEMREQ:	//Request State
 					begin
-						//Request
-						if(b_req_state == 4'h8)begin
-							b_req_main_state <= L_PARAM_MEMGET;
-							b_req_state <= 4'h0;
+						//Cache ON
+						if(`INST_L1_CACHE_ON)begin
+							/*
+							//Request
+							if(b_req_state == 4'h8)begin
+								b_req_main_state <= L_PARAM_MEMGET;
+								b_req_state <= 4'h0;
+							end
+							else begin
+								//Load Requset
+								if(!load_lock)begin
+									b_req_state <= b_req_state + 4'h1;
+								end
+							end
+							//Get Check
+							if(iINST_VALID)begin
+								b_get_state <= b_get_state + 4'h1;
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b1;
+										b_mem_result_data <= iINST_DATA;
+										b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
+									end
+									else begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b0;
+										b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
+										b_mem_result_mmu_flags <= {14'h0, iINST_MMU_FLAGS[27:14]};
+									end
+								end
+							end
+							*/
+							//Request
+							if(!load_lock)begin
+								if(b_req_state == 4'h7)begin
+									b_req_main_state <= L_PARAM_MEMGET;
+									b_req_state <= 4'h0;
+								end
+								else begin
+									b_req_state <= b_req_state + 4'h1;
+								end
+							end
+							//Get Check
+							if(iINST_VALID)begin
+								b_get_state <= b_get_state + 4'h1;
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b1;
+										b_mem_result_data <= iINST_DATA;
+										b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
+									end
+									else begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b0;
+										b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
+										b_mem_result_mmu_flags <= {14'h0, iINST_MMU_FLAGS[27:14]};
+									end
+								end
+							end
 						end
+						//Cache OFF
 						else begin
 							//Load Requset
 							if(!load_lock)begin
-								b_req_state <= b_req_state + 4'h1;
-							end
-						end
-						//Get Check
-						if(iINST_VALID)begin
-							b_get_state <= b_get_state + 4'h1;
-							if(b_req_addr[5:3] == b_get_state[3:0])begin
-								if(!b_req_addr[2])begin
-									b_mem_result_0_valid <= 1'b1;
-									b_mem_result_1_valid <= 1'b1;
-									b_mem_result_data <= iINST_DATA;
-									b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
-								end
-								else begin
-									b_mem_result_0_valid <= 1'b1;
-									b_mem_result_1_valid <= 1'b0;
-									b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
-									b_mem_result_mmu_flags <= {12'h0, iINST_MMU_FLAGS[23:12]};
-								end
+								b_req_main_state <= L_PARAM_MEMGET;
+								b_req_state <= 4'h0;
 							end
 						end
 					end
 				L_PARAM_MEMGET:	//Get Wait State
 					begin
-						if(b_get_state == 4'h8)begin
-							b_get_state <= 4'h0;
-							b_req_main_state <= L_PARAM_OUTINST;
+						//Cache ON
+						/*
+						if(`INST_L1_CACHE_ON)begin
+							if(b_get_state == 4'h8)begin
+								b_get_state <= 4'h0;
+								b_req_main_state <= L_PARAM_OUTINST;
+							end
+							else if(iINST_VALID)begin
+								b_get_state <= b_get_state + 4'h1;
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b1;
+										b_mem_result_data <= iINST_DATA;
+										b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
+									end
+									else begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b0;
+										b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
+										b_mem_result_mmu_flags <= {14'h0, iINST_MMU_FLAGS[27:14]};
+									end
+								end
+							end
 						end
-						else if(iINST_VALID)begin
-							b_get_state <= b_get_state + 4'h1;
-							if(b_req_addr[5:3] == b_get_state[3:0])begin
+						*/
+						if(`INST_L1_CACHE_ON)begin
+							if(iINST_VALID)begin
+								//Data Check
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b1;
+										b_mem_result_data <= iINST_DATA;
+										b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
+									end
+									else begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b0;
+										b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
+										b_mem_result_mmu_flags <= {14'h0, iINST_MMU_FLAGS[27:14]};
+									end
+								end
+								//State Check
+								if(b_get_state == 4'h7)begin
+									b_get_state <= 4'h0;
+									b_req_main_state <= L_PARAM_OUTINST;
+								end
+								else begin
+									b_get_state <= b_get_state + 4'h1;
+								end
+							end
+						end
+						//Cache OFF
+						else begin
+							if(iINST_VALID)begin
+								b_get_state <= 4'h0;
+								b_req_main_state <= L_PARAM_OUTINST;
 								if(!b_req_addr[2])begin
 									b_mem_result_0_valid <= 1'b1;
 									b_mem_result_1_valid <= 1'b1;
@@ -142,7 +235,7 @@ module l1_instruction_cache/*(
 									b_mem_result_0_valid <= 1'b1;
 									b_mem_result_1_valid <= 1'b0;
 									b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
-									b_mem_result_mmu_flags <= {12'h0, iINST_MMU_FLAGS[23:12]};
+									b_mem_result_mmu_flags <= {14'h0, iINST_MMU_FLAGS[27:14]};
 								end
 							end
 						end
@@ -193,7 +286,7 @@ module l1_instruction_cache/*(
 	wire cache_result_valid;
 	wire cache_result_hit;
 	wire [63:0] cache_result_data;
-	wire [23:0] cache_result_mmu_flags;
+	wire [27:0] cache_result_mmu_flags;
 
 	generate
 		if(`INST_L1_CACHE_ON)begin
@@ -283,32 +376,32 @@ module l1_instruction_cache/*(
 
 	reg next_0_inst_valid;
 	reg [31:0] next_0_inst_inst;
-	reg [11:0] next_0_inst_mmu_flags;
+	reg [13:0] next_0_inst_mmu_flags;
 	reg next_1_inst_valid;
 	reg [31:0] next_1_inst_inst;
-	reg [11:0] next_1_inst_mmu_flags;
+	reg [13:0] next_1_inst_mmu_flags;
 	always @* begin
 		if(b_req_main_state == L_PARAM_OUTINST)begin
 			next_0_inst_valid = b_mem_result_0_valid;
 			next_0_inst_inst = b_mem_result_data[31:0];
-			next_0_inst_mmu_flags = b_mem_result_mmu_flags[11:0];
+			next_0_inst_mmu_flags = b_mem_result_mmu_flags[13:0];
 			next_1_inst_valid = b_mem_result_1_valid;
 			next_1_inst_inst = b_mem_result_data[63:32];
-			next_1_inst_mmu_flags = b_mem_result_mmu_flags[23:12];
+			next_1_inst_mmu_flags = b_mem_result_mmu_flags[27:14];
 		end
 		else begin
 			next_0_inst_valid = cache_result_valid && cache_result_hit;
 			if(!b_req_addr[2])begin
 				next_0_inst_inst = cache_result_data[31:0];
-				next_0_inst_mmu_flags = cache_result_mmu_flags[11:0];
+				next_0_inst_mmu_flags = cache_result_mmu_flags[13:0];
 			end
 			else begin
 				next_0_inst_inst = cache_result_data[63:32];
-				next_0_inst_mmu_flags = cache_result_mmu_flags[23:12];
+				next_0_inst_mmu_flags = cache_result_mmu_flags[27:14];
 			end
 			next_1_inst_valid = !b_req_addr[2] && cache_result_valid && cache_result_hit;
 			next_1_inst_inst = cache_result_data[63:32];
-			next_1_inst_mmu_flags = cache_result_mmu_flags[23:12];
+			next_1_inst_mmu_flags = cache_result_mmu_flags[27:14];
 		end
 	end
 	
@@ -317,8 +410,15 @@ module l1_instruction_cache/*(
 	*************************/
 	//Memory
 	assign oINST_REQ = (b_req_main_state == L_PARAM_MEMREQ)? !load_lock : 1'b0;
-	assign oINST_MMUMOD = 2'h0;
-	assign oINST_ADDR = {b_req_addr[31:6], b_req_state[2:0], 3'h0};
+	assign oINST_MMUMOD = b_req_mmumod;
+	generate
+		if(`INST_L1_CACHE_ON)begin
+			assign oINST_ADDR = {b_req_addr[31:6], b_req_state[2:0], 3'h0};
+		end
+		else begin
+			assign oINST_ADDR = {b_req_addr[31:3], 3'h0};
+		end
+	endgenerate
 	assign oINST_BUSY = 1'b0;
 	
 	//This -> Fetch Module

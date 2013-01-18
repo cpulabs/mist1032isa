@@ -31,13 +31,12 @@ module core_pipeline
 		//Memory Instruction-Request
 		output					oINST_FETCH_REQ,
 		input					iINST_FETCH_BUSY,
-		output	[13:0]			oINST_FETCH_TID,
 		output	[1:0]			oINST_FETCH_MMUMOD,
 		output	[31:0]			oINST_FETCH_PDT,
 		output	[31:0]			oINST_FETCH_ADDR,
 		//Memory Instruction-Get
 		input					iINST_VALID,
-		input	[11:0]			iINST_MMU_FLAGS,
+		input	[27:0]			iINST_MMU_FLAGS,
 		output					oINST_BUSY,
 		input	[63:0]			iINST_DATA,
 		/****************************************
@@ -100,13 +99,17 @@ module core_pipeline
 	
 	
 	assign oDEBUG0 = sysreg_ppcr;//{iINST_FETCH_BUSY, oINST_BUSY, icache2fetch_lock, fetch2icache_lock, lbuffer2fetch_fetch_lock, decoder2lbuffer_lock, dispatch2decoder_lock, execution2dispatch_lock, iLDST_BUSY, ldst2execution_ldst_busy, ldst2exception_ldst_busy};
-
+	assign oDEBUG_PC = debug_register2debug_pcr;
+	
+	
+	
 	//Cache
 	wire icache2fetch_valid;
 	wire [31:0] icache2fetch_inst;
-	wire [11:0] icache2fetch_mmu_flags;
+	wire [13:0] icache2fetch_mmu_flags;
 	wire fetch2icache_lock;
 	wire fetch2icache_req;
+	wire [1:0] fetch2icache_mmumod;
 	wire [31:0] fetch2icache_addr;
 	wire icache2fetch_lock;
 	wire cache_flash;
@@ -125,14 +128,18 @@ module core_pipeline
 	wire	[31:0]		free_new_spr;		
 	//Fetch
 	wire			fetch2lbuffer_inst_valid;
-	wire	[5:0]	fetch2lbuffer_mmu_flags;
+	wire	[13:0]	fetch2lbuffer_mmu_flags;
+	wire fetch2lbuffer_paging_ena;
+	wire fetch2lbuffer_kernel_access;
 	wire	[31:0]	fetch2lbuffer_inst;
 	wire	[31:0]	fetch2lbuffer_pc;
 	wire			lbuffer2fetch_fetch_stop;
 	wire			lbuffer2fetch_fetch_lock;	
 	//Decoder
 	wire			lbuffer2decoder_inst_valid;	
-	wire	[5:0]	lbuffer2decoder_mmu_flags;		
+	wire	[13:0]	lbuffer2decoder_mmu_flags;	
+	wire lbuffer2decoder_paging_ena;
+	wire lbuffer2decoder_kernel_access;
 	wire	[31:0]	lbuffer2decoder_inst;
 	wire	[31:0]	lbuffer2decoder_pc;
 	wire			decoder2lbuffer_lock;
@@ -453,7 +460,7 @@ module core_pipeline
 		//Req
 		.oINST_REQ(oINST_FETCH_REQ),
 		.iINST_LOCK(iINST_FETCH_BUSY),
-		.oINST_MMUMOD(),
+		.oINST_MMUMOD(oINST_FETCH_MMUMOD),
 		.oINST_ADDR(oINST_FETCH_ADDR),
 		//
 		.iINST_VALID(iINST_VALID),
@@ -465,8 +472,9 @@ module core_pipeline
 		****************************************/
 		//From Fetch
 		.iNEXT_FETCH_REQ(fetch2icache_req),
-		.iNEXT_FETCH_ADDR(fetch2icache_addr),
 		.oNEXT_FETCH_LOCK(icache2fetch_lock),
+		.iNEXT_MMUMOD(fetch2icache_mmumod),
+		.iNEXT_FETCH_ADDR(fetch2icache_addr),
 		//To Fetch
 		.oNEXT_0_INST_VALID(icache2fetch_valid),
 		.oNEXT_0_MMU_FLAGS(icache2fetch_mmu_flags),
@@ -484,6 +492,8 @@ module core_pipeline
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		//Core
+		.iSYSREG_PSR(sysreg_psr),
 		//Exception
 		.iEXCEPTION_EVENT(free_refresh),
 		.iEXCEPTION_ADDR_SET(free_pc_set),
@@ -496,16 +506,18 @@ module core_pipeline
 		.oPREVIOUS_LOCK(fetch2icache_lock),
 		//Fetch
 		.oPREVIOUS_FETCH_REQ(fetch2icache_req),
+		.oPREVIOUS_MMUMOD(fetch2icache_mmumod),
 		.oPREVIOUS_FETCH_ADDR(fetch2icache_addr),
 		.iPREVIOUS_FETCH_LOCK(icache2fetch_lock),
 		//Next
 		.oNEXT_INST_VALID(fetch2lbuffer_inst_valid),
 		.oNEXT_MMU_FLAGS(fetch2lbuffer_mmu_flags),
+		.oNEXT_PAGING_ENA(fetch2lbuffer_paging_ena),
+		.oNEXT_KERNEL_ACCESS(fetch2lbuffer_kernel_access),
 		.oNEXT_INST(fetch2lbuffer_inst),
 		.oNEXT_PC(fetch2lbuffer_pc),
 		.iNEXT_FETCH_STOP(lbuffer2fetch_fetch_stop),
-		.iNEXT_LOCK(lbuffer2fetch_fetch_lock),
-		.oDEBUG_PC(oDEBUG_PC)
+		.iNEXT_LOCK(lbuffer2fetch_fetch_lock)
 	);
 	
 	
@@ -518,6 +530,8 @@ module core_pipeline
 		//Prev
 		.iPREVIOUS_INST_VALID(fetch2lbuffer_inst_valid),
 		.iPREVIOUS_MMU_FLAGS(fetch2lbuffer_mmu_flags),
+		.iPREVIOUS_PAGING_ENA(fetch2lbuffer_paging_ena),
+		.iPREVIOUS_KERNEL_ACCESS(fetch2lbuffer_kernel_access),
 		.iPREVIOUS_INST(fetch2lbuffer_inst),
 		.iPREVIOUS_PC(fetch2lbuffer_pc),
 		.oPREVIOUS_FETCH_STOP(lbuffer2fetch_fetch_stop),
@@ -525,13 +539,13 @@ module core_pipeline
 		//Next
 		.oNEXT_INST_VALID(lbuffer2decoder_inst_valid),
 		.oNEXT_MMU_FLAGS(lbuffer2decoder_mmu_flags),
+		.oNEXT_PAGING_ENA(lbuffer2decoder_paging_ena),
+		.oNEXT_KERNEL_ACCESS(lbuffer2decoder_kernel_access),
 		.oNEXT_INST(lbuffer2decoder_inst),
 		.oNEXT_PC(lbuffer2decoder_pc),
 		.iNEXT_LOCK(decoder2lbuffer_lock)
 	);
 					
-			
-			
 			
 			
 	decoder DECODER(
@@ -543,12 +557,16 @@ module core_pipeline
 		//Previous
 		.iPREVIOUS_INST_VALID(lbuffer2decoder_inst_valid),
 		.iPREVIOUS_MMU_FLAGS(lbuffer2decoder_mmu_flags),
+		.iPREVIOUS_PAGING_ENA(lbuffer2decoder_paging_ena),
+		.iPREVIOUS_KERNEL_ACCESS(lbuffer2decoder_kernel_access),
 		.iPREVIOUS_INST(lbuffer2decoder_inst),
 		.iPREVIOUS_PC(lbuffer2decoder_pc),
 		.oPREVIOUS_LOCK(decoder2lbuffer_lock),
 		//Next-0		
 		.oNEXT_VALID(decoder2dispatch_valid),
-		.oNEXT_MMU_FLAGS(),
+		.oNEXT_FAULT_PAGE_FAULT(),
+		.oNEXT_FAULT_PRIVILEGE_ERROR(),
+		.oNEXT_FAULT_INVALID_INST(),
 		.oNEXT_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
 		.oNEXT_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
 		.oNEXT_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
@@ -718,8 +736,6 @@ module core_pipeline
 		.oDEBUG_REG_OUT_PSR(debug_register2debug_psr),
 		.oDEBUG_REG_OUT_PPSR(debug_register2debug_ppsr)
 	);
-			
-
 	
 	
 	execute EXECUTE(
@@ -979,8 +995,6 @@ module core_pipeline
 	);
 
 				
-	assign		oINST_FETCH_TID			=	{14{1'b0}};		
-	assign		oINST_FETCH_MMUMOD		=	2'h0;
 	assign		oINST_FETCH_PDT			=	{32{1'b0}};
 	
 	

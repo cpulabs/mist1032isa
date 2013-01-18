@@ -56,7 +56,6 @@ Instruction Set
 `define		OC_LIL		10'h076
 `define		OC_LIH		10'h077
 `define		OC_ULIL		10'h07A
-
 //Memory Access
 `define		OC_LD8		10'h080
 `define		OC_LD16		10'h081
@@ -91,14 +90,10 @@ Instruction Set
 `define		OC_SRPPCR		10'h0CE
 `define		OC_SRPPDTR		10'h0D0
 `define		OC_SRPTIDR		10'h0D1
-
 `define		OC_SRPSR		10'h0D3
 `define		OC_SRFRCR		10'h0D4
 `define		OC_SRFRCLR		10'h0D5
 `define		OC_SRFRCHR		10'h0D6
-
-
-
 //System Register Write
 `define 	OC_SRSPW		10'h0E0
 `define 	OC_SRIEIW		10'h0E5
@@ -110,18 +105,15 @@ Instruction Set
 `define		OC_SRPPDTW		10'h0F0
 `define		OC_SRPTIDW		10'h0F1
 `define		OC_SRIDTW		10'h0F2
-
 `define		OC_SRPSW		10'h0F3
 `define		OC_SRFRCW		10'h0F4
 `define		OC_SRFCLW		10'h0F5
 `define		OC_SRFCHW		10'h0F6
-
 //Other
 `define		OC_NOP			10'h100
 `define		OC_HALT			10'h101
 `define		OC_MOVE			10'h102
 `define		OC_MOVEPC		10'h103
-
 //Operating System Support
 `define		OC_SWI			10'h120
 `define		OC_IDTS			10'h122
@@ -218,6 +210,23 @@ Execution CMD Set
 `define		EXE_SYS_REG_SR1_MMUMOD_W	5'h05
 `define		EXE_SYS_REG_SR1_IM_W		5'h06
 `define		EXE_SYS_REG_SR1_CMOD_W		5'h07
+
+
+/******************************
+Fault - User mode Prohibition
+******************************/
+`define		FAULT_INSTRUCTION_SRTISR	10'h0c8
+`define		FAULT_INSTRUCTION_SRKPDTR	10'h0c9
+`define		FAULT_INSTRUCTION_SRIEIW	10'h0e5
+`define		FAULT_INSTRUCTION_SRTISW	10'h0e8
+`define		FAULT_INSTRUCTION_SRKPDTW	10'h0e9
+`define		FAULT_INSTRUCTION_SRMMUW	10'h0ea
+`define		FAULT_INSTRUCTION_HALT		10'h101
+`define		FAULT_INSTRUCTION_IDTS		10'h122
+
+
+
+
 /******************************
 Logic Register Set
 ******************************/
@@ -298,14 +307,13 @@ Execution Unit Select
 `define		EXE_SELECT_SYS_LDST		10'h100
 `define		EXE_SELECT_SYS_REG		10'h200
 /******************************
-Flags Selectup
+Flags Select
 ******************************/
 `define		FLAGS_SF				4
 `define		FLAGS_OF				3
 `define		FLAGS_CF				2
 `define		FLAGS_PF				1
 `define		FLAGS_ZF				0
-
 
 /******************************
 Core Mode

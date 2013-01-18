@@ -9,63 +9,63 @@
 `include "global.h"
 
 module mist1032isa(
-				/****************************************
-				System
-				****************************************/
-				input				iCORE_CLOCK,
-				input				iBUS_CLOCK,
-				input				iDPS_CLOCK,
-				input				inRESET,
-				/****************************************
-				SCI
-				****************************************/
-				output				oSCI_TXD,
-				input				iSCI_RXD,
-				/****************************************
-				Memory BUS
-				****************************************/
-				//Req
-				output				oMEMORY_REQ,
-				input				iMEMORY_LOCK,
-				output	[1:0]		oMEMORY_ORDER,					//00=Byte Order 01=2Byte Order 10= Word Order 11= None
-				output				oMEMORY_RW,						//1:Write | 0:Read
-				output	[31:0]		oMEMORY_ADDR,
-				//This -> Data RAM
-				output	[31:0]		oMEMORY_DATA,
-				//Data RAM -> This
-				input				iMEMORY_VALID,
-				output				oMEMORY_BUSY,
-				input	[63:0]		iMEMORY_DATA,	
-				/****************************************
-				GCI BUS
-				****************************************/
-				//Request
-				output				oGCI_REQ,				//Input
-				input				iGCI_BUSY,
-				output				oGCI_RW,				//0=Read : 1=Write
-				output	[31:0]		oGCI_ADDR,
-				output	[31:0]		oGCI_DATA,
-				//Return
-				input				iGCI_REQ,				//Output
-				output				oGCI_BUSY,
-				input	[31:0]		iGCI_DATA,
-				//Interrupt
-				input				iGCI_IRQ_REQ,
-				input	[5:0]		iGCI_IRQ_NUM,
-				output				oGCI_IRQ_ACK,
-				//Interrupt Controll
-				output				oIO_IRQ_CONFIG_TABLE_REQ,
-				output	[5:0]		oIO_IRQ_CONFIG_TABLE_ENTRY,
-				output				oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
-				output				oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
-				output	[1:0]		oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,
-				output	[31:0]		oDEBUG_PC,
-				output	[31:0]		oDEBUG0,
-				/****************************************
-				Debug
-				****************************************/
-				input iDEBUG_UART_RXD,
-				output oDEBUG_UART_TXD
+		/****************************************
+		System
+		****************************************/
+		input iCORE_CLOCK,
+		input iBUS_CLOCK,
+		input iDPS_CLOCK,
+		input inRESET,
+		/****************************************
+		SCI
+		****************************************/
+		output oSCI_TXD,
+		input iSCI_RXD,
+		/****************************************
+		Memory BUS
+		****************************************/
+		//Req
+		output oMEMORY_REQ,
+		input iMEMORY_LOCK,
+		output [1:0] oMEMORY_ORDER,				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		output oMEMORY_RW,						//1:Write | 0:Read
+		output [31:0] oMEMORY_ADDR,
+		//This -> Data RAM
+		output [31:0] oMEMORY_DATA,
+		//Data RAM -> This
+		input iMEMORY_VALID,
+		output oMEMORY_BUSY,
+		input [63:0] iMEMORY_DATA,	
+		/****************************************
+		GCI BUS
+		****************************************/
+		//Request
+		output oGCI_REQ,					//Input
+		input iGCI_BUSY,
+		output oGCI_RW,						//0=Read : 1=Write
+		output [31:0] oGCI_ADDR,
+		output [31:0] oGCI_DATA,
+		//Return
+		input iGCI_REQ,						//Output
+		output oGCI_BUSY,
+		input [31:0] iGCI_DATA,
+		//Interrupt
+		input iGCI_IRQ_REQ,
+		input [5:0] iGCI_IRQ_NUM,
+		output oGCI_IRQ_ACK,
+		//Interrupt Controll
+		output oIO_IRQ_CONFIG_TABLE_REQ,
+		output [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
+		output oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
+		output oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
+		output [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,
+		output [31:0] oDEBUG_PC,
+		output [31:0] oDEBUG0,
+		/****************************************
+		Debug
+		****************************************/
+		input iDEBUG_UART_RXD,
+		output oDEBUG_UART_TXD
 	);
 			
 			
@@ -75,14 +75,13 @@ module mist1032isa(
 	//Memory
 	wire				core2mem_inst_req;
 	wire				mem2core_inst_lock;
-	wire	[13:0]		core2mem_inst_tid;
 	wire	[1:0]		core2mem_inst_mmumod;
 	wire	[31:0]		core2mem_inst_pdt;
 	wire	[31:0]		core2mem_inst_addr;
 	wire				mem2core_inst_valid;
 	wire				core2mem_inst_lock;
 	wire	[63:0]		mem2core_inst_data;
-	wire	[11:0]		mem2core_inst_mmu_flags;
+	wire	[27:0]		mem2core_inst_mmu_flags;
 	wire				core2mem_data_req;
 	wire				mem2core_data_lock;
 	wire	[1:0]		core2mem_data_order;	
@@ -120,29 +119,6 @@ module mist1032isa(
 	wire				dps2pic_irq_valid;
 	wire	[5:0]		dps2pic_irq_num;
 	wire				pic2dps_irq_ack;
-	//Memory Matching Controal
-	wire				matching_bridfe_wr_full;
-	wire				matching_bridge_rd_valid;
-	wire				matching_bridge_rd_type;	//0:Inst, 1:Data
-	wire				matching_bridge_rd_empty;
-	//Memory Access Condition State
-	wire				core2mem_inst_condition;
-	wire				core2mem_data_condition;
-	//Memory Request Buffer
-	reg					b_core2mem_req;
-	reg		[1:0]		b_core2mem_order;	
-	reg					b_core2mem_rw;		//0=Read | 1=Write
-	reg		[13:0]		b_core2mem_tid;
-	reg		[1:0]		b_core2mem_mmumod;
-	reg		[31:0]		b_core2mem_pdt;
-	reg		[31:0]		b_core2mem_addr;
-	reg		[31:0]		b_core2mem_data;
-	//Data Selector - INST
-	reg					b_mem2core_inst_valid;	
-	reg		[63:0]		b_mem2core_inst_data;	
-	//Data Selector - DATA	
-	reg					b_mem2core_data_valid;	
-	reg		[63:0]		b_mem2core_data_data;
 	
 			
 	/********************************************************************************
@@ -188,15 +164,14 @@ module mist1032isa(
 		//Req
 		.oINST_REQ(core2mem_inst_req),
 		.iINST_LOCK(mem2core_inst_lock),
-		.oINST_TID(core2mem_inst_tid),
 		.oINST_MMUMOD(core2mem_inst_mmumod),
 		.oINST_PDT(core2mem_inst_pdt),
 		.oINST_ADDR(core2mem_inst_addr),
 		//Data RAM -> This
 		.iINST_VALID(mem2core_inst_valid),
-		.oINST_BUSY(core2mem_inst_lock),		//new
+		.oINST_BUSY(core2mem_inst_lock),	
 		.iINST_DATA(mem2core_inst_data),
-		.iINST_MMU_FLAGS(/*mem2core_inst_mmu_flags*/12'h0),
+		.iINST_MMU_FLAGS(mem2core_inst_mmu_flags),
 		/****************************************
 		Data Memory
 		****************************************/
@@ -212,7 +187,7 @@ module mist1032isa(
 		//This -> Data RAM
 		.oDATA_DATA(core2mem_data_data),
 		//Data RAM -> This
-		.iDATA_VALID(mem2core_data_valid || b_memory_write_ack),
+		.iDATA_VALID(mem2core_data_valid),
 		.iDATA_DATA(mem2core_data_data),
 		/****************************************
 		IO
@@ -287,52 +262,111 @@ module mist1032isa(
 	
 	
 	/********************************************************************************
-	MMU
+	Memory Interface
 	********************************************************************************/
+	//Arbiter to MMU
+	wire m_arbiter2mmu_req;
+	wire mmu2m_arbiter_lock;
+	wire m_arbiter2mmu_data_store_ack;
+	wire [1:0] m_arbiter2mmu_mmu_mode;
+	wire [31:0] m_arbiter2mmu_pdt;
+	wire [1:0] m_arbiter2mmu_order;
+	wire m_arbiter2mmu_rw;
+	wire [31:0] m_arbiter2mmu_addr;
+	wire [31:0] m_arbiter2mmu_data;
+	wire mmu2m_arbiter_req;
+	wire m_arbiter2mmu_lock;
+	wire mmu2m_arbiter_store_ack;
+	wire [63:0] mmu2m_arbiter_data;
+	wire [27:0] mmu2m_arbiter_mmu_flags;
 
-/*
-	mmu MMU_MODULE(
+	//Memory Pipe Arbiter
+	memory_pipe_arbiter MEM_ARBITER(
 		.iCLOCK(iBUS_CLOCK),
 		.inRESET(inRESET),
-		//TLB Flash
-		.iTLB_FLASH(),
-		//Logic Address Request
-		.iLOGIC_REQ(b_core2mem_req),
-		.oLOGIC_LOCK(),
-		.iLOGIC_MODE(b_core2mem_mmumod),			//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
-		.iLOGIC_PDT(b_core2mem_pdt),			//Page Directory Table 
-		.iLOGIC_TID(b_core2mem_tid),			//Task Id 
-		.iLOGIC_ORDER(b_core2mem_order),			//0=Byte 1=Haff Word 2=Word
-		.iLOGIC_RW(b_core2mem_rw),					//0=Read 1=Write
-		.iLOGIC_TYPE(),					//0:Data 1:Instruction	
-		.iLOGIC_ADDR(b_core2mem_addr),
-		.iLOGIC_DATA(b_core2mem_data),
-		//Memory-REQ
-		.oMEMORY_PDT_READ(),
-		.oMEMORY_REQ(),
-		.iMEMORY_LOCK(iMEMORY_LOCK),
-		.oMEMORY_ORDER(),
-		.oMEMORY_RW(),
-		.oMEMORY_ADDR(),
-		.oMEMORY_DATA(),
-		.oMEMORY_FLAGS(),
-		//Memory-GET
-		.iMEMORY_VALID(),
-		.oMEMORY_LOCK(),
-		.iMEMORY_DATA()
+		//Data(Core -> Memory)
+		.iDATA_REQ(core2mem_data_req),
+		.oDATA_LOCK(mem2core_data_lock),
+		.iDATA_ORDER(core2mem_data_order),
+		.iDATA_RW(core2mem_data_rw),
+		.iDATA_TID(core2mem_data_tid),
+		.iDATA_MMUMOD(core2mem_data_mmumod),
+		.iDATA_PDT(core2mem_data_pdt),
+		.iDATA_ADDR(core2mem_data_addr),
+		.iDATA_DATA(core2mem_data_data),
+		//Data(Memory -> Core)
+		.oDATA_REQ(mem2core_data_valid),
+		.iDATA_BUSY(1'b0),
+		.oDATA_DATA(mem2core_data_data),
+		.oDATA_MMU_FLAGS(),
+		//Inst(Core -> Memory)
+		.iINST_REQ(core2mem_inst_req),
+		.oINST_LOCK(mem2core_inst_lock),
+		.iINST_MMUMOD(core2mem_inst_mmumod),
+		.iINST_PDT(core2mem_inst_pdt),
+		.iINST_ADDR(core2mem_inst_addr),
+		//Inst(Memory -> Core)
+		.oINST_REQ(mem2core_inst_valid),
+		.iINST_BUSY(core2mem_inst_lock),
+		.oINST_DATA(mem2core_inst_data),
+		.oINST_MMU_FLAGS(mem2core_inst_mmu_flags),
+		//Memory(OutPort)
+		.oMEMORY_REQ(m_arbiter2mmu_req),
+		.iMEMORY_LOCK(mmu2m_arbiter_lock),
+		.oMEMORY_DATA_STORE_ACK(m_arbiter2mmu_data_store_ack),
+		.oMEMORY_MMU_MODE(m_arbiter2mmu_mmu_mode),
+		.oMEMORY_PDT(m_arbiter2mmu_pdt),
+		.oMEMORY_ORDER(m_arbiter2mmu_order),
+		.oMEMORY_RW(m_arbiter2mmu_rw),
+		.oMEMORY_ADDR(m_arbiter2mmu_addr),
+		.oMEMORY_DATA(m_arbiter2mmu_data),
+		//Memory(InPort)
+		.iMEMORY_VALID(mmu2m_arbiter_req),
+		.oMEMORY_BUSY(m_arbiter2mmu_lock),
+		.iMEMORY_STORE_ACK(mmu2m_arbiter_store_ack),
+		.iMEMORY_DATA(mmu2m_arbiter_data),
+		.iMEMORY_MMU_FLAGS(mmu2m_arbiter_mmu_flags)
 	);
-*/
 	
-	assign		oMEMORY_REQ		=	b_core2mem_req;
-	assign		oMEMORY_ORDER	=	b_core2mem_order;
-	assign		oMEMORY_RW		=	b_core2mem_rw;
-	assign		oMEMORY_ADDR	=	b_core2mem_addr;
-	assign		oMEMORY_DATA	=	b_core2mem_data;
-	assign		oMEMORY_BUSY	=	(!matching_bridge_rd_type && core2mem_inst_lock) || (matching_bridge_rd_type && core2mem_data_lock);
-	
-	
-	
-	
+	//MMU
+	mmu_if MMU_IF(
+		.iCLOCK(iBUS_CLOCK),
+		.inRESET(inRESET),
+		/*************************
+		To Core
+		*************************/
+		//Core -> This
+		.iCORE_REQ(m_arbiter2mmu_req),
+		.oCORE_LOCK(mmu2m_arbiter_lock),
+		.iCORE_DATA_STORE_ACK(m_arbiter2mmu_data_store_ack),
+		.iCORE_MMU_MODE(m_arbiter2mmu_mmu_mode),		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		.iCORE_PDT(m_arbiter2mmu_pdt),					//Page Table Register
+		.iCORE_ORDER(m_arbiter2mmu_order),
+		.iCORE_RW(m_arbiter2mmu_rw),
+		.iCORE_ADDR(m_arbiter2mmu_addr),
+		.iCORE_DATA(m_arbiter2mmu_data),
+		//This -> Core
+		.oCORE_REQ(mmu2m_arbiter_req),
+		.iCORE_LOCK(m_arbiter2mmu_lock),
+		.oCORE_STORE_ACK(mmu2m_arbiter_store_ack),
+		.oCORE_DATA(mmu2m_arbiter_data),
+		.oCORE_MMU_FLAGS(mmu2m_arbiter_mmu_flags),
+		/************************
+		To Memory
+		************************/
+		//This -> Memory
+		.oMEMORY_REQ(oMEMORY_REQ),
+		.iMEMORY_LOCK(iMEMORY_LOCK),
+		.oMEMORY_ORDER(oMEMORY_ORDER),
+		.oMEMORY_RW(oMEMORY_RW),
+		.oMEMORY_ADDR(oMEMORY_ADDR),
+		.oMEMORY_DATA(oMEMORY_DATA),
+		//Memory -> This
+		.iMEMORY_REQ(iMEMORY_VALID),
+		.oMEMORY_LOCK(oMEMORY_BUSY),
+		.iMEMORY_DATA(iMEMORY_DATA)
+	); 
+
 	/********************************************************************************
 	IO Interface
 	********************************************************************************/		
@@ -445,52 +479,11 @@ module mist1032isa(
 		.iSCI_RXD(iSCI_RXD)
 	);	
 	
-	/********************************************************************************
-	Memory Interface
-	********************************************************************************/	
+
+		
 	/*********************************************************
-	Memory Matching Controal
+	Write Ack(Data Pipe)
 	*********************************************************/	
-	arbiter_matching_bridge #(16, 4) MEM_MATCHING_BRIDGE(	//Queue deep : 16, Queue deep_n : 4
-		.iCLOCK(iBUS_CLOCK),
-		.inRESET(inRESET),
-		//Flash
-		.iFLASH(1'b0),
-		//Write
-		.iWR_REQ(!matching_bridfe_wr_full && !mmu_lock && (core2mem_inst_condition || (core2mem_data_condition && !core2mem_data_rw))),
-		.iWR_TYPE(core2mem_data_condition),		//0:Inst, 1:Data
-		.oWR_FULL(matching_bridfe_wr_full),
-		//Read
-		.iRD_REQ(iMEMORY_VALID && !matching_bridge_rd_empty && (matching_bridge_rd_type && !core2mem_data_lock || !matching_bridge_rd_type && !core2mem_inst_lock)),
-		.oRD_VALID(matching_bridge_rd_valid),
-		.oRD_TYPE(matching_bridge_rd_type),		//0:Inst, 1:Data
-		.oRD_EMPTY(matching_bridge_rd_empty)
-	);
-	
-	/*********************************************************
-	Memory Write Ack(Data Pipe)
-	*********************************************************/	
-	//Memory
-	reg b_memory_write_ack;
-	always@(posedge iBUS_CLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_memory_write_ack <= 1'b0;
-		end
-		else begin
-			case(b_memory_write_ack)
-				1'b0:
-					begin
-						if(!mmu_lock && core2mem_data_condition && core2mem_data_rw)begin
-							b_memory_write_ack <= 1'b1;
-						end
-					end
-				1'b1:
-					begin
-						b_memory_write_ack <= 1'b0;
-					end
-			endcase
-		end
-	end
 	//IO
 	reg b_io_write_ack;
 	always@(posedge iBUS_CLOCK or negedge inRESET)begin
@@ -514,111 +507,11 @@ module mist1032isa(
 	end
 	
 	
-	
-	/*********************************************************
-	Buffer & Assign(Core -> Memory)
-	*********************************************************/
-	//assign
-	assign				mem2core_inst_lock				=		mmu_lock || matching_bridfe_wr_full || core2mem_data_condition;
-	assign				mem2core_data_lock				=		mmu_lock || matching_bridfe_wr_full || core2mem_inst_condition;
 
-	assign				core2mem_inst_condition			=		!core2mem_data_req && core2mem_inst_req;
-	assign				core2mem_data_condition			=		core2mem_data_req;
-
-	always@(posedge iBUS_CLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_core2mem_req		<=		1'b0;
-			b_core2mem_order	<=		2'h0;
-			b_core2mem_rw		<=		1'b0;
-			b_core2mem_tid		<=		{14{1'b0}};
-			b_core2mem_mmumod	<=		2'h0;
-			b_core2mem_pdt		<=		{32{1'b0}};
-			b_core2mem_addr		<=		{32{1'b0}};
-			b_core2mem_data		<=		{32{1'b0}};
-		end
-		else begin
-			if(!mmu_lock)begin
-				//if(b_io_startaddr_valid )
-				if(core2mem_data_condition)begin
-					b_core2mem_req		<=		1'b1;
-					b_core2mem_order	<=		core2mem_data_order;
-					b_core2mem_rw		<=		core2mem_data_rw;
-					b_core2mem_tid		<=		core2mem_data_tid;
-					b_core2mem_mmumod	<=		core2mem_data_mmumod;
-					b_core2mem_pdt		<=		core2mem_data_pdt;
-					b_core2mem_addr		<=		core2mem_data_addr;
-					b_core2mem_data		<=		core2mem_data_data;
-				end
-				else if(core2mem_inst_condition)begin
-					b_core2mem_req		<=		1'b1;
-					b_core2mem_order	<=		2'h2;
-					b_core2mem_rw		<=		1'b0;
-					b_core2mem_tid		<=		core2mem_inst_tid;
-					b_core2mem_mmumod	<=		core2mem_inst_mmumod;
-					b_core2mem_pdt		<=		core2mem_inst_pdt;
-					b_core2mem_addr		<=		core2mem_inst_addr;
-					b_core2mem_data		<=		{32{1'b0}};
-				end
-				else begin
-					b_core2mem_req		<=		1'b0;
-				end
-			end
-		end
-	end
-	
-	
-	/*********************************************************
-	Inst Data Selector & Buffer & assign (Memory -> Core)
-	*********************************************************/
-	//Inst
-	always@(posedge iBUS_CLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_mem2core_inst_valid		<=		1'b0;
-			b_mem2core_inst_data		<=		{63{1'b0}};
-		end
-		else begin
-			if(!core2mem_inst_lock)begin
-				b_mem2core_inst_valid		<=		!matching_bridge_rd_type && matching_bridge_rd_valid && iMEMORY_VALID;
-				b_mem2core_inst_data		<=		iMEMORY_DATA;
-			end
-		end
-	end
-	
-	//Data
-	assign		core2mem_data_lock		=		1'b0;
-	always@(posedge iBUS_CLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_mem2core_data_valid		<=		1'b0;
-			b_mem2core_data_data		<=		{63{1'b0}};
-		end
-		else begin
-			if(!core2mem_data_lock)begin
-				b_mem2core_data_valid		<=		matching_bridge_rd_type && matching_bridge_rd_valid && iMEMORY_VALID;
-				b_mem2core_data_data		<=		iMEMORY_DATA;
-			end
-		end
-	end
-	
-	//Inst Assign
-	assign			mem2core_inst_valid		=		b_mem2core_inst_valid && !core2mem_inst_lock;
-	assign			mem2core_inst_data		=		b_mem2core_inst_data;
-	//Data Assign
-	assign			mem2core_data_valid		=		b_mem2core_data_valid && !core2mem_data_lock;
-	assign			mem2core_data_data		=		b_mem2core_data_data;
-	
-	//Assign
-	/* to MMU
-	assign		oMEMORY_REQ		=	b_core2mem_req;
-	assign		oMEMORY_ORDER	=	b_core2mem_order;
-	assign		oMEMORY_RW		=	b_core2mem_rw;
-	assign		oMEMORY_ADDR	=	b_core2mem_addr;
-	assign		oMEMORY_DATA	=	b_core2mem_data;
-	assign		oMEMORY_BUSY	=	(!matching_bridge_rd_type && core2mem_inst_lock) || (matching_bridge_rd_type && core2mem_data_lock);
-	*/
-	
 	
 endmodule
 
 
 `default_nettype wire
+
 

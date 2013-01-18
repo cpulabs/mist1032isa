@@ -360,7 +360,7 @@ module execute(
 	reg		[31:0]		b_sysreg_flags;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_sysreg_flags			<=		32'h0;
+			b_sysreg_flags <= 32'h0;
 		end
 		else if(iFREE_PIPELINE_STOP || iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
 			b_sysreg_flags <= b_sysreg_flags;
@@ -370,13 +370,13 @@ module execute(
 				//Flag
 				if(iPREVIOUS_FLAGS_WRITEBACK)begin
 					if(iPREVIOUS_EX_SHIFT)begin
-						b_sysreg_flags			<=		shift_flags;
+						b_sysreg_flags <= shift_flags;
 					end
 					else if(iPREVIOUS_EX_ADDER)begin
-						b_sysreg_flags			<=		adder_flags;
+						b_sysreg_flags <= adder_flags;
 					end
 					else if(iPREVIOUS_EX_MUL)begin
-						b_sysreg_flags			<=		mul_flags;
+						b_sysreg_flags <= mul_flags;
 					end
 				end
 			end
@@ -390,13 +390,13 @@ module execute(
 	/****************************************
 	System Register
 	****************************************/
-	wire				sys_reg_sf		=		1'b0;
-	wire				sys_reg_of		=		1'b0;
-	wire				sys_reg_cf		=		1'b0;
-	wire				sys_reg_pf		=		1'b0;
-	wire				sys_reg_zf		=		1'b0;
-	wire	[4:0]		sys_reg_flags		=		{sys_reg_sf, sys_reg_of, sys_reg_cf, sys_reg_pf, sys_reg_zf};
-	wire	[31:0]		sys_reg_data;		
+	wire sys_reg_sf = 1'b0;
+	wire sys_reg_of = 1'b0;
+	wire sys_reg_cf = 1'b0;
+	wire sys_reg_pf = 1'b0;
+	wire sys_reg_zf = 1'b0;
+	wire [4:0] sys_reg_flags = {sys_reg_sf, sys_reg_of, sys_reg_cf, sys_reg_pf, sys_reg_zf};
+	wire [31:0] sys_reg_data;		
 	
 	sys_reg EXE_SYS_REG(
 		.iCMD(iPREVIOUS_CMD),
@@ -408,41 +408,39 @@ module execute(
 	/****************************************
 	Logic
 	****************************************/
-	
-	wire	[4:0]	logic_cmd		=	func_logic_select(iPREVIOUS_CMD);
-	
+	wire [4:0] logic_cmd = func_logic_select(iPREVIOUS_CMD);
 	
 	function [4:0] func_logic_select;
-		input	[4:0]	func_logic_select_cmd;
+		input [4:0] func_logic_select_cmd;
 		
 		begin
 			case(func_logic_select_cmd)
-				`EXE_LOGIC_BUFFER0	:	func_logic_select		=		5'h00;	
-				`EXE_LOGIC_BUFFER1	:	func_logic_select		=		5'h01;
-				`EXE_LOGIC_AND		:	func_logic_select		=		5'h04;										
-				`EXE_LOGIC_OR		:	func_logic_select		=		5'h05;								
-				`EXE_LOGIC_XOR		:	func_logic_select		=		5'h06;							
-				`EXE_LOGIC_NOT		:	func_logic_select		=		5'h02;										
-				`EXE_LOGIC_NAND		:	func_logic_select		=		5'h07;									
-				`EXE_LOGIC_NOR		:	func_logic_select		=		5'h08;								
-				`EXE_LOGIC_XNOR		:	func_logic_select		=		5'h09;	
-				`EXE_LOGIC_TEST		:	func_logic_select		=		5'h04;
-				`EXE_LOGIC_WBL		:	func_logic_select		=		5'h10;													
-				`EXE_LOGIC_WBH		:	func_logic_select		=		5'h11;
-				`EXE_LOGIC_CLB		:	func_logic_select		=		5'h0A;
-				`EXE_LOGIC_STB		:	func_logic_select		=		5'h0B;
-				`EXE_LOGIC_CLW		:	func_logic_select		=		5'h00;
-				`EXE_LOGIC_STW		:	func_logic_select		=		5'h00;
-				`EXE_LOGIC_BITREV	:	func_logic_select		=		5'h0C;
-				`EXE_LOGIC_BYTEREV	:	func_logic_select		=		5'h0D;
-				`EXE_LOGIC_GETBIT	:	func_logic_select		=		5'h0E;
-				`EXE_LOGIC_GETBYTE	:	func_logic_select		=		5'h0F;
-				`EXE_LOGIC_LIL		:	func_logic_select		=		5'h12;
-				`EXE_LOGIC_LIH		:	func_logic_select		=		5'h1;
-				`EXE_LOGIC_ULIL		:	func_logic_select		=		5'h14;	
+				`EXE_LOGIC_BUFFER0	:	func_logic_select = 5'h00;	
+				`EXE_LOGIC_BUFFER1	:	func_logic_select = 5'h01;
+				`EXE_LOGIC_AND		:	func_logic_select = 5'h04;										
+				`EXE_LOGIC_OR		:	func_logic_select = 5'h05;								
+				`EXE_LOGIC_XOR		:	func_logic_select = 5'h06;							
+				`EXE_LOGIC_NOT		:	func_logic_select = 5'h02;										
+				`EXE_LOGIC_NAND		:	func_logic_select = 5'h07;									
+				`EXE_LOGIC_NOR		:	func_logic_select = 5'h08;								
+				`EXE_LOGIC_XNOR		:	func_logic_select = 5'h09;	
+				`EXE_LOGIC_TEST		:	func_logic_select = 5'h04;
+				`EXE_LOGIC_WBL		:	func_logic_select = 5'h10;													
+				`EXE_LOGIC_WBH		:	func_logic_select = 5'h11;
+				`EXE_LOGIC_CLB		:	func_logic_select = 5'h0A;
+				`EXE_LOGIC_STB		:	func_logic_select = 5'h0B;
+				`EXE_LOGIC_CLW		:	func_logic_select = 5'h00;
+				`EXE_LOGIC_STW		:	func_logic_select = 5'h00;
+				`EXE_LOGIC_BITREV	:	func_logic_select = 5'h0C;
+				`EXE_LOGIC_BYTEREV	:	func_logic_select = 5'h0D;
+				`EXE_LOGIC_GETBIT	:	func_logic_select = 5'h0E;
+				`EXE_LOGIC_GETBYTE	:	func_logic_select = 5'h0F;
+				`EXE_LOGIC_LIL		:	func_logic_select = 5'h12;
+				`EXE_LOGIC_LIH		:	func_logic_select = 5'h01;
+				`EXE_LOGIC_ULIL		:	func_logic_select = 5'h14;	
 				default
 					begin
-						func_logic_select		=		5'h00;	
+						func_logic_select = 5'h00;	
 					end
 			endcase
 		end
@@ -461,14 +459,14 @@ module execute(
 		.oZF(logic_zf)
 	);
 	
-	wire				logic_sf;
-	wire				logic_of;
-	wire				logic_cf;
-	wire				logic_pf;
-	wire				logic_zf;
+	wire logic_sf;
+	wire logic_of;
+	wire logic_cf;
+	wire logic_pf;
+	wire logic_zf;
 			
-	wire	[31:0]		logic_data;
-	wire	[4:0]		logic_flags		=		{logic_sf, logic_of, logic_cf, logic_pf, logic_zf};
+	wire [31:0] logic_data;
+	wire [4:0] logic_flags = {logic_sf, logic_of, logic_cf, logic_pf, logic_zf};
 	
 	/****************************************
 	Shift
@@ -477,36 +475,41 @@ module execute(
 		.iCONTROL_MODE(func_shift_select(iPREVIOUS_CMD)),
 		.iDATA_0(ex_module_source0), 
 		.iDATA_1(ex_module_source1),
-		.oDATA(shift_data), .oSF(shift_sf), .oOF(shift_of), .oCF(shift_cf), .oPF(shift_pf), .oZF(shift_zf)
+		.oDATA(shift_data), 
+		.oSF(shift_sf), 
+		.oOF(shift_of), 
+		.oCF(shift_cf), 
+		.oPF(shift_pf), 
+		.oZF(shift_zf)
 	);
 	
-	wire		shift_sf, shift_of, shift_cf, shift_pf, shift_zf;
+	wire shift_sf, shift_of, shift_cf, shift_pf, shift_zf;
 
 
 	function [2:0] func_shift_select;
-		input		[4:0]	func_shift_select_cmd;
+		input [4:0] func_shift_select_cmd;
 		begin
 			case(func_shift_select_cmd)
-				`EXE_SHIFT_BUFFER		:	func_shift_select		=		3'h0;
-				`EXE_SHIFT_LOGICL		:	func_shift_select		=		3'h1;
-				`EXE_SHIFT_LOGICR		:	func_shift_select		=		3'h2;
-				`EXE_SHIFT_ALITHMETICR	:	func_shift_select		=		3'h3;
-				`EXE_SHIFT_ROTATEL		:	func_shift_select		=		3'h4;
-				`EXE_SHIFT_ROTATER		:	func_shift_select		=		3'h5;
-				default:					func_shift_select		=		3'h0;
+				`EXE_SHIFT_BUFFER		:	func_shift_select = 3'h0;
+				`EXE_SHIFT_LOGICL		:	func_shift_select = 3'h1;
+				`EXE_SHIFT_LOGICR		:	func_shift_select = 3'h2;
+				`EXE_SHIFT_ALITHMETICR	:	func_shift_select = 3'h3;
+				`EXE_SHIFT_ROTATEL		:	func_shift_select = 3'h4;
+				`EXE_SHIFT_ROTATER		:	func_shift_select = 3'h5;
+				default					:	func_shift_select = 3'h0;
 			endcase
 		end
 	endfunction
 
-	wire	[31:0]	shift_data;
-	wire	[4:0]	shift_flags		=		{shift_sf, shift_of, shift_cf, shift_pf, shift_zf};
+	wire [31:0] shift_data;
+	wire [4:0] shift_flags = {shift_sf, shift_of, shift_cf, shift_pf, shift_zf};
 
 	/****************************************
 	Adder
 	****************************************/
 	
-	wire	[31:0]		adder_data;
-	wire				adder_sf, adder_of, adder_cf, adder_pf, adder_zf;
+	wire [31:0] adder_data;
+	wire adder_sf, adder_of, adder_cf, adder_pf, adder_zf;
 	
 	adder_n	#(32) EXE_ADDER(
 		.iDATA_0(ex_module_source0), 
@@ -520,35 +523,35 @@ module execute(
 		.oZF(adder_zf)
 	);
 
-	wire	[4:0]		adder_flags		=		{adder_sf, adder_of, adder_cf, adder_pf, adder_zf};
+	wire [4:0] adder_flags = {adder_sf, adder_of, adder_cf, adder_pf, adder_zf};
 	
 	/****************************************
 	Mul 
 	****************************************/	
-	wire	[63:0]	mul_tmp					=		ex_module_source0 * ex_module_source1;
-	wire			mul_sf_l				=		mul_tmp[31];
-	wire			mul_cf_l				=		mul_tmp[32];
-	wire			mul_of_l				=		mul_tmp[31] ^ mul_tmp[32];
-	wire			mul_pf_l				=		mul_tmp[0];
-	wire			mul_zf_l				=		(mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
-	wire			mul_sf_h				=		mul_tmp[63];
-	wire			mul_cf_h				=		1'b0;
-	wire			mul_of_h				=		1'b0;
-	wire			mul_pf_h				=		mul_tmp[32];
-	wire			mul_zf_h				=		(mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
+	wire [63:0]	mul_tmp = ex_module_source0 * ex_module_source1;
+	wire mul_sf_l = mul_tmp[31];
+	wire mul_cf_l = mul_tmp[32];
+	wire mul_of_l = mul_tmp[31] ^ mul_tmp[32];
+	wire mul_pf_l = mul_tmp[0];
+	wire mul_zf_l = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
+	wire mul_sf_h = mul_tmp[63];
+	wire mul_cf_h = 1'b0;
+	wire mul_of_h = 1'b0;
+	wire mul_pf_h = mul_tmp[32];
+	wire mul_zf_h = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
 	
-	wire	[4:0]	mul_flags	=	(iPREVIOUS_CMD == `EXE_MUL_MULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
-	wire	[31:0]	mul_data	=	(iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
+	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
+	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
 	
 	
 	/****************************************
 	Div
 	****************************************/
-	wire	[31:0]		divider_out_q;
-	wire	[31:0]		divider_out_r;
-	wire				divider_condition;
-	assign				divider_condition		=		iPREVIOUS_VALID && (iPREVIOUS_EX_UDIV || iPREVIOUS_EX_SDIV) && !lock_condition;
-	wire				divider_out_valid;
+	wire [31:0] divider_out_q;
+	wire [31:0] divider_out_r;
+	wire divider_condition;
+	assign divider_condition = iPREVIOUS_VALID && (iPREVIOUS_EX_UDIV || iPREVIOUS_EX_SDIV) && !lock_condition;
+	wire divider_out_valid;
 	
 	pipelined_div_radix2 EXE_DIV(
 		//System
@@ -568,23 +571,23 @@ module execute(
 		.oOUT_DATA_R(divider_out_r)
 	);
 
-	reg			b_div_wait;
-	reg			b_div_q_r_condition;
+	reg b_div_wait;
+	reg b_div_q_r_condition;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_div_wait		<=		1'b0;
-			b_div_q_r_condition		<=		1'b0;
+			b_div_wait <= 1'b0;
+			b_div_q_r_condition <= 1'b0;
 		end
 		else begin
 			if(!b_div_wait)begin
 				if(divider_condition)begin
-					b_div_wait		<=		1'b1;
+					b_div_wait <= 1'b1;
 					b_div_q_r_condition <= ((iPREVIOUS_EX_UDIV && iPREVIOUS_CMD == `EXE_DIV_UMOD || iPREVIOUS_EX_SDIV && iPREVIOUS_CMD == `EXE_DIV_MOD))? 1'b0 : 1'b1;	//0:R 1:Q
 				end
 			end
 			else begin
 				if(divider_out_valid)begin
-					b_div_wait		<=		1'b0;
+					b_div_wait <= 1'b0;
 				end
 			end
 		end
@@ -595,15 +598,15 @@ module execute(
 	/****************************************
 	Load Store(Addr calculation)
 	****************************************/	
-	wire					ldst_spr_valid;
-	wire	[31:0]			ldst_spr;
-	wire	[31:0]			ldst_data;
-	wire					ldst_pipe_rw;
-	wire	[31:0]			ldst_pipe_addr;
-	wire	[31:0]			ldst_pipe_data;
-	wire	[1:0]			ldst_pipe_order;	
-	wire	[1:0]			load_pipe_shift;
-	wire	[1:0]			load_pipe_mask;
+	wire ldst_spr_valid;
+	wire [31:0] ldst_spr;
+	wire [31:0] ldst_data;
+	wire ldst_pipe_rw;
+	wire [31:0] ldst_pipe_addr;
+	wire [31:0] ldst_pipe_data;
+	wire [1:0] ldst_pipe_order;	
+	wire [1:0] load_pipe_shift;
+	wire [1:0] load_pipe_mask;
 
 
 	load_store LDST(
@@ -650,23 +653,6 @@ module execute(
 	);
 	
 
-	wire test = io_lock_condition && iPREVIOUS_EX_LDST;
-	wire test2_double_req = test_double_check_0 && test_double_check_1;
-	
-	
-	reg test_double_check_0;
-	reg test_double_check_1;
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			test_double_check_0 <= 1'b0;
-			test_double_check_1 <= 1'b0;
-		end
-		else begin
-			test_double_check_0 <= !io_lock_condition && oDATAIO_REQ;
-			test_double_check_1 <= test_double_check_0;
-		end
-	end
-	
 	/****************************************
 	Execution Module Select
 	****************************************/
@@ -1145,15 +1131,15 @@ module execute(
 	/****************************************************/
 	
 	function [31:0] func_load_mask;	
-		input	[1:0]		func_mask;
-		input	[31:0]		func_data;
+		input [1:0] func_mask;
+		input [31:0] func_data;
 		begin
 			//Altera Worning Option
 			case(func_mask)//synthesis parallel_case full_case
-				2'h0:	func_load_mask	=	func_data & 32'h000000FF;
-				2'h1:	func_load_mask	=	func_data & 32'h0000FFFF;
-				2'h2:	func_load_mask	=	func_data & 32'h00FFFFFF;
-				2'h3:	func_load_mask	=	func_data & 32'hFFFFFFFF;
+				2'h0: func_load_mask = func_data & 32'h000000FF;
+				2'h1: func_load_mask = func_data & 32'h0000FFFF;
+				2'h2: func_load_mask = func_data & 32'h00FFFFFF;
+				2'h3: func_load_mask = func_data & 32'hFFFFFFFF;
 			endcase
 		end
 	endfunction
@@ -1169,7 +1155,7 @@ module execute(
 	assign oNEXT_SPR = b_r_spr;
 	
 	//Load Store Pipe
-	assign oDATAIO_REQ = (/*b_state == L_PARAM_STT_NORMAL || */b_state == L_PARAM_STT_LOAD || b_state == L_PARAM_STT_STORE)? b_ldst_pipe_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK && !io_lock_condition : 1'b0;
+	assign oDATAIO_REQ = (b_state == L_PARAM_STT_LOAD || b_state == L_PARAM_STT_STORE)? b_ldst_pipe_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK && !io_lock_condition : 1'b0;
 	assign oDATAIO_ORDER = b_ldst_pipe_order;
 	assign oDATAIO_RW = (b_state == L_PARAM_STT_STORE)? 1'b1 : 1'b0;
 	assign oDATAIO_TID = b_sysreg_tidr[13:0];
@@ -1200,15 +1186,4 @@ module execute(
 		
 endmodule
 
-
-
-	
-
 `default_nettype wire
-
-	
-	
-	
-	
-	
-	

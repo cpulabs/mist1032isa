@@ -45,7 +45,6 @@ module core
 		//Req
 		output					oINST_REQ,
 		input					iINST_LOCK,
-		output	[13:0]			oINST_TID,
 		output	[1:0]			oINST_MMUMOD,
 		output	[31:0]			oINST_PDT,
 		output	[31:0]			oINST_ADDR,
@@ -55,7 +54,7 @@ module core
 		input					iINST_VALID,
 		output					oINST_BUSY,		//new
 		input	[63:0]			iINST_DATA,
-		input	[11:0]			iINST_MMU_FLAGS,
+		input	[27:0]			iINST_MMU_FLAGS,
 		/****************************************
 		Data Memory
 		****************************************/
@@ -185,7 +184,6 @@ module core
 		//Instruction Memory Request
 		.oINST_FETCH_REQ(oINST_REQ),
 		.iINST_FETCH_BUSY(iINST_LOCK),
-		.oINST_FETCH_TID(oINST_TID),
 		.oINST_FETCH_MMUMOD(oINST_MMUMOD),
 		.oINST_FETCH_PDT(oINST_PDT),
 		.oINST_FETCH_ADDR(oINST_ADDR),

@@ -34,50 +34,48 @@ module l1_cache_64entry_4way_line64b_bus_8b_damy(
 					output oRD_HIT,
 					input iRD_BUSY,		
 					output [63:0] oRD_DATA,
-					output [23:0] oRD_MMU_FLAGS,	
+					output [27:0] oRD_MMU_FLAGS,	
 					/********************************
 					Upload
 					********************************/
-					input				iUP_REQ,
-					output				oUP_BUSY,
-					input	[1:0] iUP_ORDER,
-					input	[31:0] iUP_ADDR,				
-					input	[31:0] iUP_DATA,
+					input iUP_REQ,
+					output oUP_BUSY,
+					input [1:0] iUP_ORDER,
+					input [31:0] iUP_ADDR,				
+					input [31:0] iUP_DATA,
 					//input	[5:0] iUP_MMU_FLAGS,
 					/********************************
 					Write Request
 					********************************/
-					input				iWR_REQ,
-					output				oWR_BUSY,
-					input	[2:0] iWR_LINE,
-					input	[31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-					input	[63:0] iWR_DATA,
-					input	[23:0] iWR_MMU_FLAGS
+					input iWR_REQ,
+					output oWR_BUSY,
+					input [2:0] iWR_LINE,
+					input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+					input [63:0] iWR_DATA,
+					input [27:0] iWR_MMU_FLAGS
 	);
 			
-	assign			oRD_BUSY		=		1'b0;
+	assign oRD_BUSY = 1'b0;
 	
-	reg				b_req_valid;
+	reg b_req_valid;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_req_valid		<=		1'b0;
+			b_req_valid <= 1'b0;
 		end
 		else if(iREMOVE)begin
-			b_req_valid		<=		1'b0;
+			b_req_valid <= 1'b0;
 		end
 		else begin
-			b_req_valid		<=		iRD_REQ;
+			b_req_valid <= iRD_REQ;
 		end
 	end
 
-	assign			oRD_VALID		=		b_req_valid;
-	assign			oRD_HIT			=		1'b0;
-	assign			oRD_DATA		=		64'h0;
-	assign			oRD_MMU_FLAGS	=		24'h0;
-	assign			oUP_BUSY		=		1'b0;
-	assign			oWR_BUSY		=		1'b0;
-			
-
+	assign oRD_VALID = b_req_valid;
+	assign oRD_HIT = 1'b0;
+	assign oRD_DATA = 64'h0;
+	assign oRD_MMU_FLAGS = 28'h0;
+	assign oUP_BUSY = 1'b0;
+	assign oWR_BUSY = 1'b0;
 	
 endmodule
 
@@ -103,7 +101,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 					output				oRD_HIT,
 					input				iRD_BUSY,		
 					output	[63:0] oRD_DATA,
-					output	[23:0] oRD_MMU_FLAGS,	
+					output	[27:0] oRD_MMU_FLAGS,	
 					/********************************
 					Upload
 					********************************/
@@ -121,7 +119,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 					input	[2:0] iWR_LINE,
 					input	[31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 					input	[63:0] iWR_DATA,
-					input	[23:0] iWR_MMU_FLAGS
+					input	[27:0] iWR_MMU_FLAGS
 	);
 			
 	

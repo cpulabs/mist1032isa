@@ -83,7 +83,7 @@ module processor_debugger(
 	
 	
 	//Clock / Baudrate = parameter
-	processor_debugger_uart #(13'h1458) UART_IF(
+	processor_debugger_uart #(13'h1458) UART_IF(		//9600bps
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Request

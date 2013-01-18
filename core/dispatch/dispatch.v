@@ -146,9 +146,9 @@ module dispatch
 	);
 	
 	
-	wire				w_sysreg_pcr_regist_valid;
-	wire	[31:0]		w_sysreg_pcr_regist_data;
-	wire	[31:0]		w_sysreg_pcr_info_data;
+	wire w_sysreg_pcr_regist_valid;
+	wire [31:0] w_sysreg_pcr_regist_data;
+	wire [31:0] w_sysreg_pcr_info_data;
 	
 	assign	oSYSREG_PCR		=		w_sysreg_pcr_info_data;
 	assign	oEXCEPTION_LOCK	=		!b_pcr_valid || !b_valid || (b_valid && b_ex_branch);
