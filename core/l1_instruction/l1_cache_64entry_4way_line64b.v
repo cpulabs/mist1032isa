@@ -49,9 +49,8 @@ module l1_cache_64entry_4way_line64b_bus_8b_damy(
 					********************************/
 					input iWR_REQ,
 					output oWR_BUSY,
-					input [2:0] iWR_LINE,
 					input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-					input [63:0] iWR_DATA,
+					input [511:0] iWR_DATA,
 					input [27:0] iWR_MMU_FLAGS
 	);
 			
@@ -85,41 +84,39 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 					/********************************
 					System
 					********************************/
-					input				iCLOCK,
-					input				inRESET,
+					input iCLOCK,
+					input inRESET,
 					//Remove
-					input				iREMOVE,
+					input iREMOVE,
 					/********************************
 					Search
 					********************************/
 					//Search Request 
-					input				iRD_REQ,
-					output				oRD_BUSY,		
-					input	[31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+					input iRD_REQ,
+					output oRD_BUSY,		
+					input [31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 					//Search Output Result
-					output				oRD_VALID,
-					output				oRD_HIT,
-					input				iRD_BUSY,		
-					output	[63:0] oRD_DATA,
-					output	[27:0] oRD_MMU_FLAGS,	
+					output oRD_VALID,
+					output oRD_HIT,
+					input iRD_BUSY,		
+					output [63:0] oRD_DATA,
+					output [27:0] oRD_MMU_FLAGS,	
 					/********************************
 					Upload
 					********************************/
-					input				iUP_REQ,
-					output				oUP_BUSY,
-					input	[1:0] iUP_ORDER,
-					input	[31:0] iUP_ADDR,				
-					input	[31:0] iUP_DATA,
-					//input	[5:0] iUP_MMU_FLAGS,
+					input iUP_REQ,
+					output oUP_BUSY,
+					input [1:0] iUP_ORDER,
+					input [31:0] iUP_ADDR,				
+					input [31:0] iUP_DATA,
 					/********************************
 					Write Request
 					********************************/
-					input				iWR_REQ,
-					output				oWR_BUSY,
-					input	[2:0] iWR_LINE,
-					input	[31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-					input	[63:0] iWR_DATA,
-					input	[27:0] iWR_MMU_FLAGS
+					input iWR_REQ,
+					output oWR_BUSY,
+					input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+					input [511:0] iWR_DATA,
+					input [27:0] iWR_MMU_FLAGS
 	);
 			
 	
@@ -227,9 +224,9 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	assign				memory_write_way1_condition				=		(!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
 	assign				memory_write_way2_condition				=		(!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
 	assign				memory_write_way3_condition				=		(!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
-	assign				memory_write_byte_enable				=		(iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[3:0], iUP_ORDER) : func_write_enable_byte_gen(iWR_LINE);
+	assign				memory_write_byte_enable				=		(iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[3:0], iUP_ORDER) : {64{1'b1}};
 	
-	assign				memory_write_data						=		(iUP_REQ)? {8{iUP_DATA}} : {8{iWR_DATA}};
+	assign				memory_write_data						=		(iUP_REQ)? {8{iUP_DATA}} : iWR_DATA;
 	
 	wire 			memory_mmuflag_write_way0_condition;
 	wire 			memory_mmuflag_write_way1_condition;
@@ -239,7 +236,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	assign				memory_mmuflag_write_way1_condition		=		(!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
 	assign				memory_mmuflag_write_way2_condition		=		(!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
 	assign				memory_mmuflag_write_way3_condition		=		(!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
-	assign				memory_mmuflag_write_byte_enable		=		(iUP_REQ)? {32{1'b0}} : func_mmuflags_write_enable_byte_gen(iWR_LINE);
+	assign				memory_mmuflag_write_byte_enable		=		(iUP_REQ)? {32{1'b0}} : {32{1'b1}};
 	assign				memory_mmuflag_write_data				=		{8{4'h0, iWR_MMU_FLAGS[23:12], 4'h0, iWR_MMU_FLAGS[11:0]}};
 	
 	
@@ -389,39 +386,6 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 				2'h1 : func_local_data = 64'h0000000000000003 << func_addr;
 				2'h2 : func_local_data = 64'h000000000000000F << func_addr;
 				default : func_local_data = 64'h0000000000000000;
-			endcase
-		end
-	endfunction
-	
-	//Write Byte Enable Generate
-	function [63:0] func_write_enable_byte_gen;
-		input [2:0] func_addr;
-		begin
-			case(func_addr)
-				3'h0 : func_write_enable_byte_gen = 64'h00000000000000FF;
-				3'h1 : func_write_enable_byte_gen = 64'h000000000000FF00;
-				3'h2 : func_write_enable_byte_gen = 64'h0000000000FF0000;
-				3'h3 : func_write_enable_byte_gen = 64'h00000000FF000000;
-				3'h4 : func_write_enable_byte_gen = 64'h000000FF00000000;
-				3'h5 : func_write_enable_byte_gen = 64'h0000FF0000000000;
-				3'h6 : func_write_enable_byte_gen = 64'h00FF000000000000;
-				3'h7 : func_write_enable_byte_gen = 64'hFF00000000000000;
-			endcase
-		end
-	endfunction
-	
-	function [31:0] func_mmuflags_write_enable_byte_gen;
-		input [2:0] func_addr;
-		begin
-			case(func_addr)
-				3'h0 : func_mmuflags_write_enable_byte_gen = 32'h0000000F;
-				3'h1 : func_mmuflags_write_enable_byte_gen = 32'h000000F0;
-				3'h2 : func_mmuflags_write_enable_byte_gen = 32'h00000F00;
-				3'h3 : func_mmuflags_write_enable_byte_gen = 32'h0000F000;
-				3'h4 : func_mmuflags_write_enable_byte_gen = 32'h000F0000;
-				3'h5 : func_mmuflags_write_enable_byte_gen = 32'h00F00000;
-				3'h6 : func_mmuflags_write_enable_byte_gen = 32'h0F000000;
-				3'h7 : func_mmuflags_write_enable_byte_gen = 32'hF0000000;
 			endcase
 		end
 	endfunction
@@ -703,53 +667,21 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 		end
 	end //always
 	
-	/*
-	wire [1:0] debug_lru_0[0:15];
-	wire [1:0] debug_lru_1[0:15];
-	wire [1:0] debug_lru_2[0:15];
-	wire [1:0] debug_lru_3[0:15];
-	genvar j;
-	generate 
-		for(j = 0; j < 16; j = j + 1)begin : debug1
-			assign debug_lru_0[j] = func_get_status_tag(tag0[j]);
-			assign debug_lru_1[j] = func_get_status_tag(tag1[j]);
-			assign debug_lru_2[j] = func_get_status_tag(tag2[j]);
-			assign debug_lru_3[j] = func_get_status_tag(tag3[j]);
-		end
-	endgenerate
-	
-	
-	
-	wire [21:0] debug_tag_0[0:15];
-	wire [21:0] debug_tag_1[0:15];
-	wire [21:0] debug_tag_2[0:15];
-	wire [21:0] debug_tag_3[0:15];
-	genvar j;
-	generate 
-		for(j = 0; j < 16; j = j + 1)begin : debug2
-			assign debug_tag_0[j] = func_get_address_tag(tag0[j]);
-			assign debug_tag_1[j] = func_get_address_tag(tag1[j]);
-			assign debug_tag_2[j] = func_get_address_tag(tag2[j]);
-			assign debug_tag_3[j] = func_get_address_tag(tag3[j]);
-		end
-	endgenerate
-	*/
-	
 	
 	/********************************************
 	Output Buffer
 	********************************************/
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_rd_hit		<=		1'h0;
-			b_rd_way		<=		2'h0;
-			b_rd_addr		<=		32'h0;
+			b_rd_hit <= 1'h0;
+			b_rd_way <= 2'h0;
+			b_rd_addr <= 32'h0;
 		end
 		else begin
 			if(!this_read_lock)begin
-				b_rd_hit		<=		read_hit;
-				b_rd_way		<=		read_way;
-				b_rd_addr		<=		iRD_ADDR;
+				b_rd_hit <= read_hit;
+				b_rd_way <= read_way;
+				b_rd_addr <= iRD_ADDR;
 			end
 		end
 	end
@@ -757,26 +689,26 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	/*****************************************************
 	Output Assign
 	*****************************************************/
-	assign			oRD_BUSY		=	iRD_BUSY || (iRD_REQ && iWR_REQ && iRD_ADDR == iWR_ADDR);	
-	assign			oRD_VALID		=	b_load_req_valid && !this_read_lock;
-	assign			oRD_HIT			=	b_load_req_valid && !this_read_lock && b_rd_hit;
-	assign			oRD_DATA		=	(b_load_req_valid && !this_read_lock && b_rd_hit)? (
-											(b_rd_way == 2'h0)? func_data_selector(b_rd_addr[5:3], memory_way0_out_data) : (
-												(b_rd_way == 2'h1)? func_data_selector(b_rd_addr[5:3], memory_way1_out_data) : (
-													(b_rd_way == 2'h2)? func_data_selector(b_rd_addr[5:3], memory_way2_out_data) : func_data_selector(b_rd_addr[5:3], memory_way3_out_data)
-												)
-											)
-										) : 64'h0;									
-	assign			oRD_MMU_FLAGS	=	(b_load_req_valid && !this_read_lock && b_rd_hit)? (
-											(b_rd_way == 2'h0)? memory_mmuflag_way0_out_data : (
-												(b_rd_way == 2'h1)? memory_mmuflag_way1_out_data : (
-													(b_rd_way == 2'h2)? memory_mmuflag_way2_out_data : memory_mmuflag_way3_out_data
-												)
-											)
-										) : 12'h0;
-	assign			oWR_BUSY		=	this_write_lock;
+	assign oRD_BUSY = iRD_BUSY || (iRD_REQ && iWR_REQ && iRD_ADDR == iWR_ADDR);	
+	assign oRD_VALID = b_load_req_valid && !this_read_lock;
+	assign oRD_HIT = b_load_req_valid && !this_read_lock && b_rd_hit;
+	assign oRD_DATA = (b_load_req_valid && !this_read_lock && b_rd_hit)? (
+								(b_rd_way == 2'h0)? func_data_selector(b_rd_addr[5:3], memory_way0_out_data) : (
+									(b_rd_way == 2'h1)? func_data_selector(b_rd_addr[5:3], memory_way1_out_data) : (
+										(b_rd_way == 2'h2)? func_data_selector(b_rd_addr[5:3], memory_way2_out_data) : func_data_selector(b_rd_addr[5:3], memory_way3_out_data)
+									)
+								)
+							) : 64'h0;									
+	assign oRD_MMU_FLAGS = (b_load_req_valid && !this_read_lock && b_rd_hit)? (
+								(b_rd_way == 2'h0)? memory_mmuflag_way0_out_data : (
+									(b_rd_way == 2'h1)? memory_mmuflag_way1_out_data : (
+										(b_rd_way == 2'h2)? memory_mmuflag_way2_out_data : memory_mmuflag_way3_out_data
+									)
+								)
+							) : 12'h0;
+	assign oWR_BUSY = this_write_lock;
 	
-	assign			oUP_BUSY = iWR_REQ;
+	assign oUP_BUSY = iWR_REQ;
 	
 				
 	

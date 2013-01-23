@@ -15,74 +15,76 @@ Exception Manager
 
 
 module exception_manager(
-					input							iCLOCK,
-					input							inRESET,
-					//Free
-					output							oFREE_REGISTER_LOCK,
-					output							oFREE_PIPELINE_STOP,
-					output							oFREE_REFRESH,
-					output							oFREE_RESTART,
-					output							oFREE_PC_SET,
-					output		[31:0]				oFREE_PC,
-					output							oFREE_PPCR_SET,		//NEW
-					output		[31:0]				oFREE_PPCR,			//NEW
-					output							oFREE_SET_IRQ_MODE,
-					output							oFREE_CLR_IRQ_MODE,
-					//Interrupt Lock
-					input							iINTERRUPT_LOCK,
-					//System Register - Input
-					input		[31:0]				iSYSREG_SPR,
-					input		[31:0]				iSYSREG_TIDR,
-					input		[31:0]				iSYSREG_TISR,
-					input		[31:0]				iSYSREG_PSR,
-					input		[31:0]				iSYSREG_PPSR,
-					input		[31:0]				iSYSREG_PCR,
-					input		[31:0]				iSYSREG_PPCR,
-					input		[31:0]				iSYSREG_IDTR,
-					//System Register - Output(Writeback)
-					output							oSYSREG_SPR_WRITE,
-					output		[31:0]				oSYSREG_SPR,
-					//IO Port
-					output							oLDST_USE,
-					output							oLDST_REQ,
-					input							iLDST_BUSY,
-					output		[1:0]				oLDST_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
-					output							oLDST_RW,		//0=Read 1=Write
-					output		[13:0]				oLDST_TID,
-					output		[1:0]				oLDST_MMUMOD,
-					output		[31:0]				oLDST_PDT,
-					output		[31:0]				oLDST_ADDR,
-					output		[31:0]				oLDST_DATA,
-					input							iLDST_REQ,
-					input		[31:0]				iLDST_DATA,
-					
-					/*********************************
-					Interrupt Configlation
-					*********************************/	
-					//GCI Interrupt Configlation Table
-					output							oIO_IRQ_CONFIG_TABLE_REQ,
-					output		[5:0]				oIO_IRQ_CONFIG_TABLE_ENTRY,
-					output							oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
-					output							oIO_IRQ_CONFIG_TABLE_FLAG_VALID,	
-					output		[1:0]				oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,	
-					//Interrupt COnfiglation Table
-					output							oICT_REQ,
-					output		[5:0]				oICT_ENTRY,
-					output							oICT_CONF_MASK,
-					output							oICT_CONF_VALID,	
-					output		[1:0]				oICT_CONF_LEVEL,			
-					//Core Branch
-					input							iEXCEPT_JUMP,					
-					input		[31:0]				iEXCEPT_JUMP_ADDR,
-					input							iEXCEPT_IDTS,					
-					input		[31:0]				iEXCEPT_IDTS_ADDR,
-					input							iEXCEPT_IB,					
-					input		[31:0]				iEXCEPT_IB_ADDR,
-					//External Exception
-					input							iEXCEPT_IRQ_REQ,
-					input		[6:0]				iEXCEPT_IRQ_NUM,
-					output							oEXCEPT_IRQ_ACK,
-					output							oEXCEPT_IRQ_BUSY
+		input iCLOCK,
+		input inRESET,
+		//Free
+		output oFREE_REGISTER_LOCK,
+		output oFREE_PIPELINE_STOP,
+		output oFREE_REFRESH,
+		output oFREE_RESTART,
+		output oFREE_PC_SET,
+		output [31:0] oFREE_PC,
+		output oFREE_PPCR_SET,	
+		output [31:0] oFREE_PPCR,
+		output oFREE_FI0R_SET,	
+		output [31:0] oFREE_FI0R,	
+		output oFREE_SET_IRQ_MODE,
+		output oFREE_CLR_IRQ_MODE,
+		//Interrupt Lock
+		input iINTERRUPT_LOCK,
+		//System Register - Input
+		input [31:0] iSYSREG_SPR,
+		input [31:0] iSYSREG_TIDR,
+		input [31:0] iSYSREG_TISR,
+		input [31:0] iSYSREG_PSR,
+		input [31:0] iSYSREG_PPSR,
+		input [31:0] iSYSREG_PCR,
+		input [31:0] iSYSREG_PPCR,
+		input [31:0] iSYSREG_IDTR,
+		//System Register - Output(Writeback)
+		output oSYSREG_SPR_WRITE,
+		output [31:0] oSYSREG_SPR,
+		//IO Port
+		output oLDST_USE,
+		output oLDST_REQ,
+		input iLDST_BUSY,
+		output [1:0] oLDST_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		output oLDST_RW,		//0=Read 1=Write
+		output [13:0] oLDST_TID,
+		output [1:0] oLDST_MMUMOD,
+		output [31:0] oLDST_PDT,
+		output [31:0] oLDST_ADDR,
+		output [31:0] oLDST_DATA,
+		input iLDST_REQ,
+		input [31:0] iLDST_DATA,
+		/*********************************
+		Interrupt Configlation
+		*********************************/	
+		//GCI Interrupt Configlation Table
+		output oIO_IRQ_CONFIG_TABLE_REQ,
+		output [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
+		output oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
+		output oIO_IRQ_CONFIG_TABLE_FLAG_VALID,	
+		output [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,	
+		//Interrupt COnfiglation Table
+		output oICT_REQ,
+		output [5:0] oICT_ENTRY,
+		output oICT_CONF_MASK,
+		output oICT_CONF_VALID,	
+		output [1:0] oICT_CONF_LEVEL,			
+		//Core Branch
+		input iEXCEPT_JUMP,					
+		input [31:0] iEXCEPT_JUMP_ADDR,
+		input iEXCEPT_IDTS,					
+		input [31:0] iEXCEPT_IDTS_ADDR,
+		input iEXCEPT_IB,					
+		input [31:0] iEXCEPT_IB_ADDR,
+		//External Exception
+		input iEXCEPT_IRQ_REQ,
+		input [6:0] iEXCEPT_IRQ_NUM,
+		input [31:0] iEXCEPT_IRQ_FI0R,
+		output oEXCEPT_IRQ_ACK,
+		output oEXCEPT_IRQ_BUSY
 	);
 
 	
@@ -160,37 +162,38 @@ module exception_manager(
 	/************************************************************
 	Main Always@ Register
 	************************************************************/
-	reg		[2:0]	b_main_state;
-	reg		[2:0]	b_sub_state;
-	reg				b_flash_event /* synthesis syn_maxfan = 250 */;		//Altera QuartusII Synthesis Option : Max fanout
-	reg				b_irq_ack;
+	reg [2:0] b_main_state;
+	reg [2:0] b_sub_state;
+	reg b_flash_event /* synthesis syn_maxfan = 250 */;		//Altera QuartusII Synthesis Option : Max fanout
+	reg b_irq_ack;
 	reg b_irq_request;
-	reg				b_branch_active;
-	reg		[31:0]	b_branch_addr;
+	reg b_branch_active;
+	reg [31:0] b_branch_addr;
 	reg b_ppcr_set;
 	reg [31:0] b_ppcr;
 	
-	reg				b_inthundl_read_req;	
-	reg				b_spr_mem_write_req;
-	reg		[31:0]	b_spr_mem_write_addr;
-	reg		[31:0]	b_spr_mem_write_spr;
-	reg				b_kspr_read_req;
-	reg				b_uspr_read_req;
-	reg				b_idt_read_req;
-	reg				b_new_spr_write_req;
-	reg		[31:0]	b_new_spr;
-	reg				b_sysreg_set;
-	reg		[1:0]	b_sysreg_set_mode;
-	reg		[6:0]	b_irq_num;
+	reg b_inthundl_read_req;	
+	reg b_spr_mem_write_req;
+	reg [31:0] b_spr_mem_write_addr;
+	reg [31:0] b_spr_mem_write_spr;
+	reg b_kspr_read_req;
+	reg b_uspr_read_req;
+	reg b_idt_read_req;
+	reg b_new_spr_write_req;
+	reg [31:0] b_new_spr;
+	reg b_sysreg_set;
+	reg [1:0] b_sysreg_set_mode;
+	reg [6:0] b_irq_num;
+	reg [31:0] b_irq_fi0r;
 	
 	
-	reg		[31:0]	b_sysr_spr;
-	reg		[31:0]	b_sysr_tidr;
-	reg		[31:0]	b_sysr_tisr;
-	reg		[31:0]	b_sysr_psr;
-	reg		[31:0]	b_sysr_ppsr;
-	reg		[31:0]	b_sysr_ppcr;
-	reg		[31:0] b_sysr_idtr;
+	reg [31:0] b_sysr_spr;
+	reg [31:0] b_sysr_tidr;
+	reg [31:0] b_sysr_tisr;
+	reg [31:0] b_sysr_psr;
+	reg [31:0] b_sysr_ppsr;
+	reg [31:0] b_sysr_ppcr;
+	reg [31:0] b_sysr_idtr;
 	
 	wire interrupt_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LOCK && iSYSREG_PSR[2];
 	wire interrupt_and_branch_condition = iEXCEPT_IRQ_REQ && iSYSREG_PSR[2];
@@ -220,6 +223,7 @@ module exception_manager(
 			b_sysreg_set <= 1'b0;
 			b_sysreg_set_mode <= 2'h0;
 			b_irq_num <= 7'h0;
+			b_irq_fi0r <= 32'h0;
 			
 			b_sysr_spr <= 32'h0;
 			b_sysr_tidr <= 32'h0;
@@ -256,12 +260,13 @@ module exception_manager(
 						else if(interrupt_condition)begin 
 							b_ppcr_set <= 1'b1;
 							b_ppcr <= iSYSREG_PCR;
-							b_sysreg_set_mode	<=		L_PARAM_SRMODE_IRQ_SET;
+							b_sysreg_set_mode <= L_PARAM_SRMODE_IRQ_SET;
 							b_sysreg_set <= 1'b1;
 							b_main_state <= L_PARAM_MAINSTT_IRQ_SET;
 							b_flash_event <= 1'b1;
 							//b_branch_addr <= iSYSREG_PCR;
 							b_irq_num <= iEXCEPT_IRQ_NUM;
+							b_irq_fi0r <= iEXCEPT_IRQ_FI0R;
 						end
 						//Interrupt Return Instruction
 						else if(iEXCEPT_IB)begin
@@ -293,6 +298,7 @@ module exception_manager(
 							b_ppcr_set <= 1'b1;
 							b_ppcr <= iEXCEPT_JUMP_ADDR;
 							b_irq_num <= iEXCEPT_IRQ_NUM;
+							b_irq_fi0r <= iEXCEPT_IRQ_FI0R;
 						end
 						//Branch -> Idle
 						else begin
@@ -530,7 +536,7 @@ module exception_manager(
 	parameter L_PARAM_INTHUNDLE_STT_REQ_WAIT = 1'b0;
 	parameter L_PARAM_INTHUNDLE_STT_LOAD = 1'b1;
 	
-	wire	[31:0]	inthundle_read_addr		=		b_sysr_idtr + {b_irq_num, 3'h0} + 32'h4;
+	wire [31:0] inthundle_read_addr = b_sysr_idtr + {b_irq_num, 3'h0} + 32'h4;
 
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -673,13 +679,11 @@ module exception_manager(
 	assign oFREE_PC_SET = b_branch_active;
 	assign oFREE_PC = b_branch_addr;
 	
-	/*
-	assign oFREE_PPCR_SET = (b_sysreg_set_mode == L_PARAM_SRMODE_IRQ_SET) && b_sysreg_set;
-	assign oFREE_PPCR = iSYSREG_PCR;
-	*/
-	
 	assign oFREE_PPCR_SET = b_ppcr_set;
 	assign oFREE_PPCR = b_ppcr;
+	
+	assign oFREE_FI0R_SET = (b_main_state == L_PARAM_MAINSTT_IRQ_SET) && (b_sub_state == L_PARAM_SUBSTT_SET_IRQ_JUMP_HUNDLER);
+	assign oFREE_FI0R = b_irq_fi0r;
 	
 	
 	assign oFREE_SET_IRQ_MODE = (b_sysreg_set_mode == L_PARAM_SRMODE_IRQ_SET)? b_sysreg_set : 1'b0;

@@ -1,10 +1,5 @@
 /****************************************
 	Decode Unit
-	
-	
-	
-	Make	:	2011/01/20
-	Update	:	2013/01/23
 ****************************************/
 `include "core.h"
 `default_nettype none			
@@ -12,58 +7,58 @@
 
 module decoder(
 				//System
-				input					iCLOCK,
-				input					inRESET,
+				input iCLOCK,
+				input inRESET,
 				//Free
-				input					iFREE_DEFAULT,	
+				input iFREE_DEFAULT,	
 				//Previous
 				input iPREVIOUS_INST_VALID,
-				input [13:0] iPREVIOUS_MMU_FLAGS,
-				input iPREVIOUS_PAGING_ENA,
-				input iPREVIOUS_KERNEL_ACCESS,
+				input iPREVIOUS_FAULT_PAGEFAULT,
+				input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
+				input iPREVIOUS_FAULT_INVALID_INST,
 				input [31:0] iPREVIOUS_INST,
 				input [31:0] iPREVIOUS_PC,
 				output oPREVIOUS_LOCK,
 				//Next-0		
-				output					oNEXT_VALID,
-				output oNEXT_FAULT_PAGE_FAULT,
+				output oNEXT_VALID,
+				output oNEXT_FAULT_PAGEFAULT,
 				output oNEXT_FAULT_PRIVILEGE_ERROR,
 				output oNEXT_FAULT_INVALID_INST,
-				output					oNEXT_SOURCE0_ACTIVE,			
-				output					oNEXT_SOURCE1_ACTIVE,		
-				output					oNEXT_SOURCE0_SYSREG,		
-				output					oNEXT_SOURCE1_SYSREG,		
-				output					oNEXT_SOURCE0_SYSREG_RENAME,		//2012/01/26
-				output					oNEXT_SOURCE1_SYSREG_RENAME,		//2012/01/26
-				output					oNEXT_DESTINATION_SYSREG,	
-				output					oNEXT_DEST_RENAME,		//2012/01/24
-				output					oNEXT_WRITEBACK,
-				output					oNEXT_FLAGS_WRITEBACK,
-				output					oNEXT_FRONT_COMMIT_WAIT,				
-				output	[4:0]			oNEXT_CMD,
-				output	[3:0]			oNEXT_CC_AFE,
-				output	[4:0]			oNEXT_SOURCE0,
-				output	[31:0]			oNEXT_SOURCE1,
-				output					oNEXT_SOURCE0_FLAGS,
-				output					oNEXT_SOURCE1_IMM,
-				output	[4:0]			oNEXT_DESTINATION,
-				output					oNEXT_EX_SYS_REG,		//new
-				output					oNEXT_EX_SYS_LDST,		//new
-				output					oNEXT_EX_LOGIC,
-				output					oNEXT_EX_SHIFT,
-				output					oNEXT_EX_ADDER,
-				output					oNEXT_EX_MUL,				//Change
-				output					oNEXT_EX_SDIV,			//NEW
-				output					oNEXT_EX_UDIV,			//NEW
-				output					oNEXT_EX_LDST,
-				output					oNEXT_EX_BRANCH,
-				output	[31:0]			oNEXT_PC,
-				input					iNEXT_LOCK
+				output oNEXT_SOURCE0_ACTIVE,			
+				output oNEXT_SOURCE1_ACTIVE,		
+				output oNEXT_SOURCE0_SYSREG,		
+				output oNEXT_SOURCE1_SYSREG,		
+				output oNEXT_SOURCE0_SYSREG_RENAME,	
+				output oNEXT_SOURCE1_SYSREG_RENAME,	
+				output oNEXT_DESTINATION_SYSREG,	
+				output oNEXT_DEST_RENAME,	
+				output oNEXT_WRITEBACK,
+				output oNEXT_FLAGS_WRITEBACK,
+				output oNEXT_FRONT_COMMIT_WAIT,				
+				output [4:0] oNEXT_CMD,
+				output [3:0] oNEXT_CC_AFE,
+				output [4:0] oNEXT_SOURCE0,
+				output [31:0] oNEXT_SOURCE1,
+				output oNEXT_SOURCE0_FLAGS,
+				output oNEXT_SOURCE1_IMM,
+				output [4:0] oNEXT_DESTINATION,
+				output oNEXT_EX_SYS_REG,	
+				output oNEXT_EX_SYS_LDST,	
+				output oNEXT_EX_LOGIC,
+				output oNEXT_EX_SHIFT,
+				output oNEXT_EX_ADDER,
+				output oNEXT_EX_MUL,			
+				output oNEXT_EX_SDIV,		
+				output oNEXT_EX_UDIV,		
+				output oNEXT_EX_LDST,
+				output oNEXT_EX_BRANCH,
+				output [31:0] oNEXT_PC,
+				input iNEXT_LOCK
 		);
 	
 	//Pipeline 
 	reg					b_valid;	
-	reg b_fault_page_fault;
+	reg b_fault_pagefault;
 	reg b_fault_page_privilege_error;
 	reg b_fault_page_invalid_inst;
 	reg		[13:0]		b_mmu_flags;
@@ -102,7 +97,7 @@ module decoder(
 	always@(posedge iCLOCK, negedge inRESET)begin
 		if(!inRESET)begin
 			b_valid					<=		1'b0;	
-			b_fault_page_fault <= 1'b0;
+			b_fault_pagefault <= 1'b0;
 			b_fault_page_privilege_error <= 1'b0;
 			b_fault_page_invalid_inst <= 1'b0;			
 			b_source0_active			<=		1'b0;			
@@ -138,7 +133,7 @@ module decoder(
 		end
 		else if(iFREE_DEFAULT)begin
 			b_valid					<=		1'b0;	
-			b_fault_page_fault <= 1'b0;
+			b_fault_pagefault <= 1'b0;
 			b_fault_page_privilege_error <= 1'b0;
 			b_fault_page_invalid_inst <= 1'b0;		
 			b_source0_active			<=		1'b0;			
@@ -175,14 +170,11 @@ module decoder(
 		else begin
 			if(!iNEXT_LOCK)begin
 				//Pipeline 1
-				b_valid					<=		iPREVIOUS_INST_VALID;
-				//Fault
-				{
-					b_fault_page_fault,
-					b_fault_page_privilege_error,
-					b_fault_page_invalid_inst
-				}							<=		func_mmu_flags_fault_check(iPREVIOUS_PAGING_ENA, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_MMU_FLAGS[5:0]) || 
-													(func_instruction_fault_check(iPREVIOUS_INST, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_MMU_FLAGS[5:0]) << 1'b1);
+				b_valid <= iPREVIOUS_INST_VALID;
+				//Flag
+				b_fault_pagefault <= iPREVIOUS_FAULT_PAGEFAULT;
+				b_fault_page_privilege_error <= iPREVIOUS_FAULT_PRIVILEGE_ERROR;
+				b_fault_page_invalid_inst <= iPREVIOUS_FAULT_INVALID_INST;
 				//Inst
 				{
 					b_error, b_commit_wait_inst, b_cc_afe,
@@ -194,82 +186,15 @@ module decoder(
 					b_destination_sysreg, b_dest_rename, b_cmd, b_ex_sys_reg, b_ex_sys_ldst,  
 					b_ex_logic, b_ex_shift, b_ex_adder, b_ex_sdiv, 
 					b_ex_udiv, b_ex_mul, b_ex_ldst, b_ex_branch
-				}							<=		f_decode(iPREVIOUS_INST);
+				} <= f_decode(iPREVIOUS_INST);
 				//Program Counter
-				b_pc						<=		iPREVIOUS_PC;
+				b_pc <= iPREVIOUS_PC;
 			end
 		end
 	end //always
 			
 	
-	/***************
-	[0]	:	IRQ40 Invalid page.(Page fault)
-	[1]	:	IRQ41 Privilege error.(Page)
-	[2]	:	IRQ42 Invalid instruction.(Page)
-	***************/
-	function [2:0] func_mmu_flags_fault_check;
-		input func_paging;
-		input func_kernel;				//1:kernel mode
-		input [5:0] func_mmu_flags;
-		begin
-			if(func_paging)begin
-				//Page fault check
-				if(!func_mmu_flags[0])begin
-					func_mmu_flags_fault_check = 3'h1;
-				end
-				//Invalid instruction check
-				if(!func_mmu_flags[3])begin
-					func_mmu_flags_fault_check = 3'h4;
-				end
-				//Privilege error check
-				else begin
-					//Page check
-					if(func_kernel)begin			//Kernell Mode
-						func_mmu_flags_fault_check = 3'h0;
-					end
-					else begin	//User Mode
-						if(func_mmu_flags[5:4] != 2'h0)begin
-							func_mmu_flags_fault_check = 3'h0;
-						end
-						else begin
-							func_mmu_flags_fault_check = 3'h2;	//Privilege Error
-						end
-					end
-				end
-			end
-			else begin
-				func_mmu_flags_fault_check = 3'h0;
-			end
-		end
-	endfunction
-		
-		
-	/***************
-	[0]	:	IRQ41 Privilege error.(Page)
-	***************/
-	function func_instruction_fault_check;
-		input [31:0] func_instruction;
-		input func_kernel;				//[1]Kernel
-		input [5:0] func_mmu_flags;
-		begin
-			if(func_kernel)begin			//Kernell Mode
-				func_instruction_fault_check = 1'b0;
-			end
-			else begin
-				case(func_instruction[30:21])
-					`FAULT_INSTRUCTION_SRTISR,
-					`FAULT_INSTRUCTION_SRKPDTR,
-					`FAULT_INSTRUCTION_SRIEIW,
-					`FAULT_INSTRUCTION_SRTISW,
-					`FAULT_INSTRUCTION_SRKPDTW,
-					`FAULT_INSTRUCTION_SRMMUW,
-					`FAULT_INSTRUCTION_HALT,
-					`FAULT_INSTRUCTION_IDTS	:	func_instruction_fault_check = 1'b1;
-					default					:	func_instruction_fault_check = 1'b0;
-				endcase
-			end
-		end
-	endfunction
+	
 
 	
 	function [74:0]	f_decode;
@@ -3435,7 +3360,7 @@ module decoder(
 	****************************************/
 	//Pipeline1
 	assign					oNEXT_VALID					=		b_valid;
-	assign oNEXT_FAULT_PAGE_FAULT = b_fault_page_fault;
+	assign oNEXT_FAULT_PAGEFAULT = b_fault_pagefault;
 	assign oNEXT_FAULT_PRIVILEGE_ERROR = b_fault_page_privilege_error;
 	assign oNEXT_FAULT_INVALID_INST = b_fault_page_invalid_inst;
 	assign					oNEXT_SOURCE0_ACTIVE			=		b_source0_active;

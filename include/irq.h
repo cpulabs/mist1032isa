@@ -1,5 +1,5 @@
 /****************************************
-	Core Interrupt Request Header File
+	Core Interrupt Request Header File (Sim)
 	- 
 	
 	
@@ -11,8 +11,9 @@
 /******************************************
 Interrupt Number
 ******************************************/
+//Fault
 `define		INT_NUM_DIVIDER_ERROR			7'd51
-`define		INT_NUM_PAGEFAULT				7'd40	
+`define		INT_NUM_PAGEFAULT			7'd40	
 `define		INT_NUM_PRIVILEGE_ERRPR			7'd41
 `define		INT_NUM_INSTRUCTION_INVALID		7'd42
 `define		INT_NUM_TSS_INVALID				7'd50

@@ -6,83 +6,87 @@
 
 
 module execute(
-		 input iCLOCK,
-		 input inRESET,
-		 input iFREE_REGISTER_LOCK,
-		 input iFREE_PIPELINE_STOP,
-		 input iFREE_REFRESH,
+		input iCLOCK,
+		input inRESET,
+		input iFREE_REGISTER_LOCK,
+		input iFREE_PIPELINE_STOP,
+		input iFREE_REFRESH,
 		 //Lock
-		 output oEXCEPTION_LOCK,
+		output oEXCEPTION_LOCK,
 		 //Pipeline 
-		 input iPREVIOUS_VALID,	
-		 input [31:0] iPREVIOUS_SYSREG_PSR,
-		 input [31:0] iPREVIOUS_SYSREG_TIDR,
-		 input [31:0] iPREVIOUS_SYSREG_PDTR,
-		 input iPREVIOUS_DESTINATION_SYSREG,
-		 input [4:0] iPREVIOUS_DESTINATION,			
-		 input iPREVIOUS_WRITEBACK,	
-		 input iPREVIOUS_FLAGS_WRITEBACK,	
-		 input [4:0] iPREVIOUS_CMD,
-		 input [3:0] iPREVIOUS_CC_AFE,	
-		 input [31:0] iPREVIOUS_SPR,
-		 input [31:0] iPREVIOUS_SOURCE0,
-		 input [31:0] iPREVIOUS_SOURCE1,
-		 input [4:0] iPREVIOUS_SOURCE0_POINTER,
-		 input [4:0] iPREVIOUS_SOURCE1_POINTER,
-		 input iPREVIOUS_SOURCE0_SYSREG,
-		 input iPREVIOUS_SOURCE1_SYSREG,
-		 input iPREVIOUS_SOURCE1_IMM,
-		 input iPREVIOUS_SOURCE0_FLAGS,
-		 input iPREVIOUS_EX_SYS_REG,		
-		 input iPREVIOUS_EX_SYS_LDST,		
-		 input iPREVIOUS_EX_LOGIC,
-		 input iPREVIOUS_EX_SHIFT,
-		 input iPREVIOUS_EX_ADDER,
-		 input iPREVIOUS_EX_MUL,
-		 input iPREVIOUS_EX_SDIV,
-		 input iPREVIOUS_EX_UDIV,
-		 input iPREVIOUS_EX_LDST,
-		 input iPREVIOUS_EX_BRANCH,
-		 input	[31:0] iPREVIOUS_PC,
-		 output oPREVIOUS_LOCK,
+		input iPREVIOUS_VALID,	
+		input iPREVIOUS_FAULT_PAGEFAULT,
+		input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
+		input iPREVIOUS_FAULT_INVALID_INST,
+		input [31:0] iPREVIOUS_SYSREG_PSR,
+		input [31:0] iPREVIOUS_SYSREG_TIDR,
+		input [31:0] iPREVIOUS_SYSREG_PDTR,
+		input iPREVIOUS_DESTINATION_SYSREG,
+		input [4:0] iPREVIOUS_DESTINATION,			
+		input iPREVIOUS_WRITEBACK,	
+		input iPREVIOUS_FLAGS_WRITEBACK,	
+		input [4:0] iPREVIOUS_CMD,
+		input [3:0] iPREVIOUS_CC_AFE,	
+		input [31:0] iPREVIOUS_SPR,
+		input [31:0] iPREVIOUS_SOURCE0,
+		input [31:0] iPREVIOUS_SOURCE1,
+		input [4:0] iPREVIOUS_SOURCE0_POINTER,
+		input [4:0] iPREVIOUS_SOURCE1_POINTER,
+		input iPREVIOUS_SOURCE0_SYSREG,
+		input iPREVIOUS_SOURCE1_SYSREG,
+		input iPREVIOUS_SOURCE1_IMM,
+		input iPREVIOUS_SOURCE0_FLAGS,
+		input iPREVIOUS_EX_SYS_REG,		
+		input iPREVIOUS_EX_SYS_LDST,		
+		input iPREVIOUS_EX_LOGIC,
+		input iPREVIOUS_EX_SHIFT,
+		input iPREVIOUS_EX_ADDER,
+		input iPREVIOUS_EX_MUL,
+		input iPREVIOUS_EX_SDIV,
+		input iPREVIOUS_EX_UDIV,
+		input iPREVIOUS_EX_LDST,
+		input iPREVIOUS_EX_BRANCH,
+		input	[31:0] iPREVIOUS_PC,
+		output oPREVIOUS_LOCK,
 		 //Load Store Pipe
-		 output oDATAIO_REQ,
-		 input iDATAIO_BUSY,
-		 output [1:0] oDATAIO_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
-		 output oDATAIO_RW,		//0=Read 1=Write
-		 output [13:0] oDATAIO_TID,
-		 output [1:0] oDATAIO_MMUMOD,
-		 output [31:0] oDATAIO_PDT,
-		 output [31:0] oDATAIO_ADDR,
-		 output [31:0] oDATAIO_DATA,
-		 input iDATAIO_REQ,
-		 input [31:0] iDATAIO_DATA,
+		output oDATAIO_REQ,
+		input iDATAIO_BUSY,
+		output [1:0] oDATAIO_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		output oDATAIO_RW,		//0=Read 1=Write
+		output [13:0] oDATAIO_TID,
+		output [1:0] oDATAIO_MMUMOD,
+		output [31:0] oDATAIO_PDT,
+		output [31:0] oDATAIO_ADDR,
+		output [31:0] oDATAIO_DATA,
+		input iDATAIO_REQ,
+		input [31:0] iDATAIO_DATA,
 		 //Writeback
-		 output oNEXT_VALID,
-		 output [31:0] oNEXT_DATA,
-		 output [4:0] oNEXT_DESTINATION,
-		 output oNEXT_DESTINATION_SYSREG,
-		 output oNEXT_WRITEBACK,
-		 output oNEXT_SPR_WRITEBACK,
-		 output [31:0] oNEXT_SPR, 
-		 output [31:0] oNEXT_PC,
-		 output oNEXT_BRANCH,
-		 output [31:0] oNEXT_BRANCH_PC,
+		output oNEXT_VALID,
+		output [31:0] oNEXT_DATA,
+		output [4:0] oNEXT_DESTINATION,
+		output oNEXT_DESTINATION_SYSREG,
+		output oNEXT_WRITEBACK,
+		output oNEXT_SPR_WRITEBACK,
+		output [31:0] oNEXT_SPR, 
+		output [31:0] oNEXT_PC,
+		output oNEXT_BRANCH,
+		output [31:0] oNEXT_BRANCH_PC,
 		 //System Register Write
-		 output oPDTR_WRITEBACK,
+		output oPDTR_WRITEBACK,
 		 //Branch
-		 output [31:0] oBRANCH_ADDR,
-		 output oJUMP_VALID,
-		 output oINTR_VALID,
-		 output oIDTSET_VALID,
-		 output oSWI_VALID,	//NEW
-		 output [6:0] oSWI_NUM,	//NEW		
+		output [31:0] oBRANCH_ADDR,
+		output oJUMP_VALID,
+		output oINTR_VALID,
+		output oIDTSET_VALID,
+		output oFAULT_VALID,
+		output [6:0] oFAULT_NUM,	
+		output [31:0] oFAULT_FI0R,
 		 //Debug
-		 input iDEBUG_CTRL_REQ,
-		 input iDEBUG_CTRL_STOP,
-		 input iDEBUG_CTRL_START,
-		 output oDEBUG_CTRL_ACK,
-		 output [31:0] oDEBUG_REG_OUT_FLAGR
+		input iDEBUG_CTRL_REQ,
+		input iDEBUG_CTRL_STOP,
+		input iDEBUG_CTRL_START,
+		output oDEBUG_CTRL_ACK,
+		output [31:0] oDEBUG_REG_OUT_FLAGR
 	);
 	
 	wire lock_condition = (b_state != L_PARAM_STT_NORMAL) || b_div_wait || b_debug_stop;// || iDATAIO_BUSY;
@@ -685,11 +689,14 @@ module execute(
 	reg [1:0] b_load_pipe_mask;
 	reg b_exception_valid;
 	reg [6:0] b_exception_num;
+	reg [31:0] b_exception_fi0r;
 	reg b_jump;
 	reg b_idts;
 	reg b_ib;
 	reg [31:0] b_branch_addr;
 	reg [31:0] b_pc;
+	
+	
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -713,6 +720,7 @@ module execute(
 			b_load_pipe_mask <= 2'h0;
 			b_exception_valid <= 1'b0;
 			b_exception_num <= 7'h0;
+			b_exception_fi0r <= 32'h0;
 			b_jump <= 1'b0;
 			b_idts <= 1'b0;
 			b_ib <= 1'b0;
@@ -740,6 +748,7 @@ module execute(
 			b_load_pipe_mask <= 2'h0;
 			b_exception_valid <= 1'b0;
 			b_exception_num <= 7'h0;
+			b_exception_fi0r <= 32'h0;
 			b_jump <= 1'b0;
 			b_idts <= 1'b0;
 			b_ib <= 1'b0;
@@ -750,18 +759,40 @@ module execute(
 			case(b_state)
 				L_PARAM_STT_NORMAL:
 					begin
-						
 						b_load_store <= 1'b0;
 						if(iPREVIOUS_VALID && !lock_condition)begin
 							b_pc <= iPREVIOUS_PC;
 						end
-						
 						b_valid <= iPREVIOUS_VALID && !lock_condition;
-						
 						if(iPREVIOUS_VALID && !lock_condition)begin
-							if(iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV)begin
-								//Non Exception
-								if(ex_module_source1 != 32'h0)begin
+							//Exception Check
+							if(iPREVIOUS_FAULT_PAGEFAULT)begin
+								b_state <= L_PARAM_STT_EXCEPTION;
+								b_exception_valid <= 1'b1;
+								b_exception_num <= `INT_NUM_PAGEFAULT;
+								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+							end
+							else if(iPREVIOUS_FAULT_PRIVILEGE_ERROR)begin
+								b_state <= L_PARAM_STT_EXCEPTION;
+								b_exception_valid <= 1'b1;
+								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
+								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+							end
+							else if(iPREVIOUS_FAULT_INVALID_INST)begin
+								b_state <= L_PARAM_STT_EXCEPTION;
+								b_exception_valid <= 1'b1;
+								b_exception_num <= `INT_NUM_INSTRUCTION_INVALID;
+								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+							end
+							else if((iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV) && (ex_module_source1 == 32'h0))begin
+								b_state <= L_PARAM_STT_EXCEPTION;
+								b_exception_valid <= 1'b1;
+								b_exception_num <= `INT_NUM_DIVIDER_ERROR;
+								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+							end
+							//Execute latch
+							else begin
+								if(iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV)begin
 									b_valid <= 1'b0;
 									b_state <= L_PARAM_STT_DIV_WAIT;
 									b_writeback <= iPREVIOUS_WRITEBACK;
@@ -774,193 +805,187 @@ module execute(
 									b_idts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;	
+								end		
+								//Load Store
+								else if(iPREVIOUS_EX_LDST)begin 								
+									b_load_store <= 1'b1;
+									if(!ldst_pipe_rw)begin
+										//Load
+										b_valid <= 1'b0;
+										b_sysreg_psr <= iPREVIOUS_SYSREG_PSR;
+										b_sysreg_tidr <= iPREVIOUS_SYSREG_TIDR;
+										b_sysreg_pdtr <= iPREVIOUS_SYSREG_PDTR;
+										b_writeback <= iPREVIOUS_WRITEBACK;
+										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
+										b_destination <= iPREVIOUS_DESTINATION;
+										b_spr_writeback <= ldst_spr_valid;
+										b_r_spr <= ldst_spr;
+										b_ldst_pipe_valid <= 1'b1;
+										b_ldst_pipe_order <= ldst_pipe_order;
+										b_ldst_pipe_addr <= ldst_pipe_addr;
+										b_load_pipe_shift <= load_pipe_shift;
+										b_load_pipe_mask <= load_pipe_mask;
+										b_state <= L_PARAM_STT_LOAD;
+									end
+									else begin
+										//Store 
+										b_sysreg_psr <= iPREVIOUS_SYSREG_PSR;
+										b_sysreg_tidr <= iPREVIOUS_SYSREG_TIDR;
+										b_sysreg_pdtr <= iPREVIOUS_SYSREG_PDTR;
+										b_writeback <= iPREVIOUS_WRITEBACK;
+										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
+										b_destination <= 5'h0;
+										b_r_data <= ldst_spr;
+										b_spr_writeback <= ldst_spr_valid;
+										b_r_spr <= ldst_spr;
+										b_ldst_pipe_valid <= 1'b1;
+										b_ldst_pipe_order <= ldst_pipe_order;
+										b_ldst_pipe_addr <= ldst_pipe_addr;
+										b_ldst_pipe_data <= ldst_pipe_data;
+										b_jump <= 1'b0;
+										b_idts <= 1'b0;
+										b_ib <= 1'b0;
+										b_branch_addr <= 32'h0;
+										b_state <= L_PARAM_STT_STORE;
+									end
 								end
-								//Exception DIVISOR = Zero
-								else begin
-									b_state <= L_PARAM_STT_EXCEPTION;
-									b_exception_valid <= 1'b1;
-									b_exception_num <= `INT_NUM_DIVIDER_ERROR;
+								else if(iPREVIOUS_EX_SYS_LDST)begin
+									//SPR Store
+									if(!ldst_pipe_rw)begin
+										b_writeback <= iPREVIOUS_WRITEBACK;
+										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
+										b_destination <= iPREVIOUS_DESTINATION;
+										b_r_data <= ldst_spr;
+										b_spr_writeback <= ldst_spr_valid;
+										b_r_spr <= ldst_spr;
+										b_ldst_pipe_valid <= 1'b0;
+										b_jump <= 1'b0;
+										b_idts <= 1'b0;
+										b_ib <= 1'b0;
+										b_branch_addr <= 32'h0;
+									end
+									//SPR Read
+									else begin
+										b_writeback <= iPREVIOUS_WRITEBACK;
+										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
+										b_destination <= iPREVIOUS_DESTINATION;
+										b_r_data <= ldst_spr;
+										b_spr_writeback <= ldst_spr_valid;
+										b_r_spr <= ldst_spr;
+										b_ldst_pipe_valid <= 1'b0;
+										b_jump <= 1'b0;
+										b_idts <= 1'b0;
+										b_ib <= 1'b0;
+										b_branch_addr <= 32'h0;
+									end
 								end
-							end		
-							//Load Store
-							else if(iPREVIOUS_EX_LDST)begin 								
-								b_load_store <= 1'b1;
-								if(!ldst_pipe_rw)begin
-									//Load
-									b_valid <= 1'b0;
-									b_sysreg_psr <= iPREVIOUS_SYSREG_PSR;
-									b_sysreg_tidr <= iPREVIOUS_SYSREG_TIDR;
-									b_sysreg_pdtr <= iPREVIOUS_SYSREG_PDTR;
+								//System Register
+								else if(iPREVIOUS_EX_SYS_REG)begin
 									b_writeback <= iPREVIOUS_WRITEBACK;
 									b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
 									b_destination <= iPREVIOUS_DESTINATION;
-									b_spr_writeback <= ldst_spr_valid;
-									b_r_spr <= ldst_spr;
-									b_ldst_pipe_valid <= 1'b1;
-									b_ldst_pipe_order <= ldst_pipe_order;
-									b_ldst_pipe_addr <= ldst_pipe_addr;
-									b_load_pipe_shift <= load_pipe_shift;
-									b_load_pipe_mask <= load_pipe_mask;
-									b_state <= L_PARAM_STT_LOAD;
-								end
-								else begin
-									//Store 
-									b_sysreg_psr <= iPREVIOUS_SYSREG_PSR;
-									b_sysreg_tidr <= iPREVIOUS_SYSREG_TIDR;
-									b_sysreg_pdtr <= iPREVIOUS_SYSREG_PDTR;
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-									b_destination <= 5'h0;
-									b_r_data <= ldst_spr;
-									b_spr_writeback <= ldst_spr_valid;
-									b_r_spr <= ldst_spr;
-									b_ldst_pipe_valid <= 1'b1;
-									b_ldst_pipe_order <= ldst_pipe_order;
-									b_ldst_pipe_addr <= ldst_pipe_addr;
-									b_ldst_pipe_data <= ldst_pipe_data;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
-									b_state <= L_PARAM_STT_STORE;
-								end
-							end
-							else if(iPREVIOUS_EX_SYS_LDST)begin
-								//SPR Store
-								if(!ldst_pipe_rw)begin
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-									b_destination <= iPREVIOUS_DESTINATION;
-									b_r_data <= ldst_spr;
-									b_spr_writeback <= ldst_spr_valid;
-									b_r_spr <= ldst_spr;
-									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
-								end
-								//SPR Read
-								else begin
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-									b_destination <= iPREVIOUS_DESTINATION;
-									b_r_data <= ldst_spr;
-									b_spr_writeback <= ldst_spr_valid;
-									b_r_spr <= ldst_spr;
-									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
-								end
-							end
-							//System Register
-							else if(iPREVIOUS_EX_SYS_REG)begin
-								b_writeback <= iPREVIOUS_WRITEBACK;
-								b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-								b_destination <= iPREVIOUS_DESTINATION;
-								b_r_data <= sys_reg_data;
-								b_spr_writeback <= 1'b0;
-								b_r_spr <= 32'h0;
-								b_ldst_pipe_valid <= 1'b0;
-								b_jump <= 1'b0;
-								b_idts <= 1'b0;
-								b_ib <= 1'b0;
-								b_branch_addr <= 32'h0;
-							end
-							//Logic
-							else if(iPREVIOUS_EX_LOGIC)begin
-								b_writeback <= iPREVIOUS_WRITEBACK;
-								b_destination_sysreg  <= 1'b0;
-								b_destination <= iPREVIOUS_DESTINATION;
-								b_r_data <= logic_data;
-								b_spr_writeback <= 1'b0;
-								b_r_spr <= 32'h0;
-								b_ldst_pipe_valid <= 1'b0;
-								b_jump <= 1'b0;
-								b_idts <= 1'b0;
-								b_ib <= 1'b0;
-								b_branch_addr <= 32'h0;
-							end
-							//SGHIFT
-							else if(iPREVIOUS_EX_SHIFT)begin
-								b_writeback <= iPREVIOUS_WRITEBACK;
-								b_destination_sysreg  <= 1'b0;
-								b_destination <= iPREVIOUS_DESTINATION;
-								b_r_data <= shift_data;
-								b_spr_writeback <= 1'b0;
-								b_r_spr <= 32'h0;
-								b_ldst_pipe_valid <= 1'b0;
-								b_jump <= 1'b0;
-								b_idts <= 1'b0;
-								b_ib <= 1'b0;
-								b_branch_addr <= 32'h0;
-							end
-							//ADDER
-							else if(iPREVIOUS_EX_ADDER)begin
-								b_writeback <= iPREVIOUS_WRITEBACK;
-								b_destination_sysreg  <= 1'b0;
-								b_destination <= iPREVIOUS_DESTINATION;
-								b_r_data <= adder_data;
-								b_spr_writeback <= 1'b0;
-								b_r_spr <= 32'h0;
-								b_ldst_pipe_valid <= 1'b0;
-								b_jump <= 1'b0;
-								b_idts <= 1'b0;
-								b_ib <= 1'b0;
-								b_branch_addr <= 32'h0;
-							end
-							//MUL
-							else if(iPREVIOUS_EX_MUL)begin
-								b_writeback <= iPREVIOUS_WRITEBACK;
-								b_destination_sysreg  <= 1'b0;
-								b_destination <= iPREVIOUS_DESTINATION;
-								b_r_data <= mul_data;
-								b_spr_writeback <= 1'b0;
-								b_r_spr <= 32'h0;
-								b_ldst_pipe_valid <= 1'b0;
-								b_jump <= 1'b0;
-								b_idts <= 1'b0;
-								b_ib <= 1'b0;
-								b_branch_addr <= 32'h0;
-							end
-							//Branch
-							else if(iPREVIOUS_EX_BRANCH)begin
-								//Halt
-								if(branch_halt_valid)begin
-									b_state <= L_PARAM_STT_HALT;
-								end
-								//Other Branch
-								else if(branch_jump_valid || branch_idts_valid || branch_ib_valid)begin
-									b_valid <= 1'b0;
-									b_state <= L_PARAM_STT_BRANCH;
-									b_writeback <= 1'b0;
-									b_destination_sysreg  <= 1'b0;
-									b_destination <= 5'h0;
-									b_r_data <= 32'h0;
+									b_r_data <= sys_reg_data;
 									b_spr_writeback <= 1'b0;
 									b_r_spr <= 32'h0;
 									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= branch_jump_valid;
-									b_idts <= branch_idts_valid;
-									b_ib <= branch_ib_valid;
-									b_branch_addr <= branch_branch_addr;
+									b_jump <= 1'b0;
+									b_idts <= 1'b0;
+									b_ib <= 1'b0;
+									b_branch_addr <= 32'h0;
 								end
-								//Non Branch
-								else begin
-									b_valid <= 1'b1;
-									b_writeback <= 1'b0;
+								//Logic
+								else if(iPREVIOUS_EX_LOGIC)begin
+									b_writeback <= iPREVIOUS_WRITEBACK;
 									b_destination_sysreg  <= 1'b0;
-									b_destination <= 5'h0;
-									b_r_data <= 32'h0;
+									b_destination <= iPREVIOUS_DESTINATION;
+									b_r_data <= logic_data;
 									b_spr_writeback <= 1'b0;
 									b_r_spr <= 32'h0;
 									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= branch_jump_valid;
-									b_idts <= branch_idts_valid;
-									b_ib <= branch_ib_valid;
-									b_branch_addr <= branch_branch_addr;
+									b_jump <= 1'b0;
+									b_idts <= 1'b0;
+									b_ib <= 1'b0;
+									b_branch_addr <= 32'h0;
+								end
+								//SGHIFT
+								else if(iPREVIOUS_EX_SHIFT)begin
+									b_writeback <= iPREVIOUS_WRITEBACK;
+									b_destination_sysreg  <= 1'b0;
+									b_destination <= iPREVIOUS_DESTINATION;
+									b_r_data <= shift_data;
+									b_spr_writeback <= 1'b0;
+									b_r_spr <= 32'h0;
+									b_ldst_pipe_valid <= 1'b0;
+									b_jump <= 1'b0;
+									b_idts <= 1'b0;
+									b_ib <= 1'b0;
+									b_branch_addr <= 32'h0;
+								end
+								//ADDER
+								else if(iPREVIOUS_EX_ADDER)begin
+									b_writeback <= iPREVIOUS_WRITEBACK;
+									b_destination_sysreg  <= 1'b0;
+									b_destination <= iPREVIOUS_DESTINATION;
+									b_r_data <= adder_data;
+									b_spr_writeback <= 1'b0;
+									b_r_spr <= 32'h0;
+									b_ldst_pipe_valid <= 1'b0;
+									b_jump <= 1'b0;
+									b_idts <= 1'b0;
+									b_ib <= 1'b0;
+									b_branch_addr <= 32'h0;
+								end
+								//MUL
+								else if(iPREVIOUS_EX_MUL)begin
+									b_writeback <= iPREVIOUS_WRITEBACK;
+									b_destination_sysreg  <= 1'b0;
+									b_destination <= iPREVIOUS_DESTINATION;
+									b_r_data <= mul_data;
+									b_spr_writeback <= 1'b0;
+									b_r_spr <= 32'h0;
+									b_ldst_pipe_valid <= 1'b0;
+									b_jump <= 1'b0;
+									b_idts <= 1'b0;
+									b_ib <= 1'b0;
+									b_branch_addr <= 32'h0;
+								end
+								//Branch
+								else if(iPREVIOUS_EX_BRANCH)begin
+									//Halt
+									if(branch_halt_valid)begin
+										b_state <= L_PARAM_STT_HALT;
+									end
+									//Other Branch
+									else if(branch_jump_valid || branch_idts_valid || branch_ib_valid)begin
+										b_valid <= 1'b0;
+										b_state <= L_PARAM_STT_BRANCH;
+										b_writeback <= 1'b0;
+										b_destination_sysreg  <= 1'b0;
+										b_destination <= 5'h0;
+										b_r_data <= 32'h0;
+										b_spr_writeback <= 1'b0;
+										b_r_spr <= 32'h0;
+										b_ldst_pipe_valid <= 1'b0;
+										b_jump <= branch_jump_valid;
+										b_idts <= branch_idts_valid;
+										b_ib <= branch_ib_valid;
+										b_branch_addr <= branch_branch_addr;
+									end
+									//Non Branch
+									else begin
+										b_valid <= 1'b1;
+										b_writeback <= 1'b0;
+										b_destination_sysreg  <= 1'b0;
+										b_destination <= 5'h0;
+										b_r_data <= 32'h0;
+										b_spr_writeback <= 1'b0;
+										b_r_spr <= 32'h0;
+										b_ldst_pipe_valid <= 1'b0;
+										b_jump <= branch_jump_valid;
+										b_idts <= branch_idts_valid;
+										b_ib <= branch_ib_valid;
+										b_branch_addr <= branch_branch_addr;
+									end
 								end
 							end
 						end
@@ -1107,9 +1132,6 @@ module execute(
 	endgenerate
 	
 	
-	
-	
-	
 	/*****************************************************
 	b_read_shift and b_read_mask comment
 	*****************************************************/
@@ -1180,8 +1202,9 @@ module execute(
 	assign oNEXT_BRANCH = b_jump || b_idts || b_ib;
 	assign oNEXT_BRANCH_PC = b_branch_addr;
 		
-	assign oSWI_VALID = b_exception_valid;
-	assign oSWI_NUM = b_exception_num;
+	assign oFAULT_VALID = b_exception_valid;
+	assign oFAULT_NUM = b_exception_num;
+	assign oFAULT_FI0R = b_exception_fi0r;
 		
 		
 endmodule

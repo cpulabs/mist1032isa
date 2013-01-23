@@ -19,9 +19,10 @@ module l1_instruction_cache(
 		input iINST_LOCK,
 		output [1:0] oINST_MMUMOD,
 		output [31:0] oINST_ADDR,
-		//
+		//Mem
 		input iINST_VALID,
 		output oINST_BUSY,	
+		input iINST_PAGEFAULT,
 		input [63:0] iINST_DATA,
 		input [27:0] iINST_MMU_FLAGS,	
 		/****************************************
@@ -34,9 +35,11 @@ module l1_instruction_cache(
 		input [31:0] iNEXT_FETCH_ADDR,
 		//To Fetch
 		output oNEXT_0_INST_VALID,
+		output oNEXT_0_PAGEFAULT,		
 		output [13:0] oNEXT_0_MMU_FLAGS,
 		output [31:0] oNEXT_0_INST,
 		output oNEXT_1_INST_VALID,
+		output oNEXT_1_PAGEFAULT,	
 		output [13:0] oNEXT_1_MMU_FLAGS,
 		output [31:0] oNEXT_1_INST,
 		input iNEXT_LOCK
@@ -64,7 +67,9 @@ module l1_instruction_cache(
 	reg b_mem_result_0_valid;
 	reg b_mem_result_1_valid;
 	reg [63:0] b_mem_result_data;
-	reg [27:0] b_mem_result_mmu_flags; 
+	reg [27:0] b_mem_result_mmu_flags;
+	reg [511:0] b_cache_write_data;
+	reg b_pagefault;
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -77,6 +82,8 @@ module l1_instruction_cache(
 			b_mem_result_1_valid <= 1'b0;
 			b_mem_result_data <= 64'h0;
 			b_mem_result_mmu_flags <= 28'h0;
+			b_cache_write_data <= 512'h0;
+			b_pagefault <= 1'b0;
 		end	
 		else begin
 			//Buffer 
@@ -91,55 +98,30 @@ module l1_instruction_cache(
 						if(cache_result_valid && !cache_result_hit && !out_lock)begin
 							b_req_main_state <= L_PARAM_MEMREQ;
 						end
+						b_pagefault <= 1'b0;
 					end
 				L_PARAM_MEMREQ:	//Request State
 					begin
 						//Cache ON
 						if(`INST_L1_CACHE_ON)begin
-							/*
-							//Request
-							if(b_req_state == 4'h8)begin
+							//Next Stage Check
+							if(iINST_VALID && iINST_PAGEFAULT)begin
+								b_req_main_state <= L_PARAM_OUTINST;
+								b_req_state <= 4'h0;
+								b_pagefault <= 1'b1;
+							end
+							else if(!load_lock && (b_req_state == 4'h7))begin
 								b_req_main_state <= L_PARAM_MEMGET;
 								b_req_state <= 4'h0;
 							end
-							else begin
-								//Load Requset
-								if(!load_lock)begin
-									b_req_state <= b_req_state + 4'h1;
-								end
-							end
-							//Get Check
-							if(iINST_VALID)begin
-								b_get_state <= b_get_state + 4'h1;
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_0_valid <= 1'b1;
-										b_mem_result_1_valid <= 1'b1;
-										b_mem_result_data <= iINST_DATA;
-										b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
-									end
-									else begin
-										b_mem_result_0_valid <= 1'b1;
-										b_mem_result_1_valid <= 1'b0;
-										b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
-										b_mem_result_mmu_flags <= {14'h0, iINST_MMU_FLAGS[27:14]};
-									end
-								end
-							end
-							*/
 							//Request
-							if(!load_lock)begin
-								if(b_req_state == 4'h7)begin
-									b_req_main_state <= L_PARAM_MEMGET;
-									b_req_state <= 4'h0;
-								end
-								else begin
-									b_req_state <= b_req_state + 4'h1;
-								end
+							else if(!load_lock)begin
+								b_req_state <= b_req_state + 4'h1;
 							end
 							//Get Check
 							if(iINST_VALID)begin
 								b_get_state <= b_get_state + 4'h1;
+								b_cache_write_data <= {iINST_DATA, b_cache_write_data[511:64]};
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_0_valid <= 1'b1;
@@ -168,34 +150,10 @@ module l1_instruction_cache(
 				L_PARAM_MEMGET:	//Get Wait State
 					begin
 						//Cache ON
-						/*
-						if(`INST_L1_CACHE_ON)begin
-							if(b_get_state == 4'h8)begin
-								b_get_state <= 4'h0;
-								b_req_main_state <= L_PARAM_OUTINST;
-							end
-							else if(iINST_VALID)begin
-								b_get_state <= b_get_state + 4'h1;
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_0_valid <= 1'b1;
-										b_mem_result_1_valid <= 1'b1;
-										b_mem_result_data <= iINST_DATA;
-										b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
-									end
-									else begin
-										b_mem_result_0_valid <= 1'b1;
-										b_mem_result_1_valid <= 1'b0;
-										b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
-										b_mem_result_mmu_flags <= {14'h0, iINST_MMU_FLAGS[27:14]};
-									end
-								end
-							end
-						end
-						*/
 						if(`INST_L1_CACHE_ON)begin
 							if(iINST_VALID)begin
 								//Data Check
+								b_cache_write_data <= {iINST_DATA, b_cache_write_data[511:64]};
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_0_valid <= 1'b1;
@@ -211,7 +169,12 @@ module l1_instruction_cache(
 									end
 								end
 								//State Check
-								if(b_get_state == 4'h7)begin
+								if(iINST_VALID && iINST_PAGEFAULT)begin
+									b_req_main_state <= L_PARAM_OUTINST;
+									b_req_state <= 4'h0;
+									b_pagefault <= 1'b1;
+								end
+								else if(b_get_state == 4'h7)begin
 									b_get_state <= 4'h0;
 									b_req_main_state <= L_PARAM_OUTINST;
 								end
@@ -250,23 +213,24 @@ module l1_instruction_cache(
 		end	
 	end
 	
+	
 	//Reservation Bridge
 	wire inst_matching_bridge_full;
 	wire inst_matching_bridge_valid;
 	//Matching Bridge 
-	arbiter_matching_bridge #(16, 4) INST_MATCHING_BRIDGE(
+	arbiter_matching_queue #(16, 4, 1) INST_MATCHING_BRIDGE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash
 		.iFLASH(iREMOVE),
 		//Write
 		.iWR_REQ((b_req_main_state == L_PARAM_IDLE) && iNEXT_FETCH_REQ),
-		.iWR_TYPE(1'b0),
+		.iWR_FLAG(1'b0),
 		.oWR_FULL(inst_matching_bridge_full),
 		//Read
 		.iRD_REQ(next_0_inst_valid && !out_lock),
 		.oRD_VALID(inst_matching_bridge_valid),
-		.oRD_TYPE(/* Not Use */),
+		.oRD_FLAG(/* Not Use */),
 		.oRD_EMPTY(/* Not Use */)
 	);
 	
@@ -322,11 +286,14 @@ module l1_instruction_cache(
 				/********************************
 				Write Request
 				********************************/
-				.iWR_REQ(iINST_VALID),
+				//.iWR_REQ(iINST_VALID),
+				.iWR_REQ((b_req_main_state == L_PARAM_OUTINST) && !b_pagefault && !load_lock),
 				.oWR_BUSY(),
-				.iWR_LINE(b_get_state[2:0]),
-				.iWR_ADDR({b_req_addr[31:6], b_get_state[2:0], 3'h0}/*{b_req_addr[31:6], 6'h0}*/),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-				.iWR_DATA(iINST_DATA),
+				//.iWR_LINE(b_get_state[2:0]),
+				//.iWR_ADDR({b_req_addr[31:6], b_get_state[2:0], 3'h0}/*{b_req_addr[31:6], 6'h0}*/),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+				.iWR_ADDR({b_req_addr[31:6], 6'h0}),
+				//.iWR_DATA(iINST_DATA),
+				.iWR_DATA(b_cache_write_data),
 				.iWR_MMU_FLAGS(iINST_MMU_FLAGS)
 			);
 		end
@@ -363,11 +330,10 @@ module l1_instruction_cache(
 				/********************************
 				Write Request
 				********************************/
-				.iWR_REQ(iINST_VALID),
+				.iWR_REQ(1'b0),
 				.oWR_BUSY(),
-				.iWR_LINE(b_get_state[3:0]),
-				.iWR_ADDR({b_req_addr[31:6], b_get_state[2:0], 3'h0}/*{b_req_addr[31:6], 6'h0}*/),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-				.iWR_DATA(iINST_DATA),
+				.iWR_ADDR(32'h0),
+				.iWR_DATA(b_cache_write_data),
 				.iWR_MMU_FLAGS(iINST_MMU_FLAGS)
 			);
 		end
@@ -424,9 +390,11 @@ module l1_instruction_cache(
 	//This -> Fetch Module
 	assign oNEXT_FETCH_LOCK = (b_req_main_state != L_PARAM_IDLE) || request_lock || out_lock || (cache_result_valid && !cache_result_hit);
 	assign oNEXT_0_INST_VALID = next_0_inst_valid && !out_lock && inst_matching_bridge_valid;
+	assign oNEXT_0_PAGEFAULT = b_pagefault;
 	assign oNEXT_0_INST = next_0_inst_inst;
 	assign oNEXT_0_MMU_FLAGS = next_0_inst_mmu_flags;
 	assign oNEXT_1_INST_VALID = next_1_inst_valid && !out_lock && inst_matching_bridge_valid;
+	assign oNEXT_1_PAGEFAULT = b_pagefault;
 	assign oNEXT_1_INST = next_1_inst_inst;
 	assign oNEXT_1_MMU_FLAGS = next_1_inst_mmu_flags;
 endmodule

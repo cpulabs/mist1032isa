@@ -74,69 +74,74 @@ module mist1032isa(
 	Register and Wire
 	****************************************/
 	//Memory
-	wire				core2mem_inst_req;
-	wire				mem2core_inst_lock;
-	wire	[1:0]		core2mem_inst_mmumod;
-	wire	[31:0]		core2mem_inst_pdt;
-	wire	[31:0]		core2mem_inst_addr;
-	wire				mem2core_inst_valid;
-	wire				core2mem_inst_lock;
-	wire	[63:0]		mem2core_inst_data;
-	wire	[27:0]		mem2core_inst_mmu_flags;
-	wire				core2mem_data_req;
-	wire				mem2core_data_lock;
-	wire	[1:0]		core2mem_data_order;	
-	wire				core2mem_data_rw;		//0=Read | 1=Write
-	wire	[13:0]		core2mem_data_tid;
-	wire	[1:0]		core2mem_data_mmumod;
-	wire	[31:0]		core2mem_data_pdt;
-	wire	[31:0]		core2mem_data_addr;
-	wire	[31:0]		core2mem_data_data;
-	wire				mem2core_data_valid;
-	wire				core2mem_data_lock;
-	wire	[63:0]		mem2core_data_data;
+	wire core2mem_inst_req;
+	wire mem2core_inst_lock;
+	wire [1:0] core2mem_inst_mmumod;
+	wire [31:0] core2mem_inst_pdt;
+	wire [31:0] core2mem_inst_addr;
+	wire mem2core_inst_valid;
+	wire core2mem_inst_lock;
+	wire mem2core_inst_pagefault;
+	wire mem2core_inst_queue_flush;
+	wire [63:0] mem2core_inst_data;
+	wire [27:0] mem2core_inst_mmu_flags;
+	wire core2mem_data_req;
+	wire mem2core_data_lock;
+	wire [1:0] core2mem_data_order;	
+	wire core2mem_data_rw;		//0=Read | 1=Write
+	wire [13:0] core2mem_data_tid;
+	wire [1:0] core2mem_data_mmumod;
+	wire [31:0] core2mem_data_pdt;
+	wire [31:0] core2mem_data_addr;
+	wire [31:0] core2mem_data_data;
+	wire mem2core_data_valid;
+	wire mem2core_data_pagefault;
+	wire core2mem_data_lock;
+	wire [63:0] mem2core_data_data;
+	wire [27:0] mem2core_data_flags;
+	
 	//IO
-	wire				io2cpu_sysinfo_iosr_valid;
-	wire	[31:0]		io2cpu_sysinfo_iosr;
-	wire				cpu2io_req;
-	wire				io2cpu_busy;
-	wire	[1:0]		cpu2io_order;
-	wire				cpu2io_rw;
-	wire	[31:0]		cpu2io_addr;
-	wire	[31:0]		cpu2io_data;
-	wire				io2cpu_valid;
-	wire	[31:0]		io2cpu_data;
-	wire				io2cpu_interrupt_valid;
-	wire				cpu2io_interrupt_ack;
-	wire	[5:0]		io2cpu_interrupt_num;
+	wire io2cpu_sysinfo_iosr_valid;
+	wire [31:0] io2cpu_sysinfo_iosr;
+	wire cpu2io_req;
+	wire io2cpu_busy;
+	wire [1:0] cpu2io_order;
+	wire cpu2io_rw;
+	wire [31:0] cpu2io_addr;
+	wire [31:0] cpu2io_data;
+	wire io2cpu_valid;
+	wire [31:0] io2cpu_data;
+	wire io2cpu_interrupt_valid;
+	wire cpu2io_interrupt_ack;
+	wire [5:0] io2cpu_interrupt_num;
 	//DPS
-	wire				pic2dps_req;
-	wire				dps2pic_busy;
-	wire				pic2dps_rw;	
-	wire	[31:0]		pic2dps_addr;	
-	wire	[31:0]		pic2dps_data;	
-	wire				dps2pic_req;
-	wire	[31:0]		dps2pic_data;
-	wire				dps2pic_irq_valid;
-	wire	[5:0]		dps2pic_irq_num;
-	wire				pic2dps_irq_ack;
+	wire pic2dps_req;
+	wire dps2pic_busy;
+	wire pic2dps_rw;	
+	wire [31:0] pic2dps_addr;	
+	wire [31:0] pic2dps_data;	
+	wire dps2pic_req;
+	wire [31:0] dps2pic_data;
+	wire dps2pic_irq_valid;
+	wire [5:0] dps2pic_irq_num;
+	wire pic2dps_irq_ack;
 	
 			
 	/********************************************************************************
 	Processor Core
 	********************************************************************************/
-	wire				core2io_irq_tables_req;
-	wire	[5:0]		core2io_irq_tables_entry;
-	wire				core2io_irq_tables_flag_mask;
-	wire				core2io_irq_tables_flag_valid;
-	wire	[1:0]		core2io_irq_tables_flag_level;
+	wire core2io_irq_tables_req;
+	wire [5:0] core2io_irq_tables_entry;
+	wire core2io_irq_tables_flag_mask;
+	wire core2io_irq_tables_flag_valid;
+	wire [1:0] core2io_irq_tables_flag_level;
 	
 	
-	assign				oIO_IRQ_CONFIG_TABLE_REQ			=		core2io_irq_tables_req;
-	assign				oIO_IRQ_CONFIG_TABLE_ENTRY			=		core2io_irq_tables_entry;
-	assign				oIO_IRQ_CONFIG_TABLE_FLAG_MASK		=		core2io_irq_tables_flag_mask;
-	assign				oIO_IRQ_CONFIG_TABLE_FLAG_VALID		=		core2io_irq_tables_flag_valid;
-	assign				oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL		=		core2io_irq_tables_flag_level;
+	assign oIO_IRQ_CONFIG_TABLE_REQ = core2io_irq_tables_req;
+	assign oIO_IRQ_CONFIG_TABLE_ENTRY = core2io_irq_tables_entry;
+	assign oIO_IRQ_CONFIG_TABLE_FLAG_MASK = core2io_irq_tables_flag_mask;
+	assign oIO_IRQ_CONFIG_TABLE_FLAG_VALID = core2io_irq_tables_flag_valid;
+	assign oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL = core2io_irq_tables_flag_level;
 	
 	core #(32'h0) CORE(
 		/****************************************
@@ -170,7 +175,9 @@ module mist1032isa(
 		.oINST_ADDR(core2mem_inst_addr),
 		//Data RAM -> This
 		.iINST_VALID(mem2core_inst_valid),
-		.oINST_BUSY(core2mem_inst_lock),	
+		.oINST_BUSY(core2mem_inst_lock),
+		.iINST_PAGEFAULT(mem2core_inst_pagefault),
+		.iINST_QUEUE_FLUSH(mem2core_inst_queue_flush),
 		.iINST_DATA(mem2core_inst_data),
 		.iINST_MMU_FLAGS(mem2core_inst_mmu_flags),
 		/****************************************
@@ -189,7 +196,9 @@ module mist1032isa(
 		.oDATA_DATA(core2mem_data_data),
 		//Data RAM -> This
 		.iDATA_VALID(mem2core_data_valid),
+		.iDATA_PAGEFAULT(mem2core_data_pagefault),
 		.iDATA_DATA(mem2core_data_data),
+		.iDATA_MMU_FLAGS(mem2core_data_flags),
 		/****************************************
 		IO
 		****************************************/
@@ -278,6 +287,8 @@ module mist1032isa(
 	wire mmu2m_arbiter_req;
 	wire m_arbiter2mmu_lock;
 	wire mmu2m_arbiter_store_ack;
+	wire mmu2m_arbiter_page_fault;
+	wire mmu2m_arbiter_queue_flush;
 	wire [63:0] mmu2m_arbiter_data;
 	wire [27:0] mmu2m_arbiter_mmu_flags;
 
@@ -298,8 +309,9 @@ module mist1032isa(
 		//Data(Memory -> Core)
 		.oDATA_REQ(mem2core_data_valid),
 		.iDATA_BUSY(1'b0),
+		.oDATA_PAGEFAULT(mem2core_data_pagefault),
 		.oDATA_DATA(mem2core_data_data),
-		.oDATA_MMU_FLAGS(),
+		.oDATA_MMU_FLAGS(mem2core_data_flags),
 		//Inst(Core -> Memory)
 		.iINST_REQ(core2mem_inst_req),
 		.oINST_LOCK(mem2core_inst_lock),
@@ -309,6 +321,8 @@ module mist1032isa(
 		//Inst(Memory -> Core)
 		.oINST_REQ(mem2core_inst_valid),
 		.iINST_BUSY(core2mem_inst_lock),
+		.oINST_PAGEFAULT(mem2core_inst_pagefault),
+		.oINST_QUEUE_FLUSH(mem2core_inst_queue_flush),
 		.oINST_DATA(mem2core_inst_data),
 		.oINST_MMU_FLAGS(mem2core_inst_mmu_flags),
 		//Memory(OutPort)
@@ -325,6 +339,8 @@ module mist1032isa(
 		.iMEMORY_VALID(mmu2m_arbiter_req),
 		.oMEMORY_BUSY(m_arbiter2mmu_lock),
 		.iMEMORY_STORE_ACK(mmu2m_arbiter_store_ack),
+		.iMEMORY_PAGE_FAULT(mmu2m_arbiter_page_fault),
+		.iMEMORY_QUEUE_FLUSH(mmu2m_arbiter_queue_flush),
 		.iMEMORY_DATA(mmu2m_arbiter_data),
 		.iMEMORY_MMU_FLAGS(mmu2m_arbiter_mmu_flags)
 	);
@@ -350,6 +366,8 @@ module mist1032isa(
 		.oCORE_REQ(mmu2m_arbiter_req),
 		.iCORE_LOCK(m_arbiter2mmu_lock),
 		.oCORE_STORE_ACK(mmu2m_arbiter_store_ack),
+		.oCORE_PAGE_FAULT(mmu2m_arbiter_page_fault),
+		.oCORE_QUEUE_FLUSH(mmu2m_arbiter_queue_flush),
 		.oCORE_DATA(mmu2m_arbiter_data),
 		.oCORE_MMU_FLAGS(mmu2m_arbiter_mmu_flags),
 		/************************

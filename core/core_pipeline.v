@@ -10,80 +10,84 @@ module core_pipeline
 		parameter		CORE_ID		=	32'h0
 	)(
 		//System
-		input					iCLOCK,
-		input					inRESET,
+		input iCLOCK,
+		input inRESET,
 		/****************************************
 		System
 		****************************************/
-		output					oCORE_FLASH,		
+		output oCORE_FLASH,		
 		/****************************************
 		GCI Controll
 		****************************************/
 		//Interrupt Controll
-		output					oIO_IRQ_CONFIG_TABLE_REQ,
-		output	[5:0]			oIO_IRQ_CONFIG_TABLE_ENTRY,
-		output					oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
-		output					oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
-		output	[1:0]			oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,	
+		output oIO_IRQ_CONFIG_TABLE_REQ,
+		output [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
+		output oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
+		output oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
+		output [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,	
 		/****************************************
 		Instrution Memory
 		****************************************/				
 		//Memory Instruction-Request
-		output					oINST_FETCH_REQ,
-		input					iINST_FETCH_BUSY,
-		output	[1:0]			oINST_FETCH_MMUMOD,
-		output	[31:0]			oINST_FETCH_PDT,
-		output	[31:0]			oINST_FETCH_ADDR,
+		output oINST_FETCH_REQ,
+		input iINST_FETCH_BUSY,
+		output [1:0] oINST_FETCH_MMUMOD,
+		output [31:0] oINST_FETCH_PDT,
+		output [31:0] oINST_FETCH_ADDR,
 		//Memory Instruction-Get
-		input					iINST_VALID,
-		input	[27:0]			iINST_MMU_FLAGS,
-		output					oINST_BUSY,
-		input	[63:0]			iINST_DATA,
+		input iINST_VALID,
+		output oINST_BUSY,
+		input iINST_PAGEFAULT,
+		input iINST_QUEUE_FLUSH,
+		input [63:0] iINST_DATA,
+		input [27:0] iINST_MMU_FLAGS,
 		/****************************************
 		Data Memory
 		****************************************/
 		//Req
-		output					oDATA_REQ,
-		input					iDATA_LOCK,
-		output	[1:0]			oDATA_ORDER,
-		output					oDATA_RW,		//0=Write 1=Read
-		output	[13:0]			oDATA_TID,
-		output	[1:0]			oDATA_MMUMOD,
-		output	[31:0]			oDATA_PDT,
-		output	[31:0]			oDATA_ADDR,
+		output oDATA_REQ,
+		input iDATA_LOCK,
+		output [1:0] oDATA_ORDER,
+		output oDATA_RW,		//0=Write 1=Read
+		output [13:0] oDATA_TID,
+		output [1:0] oDATA_MMUMOD,
+		output [31:0] oDATA_PDT,
+		output [31:0] oDATA_ADDR,
 		//This -> Data RAM
-		output	[31:0]			oDATA_DATA,
+		output [31:0] oDATA_DATA,
 		//Data RAM -> This
-		input					iDATA_VALID,
-		input	[63:0]			iDATA_DATA,
+		input iDATA_VALID,
+		input iDATA_PAGEFAULT,	
+		input [63:0] iDATA_DATA,
+		input [27:0] iDATA_MMU_FLAGS,
 		/****************************************
 		IO
 		****************************************/
 		//Req
-		output					oIO_REQ,
-		input					iIO_BUSY,
-		output	[1:0]			oIO_ORDER,
-		output					oIO_RW,			//0=Write 1=Read
-		output	[31:0]			oIO_ADDR,
+		output oIO_REQ,
+		input iIO_BUSY,
+		output [1:0] oIO_ORDER,
+		output oIO_RW,			//0=Write 1=Read
+		output [31:0] oIO_ADDR,
 		//Write
-		output	[31:0]			oIO_DATA,
+		output [31:0] oIO_DATA,
 		//Rec
-		input					iIO_VALID,
-		input	[31:0]			iIO_DATA,
+		input iIO_VALID,
+		input [31:0] iIO_DATA,
 		/****************************************
 		Interrupt
 		****************************************/
-		input					iINTERRUPT_VALID,
-		input	[5:0]			iINTERRUPT_NUM,
-		output					oINTERRUPT_ACK,
+		input iINTERRUPT_VALID,
+		input [5:0] iINTERRUPT_NUM,
+		output oINTERRUPT_ACK,
 		/****************************************
 		System Infomation
 		****************************************/
 		//IOSR(Input Output Status Register)
-		input					iSYSINFO_IOSR_VALID,	
-		input	[31:0]			iSYSINFO_IOSR,
-		output	[31:0]			oDEBUG_PC,
-		output	[31:0]			oDEBUG0,
+		input iSYSINFO_IOSR_VALID,	
+		input [31:0] iSYSINFO_IOSR,
+		output [31:0] oDEBUG_PC,
+		output [31:0] oDEBUG0,
 		/****************************************
 		Debug Module
 		****************************************/
@@ -105,6 +109,7 @@ module core_pipeline
 	
 	//Cache
 	wire icache2fetch_valid;
+	wire icache2fetch_pagefault;
 	wire [31:0] icache2fetch_inst;
 	wire [13:0] icache2fetch_mmu_flags;
 	wire fetch2icache_lock;
@@ -114,129 +119,137 @@ module core_pipeline
 	wire icache2fetch_lock;
 	wire cache_flash;
 	//Free
-	wire				free_pc_set;
-	wire	[31:0]		free_pc;
-	wire				free_ppcr_set;
-	wire	[31:0]		free_ppcr;
-	wire				free_register_lock;
-	wire				free_pipeline_stop;
-	wire				free_refresh;
-	wire				free_restart;
-	wire				free_set_irq_mode;
-	wire				free_clr_irq_mode;
-	wire				free_new_spr_valid;
-	wire	[31:0]		free_new_spr;		
+	wire free_pc_set;
+	wire [31:0] free_pc;
+	wire free_ppcr_set;
+	wire [31:0] free_ppcr;
+	wire free_fi0r_set;
+	wire [31:0] free_fi0r;
+	wire free_register_lock;
+	wire free_pipeline_stop;
+	wire free_refresh;
+	wire free_restart;
+	wire free_set_irq_mode;
+	wire free_clr_irq_mode;
+	wire free_new_spr_valid;
+	wire [31:0] free_new_spr;		
 	//Fetch
-	wire			fetch2lbuffer_inst_valid;
-	wire	[13:0]	fetch2lbuffer_mmu_flags;
+	wire fetch2lbuffer_inst_valid;
+	wire fetch2lbuffer_pagefault;
+	wire [13:0] fetch2lbuffer_mmu_flags;
 	wire fetch2lbuffer_paging_ena;
 	wire fetch2lbuffer_kernel_access;
-	wire	[31:0]	fetch2lbuffer_inst;
-	wire	[31:0]	fetch2lbuffer_pc;
-	wire			lbuffer2fetch_fetch_stop;
-	wire			lbuffer2fetch_fetch_lock;	
+	wire [31:0] fetch2lbuffer_inst;
+	wire [31:0] fetch2lbuffer_pc;
+	wire lbuffer2fetch_fetch_stop;
+	wire lbuffer2fetch_fetch_lock;	
 	//Decoder
-	wire			lbuffer2decoder_inst_valid;	
-	wire	[13:0]	lbuffer2decoder_mmu_flags;	
-	wire lbuffer2decoder_paging_ena;
-	wire lbuffer2decoder_kernel_access;
-	wire	[31:0]	lbuffer2decoder_inst;
-	wire	[31:0]	lbuffer2decoder_pc;
-	wire			decoder2lbuffer_lock;
+	wire lbuffer2decoder_inst_valid;
+	wire lbuffer2decoder_fault_pagefault;
+	wire lbuffer2decoder_fault_privilege_error;
+	wire lbuffer2decoder_fault_invalid_inst;
+	wire [31:0] lbuffer2decoder_inst;
+	wire [31:0] lbuffer2decoder_pc;
+	wire decoder2lbuffer_lock;
 	//Dispatch
-	wire			decoder2dispatch_valid;
-	wire			decoder2dispatch_source0_active;
-	wire			decoder2dispatch_source1_active;
-	wire			decoder2dispatch_source0_sysreg;
-	wire			decoder2dispatch_source1_sysreg;
-	wire			decoder2dispatch_destination_sysreg;
-	wire			decoder2dispatch_writeback;
-	wire			decoder2dispatch_flags_writeback;
-	wire	[4:0]	decoder2dispatch_cmd;
-	wire	[3:0]	decoder2dispatch_cc_afe;
-	wire	[4:0]	decoder2dispatch_source0;
-	wire	[31:0]	decoder2dispatch_source1;
-	wire			decoder2dispatch_source0_flags;
-	wire			decoder2dispatch_source1_imm;
-	wire	[4:0]	decoder2dispatch_destination;
-	wire			decoder2dispatch_ex_sys_reg;
-	wire			decoder2dispatch_ex_sys_ldst;
-	wire			decoder2dispatch_ex_logic;
-	wire			decoder2dispatch_ex_shift;
-	wire			decoder2dispatch_ex_addr;
-	wire			decoder2dispatch_ex_mul;
-	wire			decoder2dispatch_ex_sdiv;
-	wire			decoder2dispatch_ex_udiv;
-	wire			decoder2dispatch_ex_ldst;
-	wire			decoder2dispatch_ex_branch;
-	wire	[31:0]	decoder2dispatch_pc;
-	wire			dispatch2decoder_lock;
+	wire decoder2dispatch_valid;
+	wire decoder2dispatch_fault_pagefault;
+	wire decoder2dispatch_fault_privilege_error;
+	wire decoder2dispatch_fault_invalid_inst;
+	wire decoder2dispatch_source0_active;
+	wire decoder2dispatch_source1_active;
+	wire decoder2dispatch_source0_sysreg;
+	wire decoder2dispatch_source1_sysreg;
+	wire decoder2dispatch_destination_sysreg;
+	wire decoder2dispatch_writeback;
+	wire decoder2dispatch_flags_writeback;
+	wire [4:0] decoder2dispatch_cmd;
+	wire [3:0] decoder2dispatch_cc_afe;
+	wire [4:0] decoder2dispatch_source0;
+	wire [31:0] decoder2dispatch_source1;
+	wire decoder2dispatch_source0_flags;
+	wire decoder2dispatch_source1_imm;
+	wire [4:0] decoder2dispatch_destination;
+	wire decoder2dispatch_ex_sys_reg;
+	wire decoder2dispatch_ex_sys_ldst;
+	wire decoder2dispatch_ex_logic;
+	wire decoder2dispatch_ex_shift;
+	wire decoder2dispatch_ex_addr;
+	wire decoder2dispatch_ex_mul;
+	wire decoder2dispatch_ex_sdiv;
+	wire decoder2dispatch_ex_udiv;
+	wire decoder2dispatch_ex_ldst;
+	wire decoder2dispatch_ex_branch;
+	wire [31:0] decoder2dispatch_pc;
+	wire dispatch2decoder_lock;
 	//Execution
-	wire			dispatch2execution_valid;
+	wire dispatch2execution_valid;
+	wire dispatch2execution_fault_pagefault;
+	wire dispatch2execution_fault_privilege_error;
+	wire dispatch2execution_fault_invalid_inst;
 	wire [31:0] dispatch2execution_sysreg_psr;
 	wire [31:0] dispatch2execution_sysreg_tidr;
 	wire [31:0] dispatch2execution_sysreg_pdtr;
-	wire			dispatch2execution_destination_sysreg;
-	wire			dispatch2execution_writeback;
-	wire			dispatch2execution_flags_writeback;
-	wire	[4:0]	dispatch2execution_cmd;
-	wire	[3:0]	dispatch2execution_cc_afe;
-	wire	[31:0]	dispatch2execution_spr;
-	wire	[31:0]	dispatch2execution_source0;
-	wire	[31:0]	dispatch2execution_source1;
-	wire	[4:0]	dispatch2execution_source0_pointer;
-	wire	[4:0]	dispatch2execution_source1_pointer;
-	wire			dispatch2execution_source0_sysreg;
-	wire			dispatch2execution_source1_sysreg;
-	wire			dispatch2execution_source1_imm;
-	wire			dispatch2execution_source0_flags;
-	wire	[4:0]	dispatch2execution_destination;
-	wire			dispatch2execution_ex_sys_reg;
-	wire			dispatch2execution_ex_sys_ldst;
-	wire			dispatch2execution_ex_logic;
-	wire			dispatch2execution_ex_shift;
-	wire			dispatch2execution_ex_addr;
-	wire			dispatch2execution_ex_mul;
-	wire			dispatch2execution_ex_sdiv;
-	wire			dispatch2execution_ex_udiv;
-	wire			dispatch2execution_ex_ldst;
-	wire			dispatch2execution_ex_branch;
-	wire	[31:0]	dispatch2execution_pc;
-	wire			execution2dispatch_lock;
+	wire dispatch2execution_destination_sysreg;
+	wire dispatch2execution_writeback;
+	wire dispatch2execution_flags_writeback;
+	wire [4:0] dispatch2execution_cmd;
+	wire [3:0] dispatch2execution_cc_afe;
+	wire [31:0] dispatch2execution_spr;
+	wire [31:0] dispatch2execution_source0;
+	wire [31:0] dispatch2execution_source1;
+	wire [4:0] dispatch2execution_source0_pointer;
+	wire [4:0] dispatch2execution_source1_pointer;
+	wire dispatch2execution_source0_sysreg;
+	wire dispatch2execution_source1_sysreg;
+	wire dispatch2execution_source1_imm;
+	wire dispatch2execution_source0_flags;
+	wire [4:0] dispatch2execution_destination;
+	wire dispatch2execution_ex_sys_reg;
+	wire dispatch2execution_ex_sys_ldst;
+	wire dispatch2execution_ex_logic;
+	wire dispatch2execution_ex_shift;
+	wire dispatch2execution_ex_addr;
+	wire dispatch2execution_ex_mul;
+	wire dispatch2execution_ex_sdiv;
+	wire dispatch2execution_ex_udiv;
+	wire dispatch2execution_ex_ldst;
+	wire dispatch2execution_ex_branch;
+	wire [31:0] dispatch2execution_pc;
+	wire execution2dispatch_lock;
 	//Writeback
-	wire			execution2dispatch_valid;
-	wire	[31:0]	execution2dispatch_data;
-	wire	[4:0]	execution2dispatch_destination;
-	wire			execution2dispatch_destination_sysreg;
-	wire			execution2dispatch_writeback;
-	wire			execution2dispatch_spr_writeback;
-	wire	[31:0]	execution2dispatch_spr;		
-	wire	[31:0]	execution2dispatch_pc;
-	wire			execution2dispatch_branch;
-	wire	[31:0]	execution2dispatch_branch_pc;
+	wire execution2dispatch_valid;
+	wire [31:0] execution2dispatch_data;
+	wire [4:0] execution2dispatch_destination;
+	wire execution2dispatch_destination_sysreg;
+	wire execution2dispatch_writeback;
+	wire execution2dispatch_spr_writeback;
+	wire [31:0] execution2dispatch_spr;		
+	wire [31:0] execution2dispatch_pc;
+	wire execution2dispatch_branch;
+	wire [31:0] execution2dispatch_branch_pc;
 	//Load Store 
-	wire			execution2ldst_ldst_req;
-	wire	[1:0]	execution2ldst_ldst_order;
-	wire			execution2ldst_ldst_rw;
-	wire	[13:0]	execution2ldst_ldst_tid;
-	wire	[1:0]	execution2ldst_ldst_mmumod;
-	wire	[31:0]	execution2ldst_ldst_pdt;
-	wire	[31:0]	execution2ldst_ldst_addr;
-	wire	[31:0]	execution2ldst_ldst_data;
-	wire			ldst2execution_ldst_busy;
-	wire			ldst2execution_ldst_req;
-	wire	[31:0]	ldst2execution_ldst_data;
-	
+	wire execution2ldst_ldst_req;
+	wire [1:0] execution2ldst_ldst_order;
+	wire execution2ldst_ldst_rw;
+	wire [13:0] execution2ldst_ldst_tid;
+	wire [1:0] execution2ldst_ldst_mmumod;
+	wire [31:0] execution2ldst_ldst_pdt;
+	wire [31:0] execution2ldst_ldst_addr;
+	wire [31:0] execution2ldst_ldst_data;
+	wire ldst2execution_ldst_busy;
+	wire ldst2execution_ldst_req;
+	wire [31:0] ldst2execution_ldst_data;
 	
 	//System Register
-	wire	[31:0]	sysreg_spr;
-	wire	[31:0]	sysreg_idtr;
-	wire	[31:0]	sysreg_tisr;
-	wire	[31:0]	sysreg_tidr;
-	wire	[31:0]	sysreg_psr;
-	wire	[31:0]	sysreg_ppsr;
-	wire	[31:0]	sysreg_pcr;
-	wire	[31:0]	sysreg_ppcr;
+	wire [31:0] sysreg_spr;
+	wire [31:0] sysreg_idtr;
+	wire [31:0] sysreg_tisr;
+	wire [31:0] sysreg_tidr;
+	wire [31:0] sysreg_psr;
+	wire [31:0] sysreg_ppsr;
+	wire [31:0] sysreg_pcr;
+	wire [31:0] sysreg_ppcr;
 	
 	//Interrupt Lock
 	wire interrupt_lock;
@@ -268,10 +281,12 @@ module core_pipeline
 	wire exception2cim_irq_lock;	
 	wire cim2exception_irq_req;
 	wire [6:0] cim2exception_irq_num;
+	wire [31:0] cim2exception_irq_fi0r;
 	wire exception2cim_irq_ack;
 	wire exception_idtset_valid;
-	wire exception_swi_valid;
-	wire [6:0] exception_swi_num;
+	wire exception_fault_valid;
+	wire [6:0] exception_fault_num;
+	wire [31:0] exception_fault_fi0r;
 	
 	wire sysreg_write_pdtr;
 	
@@ -340,13 +355,15 @@ module core_pipeline
 		.iEXT_ACTIVE(iINTERRUPT_VALID),
 		.iEXT_NUM(iINTERRUPT_NUM),
 		.oEXT_ACK(oINTERRUPT_ACK),
-		//Internal IRQ
-		.iSWI_ACTIVE(exception_swi_valid),
-		.iSWI_NUM(exception_swi_num),
+		//Internal IRQ(Fault)
+		.iFAULT_ACTIVE(exception_fault_valid),
+		.iFAULT_NUM(exception_fault_num),
+		.iFAULT_FI0R(exception_fault_fi0r),
 		//To Exception Manager
 		.iEXCEPTION_LOCK(exception2cim_irq_lock),
 		.oEXCEPTION_ACTIVE(cim2exception_irq_req),
 		.oEXCEPTION_IRQ_NUM(cim2exception_irq_num),
+		.oEXCEPTION_IRQ_FI0R(cim2exception_irq_fi0r),
 		.iEXCEPTION_IRQ_ACK(exception2cim_irq_ack)
 	);
 	
@@ -367,6 +384,8 @@ module core_pipeline
 		.oFREE_PC(free_pc),
 		.oFREE_PPCR_SET(free_ppcr_set),
 		.oFREE_PPCR(free_ppcr),
+		.oFREE_FI0R_SET(free_fi0r_set),	
+		.oFREE_FI0R(free_fi0r),
 		.oFREE_SET_IRQ_MODE(free_set_irq_mode),
 		.oFREE_CLR_IRQ_MODE(free_clr_irq_mode),
 		/************************************
@@ -432,6 +451,7 @@ module core_pipeline
 		//External Exception
 		.iEXCEPT_IRQ_REQ(cim2exception_irq_req),
 		.iEXCEPT_IRQ_NUM(cim2exception_irq_num),
+		.iEXCEPT_IRQ_FI0R(cim2exception_irq_fi0r),
 		.oEXCEPT_IRQ_ACK(exception2cim_irq_ack),
 		.oEXCEPT_IRQ_BUSY(exception2cim_irq_lock)
 	);
@@ -462,9 +482,10 @@ module core_pipeline
 		.iINST_LOCK(iINST_FETCH_BUSY),
 		.oINST_MMUMOD(oINST_FETCH_MMUMOD),
 		.oINST_ADDR(oINST_FETCH_ADDR),
-		//
+		//Mem
 		.iINST_VALID(iINST_VALID),
-		.oINST_BUSY(oINST_BUSY),		//new
+		.oINST_BUSY(oINST_BUSY),
+		.iINST_PAGEFAULT(iINST_PAGEFAULT),
 		.iINST_DATA(iINST_DATA),
 		.iINST_MMU_FLAGS(iINST_MMU_FLAGS),
 		/****************************************
@@ -477,15 +498,15 @@ module core_pipeline
 		.iNEXT_FETCH_ADDR(fetch2icache_addr),
 		//To Fetch
 		.oNEXT_0_INST_VALID(icache2fetch_valid),
+		.oNEXT_0_PAGEFAULT(icache2fetch_pagefault),
 		.oNEXT_0_MMU_FLAGS(icache2fetch_mmu_flags),
 		.oNEXT_0_INST(icache2fetch_inst),
 		.oNEXT_1_INST_VALID(),
+		.oNEXT_1_PAGEFAULT(),
 		.oNEXT_1_MMU_FLAGS(),
 		.oNEXT_1_INST(),
 		.iNEXT_LOCK(fetch2icache_lock)
 	);
-
-	
 	
 	
 	fetch FETCH(
@@ -501,6 +522,7 @@ module core_pipeline
 		.iEXCEPTION_RESTART(free_restart),
 		//Previous
 		.iPREVIOUS_INST_VALID(icache2fetch_valid),
+		.iPREVIOUS_PAGEFAULT(icache2fetch_pagefault),
 		.iPREVIOUS_MMU_FLAGS(icache2fetch_mmu_flags),
 		.iPREVIOUS_INST(icache2fetch_inst),
 		.oPREVIOUS_LOCK(fetch2icache_lock),
@@ -511,6 +533,7 @@ module core_pipeline
 		.iPREVIOUS_FETCH_LOCK(icache2fetch_lock),
 		//Next
 		.oNEXT_INST_VALID(fetch2lbuffer_inst_valid),
+		.oNEXT_PAGEFAULT(fetch2lbuffer_pagefault),
 		.oNEXT_MMU_FLAGS(fetch2lbuffer_mmu_flags),
 		.oNEXT_PAGING_ENA(fetch2lbuffer_paging_ena),
 		.oNEXT_KERNEL_ACCESS(fetch2lbuffer_kernel_access),
@@ -529,6 +552,7 @@ module core_pipeline
 		.iFREE_REFRESH(free_refresh),
 		//Prev
 		.iPREVIOUS_INST_VALID(fetch2lbuffer_inst_valid),
+		.iPREVIOUS_PAGEFAULT(fetch2lbuffer_pagefault),
 		.iPREVIOUS_MMU_FLAGS(fetch2lbuffer_mmu_flags),
 		.iPREVIOUS_PAGING_ENA(fetch2lbuffer_paging_ena),
 		.iPREVIOUS_KERNEL_ACCESS(fetch2lbuffer_kernel_access),
@@ -538,9 +562,9 @@ module core_pipeline
 		.oPREVIOUS_LOCK(lbuffer2fetch_fetch_lock),
 		//Next
 		.oNEXT_INST_VALID(lbuffer2decoder_inst_valid),
-		.oNEXT_MMU_FLAGS(lbuffer2decoder_mmu_flags),
-		.oNEXT_PAGING_ENA(lbuffer2decoder_paging_ena),
-		.oNEXT_KERNEL_ACCESS(lbuffer2decoder_kernel_access),
+		.oNEXT_FAULT_PAGEFAULT(lbuffer2decoder_fault_pagefault),
+		.oNEXT_FAULT_PRIVILEGE_ERROR(lbuffer2decoder_fault_privilege_error),
+		.oNEXT_FAULT_INVALID_INST(lbuffer2decoder_fault_invalid_inst),
 		.oNEXT_INST(lbuffer2decoder_inst),
 		.oNEXT_PC(lbuffer2decoder_pc),
 		.iNEXT_LOCK(decoder2lbuffer_lock)
@@ -556,17 +580,17 @@ module core_pipeline
 		.iFREE_DEFAULT(free_refresh),	
 		//Previous
 		.iPREVIOUS_INST_VALID(lbuffer2decoder_inst_valid),
-		.iPREVIOUS_MMU_FLAGS(lbuffer2decoder_mmu_flags),
-		.iPREVIOUS_PAGING_ENA(lbuffer2decoder_paging_ena),
-		.iPREVIOUS_KERNEL_ACCESS(lbuffer2decoder_kernel_access),
+		.iPREVIOUS_FAULT_PAGEFAULT(lbuffer2decoder_fault_pagefault),
+		.iPREVIOUS_FAULT_PRIVILEGE_ERROR(lbuffer2decoder_fault_privilege_error),
+		.iPREVIOUS_FAULT_INVALID_INST(lbuffer2decoder_fault_invalid_inst),
 		.iPREVIOUS_INST(lbuffer2decoder_inst),
 		.iPREVIOUS_PC(lbuffer2decoder_pc),
 		.oPREVIOUS_LOCK(decoder2lbuffer_lock),
 		//Next-0		
 		.oNEXT_VALID(decoder2dispatch_valid),
-		.oNEXT_FAULT_PAGE_FAULT(),
-		.oNEXT_FAULT_PRIVILEGE_ERROR(),
-		.oNEXT_FAULT_INVALID_INST(),
+		.oNEXT_FAULT_PAGEFAULT(decoder2dispatch_fault_pagefault),
+		.oNEXT_FAULT_PRIVILEGE_ERROR(decoder2dispatch_fault_privilege_error),
+		.oNEXT_FAULT_INVALID_INST(decoder2dispatch_fault_invalid_inst),
 		.oNEXT_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
 		.oNEXT_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
 		.oNEXT_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
@@ -617,6 +641,8 @@ module core_pipeline
 		.iFREE_SYSREG_CLR_IRQ_MODE(free_clr_irq_mode),
 		.iFREE_PPCR_SET(free_ppcr_set),
 		.iFREE_PPCR(free_ppcr),
+		.iFREE_FI0R_SET(free_fi0r_set),
+		.iFREE_FI0R(free_fi0r),
 		//System Register
 		.oSYSREG_PCR(sysreg_pcr),
 		.oSYSREG_IDTR(sysreg_idtr),
@@ -628,6 +654,9 @@ module core_pipeline
 		.oSYSREG_SPR(sysreg_spr),
 		//Pipeline 
 		.iPREVIOUS_VALID(decoder2dispatch_valid),
+		.iPREVIOUS_FAULT_PAGEFAULT(decoder2dispatch_fault_pagefault),
+		.iPREVIOUS_FAULT_PRIVILEGE_ERROR(decoder2dispatch_fault_privilege_error),
+		.iPREVIOUS_FAULT_INVALID_INST(decoder2dispatch_fault_invalid_inst),
 		.iPREVIOUS_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
 		.iPREVIOUS_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
 		.iPREVIOUS_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
@@ -656,6 +685,9 @@ module core_pipeline
 		.oPREVIOUS_LOCK(dispatch2decoder_lock),
 		//Next
 		.oNEXT_VALID(dispatch2execution_valid),	
+		.oNEXT_FAULT_PAGEFAULT(dispatch2execution_fault_pagefault),
+		.oNEXT_FAULT_PRIVILEGE_ERROR(dispatch2execution_fault_privilege_error),
+		.oNEXT_FAULT_INVALID_INST(dispatch2execution_fault_invalid_inst),
 		.oNEXT_SYSREG_PSR(dispatch2execution_sysreg_psr),
 		.oNEXT_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.oNEXT_SYSREG_PDTR(dispatch2execution_sysreg_pdtr),
@@ -749,6 +781,9 @@ module core_pipeline
 		.oEXCEPTION_LOCK(execute_exception_lock),
 		//Pipeline 
 		.iPREVIOUS_VALID(dispatch2execution_valid),	
+		.iPREVIOUS_FAULT_PAGEFAULT(dispatch2execution_fault_pagefault),
+		.iPREVIOUS_FAULT_PRIVILEGE_ERROR(dispatch2execution_fault_privilege_error),
+		.iPREVIOUS_FAULT_INVALID_INST(dispatch2execution_fault_invalid_inst),
 		.iPREVIOUS_SYSREG_PSR(dispatch2execution_sysreg_psr),
 		.iPREVIOUS_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.iPREVIOUS_SYSREG_PDTR(dispatch2execution_sysreg_tidr),
@@ -809,8 +844,9 @@ module core_pipeline
 		.oJUMP_VALID(exception_jump_valid),
 		.oINTR_VALID(exception_intr_valid),
 		.oIDTSET_VALID(exception_idtset_valid),
-		.oSWI_VALID(exception_swi_valid),
-		.oSWI_NUM(exception_swi_num),
+		.oFAULT_VALID(exception_fault_valid),
+		.oFAULT_NUM(exception_fault_num),
+		.oFAULT_FI0R(exception_fault_fi0r),
 		//Debug
 		.iDEBUG_CTRL_REQ(debug_debug2corectrl_req),
 		.iDEBUG_CTRL_STOP(debug_debug2corectrl_stop),
@@ -832,6 +868,8 @@ module core_pipeline
 	wire [31:0] ldst_arbiter2d_cache_addr;
 	wire [31:0] ldst_arbiter2d_cache_data;
 	wire d_cache2ldst_arbiter_valid;
+	wire d_cache2ldst_arbiter_pagefault;
+	wire [13:0] d_cache2ldst_arbiter_mmu_flags;
 	wire [31:0] d_cache2ldst_arbiter_data;
 	
 	
@@ -846,6 +884,8 @@ module core_pipeline
 		.oLDST_ADDR(ldst_arbiter2d_cache_addr),
 		.oLDST_DATA(ldst_arbiter2d_cache_data),
 		.iLDST_VALID(d_cache2ldst_arbiter_valid),
+		.iLDST_PAGEFAULT(d_cache2ldst_arbiter_pagefault),
+		.iLDST_MMU_FLAGS(d_cache2ldst_arbiter_mmu_flags),
 		.iLDST_DATA(d_cache2ldst_arbiter_data),
 		//Selector
 		.iUSE_SEL(exception2ldst_ldst_use),		//0:Execution | 1:Exception
@@ -860,6 +900,8 @@ module core_pipeline
 		.iEXE_ADDR(execution2ldst_ldst_addr),
 		.iEXE_DATA(execution2ldst_ldst_data),
 		.oEXE_REQ(ldst2execution_ldst_req),
+		.oEXE_PAGEFAULT(),
+		.oEXE_MMU_FLAGS(),
 		.oEXE_DATA(ldst2execution_ldst_data),
 		//Exception Module
 		.iEXCEPT_REQ(exception2ldst_ldst_req),
@@ -900,6 +942,8 @@ module core_pipeline
 		.iLDST_DATA(ldst_arbiter2d_cache_data),
 		//Cache -> Load Store
 		.oLDST_VALID(d_cache2ldst_arbiter_valid),
+		.oLDST_PAGEFAULT(d_cache2ldst_arbiter_pagefault),////////////////////////////////
+		.oLDST_MMU_FLAGS(d_cache2ldst_arbiter_mmu_flags),////////////////////////////////
 		.oLDST_DATA(d_cache2ldst_arbiter_data),
 		/****************************************
 		Data Memory
@@ -917,8 +961,10 @@ module core_pipeline
 		.oDATA_DATA(oDATA_DATA),
 		//Data RAM -> This
 		.iDATA_VALID(iDATA_VALID),
+		.iDATA_PAGEFAULT(iDATA_PAGEFAULT),
+		.iDATA_MMU_FLAGS(iDATA_MMU_FLAGS),
 		.iDATA_DATA(iDATA_DATA),
-		/****************************************
+		/****************************************  
 		IO
 		****************************************/
 		//Req

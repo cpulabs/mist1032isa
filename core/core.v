@@ -1,16 +1,5 @@
 /****************************************
-	MIST1032 - Core
-	
-	Version	:	A0001
-	Make	:	2011/01/20
-	Update	:	2011/12/21
-	
-	Include file
-		- core_info.h
-		
-	Update Histry
-		2011/12/21 - IO Connect
-		2011/01/20 - Make
+MIST1032 - Core
 ****************************************/
 `default_nettype none
 `include "global.h"
@@ -19,86 +8,88 @@
 
 module core
 	#(
-		parameter		CORE_ID		=	32'h0
+		parameter CORE_ID = 32'h0
 	)(
 		/****************************************
 		System
 		****************************************/
-		input					iCLOCK,
-		input					inRESET,	
+		input iCLOCK,
+		input inRESET,	
 		/****************************************
 		Core
 		****************************************/
-		output					oCORE_FLASH,
+		output oCORE_FLASH,
 		/****************************************
 		GCI Controll
 		****************************************/
 		//Interrupt Controll
-		output					oIO_IRQ_CONFIG_TABLE_REQ,
-		output	[5:0]			oIO_IRQ_CONFIG_TABLE_ENTRY,
-		output					oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
-		output					oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
-		output	[1:0]			oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,		
+		output oIO_IRQ_CONFIG_TABLE_REQ,
+		output [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
+		output oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
+		output oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
+		output [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,		
 		/****************************************
 		Instruction Memory
 		****************************************/
 		//Req
-		output					oINST_REQ,
-		input					iINST_LOCK,
-		output	[1:0]			oINST_MMUMOD,
-		output	[31:0]			oINST_PDT,
-		output	[31:0]			oINST_ADDR,
-		//This -> Data RAM
-		//output	[31:0]			oINST_DATA,
+		output oINST_REQ,
+		input iINST_LOCK,
+		output [1:0] oINST_MMUMOD,
+		output [31:0] oINST_PDT,
+		output [31:0] oINST_ADDR,
 		//RAM -> This
-		input					iINST_VALID,
-		output					oINST_BUSY,		//new
-		input	[63:0]			iINST_DATA,
-		input	[27:0]			iINST_MMU_FLAGS,
+		input iINST_VALID,
+		output oINST_BUSY,
+		input iINST_PAGEFAULT,
+		input iINST_QUEUE_FLUSH,
+		input [63:0] iINST_DATA,
+		input [27:0] iINST_MMU_FLAGS,
 		/****************************************
 		Data Memory
 		****************************************/
 		//Req
-		output					oDATA_REQ,
-		input					iDATA_LOCK,
-		output	[1:0]			oDATA_ORDER,
-		output					oDATA_RW,		//0=Write 1=Read
-		output	[13:0]			oDATA_TID,
-		output	[1:0]			oDATA_MMUMOD,
-		output	[31:0]			oDATA_PDT,
-		output	[31:0]			oDATA_ADDR,
+		output oDATA_REQ,
+		input iDATA_LOCK,
+		output [1:0] oDATA_ORDER,
+		output oDATA_RW,		//0=Write 1=Read
+		output [13:0] oDATA_TID,
+		output [1:0] oDATA_MMUMOD,
+		output [31:0] oDATA_PDT,
+		output [31:0] oDATA_ADDR,
 		//This -> Data RAM
-		output	[31:0]			oDATA_DATA,
+		output [31:0] oDATA_DATA,
 		//Data RAM -> This
-		input					iDATA_VALID,
-		input	[63:0]			iDATA_DATA,
+		input iDATA_VALID,
+		input iDATA_PAGEFAULT,
+		input [63:0] iDATA_DATA,
+		input [27:0] iDATA_MMU_FLAGS,
 		/****************************************
 		IO
 		****************************************/
 		//Req
-		output					oIO_REQ,
-		input					iIO_BUSY,
-		output	[1:0]			oIO_ORDER,
-		output					oIO_RW,			//0=Write 1=Read
-		output	[31:0]			oIO_ADDR,
+		output oIO_REQ,
+		input iIO_BUSY,
+		output [1:0] oIO_ORDER,
+		output oIO_RW,			//0=Write 1=Read
+		output [31:0] oIO_ADDR,
 		//Write
-		output	[31:0]			oIO_DATA,
+		output [31:0] oIO_DATA,
 		//Rec
-		input					iIO_VALID,
-		input	[31:0]			iIO_DATA,
+		input iIO_VALID,
+		input [31:0] iIO_DATA,
 		/****************************************
 		Interrupt
 		****************************************/
-		input					iINTERRUPT_VALID,
-		output					oINTERRUPT_ACK,
-		input	[5:0]			iINTERRUPT_NUM,
+		input iINTERRUPT_VALID,
+		output oINTERRUPT_ACK,
+		input [5:0] iINTERRUPT_NUM,
 		/****************************************
 		System Infomation
 		****************************************/
-		input					iSYSINFO_IOSR_VALID,
-		input	[31:0]			iSYSINFO_IOSR,
-		output	[31:0]			oDEBUG_PC,
-		output	[31:0]			oDEBUG0,
+		input iSYSINFO_IOSR_VALID,
+		input [31:0] iSYSINFO_IOSR,
+		output [31:0] oDEBUG_PC,
+		output [31:0] oDEBUG0,
 		/****************************************
 		Debug
 		****************************************/
@@ -113,57 +104,56 @@ module core
 	);
 		
 	
-	
-	wire			inst_fetch2cache_request_lock_cc;
-	wire			inst_cache2memory_request_lock_cc;
-	wire			inst_cache_mem2fetch_request_lock_cc;
+	wire inst_fetch2cache_request_lock_cc;
+	wire inst_cache2memory_request_lock_cc;
+	wire inst_cache_mem2fetch_request_lock_cc;
 				
 	/************************************************************************************
 	Wire and Register
 	************************************************************************************/		
 	//IO Start Address Buffer
-	reg				b_io_startaddr_valid;
-	reg		[31:0]	b_io_startaddr;
+	reg b_io_startaddr_valid;
+	reg [31:0] b_io_startaddr;
 	//Load State 
-	reg				b_ldst_state;
-	reg				b_ldst_type;	//0:IO | 1:DATA
+	reg b_ldst_state;
+	reg b_ldst_type;	//0:IO | 1:DATA
 	//Core Info
-	wire			core_flash;
+	wire core_flash;
 	//Instruction
-	wire			core2inst_fetch_req;
-	wire	[13:0]	core2inst_fetch_tid;
-	wire	[1:0]	core2inst_fetch_mmumod;
-	wire	[31:0]	core2inst_fetch_pdt;
-	wire	[31:0]	core2inst_fetch_addr;
-	wire			core2inst_fetch_busy;
+	wire core2inst_fetch_req;
+	wire [13:0] core2inst_fetch_tid;
+	wire [1:0] core2inst_fetch_mmumod;
+	wire [31:0] core2inst_fetch_pdt;
+	wire [31:0] core2inst_fetch_addr;
+	wire core2inst_fetch_busy;
 	//Load Store
-	wire			core2ldst_req;
-	wire	[1:0]	core2ldst_order;
-	wire			core2ldst_rw;
-	wire	[13:0]	core2ldst_tid;
-	wire	[1:0]	core2ldst_mmumod;
-	wire	[31:0]	core2ldst_pdt;
-	wire	[31:0]	core2ldst_addr;
-	wire	[31:0]	core2ldst_data;
+	wire core2ldst_req;
+	wire [1:0] core2ldst_order;
+	wire core2ldst_rw;
+	wire [13:0] core2ldst_tid;
+	wire [1:0] core2ldst_mmumod;
+	wire [31:0] core2ldst_pdt;
+	wire [31:0] core2ldst_addr;
+	wire [31:0] core2ldst_data;
 	//Instruction Cache
-	wire			inst_l1_cache_rd_lock;
-	wire			inst_l1_cache_rd_valid;
-	wire			inst_l1_cache_rd_hit;
-	wire	[63:0]	inst_l1_cache_rd_data;
-	wire	[11:0]	inst_l1_cache_rd_mmuflags;		
-	wire			inst_l1_cache_wr_lock;
+	wire inst_l1_cache_rd_lock;
+	wire inst_l1_cache_rd_valid;
+	wire inst_l1_cache_rd_hit;
+	wire [63:0] inst_l1_cache_rd_data;
+	wire [11:0] inst_l1_cache_rd_mmuflags;		
+	wire inst_l1_cache_wr_lock;
 	//Instruction Memory Acess Controllor
-	reg				b_inst_mem_state;
-	reg		[31:0]	b_inst_core2mem_addr;
-	reg		[13:0]	b_inst_core2mem_tid;
-	reg		[1:0]	b_inst_core2mem_mmumod;
-	reg		[31:0]	b_inst_core2mem_pdt;
+	reg b_inst_mem_state;
+	reg [31:0] b_inst_core2mem_addr;
+	reg [13:0] b_inst_core2mem_tid;
+	reg [1:0] b_inst_core2mem_mmumod;
+	reg [31:0] b_inst_core2mem_pdt;
 	//instruction Memory Matching Bridge
-	wire		inst_matching_bridge_full;
-	wire		inst_matching_bridge_valid;
+	wire inst_matching_bridge_full;
+	wire inst_matching_bridge_valid;
 	//Data Memory matching Bridge
-	wire		dataio_matching_bridge_full;
-	wire		dataio_valid;
+	wire dataio_matching_bridge_full;
+	wire dataio_valid;
 	
 	/************************************************************************************
 	Core - Main Pipeline
@@ -188,9 +178,11 @@ module core
 		.oINST_FETCH_PDT(oINST_PDT),
 		.oINST_FETCH_ADDR(oINST_ADDR),
 		.iINST_VALID(iINST_VALID),
-		.iINST_MMU_FLAGS(iINST_MMU_FLAGS),
 		.oINST_BUSY(oINST_BUSY),
+		.iINST_PAGEFAULT(iINST_PAGEFAULT),
+		.iINST_QUEUE_FLUSH(iINST_QUEUE_FLUSH),
 		.iINST_DATA(iINST_DATA),
+		.iINST_MMU_FLAGS(iINST_MMU_FLAGS),
 		/****************************************
 		Data Memory
 		****************************************/
@@ -207,7 +199,9 @@ module core
 		.oDATA_DATA(oDATA_DATA),
 		//Data RAM -> This
 		.iDATA_VALID(iDATA_VALID),
+		.iDATA_PAGEFAULT(iDATA_PAGEFAULT),
 		.iDATA_DATA(iDATA_DATA),
+		.iDATA_MMU_FLAGS(iDATA_MMU_FLAGS),
 		/****************************************
 		IO
 		****************************************/

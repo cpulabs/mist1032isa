@@ -22,6 +22,8 @@ module mmu_if(
 		output oCORE_REQ,
 		input iCORE_LOCK,
 		output oCORE_STORE_ACK,
+		output oCORE_PAGE_FAULT,	
+		output oCORE_QUEUE_FLUSH,	
 		output [63:0] oCORE_DATA,
 		output [27:0] oCORE_MMU_FLAGS,
 		/************************
@@ -40,6 +42,10 @@ module mmu_if(
 		input [63:0] iMEMORY_DATA
 	);
 	
+	localparam L_PARAM_STT_PFAULT_IDLE = 2'h0;
+	localparam L_PARAM_STT_PFAULT_QUEUEWAIT = 2'h1;
+	localparam L_PARAM_STT_PFAULT_TOCORE = 2'h2;
+	
 	/********************************************************************************
 	Wire and Register
 	********************************************************************************/
@@ -52,19 +58,26 @@ module mmu_if(
 	wire matching2mmu_full;
 	wire mmu2matching_type;
 	wire matching2coreout_type;
+	wire matching2mmu_empty;
 	//MMU Flags
 	wire mmu2mmufifo_req;
 	wire mmufifo2mmu_lock;
 	wire [27:0] mmu2mmufifo_flags;
 	wire [27:0] mmufifo2coreout_flags;
+	//Page Fault
+	wire mmu2core_pagefault;
+	reg [1:0] b_pagefault_state;
 	//Core Output Latch
 	reg b_coreout_req;
 	reg [63:0] b_coreout_data;
 	reg [27:0] b_coreout_mmu_flags;
 
+
 	//Condition
 	wire mmu2core_data_write_ack_condition = mmu2memory_req && mmu2memory_data_store_ack && !iMEMORY_LOCK;
 	wire mmu2memory_req_condition = mmu2memory_req && !iMEMORY_LOCK && !matching2mmu_full && !mmufifo2mmu_lock;
+	
+	wire memory2mmu_lock_condition = iMEMORY_LOCK || matching2mmu_full || mmufifo2mmu_lock || (b_pagefault_state == L_PARAM_STT_PFAULT_QUEUEWAIT);
 	
 	/********************************************************************************
 	Memory Management Unit
@@ -82,10 +95,10 @@ module mmu_if(
 		.iLOGIC_REQ(iCORE_REQ),
 		.oLOGIC_LOCK(oCORE_LOCK),
 		.iLOGIC_DATA_STORE_ACK(iCORE_DATA_STORE_ACK),
-		.iLOGIC_MODE(iCORE_MMU_MODE),	//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
-		.iLOGIC_PDT(iCORE_PDT),			//Page Directory Table 
+		.iLOGIC_MODE(iCORE_MMU_MODE),					//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		.iLOGIC_PDT(iCORE_PDT),							//Page Directory Table 
 		.iLOGIC_ORDER(iCORE_ORDER),
-		.iLOGIC_RW(iCORE_RW),					//0=Read 1=Write
+		.iLOGIC_RW(iCORE_RW),							//0=Read 1=Write
 		.iLOGIC_ADDR(iCORE_ADDR),
 		.iLOGIC_DATA(iCORE_DATA),
 		/***********************
@@ -95,11 +108,15 @@ module mmu_if(
 		.iMMUFLAGS_LOCK(mmufifo2mmu_lock),
 		.oMMUFLAGS_FLAGS(mmu2mmufifo_flags),
 		/***********************
+		Page Fault
+		***********************/
+		.oPAGEFAULT_VALID(mmu2core_pagefault),
+		/***********************
 		To Memory
 		***********************/
 		//MMU -> Memory
 		.oMEMORY_REQ(mmu2memory_req),
-		.iMEMORY_LOCK(iMEMORY_LOCK || matching2mmu_full || mmufifo2mmu_lock),
+		.iMEMORY_LOCK(memory2mmu_lock_condition),
 		.oMEMORY_DATA_STORE_ACK(mmu2memory_data_store_ack),
 		.oMEMORY_MMU_USE(mmu2matching_type),
 		.oMEMORY_ORDER(oMEMORY_ORDER),
@@ -112,6 +129,38 @@ module mmu_if(
 		.iMEMORY_DATA(iMEMORY_DATA)
 	);
 	
+	/********************************************************************************
+	Page Fault
+	********************************************************************************/
+	wire pagefault_condition = (b_pagefault_state == L_PARAM_STT_PFAULT_TOCORE);
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_pagefault_state <= L_PARAM_STT_PFAULT_IDLE;
+		end
+		else begin
+			case(b_pagefault_state)
+				L_PARAM_STT_PFAULT_IDLE:
+					begin
+						if(mmu2core_pagefault)begin
+							b_pagefault_state <= L_PARAM_STT_PFAULT_QUEUEWAIT;
+						end
+					end
+				L_PARAM_STT_PFAULT_QUEUEWAIT:
+					begin
+						if(matching2mmu_empty)begin
+							b_pagefault_state <= L_PARAM_STT_PFAULT_TOCORE;
+						end
+					end
+				L_PARAM_STT_PFAULT_TOCORE:
+					begin
+						if(!iCORE_LOCK)begin
+							b_pagefault_state <= L_PARAM_STT_PFAULT_IDLE;
+						end
+					end
+			endcase
+		end
+	end
+
 
 	/********************************************************************************
 	Memory Matching Queue
@@ -119,20 +168,20 @@ module mmu_if(
 			Type	0	:	Core Use
 					1	:	MMU Use
 	********************************************************************************/
-	arbiter_matching_bridge #(16, 4) MEM_MATCHING_QUEUE(	//Queue deep : 16, Queue deep_n : 4
+	arbiter_matching_queue #(16, 4, 1) MEM_MATCHING_QUEUE(	//Queue deep : 16, Queue deep_n : 4, Flag_n : 2
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash
 		.iFLASH(1'b0),
 		//Write
 		.iWR_REQ(mmu2memory_req_condition && !mmu2memory_data_store_ack),
-		.iWR_TYPE(mmu2matching_type),
+		.iWR_FLAG(mmu2matching_type),
 		.oWR_FULL(matching2mmu_full),
 		//Read
 		.iRD_REQ(iMEMORY_REQ && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition),
 		.oRD_VALID(),
-		.oRD_TYPE(matching2coreout_type),
-		.oRD_EMPTY()
+		.oRD_FLAG(matching2coreout_type),
+		.oRD_EMPTY(matching2mmu_empty)
 	);
 	
 	
@@ -144,7 +193,7 @@ module mmu_if(
 		.inRESET(inRESET), 
 		.iREMOVE(1'b0), 
 		.oCOUNT(), 	
-		.iWR_EN(mmu2mmufifo_req && !iMEMORY_LOCK && !matching2mmu_full && !mmufifo2mmu_lock), 
+		.iWR_EN(mmu2mmufifo_req && !memory2mmu_lock_condition), 
 		.iWR_DATA(mmu2mmufifo_flags), 
 		.oWR_FULL(mmufifo2mmu_lock),
 		.iRD_EN(iMEMORY_REQ && matching2coreout_type && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition), 
@@ -174,8 +223,10 @@ module mmu_if(
 	/********************************************************************************
 	Assign
 	********************************************************************************/
-	assign oCORE_REQ = b_coreout_req || mmu2core_data_write_ack_condition;
+	assign oCORE_REQ = b_coreout_req || mmu2core_data_write_ack_condition || pagefault_condition;
 	assign oCORE_STORE_ACK = mmu2core_data_write_ack_condition;
+	assign oCORE_PAGE_FAULT = pagefault_condition;
+	assign oCORE_QUEUE_FLUSH = pagefault_condition;
 	assign oCORE_DATA = b_coreout_data;
 	assign oCORE_MMU_FLAGS = b_coreout_mmu_flags;
 	

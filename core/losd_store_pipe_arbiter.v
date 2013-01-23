@@ -11,6 +11,8 @@ module losd_store_pipe_arbiter(
 		output	[31:0]					oLDST_ADDR,
 		output	[31:0]					oLDST_DATA,
 		input							iLDST_VALID,
+		input iLDST_PAGEFAULT,
+		input [13:0] iLDST_MMU_FLAGS,
 		input	[31:0]					iLDST_DATA,
 		//Selector
 		input							iUSE_SEL,		//0:Execution | 1:Exception
@@ -25,6 +27,8 @@ module losd_store_pipe_arbiter(
 		input		[31:0]				iEXE_ADDR,
 		input		[31:0]				iEXE_DATA,
 		output							oEXE_REQ,
+		output oEXE_PAGEFAULT,
+		output [13:0] oEXE_MMU_FLAGS,
 		output		[31:0]				oEXE_DATA,
 		//Exception Module
 		input							iEXCEPT_REQ,
@@ -60,6 +64,8 @@ module losd_store_pipe_arbiter(
 	//ALU-LoadStore Unit
 	assign		oEXE_BUSY		=		(iUSE_SEL)? 1'b1 : iLDST_BUSY;
 	assign		oEXE_REQ		=		(iUSE_SEL)? 1'b0 : iLDST_VALID;
+	assign oEXE_PAGEFAULT = iLDST_PAGEFAULT;
+	assign oEXE_MMU_FLAGS = iLDST_MMU_FLAGS;
 	assign		oEXE_DATA		=		iLDST_DATA;
 	
 	

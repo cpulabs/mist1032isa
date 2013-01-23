@@ -17,6 +17,7 @@ module memory_pipe_arbiter(
 		//Data(Memory -> Core)
 		output oDATA_REQ,
 		input iDATA_BUSY,
+		output oDATA_PAGEFAULT,	
 		output [63:0] oDATA_DATA,
 		output [27:0] oDATA_MMU_FLAGS,
 		//Inst(Core -> Memory)
@@ -28,6 +29,8 @@ module memory_pipe_arbiter(
 		//Inst(Memory -> Core)
 		output oINST_REQ,
 		input iINST_BUSY,
+		output oINST_PAGEFAULT,		
+		output oINST_QUEUE_FLUSH,		
 		output [63:0] oINST_DATA,
 		output [27:0] oINST_MMU_FLAGS,
 		//Memory(OutPort)
@@ -44,6 +47,8 @@ module memory_pipe_arbiter(
 		input iMEMORY_VALID,
 		output oMEMORY_BUSY,
 		input iMEMORY_STORE_ACK,
+		input iMEMORY_PAGE_FAULT,
+		input iMEMORY_QUEUE_FLUSH,
 		input [63:0] iMEMORY_DATA,
 		input [27:0] iMEMORY_MMU_FLAGS
 	);
@@ -72,9 +77,12 @@ module memory_pipe_arbiter(
 	reg [31:0] b_core2mem_data;
 	//Memory -> Core
 	reg b_mem2core_inst_valid;
+	reg b_mem2core_inst_pagefault;
+	reg b_mem2core_inst_queue_flush;
 	reg [63:0] b_mem2core_inst_data;
 	reg [27:0] b_mem2core_inst_mmu_flags;
 	reg b_mem2core_data_valid;
+	reg b_mem2core_data_pagefault;
 	reg [63:0] b_mem2core_data_data;
 	reg [27:0] b_mem2core_data_mmu_flags;	
 
@@ -86,19 +94,19 @@ module memory_pipe_arbiter(
 	/*********************************************************
 	Memory Matching Controal
 	*********************************************************/	
-	arbiter_matching_bridge #(16, 4) MEM_MATCHING_BRIDGE(	//Queue deep : 16, Queue deep_n : 4
+	arbiter_matching_queue #(16, 4, 1) MEM_MATCHING_BRIDGE(	//Queue deep : 16, Queue deep_n : 4, Flag_n : 1
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash
 		.iFLASH(1'b0),
 		//Write
 		.iWR_REQ(!mem2core_common_lock && core2mem_normal_memory_access_condition),
-		.iWR_TYPE(core2mem_data_condition),		//0:Inst, 1:Data
+		.iWR_FLAG(core2mem_data_condition),		//0:Inst, 1:Data
 		.oWR_FULL(matching_bridfe_wr_full),
 		//Read
-		.iRD_REQ(iMEMORY_VALID && (matching_bridge_rd_type && !core2mem_data_lock || !matching_bridge_rd_type && !iINST_BUSY) && !iMEMORY_STORE_ACK),
+		.iRD_REQ(iMEMORY_VALID  && (matching_bridge_rd_type && !core2mem_data_lock || !matching_bridge_rd_type && !iINST_BUSY) && !iMEMORY_STORE_ACK),
 		.oRD_VALID(matching_bridge_rd_valid),
-		.oRD_TYPE(matching_bridge_rd_type),		//0:Inst, 1:Data
+		.oRD_FLAG(matching_bridge_rd_type),		//0:Inst, 1:Data
 		.oRD_EMPTY()
 	);
 
@@ -163,12 +171,16 @@ module memory_pipe_arbiter(
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_mem2core_inst_valid <= 1'b0;
+			b_mem2core_inst_pagefault <= 1'b0;
+			b_mem2core_inst_queue_flush <= 1'b0;
 			b_mem2core_inst_data <= {63{1'b0}};
 			b_mem2core_inst_mmu_flags <= 28'h0;
 		end
 		else begin
 			if(!iINST_BUSY)begin
 				b_mem2core_inst_valid <= !matching_bridge_rd_type && matching_bridge_rd_valid && !iMEMORY_STORE_ACK && iMEMORY_VALID;
+				b_mem2core_inst_pagefault <= iMEMORY_PAGE_FAULT;
+				b_mem2core_inst_queue_flush <= iMEMORY_QUEUE_FLUSH;
 				b_mem2core_inst_data <= iMEMORY_DATA;
 				b_mem2core_inst_mmu_flags <= iMEMORY_MMU_FLAGS;
 			end
@@ -180,18 +192,21 @@ module memory_pipe_arbiter(
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_mem2core_data_valid <= 1'b0;
+			b_mem2core_data_pagefault <= 1'b0;
 			b_mem2core_data_data <= {63{1'b0}};
 			b_mem2core_data_mmu_flags <= 28'h0;
 		end
 		else begin
 			if(!core2mem_data_lock)begin
 				b_mem2core_data_valid <= ((matching_bridge_rd_type && matching_bridge_rd_valid) || iMEMORY_STORE_ACK) && iMEMORY_VALID;
+				b_mem2core_data_pagefault <= iMEMORY_PAGE_FAULT;
 				b_mem2core_data_data <= iMEMORY_DATA;
 				b_mem2core_data_mmu_flags <= iMEMORY_MMU_FLAGS;
 			end
 		end
 	end
 	
+
 	
 	
 	/*********************************************************
@@ -212,10 +227,13 @@ module memory_pipe_arbiter(
 	assign oMEMORY_BUSY = iDATA_BUSY || iINST_BUSY;
 	
 	assign oDATA_REQ = b_mem2core_data_valid && !core2mem_data_lock;
+	assign oDATA_PAGEFAULT = b_mem2core_data_pagefault;
 	assign oDATA_DATA = b_mem2core_data_data;
 	assign oDATA_MMU_FLAGS = b_mem2core_data_mmu_flags;
 	
 	assign oINST_REQ = b_mem2core_inst_valid && !iINST_BUSY;
+	assign oINST_PAGEFAULT = b_mem2core_inst_pagefault;	
+	assign oINST_QUEUE_FLUSH = b_mem2core_inst_queue_flush;
 	assign oINST_DATA = b_mem2core_inst_data;
 	assign oINST_MMU_FLAGS = b_mem2core_inst_mmu_flags;
 	

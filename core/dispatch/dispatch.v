@@ -25,6 +25,9 @@ module dispatch
 		//PPCR Set
 		input iFREE_PPCR_SET,
 		input [31:0] iFREE_PPCR,
+		//FI0R Set
+		input iFREE_FI0R_SET,
+		input [31:0] iFREE_FI0R,
 		//System Register
 		output [31:0] oSYSREG_PCR,
 		output [31:0] oSYSREG_IDTR,
@@ -36,6 +39,9 @@ module dispatch
 		output [31:0] oSYSREG_SPR,
 		//Pipeline 
 		input iPREVIOUS_VALID,
+		input iPREVIOUS_FAULT_PAGEFAULT,
+		input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
+		input iPREVIOUS_FAULT_INVALID_INST,
 		input iPREVIOUS_SOURCE0_ACTIVE,			
 		input iPREVIOUS_SOURCE1_ACTIVE,		
 		input iPREVIOUS_SOURCE0_SYSREG,		
@@ -64,6 +70,9 @@ module dispatch
 		output oPREVIOUS_LOCK,
 		//Next
 		output oNEXT_VALID,	
+		output oNEXT_FAULT_PAGEFAULT,
+		output oNEXT_FAULT_PRIVILEGE_ERROR,
+		output oNEXT_FAULT_INVALID_INST,
 		output [31:0] oNEXT_SYSREG_PSR,	
 		output [31:0] oNEXT_SYSREG_TIDR,	
 		output [31:0] oNEXT_SYSREG_PDTR,
@@ -422,136 +431,141 @@ module dispatch
 														);
 	
 	
-	reg					b_valid;	
-	reg					b_destination_sysreg;
-	reg		[4:0]		b_destination;			
-	reg					b_writeback;	
-	reg					b_flag_writeback;				
-	reg		[4:0]		b_cmd;
-	reg		[3:0]		b_cc_afe;
-	reg		[31:0]		b_source0;
-	reg		[31:0]		b_source1;	
-	reg		[4:0]		b_source0_pointer;
-	reg		[4:0]		b_source1_pointer;
-	reg					b_source0_sysreg;
-	reg					b_source1_sysreg;
-	reg					b_source1_imm;
-	reg					b_source0_flags;
-	reg					b_ex_sys_reg;
-	reg					b_ex_sys_ldst;
-	reg					b_ex_logic;
-	reg					b_ex_shift;
-	reg					b_ex_adder;
-	reg					b_ex_mul;
-	reg					b_ex_sdiv;
-	reg					b_ex_udiv;
-	reg					b_ex_ldst;
-	reg					b_ex_branch;
-	reg		[31:0]		b_pc;
+	reg b_valid;	
+	reg b_fault_pagefault;
+	reg b_fault_privilege_error;
+	reg b_fault_invalid_inst;
+	reg b_destination_sysreg;
+	reg [4:0] b_destination;			
+	reg b_writeback;	
+	reg b_flag_writeback;				
+	reg [4:0] b_cmd;
+	reg [3:0] b_cc_afe;
+	reg [31:0] b_source0;
+	reg [31:0] b_source1;	
+	reg [4:0] b_source0_pointer;
+	reg [4:0] b_source1_pointer;
+	reg b_source0_sysreg;
+	reg b_source1_sysreg;
+	reg b_source1_imm;
+	reg b_source0_flags;
+	reg b_ex_sys_reg;
+	reg b_ex_sys_ldst;
+	reg b_ex_logic;
+	reg b_ex_shift;
+	reg b_ex_adder;
+	reg b_ex_mul;
+	reg b_ex_sdiv;
+	reg b_ex_udiv;
+	reg b_ex_ldst;
+	reg b_ex_branch;
+	reg [31:0] b_pc;
 	
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_valid					<=		1'b0;
-			b_destination_sysreg	<=		1'b0;
-			b_destination			<=		5'h0;
-			b_writeback				<=		1'b0;
-			b_flag_writeback		<=		1'b0;
-			b_cmd					<=		5'h0;
-			b_cc_afe				<=		4'h0;
-			b_source0				<=		32'h0;
-			b_source1				<=		32'h0;
-			b_source0_pointer		<=		5'h0;
-			b_source1_pointer		<=		5'h0;
-			b_source0_sysreg		<=		1'b0;
-			b_source1_sysreg		<=		1'b0;
-			b_source1_imm			<=		1'b0;
-			b_source0_flags			<=		1'b0;
-			b_ex_sys_reg			<=		1'b0;
-			b_ex_sys_ldst			<=		1'b0;
-			b_ex_logic				<=		1'b0;
-			b_ex_shift				<=		1'b0;
-			b_ex_adder				<=		1'b0;
-			b_ex_mul				<=		1'b0;
-			b_ex_sdiv				<=		1'b0;
-			b_ex_udiv				<=		1'b0;
-			b_ex_ldst				<=		1'b0;
-			b_ex_branch				<=		1'b0;
-			b_pc					<=		32'h0;
+			b_valid <= 1'b0;
+			b_fault_pagefault <= 1'b0;
+			b_fault_privilege_error <= 1'b0;
+			b_fault_invalid_inst <= 1'b0;
+			b_destination_sysreg <= 1'b0;
+			b_destination <= 5'h0;
+			b_writeback <= 1'b0;
+			b_flag_writeback <= 1'b0;
+			b_cmd <= 5'h0;
+			b_cc_afe <= 4'h0;
+			b_source0 <= 32'h0;
+			b_source1 <= 32'h0;
+			b_source0_pointer <= 5'h0;
+			b_source1_pointer <= 5'h0;
+			b_source0_sysreg <= 1'b0;
+			b_source1_sysreg <= 1'b0;
+			b_source1_imm <= 1'b0;
+			b_source0_flags <= 1'b0;
+			b_ex_sys_reg <= 1'b0;
+			b_ex_sys_ldst <= 1'b0;
+			b_ex_logic <= 1'b0;
+			b_ex_shift <= 1'b0;
+			b_ex_adder <= 1'b0;
+			b_ex_mul <= 1'b0;
+			b_ex_sdiv <= 1'b0;
+			b_ex_udiv <= 1'b0;
+			b_ex_ldst <= 1'b0;
+			b_ex_branch <= 1'b0;
+			b_pc <= 32'h0;
 		end
 		else if(iFREE_REFRESH)begin
-			b_valid					<=		1'b0;
-			b_destination_sysreg	<=		1'b0;
-			b_destination			<=		5'h0;
-			b_writeback				<=		1'b0;
-			b_flag_writeback		<=		1'b0;
-			b_cmd					<=		5'h0;
-			b_cc_afe				<=		4'h0;
-			b_source0				<=		32'h0;
-			b_source1				<=		32'h0;
-			b_source0_pointer		<=		5'h0;
-			b_source1_pointer		<=		5'h0;
-			b_source0_sysreg		<=		1'b0;
-			b_source1_sysreg		<=		1'b0;
-			b_source1_imm			<=		1'b0;
-			b_source0_flags			<=		1'b0;
-			b_ex_sys_reg			<=		1'b0;
-			b_ex_sys_ldst			<=		1'b0;
-			b_ex_logic				<=		1'b0;
-			b_ex_shift				<=		1'b0;
-			b_ex_adder				<=		1'b0;
-			b_ex_mul				<=		1'b0;
-			b_ex_sdiv				<=		1'b0;
-			b_ex_udiv				<=		1'b0;
-			b_ex_ldst				<=		1'b0;
-			b_ex_branch				<=		1'b0;
-			b_pc					<=		32'h0;
+			b_valid <= 1'b0;
+			b_fault_pagefault <= 1'b0;
+			b_fault_privilege_error <= 1'b0;
+			b_fault_invalid_inst <= 1'b0;
+			b_destination_sysreg <= 1'b0;
+			b_destination <= 5'h0;
+			b_writeback <= 1'b0;
+			b_flag_writeback <= 1'b0;
+			b_cmd <= 5'h0;
+			b_cc_afe <= 4'h0;
+			b_source0 <= 32'h0;
+			b_source1 <= 32'h0;
+			b_source0_pointer <= 5'h0;
+			b_source1_pointer <= 5'h0;
+			b_source0_sysreg <= 1'b0;
+			b_source1_sysreg <= 1'b0;
+			b_source1_imm <= 1'b0;
+			b_source0_flags <= 1'b0;
+			b_ex_sys_reg <= 1'b0;
+			b_ex_sys_ldst <= 1'b0;
+			b_ex_logic <= 1'b0;
+			b_ex_shift <= 1'b0;
+			b_ex_adder <= 1'b0;
+			b_ex_mul <= 1'b0;
+			b_ex_sdiv <= 1'b0;
+			b_ex_udiv <= 1'b0;
+			b_ex_ldst <= 1'b0;
+			b_ex_branch <= 1'b0;
+			b_pc <= 32'h0;
 		end
 		else begin
 			if(!iNEXT_LOCK)begin
-				b_valid					<=		iPREVIOUS_VALID;//latch_condition;
-				b_destination_sysreg	<=		iPREVIOUS_DESTINATION_SYSREG;
-				b_destination			<=		iPREVIOUS_DESTINATION;
-				b_writeback				<=		iPREVIOUS_WRITEBACK;
-				b_flag_writeback		<=		iPREVIOUS_FLAGS_WRITEBACK;
-				b_cmd					<=		iPREVIOUS_CMD;
-				b_cc_afe				<=		iPREVIOUS_CC_AFE;
-				
-				
+				b_valid <= iPREVIOUS_VALID;//latch_condition;
+				b_fault_pagefault <= iPREVIOUS_FAULT_PAGEFAULT;
+				b_fault_privilege_error <= iPREVIOUS_FAULT_PRIVILEGE_ERROR;
+				b_fault_invalid_inst <= iPREVIOUS_FAULT_INVALID_INST;
+				b_destination_sysreg <= iPREVIOUS_DESTINATION_SYSREG;
+				b_destination <= iPREVIOUS_DESTINATION;
+				b_writeback <= iPREVIOUS_WRITEBACK;
+				b_flag_writeback <= iPREVIOUS_FLAGS_WRITEBACK;
+				b_cmd <= iPREVIOUS_CMD;
+				b_cc_afe <= iPREVIOUS_CC_AFE;
 				if(writeback_source0_valid)begin
-					b_source0				<=		writeback_source0;
+					b_source0 <= writeback_source0;
 				end
 				else begin
-					b_source0				<=		(sysreg_source0_valid && iPREVIOUS_SOURCE0_SYSREG)? sysreg_source0 : b_gr_register[iPREVIOUS_SOURCE0[4:0]];
+					b_source0 <= (sysreg_source0_valid && iPREVIOUS_SOURCE0_SYSREG)? sysreg_source0 : b_gr_register[iPREVIOUS_SOURCE0[4:0]];
 				end
-				
-				
-				
 				if(writeback_source1_valid && !iPREVIOUS_SOURCE1_IMM)begin
-					b_source1				<=		writeback_source1;
+					b_source1 <= writeback_source1;
 				end
 				else begin
-					b_source1				<=		(iPREVIOUS_SOURCE1_IMM)? iPREVIOUS_SOURCE1 : ((sysreg_source1_valid && iPREVIOUS_SOURCE1_SYSREG)? sysreg_source1 : b_gr_register[iPREVIOUS_SOURCE1[4:0]]);
+					b_source1 <= (iPREVIOUS_SOURCE1_IMM)? iPREVIOUS_SOURCE1 : ((sysreg_source1_valid && iPREVIOUS_SOURCE1_SYSREG)? sysreg_source1 : b_gr_register[iPREVIOUS_SOURCE1[4:0]]);
 				end
-				
-				
-				b_source0_pointer		<=		iPREVIOUS_SOURCE0;
-				b_source1_pointer		<=		iPREVIOUS_SOURCE1[4:0];
-				b_source0_sysreg		<=		iPREVIOUS_SOURCE0_SYSREG;
-				b_source1_sysreg		<=		iPREVIOUS_SOURCE1_SYSREG;
-				b_source1_imm			<=		iPREVIOUS_SOURCE1_IMM;
-				b_source0_flags			<=		iPREVIOUS_SOURCE0_FLAGS;
-				b_ex_sys_reg			<=		iPREVIOUS_EX_SYS_REG;
-				b_ex_sys_ldst			<=		iPREVIOUS_EX_SYS_LDST;
-				b_ex_logic				<=		iPREVIOUS_EX_LOGIC;
-				b_ex_shift				<=		iPREVIOUS_EX_SHIFT;
-				b_ex_adder				<=		iPREVIOUS_EX_ADDER;
-				b_ex_mul				<=		iPREVIOUS_EX_MUL;
-				b_ex_sdiv				<=		iPREVIOUS_EX_SDIV;
-				b_ex_udiv				<=		iPREVIOUS_EX_UDIV;
-				b_ex_ldst				<=		iPREVIOUS_EX_LDST;
-				b_ex_branch				<=		iPREVIOUS_EX_BRANCH;
-				b_pc					<=		iPREVIOUS_PC;
+				b_source0_pointer <= iPREVIOUS_SOURCE0;
+				b_source1_pointer <= iPREVIOUS_SOURCE1[4:0];
+				b_source0_sysreg <= iPREVIOUS_SOURCE0_SYSREG;
+				b_source1_sysreg <= iPREVIOUS_SOURCE1_SYSREG;
+				b_source1_imm <= iPREVIOUS_SOURCE1_IMM;
+				b_source0_flags <= iPREVIOUS_SOURCE0_FLAGS;
+				b_ex_sys_reg <= iPREVIOUS_EX_SYS_REG;
+				b_ex_sys_ldst <= iPREVIOUS_EX_SYS_LDST;
+				b_ex_logic <= iPREVIOUS_EX_LOGIC;
+				b_ex_shift <= iPREVIOUS_EX_SHIFT;
+				b_ex_adder <= iPREVIOUS_EX_ADDER;
+				b_ex_mul <= iPREVIOUS_EX_MUL;
+				b_ex_sdiv <= iPREVIOUS_EX_SDIV;
+				b_ex_udiv <= iPREVIOUS_EX_UDIV;
+				b_ex_ldst <= iPREVIOUS_EX_LDST;
+				b_ex_branch <= iPREVIOUS_EX_BRANCH;
+				b_pc <= iPREVIOUS_PC;
 			end
 		end
 	end
@@ -672,7 +686,7 @@ module dispatch
 	//PCR : Non Use Register
 	
 	//PSR : Program Status Register
-	system_register PSR	(
+	system_register PSR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_psr_regist_valid), .iREGIST_DATA(w_sysreg_psr_regist_data), 
 		.oINFO_DATA(w_sysreg_psr_info_data)
@@ -683,7 +697,7 @@ module dispatch
 														);
 														
 	//SPR
-	system_register SPR	(
+	system_register SPR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_spr_regist_valid), .iREGIST_DATA(w_sysreg_spr_regist_data), 
 		.oINFO_DATA(w_sysreg_spr_info_data)
@@ -693,7 +707,7 @@ module dispatch
 			
 			
 	//IDTR
-	system_register IDTR	(
+	system_register IDTR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_idtr_regist_valid), .iREGIST_DATA(w_sysreg_idtr_regist_data), 
 		.oINFO_DATA(w_sysreg_idtr_info_data)
@@ -701,6 +715,12 @@ module dispatch
 	assign		w_sysreg_idtr_regist_valid		=		!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_IDTR;
 	assign		w_sysreg_idtr_regist_data		=		iWB_DATA;
 	
+	//FI0R
+	system_register FI0R (
+		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iREGIST_DATA_VALID(iFREE_FI0R_SET), .iREGIST_DATA(iFREE_FI0R), 
+		.oINFO_DATA()
+	);
 	
 	//PDTR : Page Directory Table Register
 	system_register PDTR	(
@@ -753,12 +773,6 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ppcr_regist_valid), .iREGIST_DATA(w_sysreg_ppcr_regist_data), 
 		.oINFO_DATA(w_sysreg_ppcr_info_data)
 	);
-	/*
-	assign		w_sysreg_ppcr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iFREE_SYSREG_SET_IRQ_MODE || iFREE_PPCR_SET;
-	assign		w_sysreg_ppcr_regist_data		=		(iFREE_PPCR_SET)? iFREE_PPCR : (
-														(iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_pcr_info_data : iWB_DATA
-														);
-	*/
 	assign		w_sysreg_ppcr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iFREE_PPCR_SET;
 	assign		w_sysreg_ppcr_regist_data		=		(iFREE_PPCR_SET)? iFREE_PPCR : iWB_DATA;
 	
@@ -914,7 +928,10 @@ module dispatch
 	
 	
 	//Assign
-	assign oNEXT_VALID =	b_valid && !iNEXT_LOCK;
+	assign oNEXT_VALID = b_valid && !iNEXT_LOCK;
+	assign oNEXT_FAULT_PAGEFAULT = b_fault_pagefault;
+	assign oNEXT_FAULT_PRIVILEGE_ERROR = b_fault_privilege_error;
+	assign oNEXT_FAULT_INVALID_INST = b_fault_invalid_inst;
 	assign oNEXT_SYSREG_PSR = w_sysreg_psr_info_data;
 	assign oNEXT_SYSREG_TIDR = w_sysreg_tidr_info_data;
 	assign oNEXT_SYSREG_PDTR = w_sysreg_pdtr_info_data;
