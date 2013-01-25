@@ -172,7 +172,7 @@ module mmu_if(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash
-		.iFLASH(1'b0),
+		.iFLASH(pagefault_condition),
 		//Write
 		.iWR_REQ(mmu2memory_req_condition && !mmu2memory_data_store_ack),
 		.iWR_FLAG(mmu2matching_type),
@@ -191,7 +191,7 @@ module mmu_if(
 	sync_fifo #(28, 16, 4) MMUFLAGS_QUEUE(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
-		.iREMOVE(1'b0), 
+		.iREMOVE(pagefault_condition), 
 		.oCOUNT(), 	
 		.iWR_EN(mmu2mmufifo_req && !memory2mmu_lock_condition), 
 		.iWR_DATA(mmu2mmufifo_flags), 
@@ -206,6 +206,12 @@ module mmu_if(
 	********************************************************************************/
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
+			b_coreout_req <= 1'b0;
+			b_coreout_data <= {64{1'b0}};
+			b_coreout_mmu_flags <= {28{1'b0}};
+		end
+		//Page Fault
+		if(pagefault_condition)begin
 			b_coreout_req <= 1'b0;
 			b_coreout_data <= {64{1'b0}};
 			b_coreout_mmu_flags <= {28{1'b0}};

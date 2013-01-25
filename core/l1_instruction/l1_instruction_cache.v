@@ -69,6 +69,7 @@ module l1_instruction_cache(
 	reg [63:0] b_mem_result_data;
 	reg [27:0] b_mem_result_mmu_flags;
 	reg [511:0] b_cache_write_data;
+	reg [255:0] b_cache_write_mmu_flags;
 	reg b_pagefault;
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -83,6 +84,7 @@ module l1_instruction_cache(
 			b_mem_result_data <= 64'h0;
 			b_mem_result_mmu_flags <= 28'h0;
 			b_cache_write_data <= 512'h0;
+			b_cache_write_mmu_flags <= 255'h0;
 			b_pagefault <= 1'b0;
 		end	
 		else begin
@@ -122,6 +124,7 @@ module l1_instruction_cache(
 							if(iINST_VALID)begin
 								b_get_state <= b_get_state + 4'h1;
 								b_cache_write_data <= {iINST_DATA, b_cache_write_data[511:64]};
+								b_cache_write_mmu_flags <= {2'h0, iINST_MMU_FLAGS[27:14], 2'h0, iINST_MMU_FLAGS[13:0], b_cache_write_mmu_flags[255:31]};
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_0_valid <= 1'b1;
@@ -154,6 +157,7 @@ module l1_instruction_cache(
 							if(iINST_VALID)begin
 								//Data Check
 								b_cache_write_data <= {iINST_DATA, b_cache_write_data[511:64]};
+								b_cache_write_mmu_flags <= {2'h0, iINST_MMU_FLAGS[27:14], 2'h0, iINST_MMU_FLAGS[13:0], b_cache_write_mmu_flags[255:31]};
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_0_valid <= 1'b1;
@@ -217,7 +221,7 @@ module l1_instruction_cache(
 	//Reservation Bridge
 	wire inst_matching_bridge_full;
 	wire inst_matching_bridge_valid;
-	//Matching Bridge 
+	//Matching Queue 
 	arbiter_matching_queue #(16, 4, 1) INST_MATCHING_BRIDGE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -289,12 +293,10 @@ module l1_instruction_cache(
 				//.iWR_REQ(iINST_VALID),
 				.iWR_REQ((b_req_main_state == L_PARAM_OUTINST) && !b_pagefault && !load_lock),
 				.oWR_BUSY(),
-				//.iWR_LINE(b_get_state[2:0]),
-				//.iWR_ADDR({b_req_addr[31:6], b_get_state[2:0], 3'h0}/*{b_req_addr[31:6], 6'h0}*/),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 				.iWR_ADDR({b_req_addr[31:6], 6'h0}),
 				//.iWR_DATA(iINST_DATA),
 				.iWR_DATA(b_cache_write_data),
-				.iWR_MMU_FLAGS(iINST_MMU_FLAGS)
+				.iWR_MMU_FLAGS(b_cache_write_mmu_flags)
 			);
 		end
 		else begin
@@ -334,7 +336,7 @@ module l1_instruction_cache(
 				.oWR_BUSY(),
 				.iWR_ADDR(32'h0),
 				.iWR_DATA(b_cache_write_data),
-				.iWR_MMU_FLAGS(iINST_MMU_FLAGS)
+				.iWR_MMU_FLAGS(b_cache_write_mmu_flags)
 			);
 		end
 	endgenerate

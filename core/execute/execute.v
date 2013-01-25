@@ -18,6 +18,8 @@ module execute(
 		input iPREVIOUS_FAULT_PAGEFAULT,
 		input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
 		input iPREVIOUS_FAULT_INVALID_INST,
+		input iPREVIOUS_PAGING_ENA,
+		input iPREVIOUS_KERNEL_ACCESS,
 		input [31:0] iPREVIOUS_SYSREG_PSR,
 		input [31:0] iPREVIOUS_SYSREG_TIDR,
 		input [31:0] iPREVIOUS_SYSREG_PDTR,
@@ -59,6 +61,8 @@ module execute(
 		output [31:0] oDATAIO_ADDR,
 		output [31:0] oDATAIO_DATA,
 		input iDATAIO_REQ,
+		input iDATAIO_PAGEFAULT,
+		input [13:0] iDATAIO_MMU_FLAGS,
 		input [31:0] iDATAIO_DATA,
 		 //Writeback
 		output oNEXT_VALID,
@@ -670,6 +674,8 @@ module execute(
 	
 	
 	reg b_valid;
+	reg b_paging_ena;
+	reg b_kernel_access;
 	reg [31:0] b_sysreg_psr;
 	reg [31:0] b_sysreg_tidr;
 	reg [31:0] b_sysreg_pdtr;
@@ -701,6 +707,8 @@ module execute(
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_valid <= 1'b0;
+			b_paging_ena <= 1'b0;
+			b_kernel_access <= 1'b0;
 			b_sysreg_psr <= 32'h0;
 			b_sysreg_tidr <= 32'h0;
 			b_sysreg_pdtr <= 32'h0;
@@ -729,6 +737,8 @@ module execute(
 		end
 		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
 			b_valid <= 1'b0;
+			b_paging_ena <= 1'b0;
+			b_kernel_access <= 1'b0;
 			b_sysreg_psr <= 32'h0;
 			b_sysreg_tidr <= 32'h0;
 			b_sysreg_pdtr <= 32'h0;
@@ -761,11 +771,13 @@ module execute(
 					begin
 						b_load_store <= 1'b0;
 						if(iPREVIOUS_VALID && !lock_condition)begin
+							b_paging_ena <= iPREVIOUS_PAGING_ENA;
+							b_kernel_access <= iPREVIOUS_KERNEL_ACCESS;
 							b_pc <= iPREVIOUS_PC;
 						end
 						b_valid <= iPREVIOUS_VALID && !lock_condition;
 						if(iPREVIOUS_VALID && !lock_condition)begin
-							//Exception Check
+							//Exception Check(Instruction)
 							if(iPREVIOUS_FAULT_PAGEFAULT)begin
 								b_state <= L_PARAM_STT_EXCEPTION;
 								b_exception_valid <= 1'b1;
@@ -1012,11 +1024,28 @@ module execute(
 						end
 						
 						if(iDATAIO_REQ)begin
-							b_valid <= 1'b1;
-							b_state <= L_PARAM_STT_NORMAL;
-							b_r_data <= func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8));
-							b_spr_writeback <= 1'b1;//1'b0;
-							b_r_spr <= b_r_spr;//ldst_spr;
+							//Pagefault
+							if(iDATAIO_PAGEFAULT)begin
+								b_state <= L_PARAM_STT_EXCEPTION;
+								b_exception_valid <= 1'b1;
+								b_exception_num <= `INT_NUM_PAGEFAULT;
+								b_exception_fi0r <= b_pc - 32'h4;
+							end
+							//Exception Check(Load)
+							else if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b0, iDATAIO_MMU_FLAGS))begin
+								b_state <= L_PARAM_STT_EXCEPTION;
+								b_exception_valid <= 1'b1;
+								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
+								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+							end
+							//Non Error
+							else begin
+								b_valid <= 1'b1;
+								b_state <= L_PARAM_STT_NORMAL;
+								b_r_data <= func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8));
+								b_spr_writeback <= 1'b1;//1'b0;
+								b_r_spr <= b_r_spr;//ldst_spr;
+							end
 						end
 						else begin
 							b_valid <= 1'b0;
@@ -1029,7 +1058,24 @@ module execute(
 						end
 						
 						if(iDATAIO_REQ)begin
-							b_state <= L_PARAM_STT_NORMAL;
+							//Pagefault
+							if(iDATAIO_PAGEFAULT)begin
+								b_state <= L_PARAM_STT_EXCEPTION;
+								b_exception_valid <= 1'b1;
+								b_exception_num <= `INT_NUM_PAGEFAULT;
+								b_exception_fi0r <= b_pc - 32'h4;
+							end
+							//Exception Check(Load)
+							else if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b1, iDATAIO_MMU_FLAGS))begin
+								b_state <= L_PARAM_STT_EXCEPTION;
+								b_exception_valid <= 1'b1;
+								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
+								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+							end
+							//Non Error
+							else begin
+								b_state <= L_PARAM_STT_NORMAL;
+							end
 						end
 					end
 				L_PARAM_STT_BRANCH:
@@ -1051,6 +1097,61 @@ module execute(
 			endcase
 		end
 	end //state always
+	
+	/*****************************************************
+	MMU Flag Check
+	[0]	:	IRQ41 Privilege error.(Page)
+	*****************************************************/
+	function func_mmu_flags_fault_check;
+		input func_paging;
+		input func_kernel;				//1:kernel mode
+		input func_rw;
+		input [5:0] func_mmu_flags;
+		begin
+			if(func_paging)begin
+				//Privilege error check
+				if(func_kernel)begin			//Kernell Mode
+					case(func_mmu_flags[5:4])
+						2'h1:
+							begin
+								if(func_rw)begin
+									func_mmu_flags_fault_check = 1'b1;
+								end
+								else begin
+									func_mmu_flags_fault_check = 1'b0;
+								end
+							end
+						2'h0,
+						2'h2,
+						2'h3:
+							begin
+								func_mmu_flags_fault_check = 1'b0;
+							end
+					endcase
+				end
+				else begin	//User Mode
+					case(func_mmu_flags[5:4])
+						2'h0: func_mmu_flags_fault_check = 1'b1;
+						2'h1,
+						2'h2:
+							begin
+								if(func_rw)begin
+									func_mmu_flags_fault_check = 1'b1;
+								end
+								else begin
+									func_mmu_flags_fault_check = 1'b0;
+								end
+							end
+						2'h3: func_mmu_flags_fault_check = 1'b0;
+					endcase
+				end
+			end
+			else begin
+				func_mmu_flags_fault_check = 1'h0;
+			end
+		end
+	endfunction
+	
 	
 	/*****************************************************
 	Debug Module

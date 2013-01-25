@@ -148,6 +148,8 @@ module core_pipeline
 	wire lbuffer2decoder_fault_pagefault;
 	wire lbuffer2decoder_fault_privilege_error;
 	wire lbuffer2decoder_fault_invalid_inst;
+	wire lbuffer2decoder_paging_ena;
+	wire lbuffer2decoder_kernel_access;
 	wire [31:0] lbuffer2decoder_inst;
 	wire [31:0] lbuffer2decoder_pc;
 	wire decoder2lbuffer_lock;
@@ -156,6 +158,8 @@ module core_pipeline
 	wire decoder2dispatch_fault_pagefault;
 	wire decoder2dispatch_fault_privilege_error;
 	wire decoder2dispatch_fault_invalid_inst;
+	wire decoder2dispatch_paging_ena;
+	wire decoder2dispatch_kernel_access;
 	wire decoder2dispatch_source0_active;
 	wire decoder2dispatch_source1_active;
 	wire decoder2dispatch_source0_sysreg;
@@ -187,6 +191,8 @@ module core_pipeline
 	wire dispatch2execution_fault_pagefault;
 	wire dispatch2execution_fault_privilege_error;
 	wire dispatch2execution_fault_invalid_inst;
+	wire dispatch2execution_paging_ena;
+	wire dispatch2execution_kernel_access;
 	wire [31:0] dispatch2execution_sysreg_psr;
 	wire [31:0] dispatch2execution_sysreg_tidr;
 	wire [31:0] dispatch2execution_sysreg_pdtr;
@@ -239,6 +245,8 @@ module core_pipeline
 	wire [31:0] execution2ldst_ldst_data;
 	wire ldst2execution_ldst_busy;
 	wire ldst2execution_ldst_req;
+	wire ldst2execution_ldst_pagefault;
+	wire [13:0] ldst2execution_ldst_mmu_flags;
 	wire [31:0] ldst2execution_ldst_data;
 	
 	//System Register
@@ -565,6 +573,8 @@ module core_pipeline
 		.oNEXT_FAULT_PAGEFAULT(lbuffer2decoder_fault_pagefault),
 		.oNEXT_FAULT_PRIVILEGE_ERROR(lbuffer2decoder_fault_privilege_error),
 		.oNEXT_FAULT_INVALID_INST(lbuffer2decoder_fault_invalid_inst),
+		.oNEXT_PAGING_ENA(lbuffer2decoder_paging_ena),
+		.oNEXT_KERNEL_ACCESS(lbuffer2decoder_kernel_access),
 		.oNEXT_INST(lbuffer2decoder_inst),
 		.oNEXT_PC(lbuffer2decoder_pc),
 		.iNEXT_LOCK(decoder2lbuffer_lock)
@@ -583,6 +593,8 @@ module core_pipeline
 		.iPREVIOUS_FAULT_PAGEFAULT(lbuffer2decoder_fault_pagefault),
 		.iPREVIOUS_FAULT_PRIVILEGE_ERROR(lbuffer2decoder_fault_privilege_error),
 		.iPREVIOUS_FAULT_INVALID_INST(lbuffer2decoder_fault_invalid_inst),
+		.iPREVIOUS_PAGING_ENA(lbuffer2decoder_paging_ena),
+		.iPREVIOUS_KERNEL_ACCESS(lbuffer2decoder_kernel_access),
 		.iPREVIOUS_INST(lbuffer2decoder_inst),
 		.iPREVIOUS_PC(lbuffer2decoder_pc),
 		.oPREVIOUS_LOCK(decoder2lbuffer_lock),
@@ -591,6 +603,8 @@ module core_pipeline
 		.oNEXT_FAULT_PAGEFAULT(decoder2dispatch_fault_pagefault),
 		.oNEXT_FAULT_PRIVILEGE_ERROR(decoder2dispatch_fault_privilege_error),
 		.oNEXT_FAULT_INVALID_INST(decoder2dispatch_fault_invalid_inst),
+		.oNEXT_PAGING_ENA(decoder2dispatch_paging_ena),
+		.oNEXT_KERNEL_ACCESS(decoder2dispatch_kernel_access),
 		.oNEXT_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
 		.oNEXT_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
 		.oNEXT_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
@@ -657,6 +671,8 @@ module core_pipeline
 		.iPREVIOUS_FAULT_PAGEFAULT(decoder2dispatch_fault_pagefault),
 		.iPREVIOUS_FAULT_PRIVILEGE_ERROR(decoder2dispatch_fault_privilege_error),
 		.iPREVIOUS_FAULT_INVALID_INST(decoder2dispatch_fault_invalid_inst),
+		.iPREVIOUS_PAGING_ENA(decoder2dispatch_paging_ena),
+		.iPREVIOUS_KERNEL_ACCESS(decoder2dispatch_kernel_access),
 		.iPREVIOUS_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
 		.iPREVIOUS_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
 		.iPREVIOUS_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
@@ -688,6 +704,8 @@ module core_pipeline
 		.oNEXT_FAULT_PAGEFAULT(dispatch2execution_fault_pagefault),
 		.oNEXT_FAULT_PRIVILEGE_ERROR(dispatch2execution_fault_privilege_error),
 		.oNEXT_FAULT_INVALID_INST(dispatch2execution_fault_invalid_inst),
+		.oNEXT_PAGING_ENA(dispatch2execution_paging_ena),
+		.oNEXT_KERNEL_ACCESS(dispatch2execution_kernel_access),
 		.oNEXT_SYSREG_PSR(dispatch2execution_sysreg_psr),
 		.oNEXT_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.oNEXT_SYSREG_PDTR(dispatch2execution_sysreg_pdtr),
@@ -784,6 +802,8 @@ module core_pipeline
 		.iPREVIOUS_FAULT_PAGEFAULT(dispatch2execution_fault_pagefault),
 		.iPREVIOUS_FAULT_PRIVILEGE_ERROR(dispatch2execution_fault_privilege_error),
 		.iPREVIOUS_FAULT_INVALID_INST(dispatch2execution_fault_invalid_inst),
+		.iPREVIOUS_PAGING_ENA(dispatch2execution_paging_ena),
+		.iPREVIOUS_KERNEL_ACCESS(dispatch2execution_kernel_access),
 		.iPREVIOUS_SYSREG_PSR(dispatch2execution_sysreg_psr),
 		.iPREVIOUS_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.iPREVIOUS_SYSREG_PDTR(dispatch2execution_sysreg_tidr),
@@ -825,6 +845,8 @@ module core_pipeline
 		.oDATAIO_ADDR(execution2ldst_ldst_addr),
 		.oDATAIO_DATA(execution2ldst_ldst_data),
 		.iDATAIO_REQ(ldst2execution_ldst_req),
+		.iDATAIO_PAGEFAULT(ldst2execution_ldst_pagefault),
+		.iDATAIO_MMU_FLAGS(ldst2execution_ldst_mmu_flags),
 		.iDATAIO_DATA(ldst2execution_ldst_data),
 		//Next
 		.oNEXT_VALID(execution2dispatch_valid),
@@ -900,8 +922,8 @@ module core_pipeline
 		.iEXE_ADDR(execution2ldst_ldst_addr),
 		.iEXE_DATA(execution2ldst_ldst_data),
 		.oEXE_REQ(ldst2execution_ldst_req),
-		.oEXE_PAGEFAULT(),
-		.oEXE_MMU_FLAGS(),
+		.oEXE_PAGEFAULT(ldst2execution_ldst_pagefault),
+		.oEXE_MMU_FLAGS(ldst2execution_ldst_mmu_flags),
 		.oEXE_DATA(ldst2execution_ldst_data),
 		//Exception Module
 		.iEXCEPT_REQ(exception2ldst_ldst_req),

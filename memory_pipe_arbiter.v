@@ -47,7 +47,7 @@ module memory_pipe_arbiter(
 		input iMEMORY_VALID,
 		output oMEMORY_BUSY,
 		input iMEMORY_STORE_ACK,
-		input iMEMORY_PAGE_FAULT,
+		input iMEMORY_PAGEFAULT,
 		input iMEMORY_QUEUE_FLUSH,
 		input [63:0] iMEMORY_DATA,
 		input [27:0] iMEMORY_MMU_FLAGS
@@ -179,7 +179,7 @@ module memory_pipe_arbiter(
 		else begin
 			if(!iINST_BUSY)begin
 				b_mem2core_inst_valid <= !matching_bridge_rd_type && matching_bridge_rd_valid && !iMEMORY_STORE_ACK && iMEMORY_VALID;
-				b_mem2core_inst_pagefault <= iMEMORY_PAGE_FAULT;
+				b_mem2core_inst_pagefault <= iMEMORY_PAGEFAULT;
 				b_mem2core_inst_queue_flush <= iMEMORY_QUEUE_FLUSH;
 				b_mem2core_inst_data <= iMEMORY_DATA;
 				b_mem2core_inst_mmu_flags <= iMEMORY_MMU_FLAGS;
@@ -199,7 +199,7 @@ module memory_pipe_arbiter(
 		else begin
 			if(!core2mem_data_lock)begin
 				b_mem2core_data_valid <= ((matching_bridge_rd_type && matching_bridge_rd_valid) || iMEMORY_STORE_ACK) && iMEMORY_VALID;
-				b_mem2core_data_pagefault <= iMEMORY_PAGE_FAULT;
+				b_mem2core_data_pagefault <= iMEMORY_PAGEFAULT;
 				b_mem2core_data_data <= iMEMORY_DATA;
 				b_mem2core_data_mmu_flags <= iMEMORY_MMU_FLAGS;
 			end

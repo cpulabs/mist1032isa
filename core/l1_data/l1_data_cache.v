@@ -127,6 +127,7 @@ module l1_data_cache(
 	reg [31:0] b_cache_req_addr;
 	reg [31:0] b_cache_req_data;
 	reg [511:0] b_cache_result_data;
+	reg [255:0] b_cache_result_mmu_flags;
 	reg b_pagefault;
 	
 	
@@ -156,6 +157,7 @@ module l1_data_cache(
 			b_cache_req_addr <= 32'h0;
 			b_cache_req_data <= 32'h0;
 			b_cache_result_data <= 512'h0;
+			b_cache_result_mmu_flags <= 256'h0;
 			b_pagefault <= 1'b0;
 		end	
 		else begin
@@ -222,6 +224,7 @@ module l1_data_cache(
 							if(iDATA_VALID)begin
 								b_get_state <= b_get_state + 4'h1;
 								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
+								b_cache_result_mmu_flags <= {2'h0, iDATA_MMU_FLAGS[27:14], 2'h0, iDATA_MMU_FLAGS[13:0], b_cache_result_mmu_flags[255:31]};
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_data <= iDATA_DATA[31:0];
@@ -234,38 +237,6 @@ module l1_data_cache(
 								end
 							end
 						end
-						
-							/*
-							if(!data_request_lock)begin
-								//Load Request
-								if(b_req_state == 4'h7)begin
-									b_req_main_state <= L_PARAM_MEMGET;
-									b_req_state <= 4'h0;
-								end
-								//IO Address Check
-								else if(b_io_startaddr-32'h4 <= {b_req_addr[31:6], b_req_state[2:0], 3'h0})begin
-									b_req_main_state <= L_PARAM_MEMGET;
-									b_req_state <= 4'h0;
-								end
-								else begin
-									b_req_state <= b_req_state + 4'h1;
-								end
-							end
-							//Get Check
-							if(iDATA_VALID)begin
-								b_get_state <= b_get_state + 4'h1;
-								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_data <= iDATA_DATA[31:0];
-									end
-									else begin
-										b_mem_result_data <= iDATA_DATA[63:32];
-									end
-								end
-							end
-						end
-						*/
 						//Cache OFF
 						else begin
 							if(!data_request_lock)begin
@@ -281,6 +252,7 @@ module l1_data_cache(
 							if(iDATA_VALID)begin
 								//Latch Data
 								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
+								b_cache_result_mmu_flags <= {2'h0, iDATA_MMU_FLAGS[27:14], 2'h0, iDATA_MMU_FLAGS[13:0], b_cache_result_mmu_flags[255:31]};
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_data <= iDATA_DATA[31:0];
@@ -312,36 +284,6 @@ module l1_data_cache(
 								end
 							end
 						end
-						
-						/*
-						if(`DATA_L1_CACHE_ON)begin
-							if(iDATA_VALID)begin
-								//Latch Data
-								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_data <= iDATA_DATA[31:0];
-									end
-									else begin
-										b_mem_result_data <= iDATA_DATA[63:32];
-									end
-								end
-								//State Check
-								if(b_get_state == 4'h7)begin
-									b_get_state <= 4'h0;
-									b_req_main_state <= L_PARAM_OUTDATA;
-								end
-								//IO Address Check
-								else if(b_io_startaddr-32'h4 <= {b_req_addr[31:6], b_get_state[2:0], 3'h0})begin
-									b_get_state <= 4'h0;
-									b_req_main_state <= L_PARAM_OUTDATA;
-								end
-								else begin
-									b_get_state <= b_get_state + 4'h1;
-								end
-							end
-						end
-						*/
 						//Cache OFF
 						else begin
 							if(iDATA_VALID)begin
@@ -404,7 +346,7 @@ module l1_data_cache(
 	wire cache_result_valid;
 	wire cache_result_hit;
 	wire [31:0] cache_result_data;
-	wire [23:0] cache_result_mmu_flags;
+	wire [13:0] cache_result_mmu_flags;
 
 	generate
 		if(`DATA_L1_CACHE_ON)begin
@@ -444,7 +386,7 @@ module l1_data_cache(
 				.oWR_BUSY(),
 				.iWR_ADDR({b_req_addr[31:6], 6'h0}),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 				.iWR_DATA(b_cache_result_data),
-				.iWR_MMU_FLAGS(/*temp*/24'h0)
+				.iWR_MMU_FLAGS(b_cache_result_mmu_flags)
 			);
 		end
 		else begin
@@ -484,22 +426,25 @@ module l1_data_cache(
 				.oWR_BUSY(),
 				.iWR_ADDR(32'h0),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 				.iWR_DATA({512{1'b0}}),
-				.iWR_MMU_FLAGS(24'h000000)
+				.iWR_MMU_FLAGS(256'h000000)
 			);
 		end
 	endgenerate
 				
 
 	reg next_data_valid;
-	reg [31:0] next_data_inst;
+	reg [31:0] next_data_data;
+	reg [13:0] next_data_mmu_flags;
 	always @* begin
 		if(b_req_main_state == L_PARAM_OUTDATA || b_req_main_state == L_PARAM_WR_OUTDATA)begin
 			next_data_valid = 1'b1;
-			next_data_inst = b_mem_result_data;
+			next_data_data = b_mem_result_data;
+			next_data_mmu_flags = b_mem_result_mmu_flags;
 		end
 		else begin
 			next_data_valid = cache_result_valid && cache_result_hit;
-			next_data_inst = cache_result_data;
+			next_data_data = cache_result_data;
+			next_data_mmu_flags = cache_result_mmu_flags;
 		end
 	end
 	
@@ -538,8 +483,8 @@ module l1_data_cache(
 	//This -> Load Store Module
 	assign oLDST_VALID = next_data_valid || iIO_VALID;
 	assign oLDST_PAGEFAULT = b_pagefault;
-	assign oLDST_MMU_FLAGS = b_mem_result_mmu_flags;
-	assign oLDST_DATA = (iIO_VALID)? iIO_DATA : next_data_inst;
+	assign oLDST_MMU_FLAGS = next_data_mmu_flags;
+	assign oLDST_DATA = (iIO_VALID)? iIO_DATA : next_data_data;
 	
 endmodule
 

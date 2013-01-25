@@ -4,39 +4,39 @@
 
 
 module default_peripheral_system(
-							input						iCLOCK,
-							input						iDPS_BASE_CLOCK,			//49.5120MHz
-							input						inRESET,
-							/****************************************
-							IO
-							****************************************/	
-							//IRQ Tables	
-							input						iDPS_IRQ_CONFIG_TABLE_REQ,
-							input		[5:0]			iDPS_IRQ_CONFIG_TABLE_ENTRY,			//UTIM64_IRT | LSFLAGS_IRT 
-							input						iDPS_IRQ_CONFIG_TABLE_FLAG_MASK,
-							input						iDPS_IRQ_CONFIG_TABLE_FLAG_VALID,
-							input		[1:0]			iDPS_IRQ_CONFIG_TABLE_FLAG_LEVEL,
-							//Req
-							input						iDPS_REQ,
-							output						oDPS_BUSY,
-							input						iDPS_RW,			//1:Write
-							input		[31:0]			iDPS_ADDR,
-							//
-							input		[31:0]			iDPS_DATA,
-							//Output
-							output						oDPS_VALID,
-							output		[31:0]			oDPS_DATA,
-							/****************************************
-							Interrupt
-							****************************************/
-							output						oDPS_IRQ_REQ,
-							output		[5:0]			oDPS_IRQ_NUM,
-							input						iDPS_IRQ_ACK,
-							/****************************************
-							Device
-							****************************************/
-							output						oSCI_TXD,
-							input						iSCI_RXD
+		input iCLOCK,
+		input iDPS_BASE_CLOCK,			//49.5120MHz
+		input inRESET,
+		/****************************************
+		IO
+		****************************************/	
+		//IRQ Tables	
+		input iDPS_IRQ_CONFIG_TABLE_REQ,
+		input [5:0] iDPS_IRQ_CONFIG_TABLE_ENTRY,			//UTIM64_IRT | LSFLAGS_IRT 
+		input iDPS_IRQ_CONFIG_TABLE_FLAG_MASK,
+		input iDPS_IRQ_CONFIG_TABLE_FLAG_VALID,
+		input [1:0] iDPS_IRQ_CONFIG_TABLE_FLAG_LEVEL,
+		//Req
+		input iDPS_REQ,
+		output oDPS_BUSY,
+		input iDPS_RW,			//1:Write
+		input [31:0] iDPS_ADDR,
+		//
+		input [31:0] iDPS_DATA,
+		//Output
+		output oDPS_VALID,
+		output [31:0] oDPS_DATA,
+		/****************************************
+		Interrupt
+		****************************************/
+		output oDPS_IRQ_REQ,
+		output [5:0] oDPS_IRQ_NUM,
+		input iDPS_IRQ_ACK,
+		/****************************************
+		Device
+		****************************************/
+		output oSCI_TXD,
+		input iSCI_RXD
 	);
 	
 
@@ -44,20 +44,20 @@ module default_peripheral_system(
 	/*********************************
 	Condition
 	*********************************/
-	wire			utim64_condition;
-	wire			sci_condition;
-	assign			utim64_condition		=	!utim64_busy && !sci_busy && iDPS_REQ && (iDPS_ADDR <= 32'h74);
-	assign			sci_condition			=	!utim64_busy && !sci_busy && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h108));
+	wire utim64_condition;
+	wire sci_condition;
+	assign utim64_condition = !utim64_busy && !sci_busy && iDPS_REQ && (iDPS_ADDR <= 32'h74);
+	assign sci_condition = !utim64_busy && !sci_busy && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h108));
 	
-	wire			utim64_busy;
-	wire			sci_busy;
+	wire utim64_busy;
+	wire sci_busy;
 	
 	
 	/*********************************
 	DPD Acess Stamp
 	*********************************/
-	`define		MAIN_STT_IDLE		1'h0
-	`define		MAIN_STT_RD_WAIT	1'h1
+	localparam MAIN_STT_IDLE = 1'h0;
+	localparam MAIN_STT_RD_WAIT = 1'h1;
 	
 	wire			utim64_r_valid;
 	wire	[31:0]	utim64_r_data;
@@ -68,28 +68,28 @@ module default_peripheral_system(
 	reg				b_stamp;				//0:UTIM64 | 1:SCI
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_stamp_state		<=		`MAIN_STT_IDLE;
+			b_stamp_state		<=		MAIN_STT_IDLE;
 			b_stamp				<=		1'b0;
 		end
 		else begin
 			case(b_stamp_state)
-				`MAIN_STT_IDLE:
+				MAIN_STT_IDLE:
 					begin
 						if(!iDPS_RW)begin
 							if(utim64_condition)begin
-								b_stamp_state		<=		`MAIN_STT_RD_WAIT;
+								b_stamp_state		<=		MAIN_STT_RD_WAIT;
 								b_stamp				<=		1'b0;
 							end
 							else if(sci_condition)begin
-								b_stamp_state		<=		`MAIN_STT_RD_WAIT;
+								b_stamp_state		<=		MAIN_STT_RD_WAIT;
 								b_stamp				<=		1'b1;
 							end
 						end
 					end
-				`MAIN_STT_RD_WAIT:
+				MAIN_STT_RD_WAIT:
 					begin
 						if(utim64_r_valid || sci_r_valid)begin
-							b_stamp_state		<=		`MAIN_STT_IDLE;
+							b_stamp_state		<=		MAIN_STT_IDLE;
 						end
 					end
 			endcase

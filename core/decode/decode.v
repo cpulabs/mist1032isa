@@ -6,61 +6,67 @@
 
 
 module decoder(
-				//System
-				input iCLOCK,
-				input inRESET,
-				//Free
-				input iFREE_DEFAULT,	
-				//Previous
-				input iPREVIOUS_INST_VALID,
-				input iPREVIOUS_FAULT_PAGEFAULT,
-				input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
-				input iPREVIOUS_FAULT_INVALID_INST,
-				input [31:0] iPREVIOUS_INST,
-				input [31:0] iPREVIOUS_PC,
-				output oPREVIOUS_LOCK,
-				//Next-0		
-				output oNEXT_VALID,
-				output oNEXT_FAULT_PAGEFAULT,
-				output oNEXT_FAULT_PRIVILEGE_ERROR,
-				output oNEXT_FAULT_INVALID_INST,
-				output oNEXT_SOURCE0_ACTIVE,			
-				output oNEXT_SOURCE1_ACTIVE,		
-				output oNEXT_SOURCE0_SYSREG,		
-				output oNEXT_SOURCE1_SYSREG,		
-				output oNEXT_SOURCE0_SYSREG_RENAME,	
-				output oNEXT_SOURCE1_SYSREG_RENAME,	
-				output oNEXT_DESTINATION_SYSREG,	
-				output oNEXT_DEST_RENAME,	
-				output oNEXT_WRITEBACK,
-				output oNEXT_FLAGS_WRITEBACK,
-				output oNEXT_FRONT_COMMIT_WAIT,				
-				output [4:0] oNEXT_CMD,
-				output [3:0] oNEXT_CC_AFE,
-				output [4:0] oNEXT_SOURCE0,
-				output [31:0] oNEXT_SOURCE1,
-				output oNEXT_SOURCE0_FLAGS,
-				output oNEXT_SOURCE1_IMM,
-				output [4:0] oNEXT_DESTINATION,
-				output oNEXT_EX_SYS_REG,	
-				output oNEXT_EX_SYS_LDST,	
-				output oNEXT_EX_LOGIC,
-				output oNEXT_EX_SHIFT,
-				output oNEXT_EX_ADDER,
-				output oNEXT_EX_MUL,			
-				output oNEXT_EX_SDIV,		
-				output oNEXT_EX_UDIV,		
-				output oNEXT_EX_LDST,
-				output oNEXT_EX_BRANCH,
-				output [31:0] oNEXT_PC,
-				input iNEXT_LOCK
-		);
+		//System
+		input iCLOCK,
+		input inRESET,
+		//Free
+		input iFREE_DEFAULT,	
+		//Previous
+		input iPREVIOUS_INST_VALID,
+		input iPREVIOUS_FAULT_PAGEFAULT,
+		input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
+		input iPREVIOUS_FAULT_INVALID_INST,
+		input iPREVIOUS_PAGING_ENA,
+		input iPREVIOUS_KERNEL_ACCESS,
+		input [31:0] iPREVIOUS_INST,
+		input [31:0] iPREVIOUS_PC,
+		output oPREVIOUS_LOCK,
+		//Next-0		
+		output oNEXT_VALID,
+		output oNEXT_FAULT_PAGEFAULT,
+		output oNEXT_FAULT_PRIVILEGE_ERROR,
+		output oNEXT_FAULT_INVALID_INST,
+		output oNEXT_PAGING_ENA,
+		output oNEXT_KERNEL_ACCESS,
+		output oNEXT_SOURCE0_ACTIVE,			
+		output oNEXT_SOURCE1_ACTIVE,		
+		output oNEXT_SOURCE0_SYSREG,		
+		output oNEXT_SOURCE1_SYSREG,		
+		output oNEXT_SOURCE0_SYSREG_RENAME,	
+		output oNEXT_SOURCE1_SYSREG_RENAME,	
+		output oNEXT_DESTINATION_SYSREG,	
+		output oNEXT_DEST_RENAME,	
+		output oNEXT_WRITEBACK,
+		output oNEXT_FLAGS_WRITEBACK,
+		output oNEXT_FRONT_COMMIT_WAIT,				
+		output [4:0] oNEXT_CMD,
+		output [3:0] oNEXT_CC_AFE,
+		output [4:0] oNEXT_SOURCE0,
+		output [31:0] oNEXT_SOURCE1,
+		output oNEXT_SOURCE0_FLAGS,
+		output oNEXT_SOURCE1_IMM,
+		output [4:0] oNEXT_DESTINATION,
+		output oNEXT_EX_SYS_REG,	
+		output oNEXT_EX_SYS_LDST,	
+		output oNEXT_EX_LOGIC,
+		output oNEXT_EX_SHIFT,
+		output oNEXT_EX_ADDER,
+		output oNEXT_EX_MUL,			
+		output oNEXT_EX_SDIV,		
+		output oNEXT_EX_UDIV,		
+		output oNEXT_EX_LDST,
+		output oNEXT_EX_BRANCH,
+		output [31:0] oNEXT_PC,
+		input iNEXT_LOCK
+	);
 	
 	//Pipeline 
 	reg					b_valid;	
 	reg b_fault_pagefault;
 	reg b_fault_page_privilege_error;
-	reg b_fault_page_invalid_inst;
+	reg b_fault_page_invalid_inst;		
+	reg b_paging_ena;
+	reg b_kernel_access;
 	reg		[13:0]		b_mmu_flags;
 	reg					b_destination_sysreg;			
 	reg					b_dest_rename;			
@@ -100,6 +106,8 @@ module decoder(
 			b_fault_pagefault <= 1'b0;
 			b_fault_page_privilege_error <= 1'b0;
 			b_fault_page_invalid_inst <= 1'b0;			
+			b_paging_ena <= 1'b0;
+			b_kernel_access <= 1'b0;		
 			b_source0_active			<=		1'b0;			
 			b_source1_active			<=		1'b0;	
 			b_source0_sysreg			<=		1'b0;	
@@ -136,6 +144,8 @@ module decoder(
 			b_fault_pagefault <= 1'b0;
 			b_fault_page_privilege_error <= 1'b0;
 			b_fault_page_invalid_inst <= 1'b0;		
+			b_paging_ena <= 1'b0;
+			b_kernel_access <= 1'b0;
 			b_source0_active			<=		1'b0;			
 			b_source1_active			<=		1'b0;	
 			b_source0_sysreg			<=		1'b0;	
@@ -175,6 +185,8 @@ module decoder(
 				b_fault_pagefault <= iPREVIOUS_FAULT_PAGEFAULT;
 				b_fault_page_privilege_error <= iPREVIOUS_FAULT_PRIVILEGE_ERROR;
 				b_fault_page_invalid_inst <= iPREVIOUS_FAULT_INVALID_INST;
+				b_paging_ena <= iPREVIOUS_PAGING_ENA;
+				b_kernel_access <= iPREVIOUS_KERNEL_ACCESS;
 				//Inst
 				{
 					b_error, b_commit_wait_inst, b_cc_afe,
@@ -3363,6 +3375,8 @@ module decoder(
 	assign oNEXT_FAULT_PAGEFAULT = b_fault_pagefault;
 	assign oNEXT_FAULT_PRIVILEGE_ERROR = b_fault_page_privilege_error;
 	assign oNEXT_FAULT_INVALID_INST = b_fault_page_invalid_inst;
+	assign oNEXT_PAGING_ENA = b_paging_ena;
+	assign oNEXT_KERNEL_ACCESS = b_kernel_access;
 	assign					oNEXT_SOURCE0_ACTIVE			=		b_source0_active;
 	assign					oNEXT_SOURCE1_ACTIVE			=		b_source1_active;
 	assign					oNEXT_SOURCE0_SYSREG			=		b_source0_sysreg;

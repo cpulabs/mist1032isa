@@ -51,7 +51,7 @@ module l1_cache_64entry_4way_line64b_bus_8b_damy(
 					output oWR_BUSY,
 					input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 					input [511:0] iWR_DATA,
-					input [27:0] iWR_MMU_FLAGS
+					input [255:0] iWR_MMU_FLAGS
 	);
 			
 	assign oRD_BUSY = 1'b0;
@@ -116,7 +116,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 					output oWR_BUSY,
 					input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 					input [511:0] iWR_DATA,
-					input [27:0] iWR_MMU_FLAGS
+					input [255:0] iWR_MMU_FLAGS
 	);
 			
 	
@@ -237,7 +237,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	assign				memory_mmuflag_write_way2_condition		=		(!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
 	assign				memory_mmuflag_write_way3_condition		=		(!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
 	assign				memory_mmuflag_write_byte_enable		=		(iUP_REQ)? {32{1'b0}} : {32{1'b1}};
-	assign				memory_mmuflag_write_data				=		{8{4'h0, iWR_MMU_FLAGS[23:12], 4'h0, iWR_MMU_FLAGS[11:0]}};
+	assign				memory_mmuflag_write_data				=		iWR_MMU_FLAGS;
 	
 	
 	/*--------------------------------------- 
@@ -504,6 +504,24 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 			endcase
 		end
 	endfunction
+	
+	function [27:0] func_mmu_flags_selector;
+		input [2:0] func_select;
+		input [255:0] func_data;
+		begin
+			case(func_select)
+				3'h0 : func_mmu_flags_selector = {func_data[29:16], func_data[13:0]};
+				3'h1 : func_mmu_flags_selector = {func_data[61:48], func_data[45:32]};
+				3'h2 : func_mmu_flags_selector = {func_data[93:80], func_data[77:64]};
+				3'h3 : func_mmu_flags_selector = {func_data[125:112], func_data[109:96]};
+				3'h4 : func_mmu_flags_selector = {func_data[157:144], func_data[141:128]};
+				3'h5 : func_mmu_flags_selector = {func_data[189:176], func_data[173:160]};
+				3'h6 : func_mmu_flags_selector = {func_data[221:208], func_data[205:192]};
+				3'h7 : func_mmu_flags_selector = {func_data[253:240], func_data[237:224]};
+			endcase
+		end
+	endfunction
+	
  
 	/********************************************
 	Tag Pryority & Tag Control
@@ -700,9 +718,9 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 								)
 							) : 64'h0;									
 	assign oRD_MMU_FLAGS = (b_load_req_valid && !this_read_lock && b_rd_hit)? (
-								(b_rd_way == 2'h0)? memory_mmuflag_way0_out_data : (
-									(b_rd_way == 2'h1)? memory_mmuflag_way1_out_data : (
-										(b_rd_way == 2'h2)? memory_mmuflag_way2_out_data : memory_mmuflag_way3_out_data
+								(b_rd_way == 2'h0)? func_mmu_flags_selector(b_rd_addr[5:3], memory_mmuflag_way0_out_data) : (
+									(b_rd_way == 2'h1)? func_mmu_flags_selector(b_rd_addr[5:3], memory_mmuflag_way1_out_data) : (
+										(b_rd_way == 2'h2)? func_mmu_flags_selector(b_rd_addr[5:3], memory_mmuflag_way2_out_data) : func_mmu_flags_selector(b_rd_addr[5:3], memory_mmuflag_way3_out_data)
 									)
 								)
 							) : 12'h0;

@@ -287,7 +287,7 @@ module mist1032isa(
 	wire mmu2m_arbiter_req;
 	wire m_arbiter2mmu_lock;
 	wire mmu2m_arbiter_store_ack;
-	wire mmu2m_arbiter_page_fault;
+	wire mmu2m_arbiter_pagefault;
 	wire mmu2m_arbiter_queue_flush;
 	wire [63:0] mmu2m_arbiter_data;
 	wire [27:0] mmu2m_arbiter_mmu_flags;
@@ -339,7 +339,7 @@ module mist1032isa(
 		.iMEMORY_VALID(mmu2m_arbiter_req),
 		.oMEMORY_BUSY(m_arbiter2mmu_lock),
 		.iMEMORY_STORE_ACK(mmu2m_arbiter_store_ack),
-		.iMEMORY_PAGE_FAULT(mmu2m_arbiter_page_fault),
+		.iMEMORY_PAGEFAULT(mmu2m_arbiter_pagefault),
 		.iMEMORY_QUEUE_FLUSH(mmu2m_arbiter_queue_flush),
 		.iMEMORY_DATA(mmu2m_arbiter_data),
 		.iMEMORY_MMU_FLAGS(mmu2m_arbiter_mmu_flags)
@@ -366,7 +366,7 @@ module mist1032isa(
 		.oCORE_REQ(mmu2m_arbiter_req),
 		.iCORE_LOCK(m_arbiter2mmu_lock),
 		.oCORE_STORE_ACK(mmu2m_arbiter_store_ack),
-		.oCORE_PAGE_FAULT(mmu2m_arbiter_page_fault),
+		.oCORE_PAGE_FAULT(mmu2m_arbiter_pagefault),
 		.oCORE_QUEUE_FLUSH(mmu2m_arbiter_queue_flush),
 		.oCORE_DATA(mmu2m_arbiter_data),
 		.oCORE_MMU_FLAGS(mmu2m_arbiter_mmu_flags),

@@ -81,9 +81,13 @@ module processor_debugger(
 	wire uartformat_busy;
 	wire [31:0] uartformat_txd_data;
 	
-	
+	/**************************
+	Baudrate
+		9600bps = 13'h1458
+		57600bps = 13'h364
+	**************************/
 	//Clock / Baudrate = parameter
-	processor_debugger_uart #(13'h1458) UART_IF(		//9600bps
+	processor_debugger_uart #(13'h364) UART_IF(		//9600bps
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Request

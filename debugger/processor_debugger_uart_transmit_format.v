@@ -8,7 +8,7 @@ module processor_debugger_uart_transmit_format #(
 		parameter STOP_DATA_EN = 1'b1,
 		parameter START_DATA = 8'h24,	//$
 		parameter SPRIT_DATA = 8'h2C,	//,
-		parameter STOP_DATA = 8'h0A		//\n	//8'h26	//&
+		parameter STOP_DATA = 8'h24		//\n	//8'h26	//&
 		//parameter SEND_DATAMODE = 1'b1	//0:Binary 1:ASCII
 	)(
 		input iCLOCK,
@@ -30,13 +30,6 @@ module processor_debugger_uart_transmit_format #(
 	//ASCII Mode
 	wire [7:0] request_send_data[0:7];
 	
-	/*genvar i;
-	generate 
-		for(i = 0; i < 8; i = i + 1)begin : ASCII
-			assign request_send_data[i] = ((b_main_data >> 4 * i) & 32'hF <= 4'hA)? (b_main_data >> 4 * i) & 32'hF + 32'h30 : (b_main_data >> 4 * i) & 32'hF + 32'h41;
-		end
-	endgenerate
-	*/
 	assign request_send_data[0] = (b_main_data[31:28] >= 4'hA)? b_main_data[31:28] + 8'h37 : b_main_data[31:28] + 8'h30;
 	assign request_send_data[1] = (b_main_data[27:24] >= 4'hA)? b_main_data[27:24] + 8'h37 : b_main_data[27:24] + 8'h30;
 	assign request_send_data[2] = (b_main_data[23:20] >= 4'hA)? b_main_data[23:20] + 8'h37 : b_main_data[23:20] + 8'h30;
