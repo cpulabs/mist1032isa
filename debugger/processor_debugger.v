@@ -1,4 +1,3 @@
-
 `default_nettype none
 module processor_debugger(
 		//Clock 
@@ -8,7 +7,7 @@ module processor_debugger(
 		output oDEBUG_CMD_REQ,
 		input iDEBUG_CMD_BUSY,
 		output [3:0] oDEBUG_CMD_COMMAND,
-		output [11:0] oDEBUG_CMD_TARGET,
+		output [7:0] oDEBUG_CMD_TARGET,
 		output [31:0] oDEBUG_CMD_DATA,
 		input iDEBUG_CMD_VALID,
 		input iDEBUG_CMD_ERROR,
@@ -17,7 +16,6 @@ module processor_debugger(
 		input iUART_RXD,
 		output oUART_TXD
 	);
-	
 
 	//Command
 	localparam CORE_DEBUG_CMD_READ_REG = 4'h0;
@@ -27,50 +25,65 @@ module processor_debugger(
 	localparam CORE_DEBUG_CMD_SINGLESTEP_CORE = 4'hA;
 	localparam CORE_DEBUG_CMD_STOP_CORE = 4'hF;
 	
+	
 	//Register Target
-	localparam CORE_DEBUG_TARGET_GR0 = 12'd0;
-	localparam CORE_DEBUG_TARGET_GR1 = 12'd1;
-	localparam CORE_DEBUG_TARGET_GR2 = 12'd2;
-	localparam CORE_DEBUG_TARGET_GR3 = 12'd3;
-	localparam CORE_DEBUG_TARGET_GR4 = 12'd4;
-	localparam CORE_DEBUG_TARGET_GR5 = 12'd5;
-	localparam CORE_DEBUG_TARGET_GR6 = 12'd6;
-	localparam CORE_DEBUG_TARGET_GR7 = 12'd7;
-	localparam CORE_DEBUG_TARGET_GR8 = 12'd8;
-	localparam CORE_DEBUG_TARGET_GR9 = 12'd9;
-	localparam CORE_DEBUG_TARGET_GR10 = 12'd10;
-	localparam CORE_DEBUG_TARGET_GR11 = 12'd11;
-	localparam CORE_DEBUG_TARGET_GR12 = 12'd12;
-	localparam CORE_DEBUG_TARGET_GR13 = 12'd13;
-	localparam CORE_DEBUG_TARGET_GR14 = 12'd14;
-	localparam CORE_DEBUG_TARGET_GR15 = 12'd15;
-	localparam CORE_DEBUG_TARGET_GR16 = 12'd16;
-	localparam CORE_DEBUG_TARGET_GR17 = 12'd17;
-	localparam CORE_DEBUG_TARGET_GR18 = 12'd18;
-	localparam CORE_DEBUG_TARGET_GR19 = 12'd19;
-	localparam CORE_DEBUG_TARGET_GR20 = 12'd20;
-	localparam CORE_DEBUG_TARGET_GR21 = 12'd21;
-	localparam CORE_DEBUG_TARGET_GR22 = 12'd22;
-	localparam CORE_DEBUG_TARGET_GR23 = 12'd23;
-	localparam CORE_DEBUG_TARGET_GR24 = 12'd24;
-	localparam CORE_DEBUG_TARGET_GR25 = 12'd25;
-	localparam CORE_DEBUG_TARGET_GR26 = 12'd26;
-	localparam CORE_DEBUG_TARGET_GR27 = 12'd27;
-	localparam CORE_DEBUG_TARGET_GR28 = 12'd28;
-	localparam CORE_DEBUG_TARGET_GR29 = 12'd29;
-	localparam CORE_DEBUG_TARGET_GR30 = 12'd30;
-	localparam CORE_DEBUG_TARGET_GR31 = 12'd31;
-	localparam CORE_DEBUG_TARGET_FLAGR = 12'd32;
-	localparam CORE_DEBUG_TARGET_SPR = 12'd33;
-	localparam CORE_DEBUG_TARGET_PCR = 12'd34;
-	localparam CORE_DEBUG_TARGET_PPCR = 12'd35;
-	localparam CORE_DEBUG_TARGET_PSR = 12'd36;
-	localparam CORE_DEBUG_TARGET_PPSR = 12'd37;
-	
-	
-	
+	localparam CORE_DEBUG_TARGET_GR0 = 8'd0;
+	localparam CORE_DEBUG_TARGET_GR1 = 8'd1;
+	localparam CORE_DEBUG_TARGET_GR2 = 8'd2;
+	localparam CORE_DEBUG_TARGET_GR3 = 8'd3;
+	localparam CORE_DEBUG_TARGET_GR4 = 8'd4;
+	localparam CORE_DEBUG_TARGET_GR5 = 8'd5;
+	localparam CORE_DEBUG_TARGET_GR6 = 8'd6;
+	localparam CORE_DEBUG_TARGET_GR7 = 8'd7;
+	localparam CORE_DEBUG_TARGET_GR8 = 8'd8;
+	localparam CORE_DEBUG_TARGET_GR9 = 8'd9;
+	localparam CORE_DEBUG_TARGET_GR10 = 8'd10;
+	localparam CORE_DEBUG_TARGET_GR11 = 8'd11;
+	localparam CORE_DEBUG_TARGET_GR12 = 8'd12;
+	localparam CORE_DEBUG_TARGET_GR13 = 8'd13;
+	localparam CORE_DEBUG_TARGET_GR14 = 8'd14;
+	localparam CORE_DEBUG_TARGET_GR15 = 8'd15;
+	localparam CORE_DEBUG_TARGET_GR16 = 8'd16;
+	localparam CORE_DEBUG_TARGET_GR17 = 8'd17;
+	localparam CORE_DEBUG_TARGET_GR18 = 8'd18;
+	localparam CORE_DEBUG_TARGET_GR19 = 8'd19;
+	localparam CORE_DEBUG_TARGET_GR20 = 8'd20;
+	localparam CORE_DEBUG_TARGET_GR21 = 8'd21;
+	localparam CORE_DEBUG_TARGET_GR22 = 8'd22;
+	localparam CORE_DEBUG_TARGET_GR23 = 8'd23;
+	localparam CORE_DEBUG_TARGET_GR24 = 8'd24;
+	localparam CORE_DEBUG_TARGET_GR25 = 8'd25;
+	localparam CORE_DEBUG_TARGET_GR26 = 8'd26;
+	localparam CORE_DEBUG_TARGET_GR27 = 8'd27;
+	localparam CORE_DEBUG_TARGET_GR28 = 8'd28;
+	localparam CORE_DEBUG_TARGET_GR29 = 8'd29;
+	localparam CORE_DEBUG_TARGET_GR30 = 8'd30;
+	localparam CORE_DEBUG_TARGET_GR31 = 8'd31;
+	localparam CORE_DEBUG_TARGET_CPUIDR = 8'd64;
+	localparam CORE_DEBUG_TARGET_TIDR = 8'd65;
+	localparam CORE_DEBUG_TARGET_FLAGR = 8'd66;
+	localparam CORE_DEBUG_TARGET_PCR = 8'd67;
+	localparam CORE_DEBUG_TARGET_SPR = 8'd68;
+	localparam CORE_DEBUG_TARGET_PSR = 8'd69;
+	localparam CORE_DEBUG_TARGET_IOSAR = 8'd70;
+	localparam CORE_DEBUG_TARGET_PDTR = 8'd71;
+	localparam CORE_DEBUG_TARGET_KPDTR = 8'd72;
+	localparam CORE_DEBUG_TARGET_TISR = 8'd73;
+	localparam CORE_DEBUG_TARGET_IDTR = 8'd74;
+	localparam CORE_DEBUG_TARGET_FI0R = 8'd75;
+	localparam CORE_DEBUG_TARGET_FI1R = 8'd76;
+	localparam CORE_DEBUG_TARGET_FRCLR = 8'd77;
+	localparam CORE_DEBUG_TARGET_FRCHR = 8'd78;
+	localparam CORE_DEBUG_TARGET_PTIDR = 8'd128;
+	localparam CORE_DEBUG_TARGET_PFLAGR = 8'd129;
+	localparam CORE_DEBUG_TARGET_PPCR = 8'd130;
+	localparam CORE_DEBUG_TARGET_PPSR = 8'd131;
+	localparam CORE_DEBUG_TARGET_PPDTR = 8'd132;
+
+
+
 	//Uart Debuger Module
-	
+
 	//Uart Module
 	wire uartmod_txd_req;
 	wire uartmod_txd_busy;
@@ -80,7 +93,7 @@ module processor_debugger(
 	wire uartformat_txd_req;
 	wire uartformat_busy;
 	wire [31:0] uartformat_txd_data;
-	
+
 	/**************************
 	Baudrate
 		9600bps = 13'h1458
@@ -100,9 +113,9 @@ module processor_debugger(
 		.oUART_TXD(oUART_TXD),
 		.iUART_RXD(iUART_RXD)
 	);	
-	
-	
-	
+
+
+
 	processor_debugger_uart_transmit_format UART_FORMAT(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -117,14 +130,14 @@ module processor_debugger(
 		.iUART_BUSY(uartmod_txd_busy),
 		.oUART_DATA(uartmod_txd_data)
 	);
-	
-	
+
+
 	localparam L_PARAM_MAIN_STT_IDLE = 3'h0;
 	localparam L_PARAM_MAIN_STT_STOP_CORE = 3'h1;
 	localparam L_PARAM_MAIN_STT_GET_REGISTER_ALL = 3'h2;
 	localparam L_PARAM_MAIN_STT_START_CORE = 3'h3;
 	localparam L_PARAM_MAIN_STT_SEND_REGISTER_ALL = 3'h4;
-	
+
 	reg [2:0] b_main_state;
 	reg [2:0] b_main_next_state;
 	reg b_main_wait;
@@ -226,7 +239,7 @@ module processor_debugger(
 			endcase
 		end
 	end //always main state
-	
+
 	//Assign
 	reg [3:0] debug_command;
 	always @* begin
@@ -237,18 +250,17 @@ module processor_debugger(
 			default : debug_command = 4'h0;
 		endcase
 	end
-	
+
 	assign uartformat_txd_req = (b_main_state == L_PARAM_MAIN_STT_SEND_REGISTER_ALL)? !b_main_wait : 1'b0;
 	assign uartformat_txd_data = b_main_register_data[b_main_counter];
-	
+
 	assign oDEBUG_CMD_REQ = (b_main_state == L_PARAM_MAIN_STT_STOP_CORE || b_main_state == L_PARAM_MAIN_STT_GET_REGISTER_ALL || b_main_state == L_PARAM_MAIN_STT_START_CORE)? !b_main_wait : 1'b0;
 	assign oDEBUG_CMD_COMMAND = debug_command;
 	assign oDEBUG_CMD_TARGET = b_main_counter;
-	
-	
-	
+
+
+
 endmodule
 
 
 `default_nettype wire
-

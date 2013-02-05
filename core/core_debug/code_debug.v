@@ -8,7 +8,7 @@ module core_debug(
 		input iCMD_REQ,
 		output oCMD_BUSY,
 		input [3:0] iCMD_COMMAND,
-		input [11:0] iCMD_TARGET,
+		input [7:0] iCMD_TARGET,
 		input [31:0] iCMD_DATA,
 		//Response
 		output oRESP_VALID,
@@ -52,12 +52,24 @@ module core_debug(
 		input [31:0] iREG_R_GR29,
 		input [31:0] iREG_R_GR30,
 		input [31:0] iREG_R_GR31,
+		input [31:0] iREG_R_CPUIDR,
+		input [31:0] iREG_R_TIDR,
 		input [31:0] iREG_R_FLAGR,
-		input [31:0] iREG_R_SPR,
 		input [31:0] iREG_R_PCR,
-		input [31:0] iREG_R_PPCR,
+		input [31:0] iREG_R_SPR,
 		input [31:0] iREG_R_PSR,
-		input [31:0] iREG_R_PPSR
+		input [31:0] iREG_R_IOSAR,
+		input [31:0] iREG_R_TISR,
+		input [31:0] iREG_R_IDTR,
+		input [31:0] iREG_R_FI0R,
+		input [31:0] iREG_R_FI1R,
+		input [31:0] iREG_R_FRCLR,
+		input [31:0] iREG_R_FRCHR,
+		input [31:0] iREG_R_PTIDR,
+		input [31:0] iREG_R_PFLAGR,
+		input [31:0] iREG_R_PPCR,
+		input [31:0] iREG_R_PPSR,
+		input [31:0] iREG_R_PPDTR
 	);
 	
 	
@@ -70,44 +82,58 @@ module core_debug(
 	localparam CORE_DEBUG_CMD_STOP_CORE = 4'hF;
 	
 	//Register Target
-	localparam CORE_DEBUG_TARGET_GR0 = 12'd0;
-	localparam CORE_DEBUG_TARGET_GR1 = 12'd1;
-	localparam CORE_DEBUG_TARGET_GR2 = 12'd2;
-	localparam CORE_DEBUG_TARGET_GR3 = 12'd3;
-	localparam CORE_DEBUG_TARGET_GR4 = 12'd4;
-	localparam CORE_DEBUG_TARGET_GR5 = 12'd5;
-	localparam CORE_DEBUG_TARGET_GR6 = 12'd6;
-	localparam CORE_DEBUG_TARGET_GR7 = 12'd7;
-	localparam CORE_DEBUG_TARGET_GR8 = 12'd8;
-	localparam CORE_DEBUG_TARGET_GR9 = 12'd9;
-	localparam CORE_DEBUG_TARGET_GR10 = 12'd10;
-	localparam CORE_DEBUG_TARGET_GR11 = 12'd11;
-	localparam CORE_DEBUG_TARGET_GR12 = 12'd12;
-	localparam CORE_DEBUG_TARGET_GR13 = 12'd13;
-	localparam CORE_DEBUG_TARGET_GR14 = 12'd14;
-	localparam CORE_DEBUG_TARGET_GR15 = 12'd15;
-	localparam CORE_DEBUG_TARGET_GR16 = 12'd16;
-	localparam CORE_DEBUG_TARGET_GR17 = 12'd17;
-	localparam CORE_DEBUG_TARGET_GR18 = 12'd18;
-	localparam CORE_DEBUG_TARGET_GR19 = 12'd19;
-	localparam CORE_DEBUG_TARGET_GR20 = 12'd20;
-	localparam CORE_DEBUG_TARGET_GR21 = 12'd21;
-	localparam CORE_DEBUG_TARGET_GR22 = 12'd22;
-	localparam CORE_DEBUG_TARGET_GR23 = 12'd23;
-	localparam CORE_DEBUG_TARGET_GR24 = 12'd24;
-	localparam CORE_DEBUG_TARGET_GR25 = 12'd25;
-	localparam CORE_DEBUG_TARGET_GR26 = 12'd26;
-	localparam CORE_DEBUG_TARGET_GR27 = 12'd27;
-	localparam CORE_DEBUG_TARGET_GR28 = 12'd28;
-	localparam CORE_DEBUG_TARGET_GR29 = 12'd29;
-	localparam CORE_DEBUG_TARGET_GR30 = 12'd30;
-	localparam CORE_DEBUG_TARGET_GR31 = 12'd31;
-	localparam CORE_DEBUG_TARGET_FLAGR = 12'd32;
-	localparam CORE_DEBUG_TARGET_SPR = 12'd33;
-	localparam CORE_DEBUG_TARGET_PCR = 12'd34;
-	localparam CORE_DEBUG_TARGET_PPCR = 12'd35;
-	localparam CORE_DEBUG_TARGET_PSR = 12'd36;
-	localparam CORE_DEBUG_TARGET_PPSR = 12'd37;
+	localparam CORE_DEBUG_TARGET_GR0 = 8'd0;
+	localparam CORE_DEBUG_TARGET_GR1 = 8'd1;
+	localparam CORE_DEBUG_TARGET_GR2 = 8'd2;
+	localparam CORE_DEBUG_TARGET_GR3 = 8'd3;
+	localparam CORE_DEBUG_TARGET_GR4 = 8'd4;
+	localparam CORE_DEBUG_TARGET_GR5 = 8'd5;
+	localparam CORE_DEBUG_TARGET_GR6 = 8'd6;
+	localparam CORE_DEBUG_TARGET_GR7 = 8'd7;
+	localparam CORE_DEBUG_TARGET_GR8 = 8'd8;
+	localparam CORE_DEBUG_TARGET_GR9 = 8'd9;
+	localparam CORE_DEBUG_TARGET_GR10 = 8'd10;
+	localparam CORE_DEBUG_TARGET_GR11 = 8'd11;
+	localparam CORE_DEBUG_TARGET_GR12 = 8'd12;
+	localparam CORE_DEBUG_TARGET_GR13 = 8'd13;
+	localparam CORE_DEBUG_TARGET_GR14 = 8'd14;
+	localparam CORE_DEBUG_TARGET_GR15 = 8'd15;
+	localparam CORE_DEBUG_TARGET_GR16 = 8'd16;
+	localparam CORE_DEBUG_TARGET_GR17 = 8'd17;
+	localparam CORE_DEBUG_TARGET_GR18 = 8'd18;
+	localparam CORE_DEBUG_TARGET_GR19 = 8'd19;
+	localparam CORE_DEBUG_TARGET_GR20 = 8'd20;
+	localparam CORE_DEBUG_TARGET_GR21 = 8'd21;
+	localparam CORE_DEBUG_TARGET_GR22 = 8'd22;
+	localparam CORE_DEBUG_TARGET_GR23 = 8'd23;
+	localparam CORE_DEBUG_TARGET_GR24 = 8'd24;
+	localparam CORE_DEBUG_TARGET_GR25 = 8'd25;
+	localparam CORE_DEBUG_TARGET_GR26 = 8'd26;
+	localparam CORE_DEBUG_TARGET_GR27 = 8'd27;
+	localparam CORE_DEBUG_TARGET_GR28 = 8'd28;
+	localparam CORE_DEBUG_TARGET_GR29 = 8'd29;
+	localparam CORE_DEBUG_TARGET_GR30 = 8'd30;
+	localparam CORE_DEBUG_TARGET_GR31 = 8'd31;
+	localparam CORE_DEBUG_TARGET_CPUIDR = 8'd64;
+	localparam CORE_DEBUG_TARGET_TIDR = 8'd65;
+	localparam CORE_DEBUG_TARGET_FLAGR = 8'd66;
+	localparam CORE_DEBUG_TARGET_PCR = 8'd67;
+	localparam CORE_DEBUG_TARGET_SPR = 8'd68;
+	localparam CORE_DEBUG_TARGET_PSR = 8'd69;
+	localparam CORE_DEBUG_TARGET_IOSAR = 8'd70;
+	localparam CORE_DEBUG_TARGET_PDTR = 8'd71;
+	localparam CORE_DEBUG_TARGET_KPDTR = 8'd72;
+	localparam CORE_DEBUG_TARGET_TISR = 8'd73;
+	localparam CORE_DEBUG_TARGET_IDTR = 8'd74;
+	localparam CORE_DEBUG_TARGET_FI0R = 8'd75;
+	localparam CORE_DEBUG_TARGET_FI1R = 8'd76;
+	localparam CORE_DEBUG_TARGET_FRCLR = 8'd77;
+	localparam CORE_DEBUG_TARGET_FRCHR = 8'd78;
+	localparam CORE_DEBUG_TARGET_PTIDR = 8'd128;
+	localparam CORE_DEBUG_TARGET_PFLAGR = 8'd129;
+	localparam CORE_DEBUG_TARGET_PPCR = 8'd130;
+	localparam CORE_DEBUG_TARGET_PPSR = 8'd131;
+	localparam CORE_DEBUG_TARGET_PPDTR = 8'd132;
 
 	
 	wire this_busy = b_main_wait || reg_working;
@@ -182,7 +208,7 @@ module core_debug(
 	wire reg_working = (b_reg_read_state == L_PARAM_REG_READ_STT_READEND);
 	wire reg_read_start = b_main_core_stop && !b_main_wait && (iCMD_COMMAND == CORE_DEBUG_CMD_READ_REG) && iCMD_REQ && !this_busy;
 	wire reg_read_end = b_reg_read_end;
-	wire [11:0] reg_read_target = iCMD_TARGET;
+	wire [7:0] reg_read_target = iCMD_TARGET;
 	reg b_reg_read_state;
 	reg [31:0] b_reg_read_r_data;
 	reg b_reg_read_end;
@@ -236,12 +262,24 @@ module core_debug(
 										CORE_DEBUG_TARGET_GR29 : b_reg_read_r_data <= iREG_R_GR29;
 										CORE_DEBUG_TARGET_GR30 : b_reg_read_r_data <= iREG_R_GR30;
 										CORE_DEBUG_TARGET_GR31 : b_reg_read_r_data <= iREG_R_GR31;
+										CORE_DEBUG_TARGET_CPUIDR : b_reg_read_r_data <= iREG_R_CPUIDR;
+										CORE_DEBUG_TARGET_TIDR : b_reg_read_r_data <= iREG_R_TIDR;
 										CORE_DEBUG_TARGET_FLAGR : b_reg_read_r_data <= iREG_R_FLAGR;
-										CORE_DEBUG_TARGET_SPR : b_reg_read_r_data <= iREG_R_SPR;
 										CORE_DEBUG_TARGET_PCR : b_reg_read_r_data <= iREG_R_PCR;
-										CORE_DEBUG_TARGET_PPCR : b_reg_read_r_data <= iREG_R_PPCR;
+										CORE_DEBUG_TARGET_SPR : b_reg_read_r_data <= iREG_R_SPR;
 										CORE_DEBUG_TARGET_PSR : b_reg_read_r_data <= iREG_R_PSR;
+										CORE_DEBUG_TARGET_IOSAR : b_reg_read_r_data <= iREG_R_IOSAR;
+										CORE_DEBUG_TARGET_TISR : b_reg_read_r_data <= iREG_R_TISR;
+										CORE_DEBUG_TARGET_IDTR : b_reg_read_r_data <= iREG_R_IDTR;
+										CORE_DEBUG_TARGET_FI0R : b_reg_read_r_data <= iREG_R_FI0R;
+										CORE_DEBUG_TARGET_FI1R : b_reg_read_r_data <= iREG_R_FI1R;
+										CORE_DEBUG_TARGET_FRCLR : b_reg_read_r_data <= iREG_R_FRCLR;
+										CORE_DEBUG_TARGET_FRCHR : b_reg_read_r_data <= iREG_R_FRCHR;
+										CORE_DEBUG_TARGET_PTIDR : b_reg_read_r_data <= iREG_R_PTIDR;
+										CORE_DEBUG_TARGET_PFLAGR : b_reg_read_r_data <= iREG_R_PFLAGR;
+										CORE_DEBUG_TARGET_PPCR : b_reg_read_r_data <= iREG_R_PPCR;
 										CORE_DEBUG_TARGET_PPSR : b_reg_read_r_data <= iREG_R_PPSR;
+										CORE_DEBUG_TARGET_PPDTR : b_reg_read_r_data <= iREG_R_PPDTR;
 									endcase
 								end
 							end

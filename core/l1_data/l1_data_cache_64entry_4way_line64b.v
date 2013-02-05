@@ -225,7 +225,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	assign memory_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
 	assign memory_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
 	assign memory_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
-	assign memory_write_byte_enable = (iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[5:2], iUP_ORDER) : {64{1'b1}};
+	assign memory_write_byte_enable = (iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[5:0], iUP_ORDER) : {64{1'b1}};
 	assign memory_write_data = (iUP_REQ)? {16{iUP_DATA}} : iWR_DATA;
 	
 	wire memory_mmuflag_write_way0_condition;
@@ -379,13 +379,13 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	
 	//Upload Byte Enable Generate
 	function [63:0] func_upload_enable_byte_gen;
-		input	[3:0] func_addr;
+		input	[5:0] func_addr;
 		input	[1:0] func_order;
 		begin
 			case(func_order)
-				2'h0 : func_upload_enable_byte_gen = 64'h0000000000000001 << (func_addr*4);
-				2'h1 : func_upload_enable_byte_gen = 64'h0000000000000003 << (func_addr*4);
-				2'h2 : func_upload_enable_byte_gen = 64'h000000000000000F << (func_addr*4);
+				2'h0 : func_upload_enable_byte_gen = 64'h0000000000000001 << func_addr[5:0];
+				2'h1 : func_upload_enable_byte_gen = 64'h0000000000000003 << (func_addr[5:1]*2);
+				2'h2 : func_upload_enable_byte_gen = 64'h000000000000000F << (func_addr[5:2]*4);
 				default : func_upload_enable_byte_gen = 64'h0000000000000000;
 			endcase
 		end

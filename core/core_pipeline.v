@@ -94,7 +94,7 @@ module core_pipeline
 		input iDEBUG_CMD_REQ,
 		output oDEBUG_CMD_BUSY,
 		input [3:0] iDEBUG_CMD_COMMAND,
-		input [11:0] iDEBUG_CMD_TARGET,
+		input [7:0] iDEBUG_CMD_TARGET,
 		input [31:0] iDEBUG_CMD_DATA,
 		output oDEBUG_CMD_VALID,
 		output oDEBUG_CMD_ERROR,
@@ -1053,13 +1053,25 @@ module core_pipeline
 		.iREG_R_GR28(debug_register2debug_gr28),
 		.iREG_R_GR29(debug_register2debug_gr29),
 		.iREG_R_GR30(debug_register2debug_gr30),
-		.iREG_R_GR31(debug_register2debug_gr31),
+		.iREG_R_GR31(debug_register2debug_gr31),	
+		.iREG_R_CPUIDR(32'h0),
+		.iREG_R_TIDR(32'h0),
 		.iREG_R_FLAGR(debug_register2debug_flagr),
-		.iREG_R_SPR(debug_register2debug_spr),
 		.iREG_R_PCR(debug_register2debug_pcr),
-		.iREG_R_PPCR(debug_register2debug_ppcr),
+		.iREG_R_SPR(debug_register2debug_spr),
 		.iREG_R_PSR(debug_register2debug_psr),
-		.iREG_R_PPSR(debug_register2debug_ppsr)
+		.iREG_R_IOSAR(32'h0),
+		.iREG_R_TISR(32'h0),
+		.iREG_R_IDTR(32'h0),
+		.iREG_R_FI0R(32'h0),
+		.iREG_R_FI1R(32'h0),
+		.iREG_R_FRCLR(32'h0),
+		.iREG_R_FRCHR(32'h0),
+		.iREG_R_PTIDR(32'h0),
+		.iREG_R_PFLAGR(32'h0),
+		.iREG_R_PPCR(debug_register2debug_ppcr),
+		.iREG_R_PPSR(debug_register2debug_ppsr),
+		.iREG_R_PPDTR(32'h0)
 	);
 
 				

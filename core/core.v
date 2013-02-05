@@ -96,7 +96,7 @@ module core
 		input iDEBUG_CMD_REQ,
 		output oDEBUG_CMD_BUSY,
 		input [3:0] iDEBUG_CMD_COMMAND,
-		input [11:0] iDEBUG_CMD_TARGET,
+		input [7:0] iDEBUG_CMD_TARGET,
 		input [31:0] iDEBUG_CMD_DATA,
 		output oDEBUG_CMD_VALID,
 		output oDEBUG_CMD_ERROR,
@@ -250,47 +250,11 @@ module core
 	assign			inst_cache_mem2fetch_request_lock_cc	=	core2inst_fetch_busy || inst_l1_cache_wr_lock || iINST_LOCK;
 	
 	
-
-	/************************************************************************************
-	Data I/O Pipeline
-	************************************************************************************/	
-
-	
-	
 	/****************************************
 	Assign
 	****************************************/
 	//Core
 	assign		oCORE_FLASH			=		core_flash;
-	//Instruction Memory
-	/*
-	assign		oINST_REQ			=		inst_l1_cache_rd_valid && !inst_l1_cache_rd_hit && !iINST_LOCK;
-	assign		oINST_TID			=		b_inst_core2mem_tid;
-	assign		oINST_MMUMOD		=		b_inst_core2mem_mmumod;
-	assign		oINST_PDT			=		b_inst_core2mem_pdt;
-	assign		oINST_ADDR			=		b_inst_core2mem_addr;
-	assign		oINST_BUSY			=		inst_cache_mem2fetch_request_lock_cc;
-	*/
-	
-	
-	
-	//Data Memory
-	/*
-	assign		oDATA_REQ			=		core2ldst_req && !(core2ldst_addr >= b_io_startaddr);
-	assign		oDATA_ORDER			=		core2ldst_order;
-	assign		oDATA_RW			=		core2ldst_rw;
-	assign		oDATA_TID			=		core2ldst_tid;
-	assign		oDATA_MMUMOD		=		core2ldst_mmumod;
-	assign		oDATA_PDT			=		core2ldst_pdt;
-	assign		oDATA_ADDR			=		core2ldst_addr;
-	assign		oDATA_DATA			=		core2ldst_data;
-	//IO
-	assign		oIO_REQ				=		core2ldst_req && (core2ldst_addr >= b_io_startaddr);
-	assign		oIO_ORDER			=		core2ldst_order;
-	assign		oIO_RW				=		!core2ldst_rw;
-	assign		oIO_ADDR			=		core2ldst_addr - b_io_startaddr;
-	assign		oIO_DATA			=		core2ldst_data;
-	*/
 endmodule
 
 

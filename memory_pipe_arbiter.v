@@ -98,7 +98,7 @@ module memory_pipe_arbiter(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash
-		.iFLASH(1'b0),
+		.iFLASH(iMEMORY_QUEUE_FLUSH),
 		//Write
 		.iWR_REQ(!mem2core_common_lock && core2mem_normal_memory_access_condition),
 		.iWR_FLAG(core2mem_data_condition),		//0:Inst, 1:Data
@@ -123,6 +123,16 @@ module memory_pipe_arbiter(
 
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
+			b_core2mem_req <= 1'b0;
+			b_core2mem_order <= 2'h0;
+			b_core2mem_rw <= 1'b0;
+			b_core2mem_data_store_ack <= 1'b0;
+			b_core2mem_mmumod <= 2'h0;
+			b_core2mem_pdt <= {32{1'b0}};
+			b_core2mem_addr <= {32{1'b0}};
+			b_core2mem_data <= {32{1'b0}};
+		end
+		else if(iMEMORY_QUEUE_FLUSH)begin
 			b_core2mem_req <= 1'b0;
 			b_core2mem_order <= 2'h0;
 			b_core2mem_rw <= 1'b0;

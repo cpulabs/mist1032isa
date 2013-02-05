@@ -288,6 +288,7 @@ module l1_data_cache(
 						else begin
 							if(iDATA_VALID)begin
 								b_get_state <= 4'h0;
+								b_pagefault <= iDATA_PAGEFAULT;
 								b_req_main_state <= L_PARAM_OUTDATA;
 								if(!b_req_addr[2])begin
 									b_mem_result_data <= iDATA_DATA[31:0];

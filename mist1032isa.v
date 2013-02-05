@@ -245,7 +245,7 @@ module mist1032isa(
 	wire debuger2processor_cmd_req;
 	wire processor2debuger_cmd_busy;
 	wire [3:0] debuger2processor_cmd_command;
-	wire [11:0] debuger2processor_cmd_target;
+	wire [7:0] debuger2processor_cmd_target;
 	wire [31:0] debuger2processor_cmd_data;
 	wire processor2debuger_cmd_valid;
 	wire processor2debuger_cmd_error;

@@ -192,6 +192,7 @@ module l1_instruction_cache(
 							if(iINST_VALID)begin
 								b_get_state <= 4'h0;
 								b_req_main_state <= L_PARAM_OUTINST;
+								b_pagefault <= iINST_PAGEFAULT;
 								if(!b_req_addr[2])begin
 									b_mem_result_0_valid <= 1'b1;
 									b_mem_result_1_valid <= 1'b1;
