@@ -67,37 +67,37 @@ module decoder(
 	reg b_fault_page_invalid_inst;		
 	reg b_paging_ena;
 	reg b_kernel_access;
-	reg		[13:0]		b_mmu_flags;
-	reg					b_destination_sysreg;			
-	reg					b_dest_rename;			
-	reg					b_writeback;	
-	reg					b_flag_writeback;
-	reg					b_commit_wait_inst;					
-	reg		[4:0]		b_cmd;
-	reg		[3:0]		b_cc_afe;
-	reg		[4:0]		b_source0;
-	reg		[31:0]		b_source1;
-	reg					b_source0_flags;
-	reg					b_source1_imm;
-	reg					b_source0_active;	
-	reg					b_source1_active;	
-	reg					b_source0_sysreg;				
-	reg					b_source1_sysreg;	
-	reg					b_source0_sysreg_rename;
-	reg					b_source1_sysreg_rename;
-	reg		[4:0]		b_destination;	
-	reg					b_ex_sys_reg;
-	reg					b_ex_sys_ldst;
-	reg					b_ex_logic;
-	reg					b_ex_shift;
-	reg					b_ex_adder;
-	reg					b_ex_mul;
-	reg					b_ex_sdiv;
-	reg					b_ex_udiv;
-	reg					b_ex_ldst;
-	reg					b_ex_branch;
-	reg					b_error;
-	reg		[31:0]		b_pc;
+	reg [13:0] b_mmu_flags;
+	reg b_destination_sysreg;			
+	reg b_dest_rename;			
+	reg b_writeback;	
+	reg b_flag_writeback;
+	reg b_commit_wait_inst;					
+	reg [4:0] b_cmd;
+	reg [3:0] b_cc_afe;
+	reg [4:0] b_source0;
+	reg [31:0] b_source1;
+	reg b_source0_flags;
+	reg b_source1_imm;
+	reg b_source0_active;	
+	reg b_source1_active;	
+	reg b_source0_sysreg;				
+	reg b_source1_sysreg;	
+	reg b_source0_sysreg_rename;
+	reg b_source1_sysreg_rename;
+	reg [4:0] b_destination;	
+	reg b_ex_sys_reg;
+	reg b_ex_sys_ldst;
+	reg b_ex_logic;
+	reg b_ex_shift;
+	reg b_ex_adder;
+	reg b_ex_mul;
+	reg b_ex_sdiv;
+	reg b_ex_udiv;
+	reg b_ex_ldst;
+	reg b_ex_branch;
+	reg b_error;
+	reg [31:0] b_pc;
 	
 	
 	always@(posedge iCLOCK, negedge inRESET)begin
@@ -2760,6 +2760,31 @@ module decoder(
 							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
+				`OC_PFLAGR: 
+					begin									//O1
+						f_decode	=	{
+							/* Decode Error */						1'b0,
+							/* Commit Wait Instruction */			1'b1,
+							/* Condition Code & AFE */				f_decode_inst[19:16],
+							/* Source0 */							`SYSREG_PFLAGR,
+							/* Source1 */							{32{1'b0}},
+							/* Source0 Use Flags*/					1'b0,
+							/* Source1-Immediate */					1'b0,
+							/* Source0 Active */					1'b1,
+							/* Source1 Active */					1'b0,
+							/* Source0 System Register */			1'b1,
+							/* Source1 System Register */			1'b0,
+							/* Source0 System Register Rename */	1'b0,
+							/* Source1 System Register Rename */	1'b0,
+							/* Destination */						f_decode_inst[9:5],
+							/* Write Back Enable */					1'b1,
+							/* Make Flag Instruction */				1'b0,
+							/* Destination is System Register */	1'b0,
+							/* Destination Rename*/					1'b1,
+							/* Execute Module Command */			`EXE_SYS_REG_BUFFER0,
+							/* Execute Module */					`EXE_SELECT_SYS_REG
+						};
+					end
 					
 				/*******************
 				System Write
@@ -2786,6 +2811,31 @@ module decoder(
 							/* Destination is System Register */	1'b1,
 							/* Destination Rename*/					1'b0,
 							/* Execute Module Command */			`EXE_SYS_LDST_WRITE_SPR,
+							/* Execute Module */					`EXE_SELECT_SYS_LDST
+						};
+					end
+				`OC_SRPDTW : 
+					begin									//O1
+						f_decode	=	{
+							/* Decode Error */						1'b0,
+							/* Commit Wait Instruction */			1'b0,
+							/* Condition Code & AFE */				f_decode_inst[19:16],
+							/* Source0 */							f_decode_inst[9:5],
+							/* Source1 */							{32{1'b0}},
+							/* Source0 Use Flags*/					1'b0,
+							/* Source1-Immediate */					1'b0,
+							/* Source0 Active */					1'b1,
+							/* Source1 Active */					1'b0,
+							/* Source0 System Register */			1'b0,
+							/* Source1 System Register */			1'b0,
+							/* Source0 System Register Rename */	1'b0,
+							/* Source1 System Register Rename */	1'b0,
+							/* Destination */						`SYSREG_PDTR,
+							/* Write Back Enable */					1'b1,
+							/* Make Flag Instruction */				1'b0,
+							/* Destination is System Register */	1'b1,
+							/* Destination Rename*/					1'b0,
+							/* Execute Module Command */			`EXE_SYS_REG_BUFFER0,
 							/* Execute Module */					`EXE_SELECT_SYS_LDST
 						};
 					end

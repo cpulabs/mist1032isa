@@ -13,6 +13,8 @@ module execute(
 		input iFREE_REFRESH,
 		 //Lock
 		output oEXCEPTION_LOCK,
+		//System Register
+		output [31:0] oSYSREG_FLAGR,
 		 //Pipeline 
 		input iPREVIOUS_VALID,	
 		input iPREVIOUS_FAULT_PAGEFAULT,
@@ -1306,6 +1308,8 @@ module execute(
 	assign oFAULT_VALID = b_exception_valid;
 	assign oFAULT_NUM = b_exception_num;
 	assign oFAULT_FI0R = b_exception_fi0r;
+	
+	assign oSYSREG_FLAGR = b_sysreg_flags;
 		
 		
 endmodule

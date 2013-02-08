@@ -28,7 +28,9 @@ module dispatch
 		//FI0R Set
 		input iFREE_FI0R_SET,
 		input [31:0] iFREE_FI0R,
-		//System Register
+		//System Register Input
+		input [31:0] iSYSREG_FLAGR,
+		//System Register Output
 		output [31:0] oSYSREG_PCR,
 		output [31:0] oSYSREG_IDTR,
 		output [31:0] oSYSREG_TISR,
@@ -198,48 +200,51 @@ module dispatch
 	
 	
 	//System Register
-	wire	[31:0]		w_sysreg_cpuidr_info_data;
-	wire	[31:0]		w_sysreg_coreidr_info_data;
-	wire				w_sysreg_tidr_regist_valid;
-	wire	[31:0]		w_sysreg_tidr_regist_data;
-	wire	[31:0]		w_sysreg_tidr_info_data;
-	wire				w_sysreg_psr_regist_valid;
-	wire	[31:0]		w_sysreg_psr_regist_data;
-	wire	[31:0]		w_sysreg_psr_info_data;
-	wire				w_sysreg_spr_regist_valid;
-	wire	[31:0]		w_sysreg_spr_regist_data;
-	wire	[31:0]		w_sysreg_spr_info_data;
-	wire				w_sysreg_idtr_regist_valid;
-	wire	[31:0]		w_sysreg_idtr_regist_data;
-	wire	[31:0]		w_sysreg_idtr_info_data;
-	wire				w_sysreg_pdtr_regist_valid;
-	wire	[31:0]		w_sysreg_pdtr_regist_data;
-	wire	[31:0]		w_sysreg_pdtr_info_data;
-	wire				w_sysreg_tisr_regist_valid;
-	wire	[31:0]		w_sysreg_tisr_regist_data;
-	wire	[31:0]		w_sysreg_tisr_info_data;
-	wire				w_sysreg_kpdtr_regist_valid;
-	wire	[31:0]		w_sysreg_kpdtr_regist_data;
-	wire	[31:0]		w_sysreg_kpdtr_info_data;
-	wire	[31:0]		w_sysreg_iosr_info_data;
-	wire				w_sysreg_ppcr_regist_valid;
-	wire	[31:0]		w_sysreg_ppcr_regist_data;
-	wire	[31:0]		w_sysreg_ppcr_info_data;
-	wire				w_sysreg_ptidr_regist_valid;
-	wire	[31:0]		w_sysreg_ptidr_regist_data;
-	wire	[31:0]		w_sysreg_ptidr_info_data;
-	wire				w_sysreg_ppdtr_regist_valid;
-	wire	[31:0]		w_sysreg_ppdtr_regist_data;
-	wire	[31:0]		w_sysreg_ppdtr_info_data;	
-	wire				w_sysreg_ppsr_regist_valid;
-	wire	[31:0]		w_sysreg_ppsr_regist_data;
-	wire	[31:0]		w_sysreg_ppsr_info_data;
-	wire				w_sysreg_frclr_regist_valid;
-	wire	[31:0]		w_sysreg_frclr_regist_data;
-	wire				w_sysreg_frchr_regist_valid;
-	wire	[31:0]		w_sysreg_frchr_regist_data;
-	wire	[31:0]		w_sysreg_frclr_info_data;
-	wire	[31:0]		w_sysreg_frchr_info_data;
+	wire [31:0] w_sysreg_cpuidr_info_data;
+	wire [31:0] w_sysreg_coreidr_info_data;
+	wire w_sysreg_tidr_regist_valid;
+	wire [31:0] w_sysreg_tidr_regist_data;
+	wire [31:0] w_sysreg_tidr_info_data;
+	wire w_sysreg_psr_regist_valid;
+	wire [31:0] w_sysreg_psr_regist_data;
+	wire [31:0] w_sysreg_psr_info_data;
+	wire w_sysreg_spr_regist_valid;
+	wire [31:0] w_sysreg_spr_regist_data;
+	wire [31:0] w_sysreg_spr_info_data;
+	wire w_sysreg_idtr_regist_valid;
+	wire [31:0] w_sysreg_idtr_regist_data;
+	wire [31:0] w_sysreg_idtr_info_data;
+	wire w_sysreg_pdtr_regist_valid;
+	wire [31:0] w_sysreg_pdtr_regist_data;
+	wire [31:0] w_sysreg_pdtr_info_data;
+	wire w_sysreg_tisr_regist_valid;
+	wire [31:0] w_sysreg_tisr_regist_data;
+	wire [31:0] w_sysreg_tisr_info_data;
+	wire w_sysreg_kpdtr_regist_valid;
+	wire [31:0] w_sysreg_kpdtr_regist_data;
+	wire [31:0] w_sysreg_kpdtr_info_data;
+	wire [31:0] w_sysreg_iosr_info_data;
+	wire w_sysreg_ppcr_regist_valid;
+	wire [31:0] w_sysreg_ppcr_regist_data;
+	wire [31:0] w_sysreg_ppcr_info_data;
+	wire w_sysreg_ptidr_regist_valid;
+	wire [31:0] w_sysreg_ptidr_regist_data;
+	wire [31:0] w_sysreg_ptidr_info_data;
+	wire w_sysreg_ppdtr_regist_valid;
+	wire [31:0] w_sysreg_ppdtr_regist_data;
+	wire [31:0] w_sysreg_ppdtr_info_data;	
+	wire w_sysreg_pflagr_regist_valid;
+	wire [31:0] w_sysreg_pflagr_regist_data; 
+	wire [31:0] w_sysreg_pflagr_info_data;
+	wire w_sysreg_ppsr_regist_valid;
+	wire [31:0] w_sysreg_ppsr_regist_data;
+	wire [31:0] w_sysreg_ppsr_info_data;
+	wire w_sysreg_frclr_regist_valid;
+	wire [31:0] w_sysreg_frclr_regist_data;
+	wire w_sysreg_frchr_regist_valid;
+	wire [31:0] w_sysreg_frchr_regist_data;
+	wire [31:0] w_sysreg_frclr_info_data;
+	wire [31:0] w_sysreg_frchr_info_data;
 	
 	
 	/****************************************
@@ -780,7 +785,7 @@ module dispatch
 
 
 	//PPCR : Previous Program Counter
-	system_register PPCR	(
+	system_register PPCR(
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_ppcr_regist_valid), .iREGIST_DATA(w_sysreg_ppcr_regist_data), 
 		.oINFO_DATA(w_sysreg_ppcr_info_data)
@@ -790,13 +795,25 @@ module dispatch
 	
 	
 	//PPDTR : Previous Page Directry Table Register
-	system_register PPDTR	(
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+	system_register PPDTR(
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_ppdtr_regist_valid), .iREGIST_DATA(w_sysreg_ppdtr_regist_data), 
 		.oINFO_DATA(w_sysreg_ppdtr_info_data)
 	);
 	assign		w_sysreg_ppdtr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPDTR) || iFREE_SYSREG_SET_IRQ_MODE;
 	assign		w_sysreg_ppdtr_regist_data		=		(iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_pdtr_info_data : iWB_DATA;
+
+	//PFLAGR : Previous Flag Register
+	system_register PFLAGR(
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET),
+		.iREGIST_DATA_VALID(w_sysreg_pflagr_regist_valid), 
+		.iREGIST_DATA(w_sysreg_pflagr_regist_data), 
+		.oINFO_DATA(w_sysreg_pflagr_info_data)
+	);
+	assign w_sysreg_pflagr_regist_valid	 = iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_pflagr_regist_data = iSYSREG_FLAGR;
 
 	
 	//PTIDR : Previous Task Id Register

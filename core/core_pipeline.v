@@ -250,6 +250,7 @@ module core_pipeline
 	wire [31:0] ldst2execution_ldst_data;
 	
 	//System Register
+	wire [31:0] sysreg_flagr;
 	wire [31:0] sysreg_spr;
 	wire [31:0] sysreg_idtr;
 	wire [31:0] sysreg_tisr;
@@ -657,7 +658,9 @@ module core_pipeline
 		.iFREE_PPCR(free_ppcr),
 		.iFREE_FI0R_SET(free_fi0r_set),
 		.iFREE_FI0R(free_fi0r),
-		//System Register
+		//System Register Input
+		.iSYSREG_FLAGR(sysreg_flagr),
+		//System Register Output
 		.oSYSREG_PCR(sysreg_pcr),
 		.oSYSREG_IDTR(sysreg_idtr),
 		.oSYSREG_TISR(sysreg_tisr),
@@ -794,9 +797,9 @@ module core_pipeline
 		.iFREE_REGISTER_LOCK(free_register_lock),
 		.iFREE_PIPELINE_STOP(free_pipeline_stop),
 		.iFREE_REFRESH(free_refresh),
-		//System Register
-		//.oSYSREG_PCR(sysreg_pcr),
 		.oEXCEPTION_LOCK(execute_exception_lock),
+		//System Register
+		.oSYSREG_FLAGR(sysreg_flagr),
 		//Pipeline 
 		.iPREVIOUS_VALID(dispatch2execution_valid),	
 		.iPREVIOUS_FAULT_PAGEFAULT(dispatch2execution_fault_pagefault),

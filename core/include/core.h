@@ -94,8 +94,10 @@ Instruction Set
 `define		OC_SRFRCR		10'h0D4
 `define		OC_SRFRCLR		10'h0D5
 `define		OC_SRFRCHR		10'h0D6
+`define OC_PFLAGR 10'h0d7
 //System Register Write
 `define 	OC_SRSPW		10'h0E0
+`define		OC_SRPDTW		10'h0E1
 `define 	OC_SRIEIW		10'h0E5
 `define 	OC_SRTISW		10'h0E8
 `define 	OC_SRKPDTW		10'h0E9
@@ -215,15 +217,15 @@ Execution CMD Set
 /******************************
 Fault - User mode Prohibition
 ******************************/
-`define		FAULT_INSTRUCTION_SRTISR	10'h0c8
-`define		FAULT_INSTRUCTION_SRKPDTR	10'h0c9
-`define		FAULT_INSTRUCTION_SRIEIW	10'h0e5
-`define		FAULT_INSTRUCTION_SRTISW	10'h0e8
-`define		FAULT_INSTRUCTION_SRKPDTW	10'h0e9
-`define		FAULT_INSTRUCTION_SRMMUW	10'h0ea
-`define		FAULT_INSTRUCTION_HALT		10'h101
-`define		FAULT_INSTRUCTION_IDTS		10'h122
-
+`define FAULT_INSTRUCTION_SRTISR 10'h0c8
+`define FAULT_INSTRUCTION_SRKPDTR 10'h0c9
+`define FAULT_INSTRUCTION_SRPDTW 10'h0e1
+`define FAULT_INSTRUCTION_SRIEIW 10'h0e5
+`define FAULT_INSTRUCTION_SRTISW 10'h0e8
+`define FAULT_INSTRUCTION_SRKPDTW 10'h0e9
+`define FAULT_INSTRUCTION_SRMMUW 10'h0ea
+`define FAULT_INSTRUCTION_HALT 10'h101
+`define FAULT_INSTRUCTION_IDTS 10'h122
 
 
 
@@ -286,6 +288,7 @@ System Register Set
 `define		SYSREG_FRCLR		5'h12
 `define		SYSREG_FRCHR		5'h13
 `define		SYSREG_FRCR2FRCXR	5'h14
+`define		SYSREG_PFLAGR		5'h15
 
 //Microcode Use System Register
 `define		SYSREG_SSR0			5'h1C
