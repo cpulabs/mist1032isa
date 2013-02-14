@@ -211,7 +211,7 @@ module mmu_if(
 			b_coreout_mmu_flags <= {28{1'b0}};
 		end
 		//Page Fault
-		if(pagefault_condition)begin
+		else if(pagefault_condition)begin
 			b_coreout_req <= 1'b0;
 			b_coreout_data <= {64{1'b0}};
 			b_coreout_mmu_flags <= {28{1'b0}};
