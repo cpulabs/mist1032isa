@@ -15,7 +15,8 @@ module core_pipeline
 		/****************************************
 		System
 		****************************************/
-		output oCORE_FLASH,		
+		output oCORE_FLASH,	
+		output oFREE_TLB_FLUSH,
 		/****************************************
 		GCI Controll
 		****************************************/
@@ -127,10 +128,12 @@ module core_pipeline
 	wire [31:0] free_fi0r;
 	wire free_register_lock;
 	wire free_pipeline_stop;
-	wire free_refresh;
+	wire free_pipeline_flush;
 	wire free_restart;
 	wire free_set_irq_mode;
 	wire free_clr_irq_mode;
+	wire free_cache_flush;
+	wire free_tlb_flush;
 	wire free_new_spr_valid;
 	wire [31:0] free_new_spr;		
 	//Fetch
@@ -281,6 +284,7 @@ module core_pipeline
 	wire exception_jump_valid;
 	wire [31:0] exception_branch_addr;
 	wire exception_intr_valid;
+	wire exception_pdts_valid;
 	wire exception2cim_ict_req;
 	wire [5:0] exception2cim_ict_entry;
 	wire exception2cim_ict_conf_mask;
@@ -387,7 +391,7 @@ module core_pipeline
 		************************************/
 		.oFREE_REGISTER_LOCK(free_register_lock),
 		.oFREE_PIPELINE_STOP(free_pipeline_stop),
-		.oFREE_REFRESH(free_refresh),
+		.oFREE_REFRESH(free_pipeline_flush),
 		.oFREE_RESTART(free_restart),
 		.oFREE_PC_SET(free_pc_set),
 		.oFREE_PC(free_pc),
@@ -397,6 +401,8 @@ module core_pipeline
 		.oFREE_FI0R(free_fi0r),
 		.oFREE_SET_IRQ_MODE(free_set_irq_mode),
 		.oFREE_CLR_IRQ_MODE(free_clr_irq_mode),
+		.oFREE_CACHE_FLUSH(free_cache_flush),
+		.oFREE_TLB_FLUSH(free_tlb_flush),
 		/************************************
 		Interrupt Lock
 		************************************/
@@ -457,6 +463,7 @@ module core_pipeline
 		.iEXCEPT_IDTS_ADDR(exception_branch_addr),
 		.iEXCEPT_IB(exception_intr_valid),					
 		.iEXCEPT_IB_ADDR(exception_branch_addr),
+		.iEXCEPT_PDTS(exception_pdts_valid),
 		//External Exception
 		.iEXCEPT_IRQ_REQ(cim2exception_irq_req),
 		.iEXCEPT_IRQ_NUM(cim2exception_irq_num),
@@ -481,8 +488,8 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Remove
-		.iREMOVE(free_refresh),
-		.iCACHE_FLASH(cache_flash),
+		.iREMOVE(free_pipeline_flush),
+		.iCACHE_FLASH(cache_flash || free_cache_flush),
 		/****************************************
 		Memory Port Memory
 		****************************************/
@@ -525,7 +532,7 @@ module core_pipeline
 		//Core
 		.iSYSREG_PSR(sysreg_psr),
 		//Exception
-		.iEXCEPTION_EVENT(free_refresh),
+		.iEXCEPTION_EVENT(free_pipeline_flush),
 		.iEXCEPTION_ADDR_SET(free_pc_set),
 		.iEXCEPTION_ADDR(free_pc),
 		.iEXCEPTION_RESTART(free_restart),
@@ -558,7 +565,7 @@ module core_pipeline
 	loopbuffer LOOPBUFFER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iFREE_REFRESH(free_refresh),
+		.iFREE_REFRESH(free_pipeline_flush),
 		//Prev
 		.iPREVIOUS_INST_VALID(fetch2lbuffer_inst_valid),
 		.iPREVIOUS_PAGEFAULT(fetch2lbuffer_pagefault),
@@ -588,7 +595,7 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Free
-		.iFREE_DEFAULT(free_refresh),	
+		.iFREE_DEFAULT(free_pipeline_flush),	
 		//Previous
 		.iPREVIOUS_INST_VALID(lbuffer2decoder_inst_valid),
 		.iPREVIOUS_FAULT_PAGEFAULT(lbuffer2decoder_fault_pagefault),
@@ -651,7 +658,7 @@ module core_pipeline
 		.iSYSREGINFO_IOSR(iSYSINFO_IOSR),
 		.iFREE_REGISTER_LOCK(free_register_lock),
 		.iFREE_PIPELINE_STOP(free_pipeline_stop),
-		.iFREE_REFRESH(free_refresh),
+		.iFREE_REFRESH(free_pipeline_flush),
 		.iFREE_SYSREG_SET_IRQ_MODE(free_set_irq_mode),
 		.iFREE_SYSREG_CLR_IRQ_MODE(free_clr_irq_mode),
 		.iFREE_PPCR_SET(free_ppcr_set),
@@ -796,7 +803,7 @@ module core_pipeline
 		.inRESET(inRESET),
 		.iFREE_REGISTER_LOCK(free_register_lock),
 		.iFREE_PIPELINE_STOP(free_pipeline_stop),
-		.iFREE_REFRESH(free_refresh),
+		.iFREE_REFRESH(free_pipeline_flush),
 		.oEXCEPTION_LOCK(execute_exception_lock),
 		//System Register
 		.oSYSREG_FLAGR(sysreg_flagr),
@@ -869,6 +876,7 @@ module core_pipeline
 		.oJUMP_VALID(exception_jump_valid),
 		.oINTR_VALID(exception_intr_valid),
 		.oIDTSET_VALID(exception_idtset_valid),
+		.oPDTSET_VALID(exception_pdts_valid),
 		.oFAULT_VALID(exception_fault_valid),
 		.oFAULT_NUM(exception_fault_num),
 		.oFAULT_FI0R(exception_fault_fi0r),
@@ -947,8 +955,8 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Remove
-		.iREMOVE(free_refresh),
-		.iCACHE_FLASH(cache_flash),
+		.iREMOVE(free_pipeline_flush),
+		.iCACHE_FLASH(cache_flash || free_cache_flush),
 		//IOSR
 		.iSYSINFO_IOSR_VALID(iSYSINFO_IOSR_VALID),
 		.iSYSINFO_IOSR(iSYSINFO_IOSR),
@@ -1078,11 +1086,12 @@ module core_pipeline
 	);
 
 				
-	assign		oINST_FETCH_PDT			=	{32{1'b0}};
+	assign oINST_FETCH_PDT = {32{1'b0}};
 	
 	
 	//System
-	assign		oCORE_FLASH				=		free_refresh;
+	assign oCORE_FLASH = free_pipeline_flush;
+	assign oFREE_TLB_FLUSH = free_tlb_flush;
 	
 endmodule
 

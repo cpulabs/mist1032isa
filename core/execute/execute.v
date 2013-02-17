@@ -84,6 +84,7 @@ module execute(
 		output oJUMP_VALID,
 		output oINTR_VALID,
 		output oIDTSET_VALID,
+		output oPDTSET_VALID,
 		output oFAULT_VALID,
 		output [6:0] oFAULT_NUM,	
 		output [31:0] oFAULT_FI0R,
@@ -700,6 +701,7 @@ module execute(
 	reg [31:0] b_exception_fi0r;
 	reg b_jump;
 	reg b_idts;
+	reg b_pdts;
 	reg b_ib;
 	reg [31:0] b_branch_addr;
 	reg [31:0] b_pc;
@@ -733,6 +735,7 @@ module execute(
 			b_exception_fi0r <= 32'h0;
 			b_jump <= 1'b0;
 			b_idts <= 1'b0;
+			b_pdts <= 1'b0;
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_pc <= 32'h0;
@@ -763,6 +766,7 @@ module execute(
 			b_exception_fi0r <= 32'h0;
 			b_jump <= 1'b0;
 			b_idts <= 1'b0;
+			b_pdts <= 1'b0;
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_pc <= 32'h0;
@@ -817,6 +821,7 @@ module execute(
 									b_ldst_pipe_valid <= 1'b0;
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
+									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;	
 								end		
@@ -858,6 +863,7 @@ module execute(
 										b_ldst_pipe_data <= ldst_pipe_data;
 										b_jump <= 1'b0;
 										b_idts <= 1'b0;
+										b_pdts <= 1'b0;
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
 										b_state <= L_PARAM_STT_STORE;
@@ -875,6 +881,7 @@ module execute(
 										b_ldst_pipe_valid <= 1'b0;
 										b_jump <= 1'b0;
 										b_idts <= 1'b0;
+										b_pdts <= 1'b0;
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
 									end
@@ -889,6 +896,7 @@ module execute(
 										b_ldst_pipe_valid <= 1'b0;
 										b_jump <= 1'b0;
 										b_idts <= 1'b0;
+										b_pdts <= 1'b0;
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
 									end
@@ -904,8 +912,9 @@ module execute(
 									b_ldst_pipe_valid <= 1'b0;
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
+									b_pdts <= iPREVIOUS_WRITEBACK && (iPREVIOUS_DESTINATION_SYSREG == `SYSREG_PDTR);
 									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
+									b_branch_addr <= iPREVIOUS_PC;
 								end
 								//Logic
 								else if(iPREVIOUS_EX_LOGIC)begin
@@ -918,6 +927,7 @@ module execute(
 									b_ldst_pipe_valid <= 1'b0;
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
+									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 								end
@@ -932,6 +942,7 @@ module execute(
 									b_ldst_pipe_valid <= 1'b0;
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
+									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 								end
@@ -946,6 +957,7 @@ module execute(
 									b_ldst_pipe_valid <= 1'b0;
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
+									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 								end
@@ -960,6 +972,7 @@ module execute(
 									b_ldst_pipe_valid <= 1'b0;
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
+									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 								end
@@ -982,6 +995,7 @@ module execute(
 										b_ldst_pipe_valid <= 1'b0;
 										b_jump <= branch_jump_valid;
 										b_idts <= branch_idts_valid;
+										b_pdts <= 1'b0;
 										b_ib <= branch_ib_valid;
 										b_branch_addr <= branch_branch_addr;
 									end
@@ -997,6 +1011,7 @@ module execute(
 										b_ldst_pipe_valid <= 1'b0;
 										b_jump <= branch_jump_valid;
 										b_idts <= branch_idts_valid;
+										b_pdts <= 1'b0;
 										b_ib <= branch_ib_valid;
 										b_branch_addr <= branch_branch_addr;
 									end
@@ -1294,6 +1309,7 @@ module execute(
 	assign oBRANCH_ADDR = b_branch_addr;
 	assign oJUMP_VALID = b_jump;
 	assign oIDTSET_VALID = b_idts;
+	assign oPDTSET_VALID = b_pdts;
 	assign oINTR_VALID = b_ib;
 	
 	//System Register Writeback

@@ -45,7 +45,7 @@ module l1_instruction_cache(
 		input iNEXT_LOCK
 	);
 	
-	wire request_lock = iINST_LOCK && (b_req_main_state != L_PARAM_IDLE);///
+	wire request_lock = iINST_LOCK && (b_req_main_state != L_PARAM_IDLE);
 	wire load_lock = iINST_LOCK;
 	wire out_lock = iNEXT_LOCK;
 	

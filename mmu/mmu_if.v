@@ -5,6 +5,7 @@
 module mmu_if(
 		input iCLOCK,
 		input inRESET,
+		input iFREE_TLB_FLUSH,
 		/*************************
 		To Core
 		*************************/
@@ -88,7 +89,7 @@ module mmu_if(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//TLB Flash
-		.iTLB_FLASH(1'b0),
+		.iTLB_FLASH(iFREE_TLB_FLUSH),
 		/***********************
 		Logic Addres Request
 		***********************/

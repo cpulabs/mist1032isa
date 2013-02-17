@@ -18,7 +18,8 @@ module core
 		/****************************************
 		Core
 		****************************************/
-		output oCORE_FLASH,
+		//output oCORE_FLASH,
+		output oFREE_TLB_FLUSH,
 		/****************************************
 		GCI Controll
 		****************************************/
@@ -163,7 +164,8 @@ module core
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Core
-		.oCORE_FLASH(core_flash),	
+		.oCORE_FLASH(core_flash),
+		.oFREE_TLB_FLUSH(oFREE_TLB_FLUSH),
 		//GCI Interrupt Controll
 		//Interrupt Control
 		.oIO_IRQ_CONFIG_TABLE_REQ(oIO_IRQ_CONFIG_TABLE_REQ),
@@ -249,12 +251,7 @@ module core
 	
 	assign			inst_cache_mem2fetch_request_lock_cc	=	core2inst_fetch_busy || inst_l1_cache_wr_lock || iINST_LOCK;
 	
-	
-	/****************************************
-	Assign
-	****************************************/
-	//Core
-	assign		oCORE_FLASH			=		core_flash;
+
 endmodule
 
 

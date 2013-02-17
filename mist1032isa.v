@@ -73,6 +73,8 @@ module mist1032isa(
 	/****************************************
 	Register and Wire
 	****************************************/
+	//Core 2 This
+	wire free_tlb_flush;
 	//Memory
 	wire core2mem_inst_req;
 	wire mem2core_inst_lock;
@@ -99,7 +101,6 @@ module mist1032isa(
 	wire core2mem_data_lock;
 	wire [63:0] mem2core_data_data;
 	wire [27:0] mem2core_data_flags;
-	
 	//IO
 	wire io2cpu_sysinfo_iosr_valid;
 	wire [31:0] io2cpu_sysinfo_iosr;
@@ -147,14 +148,12 @@ module mist1032isa(
 		/****************************************
 		System
 		****************************************/
-		/*
-		.iIF_CLOCK(iBUS_CLOCK),
-		.iCORE_CLOCK(iCORE_CLOCK),
-		*/
-		
 		.iCLOCK(iCORE_CLOCK),
 		.inRESET(inRESET),
-				
+		/****************************************
+		System
+		****************************************/	
+		.oFREE_TLB_FLUSH(free_tlb_flush),
 		/****************************************
 		GCI Controll
 		****************************************/	
@@ -349,6 +348,7 @@ module mist1032isa(
 	mmu_if MMU_IF(
 		.iCLOCK(iBUS_CLOCK),
 		.inRESET(inRESET),
+		.iFREE_TLB_FLUSH(free_tlb_flush),
 		/*************************
 		To Core
 		*************************/
