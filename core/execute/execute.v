@@ -22,6 +22,7 @@ module execute(
 		input iPREVIOUS_FAULT_INVALID_INST,
 		input iPREVIOUS_PAGING_ENA,
 		input iPREVIOUS_KERNEL_ACCESS,
+		input iPREVIOUS_BRANCH_PREDICT,	
 		input [31:0] iPREVIOUS_SYSREG_PSR,
 		input [31:0] iPREVIOUS_SYSREG_TIDR,
 		input [31:0] iPREVIOUS_SYSREG_PDTR,
@@ -66,7 +67,7 @@ module execute(
 		input iDATAIO_PAGEFAULT,
 		input [13:0] iDATAIO_MMU_FLAGS,
 		input [31:0] iDATAIO_DATA,
-		 //Writeback
+		//Writeback
 		output oNEXT_VALID,
 		output [31:0] oNEXT_DATA,
 		output [4:0] oNEXT_DESTINATION,
@@ -77,9 +78,9 @@ module execute(
 		output [31:0] oNEXT_PC,
 		output oNEXT_BRANCH,
 		output [31:0] oNEXT_BRANCH_PC,
-		 //System Register Write
+		//System Register Write
 		output oPDTR_WRITEBACK,
-		 //Branch
+		//Branch
 		output [31:0] oBRANCH_ADDR,
 		output oJUMP_VALID,
 		output oINTR_VALID,
@@ -88,7 +89,7 @@ module execute(
 		output oFAULT_VALID,
 		output [6:0] oFAULT_NUM,	
 		output [31:0] oFAULT_FI0R,
-		 //Debug
+		//Debug
 		input iDEBUG_CTRL_REQ,
 		input iDEBUG_CTRL_STOP,
 		input iDEBUG_CTRL_START,
@@ -99,8 +100,7 @@ module execute(
 	wire lock_condition = (b_state != L_PARAM_STT_NORMAL) || b_div_wait || b_debug_stop;// || iDATAIO_BUSY;
 	wire io_lock_condition = iDATAIO_BUSY;
 	assign oPREVIOUS_LOCK = lock_condition || iFREE_PIPELINE_STOP;
-	
-	
+
 	//0
 	reg b_ex_history0_valid;
 	reg [31:0] b_ex_history0_data;
@@ -704,9 +704,8 @@ module execute(
 	reg b_pdts;
 	reg b_ib;
 	reg [31:0] b_branch_addr;
+	reg b_branch_predict;	
 	reg [31:0] b_pc;
-	
-	
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -738,6 +737,7 @@ module execute(
 			b_pdts <= 1'b0;
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
+			b_branch_predict <= 1'b0;
 			b_pc <= 32'h0;
 		end
 		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
@@ -769,6 +769,7 @@ module execute(
 			b_pdts <= 1'b0;
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
+			b_branch_predict <= 1'b0;
 			b_pc <= 32'h0;
 		end
 		else begin
@@ -998,8 +999,9 @@ module execute(
 										b_pdts <= 1'b0;
 										b_ib <= branch_ib_valid;
 										b_branch_addr <= branch_branch_addr;
+										b_branch_predict <= branch_jump_valid && iPREVIOUS_BRANCH_PREDICT;
 									end
-									//Non Branch
+									//Non Branch(Compiler predict instruction)
 									else begin
 										b_valid <= 1'b1;
 										b_writeback <= 1'b0;
@@ -1014,6 +1016,7 @@ module execute(
 										b_pdts <= 1'b0;
 										b_ib <= branch_ib_valid;
 										b_branch_addr <= branch_branch_addr;
+										b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
 									end
 								end
 							end

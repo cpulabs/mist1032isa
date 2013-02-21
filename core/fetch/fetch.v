@@ -36,6 +36,7 @@ module fetch(
 				output [13:0] oNEXT_MMU_FLAGS,
 				output oNEXT_PAGING_ENA,
 				output oNEXT_KERNEL_ACCESS,
+				output oNEXT_BRANCH_PREDICTOR,					///
 				output [31:0] oNEXT_INST,
 				output [31:0] oNEXT_PC,
 				input iNEXT_FETCH_STOP,

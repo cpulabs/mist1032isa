@@ -12,6 +12,7 @@ module loopbuffer(
 		input [13:0] iPREVIOUS_MMU_FLAGS,
 		input iPREVIOUS_PAGING_ENA,
 		input iPREVIOUS_KERNEL_ACCESS,
+		input iPREVIOUS_BRANCH_PREDICT,
 		input [31:0] iPREVIOUS_INST,
 		input [31:0] iPREVIOUS_PC,
 		output oPREVIOUS_FETCH_STOP,
@@ -23,6 +24,7 @@ module loopbuffer(
 		output oNEXT_FAULT_INVALID_INST,
 		output oNEXT_PAGING_ENA,
 		output oNEXT_KERNEL_ACCESS,
+		output oNEXT_BRANCH_PREDICT,
 		output [31:0] oNEXT_INST,
 		output [31:0] oNEXT_PC,
 		input iNEXT_LOCK
@@ -113,16 +115,16 @@ module loopbuffer(
 	/*************************************************
 	Instruction Loop Buffer
 	*************************************************/
-	sync_fifo #(69, 32, 5) INST_LOOPBUFFER(
+	sync_fifo #(70, 32, 5) INST_LOOPBUFFER(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iREMOVE(iFREE_REFRESH), 
 		.oCOUNT(fifo_count), 	
 		.iWR_EN(!fifo_full && iPREVIOUS_INST_VALID), 
-		.iWR_DATA({fault, iPREVIOUS_PAGING_ENA, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_INST, iPREVIOUS_PC}), 
+		.iWR_DATA({fault, iPREVIOUS_PAGING_ENA, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_BRANCH_PREDICT, iPREVIOUS_INST, iPREVIOUS_PC}), 
 		.oWR_FULL(fifo_full),
 		.iRD_EN(!fifo_empty && !iNEXT_LOCK), 
-		.oRD_DATA({oNEXT_FAULT_PAGEFAULT, oNEXT_FAULT_PRIVILEGE_ERROR, oNEXT_FAULT_INVALID_INST, oNEXT_PAGING_ENA, oNEXT_KERNEL_ACCESS, oNEXT_INST, oNEXT_PC}), 
+		.oRD_DATA({oNEXT_FAULT_PAGEFAULT, oNEXT_FAULT_PRIVILEGE_ERROR, oNEXT_FAULT_INVALID_INST, oNEXT_PAGING_ENA, oNEXT_KERNEL_ACCESS, oNEXT_BRANCH_PREDICT, oNEXT_INST, oNEXT_PC}), 
 		.oRD_EMPTY(fifo_empty)
 	);
 

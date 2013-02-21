@@ -142,6 +142,7 @@ module core_pipeline
 	wire [13:0] fetch2lbuffer_mmu_flags;
 	wire fetch2lbuffer_paging_ena;
 	wire fetch2lbuffer_kernel_access;
+	wire fetch2lbuffer_branch_predict;
 	wire [31:0] fetch2lbuffer_inst;
 	wire [31:0] fetch2lbuffer_pc;
 	wire lbuffer2fetch_fetch_stop;
@@ -153,6 +154,7 @@ module core_pipeline
 	wire lbuffer2decoder_fault_invalid_inst;
 	wire lbuffer2decoder_paging_ena;
 	wire lbuffer2decoder_kernel_access;
+	wire lbuffer2decoder_branch_predict;
 	wire [31:0] lbuffer2decoder_inst;
 	wire [31:0] lbuffer2decoder_pc;
 	wire decoder2lbuffer_lock;
@@ -163,6 +165,7 @@ module core_pipeline
 	wire decoder2dispatch_fault_invalid_inst;
 	wire decoder2dispatch_paging_ena;
 	wire decoder2dispatch_kernel_access;
+	wire decoder2dispatch_branch_predict;
 	wire decoder2dispatch_source0_active;
 	wire decoder2dispatch_source1_active;
 	wire decoder2dispatch_source0_sysreg;
@@ -196,6 +199,7 @@ module core_pipeline
 	wire dispatch2execution_fault_invalid_inst;
 	wire dispatch2execution_paging_ena;
 	wire dispatch2execution_kernel_access;
+	wire dispatch2execution_branch_predict;
 	wire [31:0] dispatch2execution_sysreg_psr;
 	wire [31:0] dispatch2execution_sysreg_tidr;
 	wire [31:0] dispatch2execution_sysreg_pdtr;
@@ -553,6 +557,7 @@ module core_pipeline
 		.oNEXT_MMU_FLAGS(fetch2lbuffer_mmu_flags),
 		.oNEXT_PAGING_ENA(fetch2lbuffer_paging_ena),
 		.oNEXT_KERNEL_ACCESS(fetch2lbuffer_kernel_access),
+		.oNEXT_BRANCH_PREDICTOR(fetch2lbuffer_branch_predict),
 		.oNEXT_INST(fetch2lbuffer_inst),
 		.oNEXT_PC(fetch2lbuffer_pc),
 		.iNEXT_FETCH_STOP(lbuffer2fetch_fetch_stop),
@@ -572,6 +577,7 @@ module core_pipeline
 		.iPREVIOUS_MMU_FLAGS(fetch2lbuffer_mmu_flags),
 		.iPREVIOUS_PAGING_ENA(fetch2lbuffer_paging_ena),
 		.iPREVIOUS_KERNEL_ACCESS(fetch2lbuffer_kernel_access),
+		.iPREVIOUS_BRANCH_PREDICTOR(fetch2lbuffer_branch_predict),
 		.iPREVIOUS_INST(fetch2lbuffer_inst),
 		.iPREVIOUS_PC(fetch2lbuffer_pc),
 		.oPREVIOUS_FETCH_STOP(lbuffer2fetch_fetch_stop),
@@ -583,6 +589,7 @@ module core_pipeline
 		.oNEXT_FAULT_INVALID_INST(lbuffer2decoder_fault_invalid_inst),
 		.oNEXT_PAGING_ENA(lbuffer2decoder_paging_ena),
 		.oNEXT_KERNEL_ACCESS(lbuffer2decoder_kernel_access),
+		.oNEXT_BRANCH_PREDICTOR(lbuffer2decoder_branch_predict),
 		.oNEXT_INST(lbuffer2decoder_inst),
 		.oNEXT_PC(lbuffer2decoder_pc),
 		.iNEXT_LOCK(decoder2lbuffer_lock)
@@ -603,6 +610,7 @@ module core_pipeline
 		.iPREVIOUS_FAULT_INVALID_INST(lbuffer2decoder_fault_invalid_inst),
 		.iPREVIOUS_PAGING_ENA(lbuffer2decoder_paging_ena),
 		.iPREVIOUS_KERNEL_ACCESS(lbuffer2decoder_kernel_access),
+		.iPREVIOUS_BRANCH_PREDICTOR(lbuffer2decoder_branch_predict),
 		.iPREVIOUS_INST(lbuffer2decoder_inst),
 		.iPREVIOUS_PC(lbuffer2decoder_pc),
 		.oPREVIOUS_LOCK(decoder2lbuffer_lock),
@@ -613,6 +621,7 @@ module core_pipeline
 		.oNEXT_FAULT_INVALID_INST(decoder2dispatch_fault_invalid_inst),
 		.oNEXT_PAGING_ENA(decoder2dispatch_paging_ena),
 		.oNEXT_KERNEL_ACCESS(decoder2dispatch_kernel_access),
+		.oNEXT_BRANCH_PREDICTOR(decoder2dispatch_branch_predict),
 		.oNEXT_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
 		.oNEXT_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
 		.oNEXT_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
@@ -683,6 +692,7 @@ module core_pipeline
 		.iPREVIOUS_FAULT_INVALID_INST(decoder2dispatch_fault_invalid_inst),
 		.iPREVIOUS_PAGING_ENA(decoder2dispatch_paging_ena),
 		.iPREVIOUS_KERNEL_ACCESS(decoder2dispatch_kernel_access),
+		.iPREVIOUS_BRANCH_PREDICTOR(decoder2dispatch_branch_predict),
 		.iPREVIOUS_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
 		.iPREVIOUS_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
 		.iPREVIOUS_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
@@ -716,6 +726,7 @@ module core_pipeline
 		.oNEXT_FAULT_INVALID_INST(dispatch2execution_fault_invalid_inst),
 		.oNEXT_PAGING_ENA(dispatch2execution_paging_ena),
 		.oNEXT_KERNEL_ACCESS(dispatch2execution_kernel_access),
+		.oNEXT_BRANCH_PREDICTOR(dispatch2execution_branch_predict),
 		.oNEXT_SYSREG_PSR(dispatch2execution_sysreg_psr),
 		.oNEXT_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.oNEXT_SYSREG_PDTR(dispatch2execution_sysreg_pdtr),
@@ -814,6 +825,7 @@ module core_pipeline
 		.iPREVIOUS_FAULT_INVALID_INST(dispatch2execution_fault_invalid_inst),
 		.iPREVIOUS_PAGING_ENA(dispatch2execution_paging_ena),
 		.iPREVIOUS_KERNEL_ACCESS(dispatch2execution_kernel_access),
+		.iPREVIOUS_BRANCH_PREDICTOR(dispatch2execution_branch_predict),
 		.iPREVIOUS_SYSREG_PSR(dispatch2execution_sysreg_psr),
 		.iPREVIOUS_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.iPREVIOUS_SYSREG_PDTR(dispatch2execution_sysreg_tidr),

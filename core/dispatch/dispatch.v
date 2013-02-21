@@ -46,6 +46,7 @@ module dispatch
 		input iPREVIOUS_FAULT_INVALID_INST,
 		input iPREVIOUS_PAGING_ENA,
 		input iPREVIOUS_KERNEL_ACCESS,
+		input iPREVIOUS_BRANCH_PREDICT,
 		input iPREVIOUS_SOURCE0_ACTIVE,			
 		input iPREVIOUS_SOURCE1_ACTIVE,		
 		input iPREVIOUS_SOURCE0_SYSREG,		
@@ -79,6 +80,7 @@ module dispatch
 		output oNEXT_FAULT_INVALID_INST,
 		output oNEXT_PAGING_ENA,
 		output oNEXT_KERNEL_ACCESS,
+		output oNEXT_BRANC_PREDICT,
 		output [31:0] oNEXT_SYSREG_PSR,	
 		output [31:0] oNEXT_SYSREG_TIDR,	
 		output [31:0] oNEXT_SYSREG_PDTR,
@@ -446,6 +448,7 @@ module dispatch
 	reg b_fault_invalid_inst;
 	reg b_paging_ena;
 	reg b_kernel_access;
+	reg b_branch_predict;
 	reg b_destination_sysreg;
 	reg [4:0] b_destination;			
 	reg b_writeback;	
@@ -481,6 +484,7 @@ module dispatch
 			b_fault_invalid_inst <= 1'b0;
 			b_paging_ena <= 1'b0;
 			b_kernel_access <= 1'b0;
+			b_branch_predict <= 1'B0;
 			b_destination_sysreg <= 1'b0;
 			b_destination <= 5'h0;
 			b_writeback <= 1'b0;
@@ -514,6 +518,7 @@ module dispatch
 			b_fault_invalid_inst <= 1'b0;
 			b_paging_ena <= 1'b0;
 			b_kernel_access <= 1'b0;
+			b_branch_predict <= 1'b0;
 			b_destination_sysreg <= 1'b0;
 			b_destination <= 5'h0;
 			b_writeback <= 1'b0;
@@ -548,6 +553,7 @@ module dispatch
 				b_fault_invalid_inst <= iPREVIOUS_FAULT_INVALID_INST;
 				b_paging_ena <= iPREVIOUS_PAGING_ENA;
 				b_kernel_access <= iPREVIOUS_KERNEL_ACCESS;
+				b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
 				b_destination_sysreg <= iPREVIOUS_DESTINATION_SYSREG;
 				b_destination <= iPREVIOUS_DESTINATION;
 				b_writeback <= iPREVIOUS_WRITEBACK;
@@ -963,6 +969,7 @@ module dispatch
 	assign oNEXT_FAULT_INVALID_INST = b_fault_invalid_inst;
 	assign oNEXT_PAGING_ENA = b_paging_ena;
 	assign oNEXT_KERNEL_ACCESS = b_kernel_access;
+	assign oNEXT_BRANCH_PREDICT = b_branch_predict;
 	assign oNEXT_SYSREG_PSR = w_sysreg_psr_info_data;
 	assign oNEXT_SYSREG_TIDR = w_sysreg_tidr_info_data;
 	assign oNEXT_SYSREG_PDTR = w_sysreg_pdtr_info_data;

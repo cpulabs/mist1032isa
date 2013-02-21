@@ -18,6 +18,7 @@ module decoder(
 		input iPREVIOUS_FAULT_INVALID_INST,
 		input iPREVIOUS_PAGING_ENA,
 		input iPREVIOUS_KERNEL_ACCESS,
+		input iPREVIOUS_BRANCH_PREDICTOR,
 		input [31:0] iPREVIOUS_INST,
 		input [31:0] iPREVIOUS_PC,
 		output oPREVIOUS_LOCK,
@@ -28,6 +29,7 @@ module decoder(
 		output oNEXT_FAULT_INVALID_INST,
 		output oNEXT_PAGING_ENA,
 		output oNEXT_KERNEL_ACCESS,
+		output oNEXT_BRANCH_PREDICTOR,
 		output oNEXT_SOURCE0_ACTIVE,			
 		output oNEXT_SOURCE1_ACTIVE,		
 		output oNEXT_SOURCE0_SYSREG,		
@@ -67,6 +69,7 @@ module decoder(
 	reg b_fault_page_invalid_inst;		
 	reg b_paging_ena;
 	reg b_kernel_access;
+	reg b_branch_predictor;
 	reg [13:0] b_mmu_flags;
 	reg b_destination_sysreg;			
 	reg b_dest_rename;			
@@ -107,7 +110,8 @@ module decoder(
 			b_fault_page_privilege_error <= 1'b0;
 			b_fault_page_invalid_inst <= 1'b0;			
 			b_paging_ena <= 1'b0;
-			b_kernel_access <= 1'b0;		
+			b_kernel_access <= 1'b0;	
+			b_branch_predictor <= 1'b0;
 			b_source0_active <= 1'b0;			
 			b_source1_active <= 1'b0;	
 			b_source0_sysreg <= 1'b0;	
@@ -146,6 +150,7 @@ module decoder(
 			b_fault_page_invalid_inst <= 1'b0;		
 			b_paging_ena <= 1'b0;
 			b_kernel_access <= 1'b0;
+			b_branch_predictor <= 1'b0;
 			b_source0_active <= 1'b0;			
 			b_source1_active <= 1'b0;	
 			b_source0_sysreg <= 1'b0;	
@@ -187,6 +192,7 @@ module decoder(
 				b_fault_page_invalid_inst <= iPREVIOUS_FAULT_INVALID_INST;
 				b_paging_ena <= iPREVIOUS_PAGING_ENA;
 				b_kernel_access <= iPREVIOUS_KERNEL_ACCESS;
+				b_branch_predictor <= iPREVIOUS_BRANCH_PREDICTOR;
 				//Inst
 				{
 					b_error, b_commit_wait_inst, b_cc_afe,
@@ -3415,47 +3421,48 @@ module decoder(
 	/****************************************
 	This -> Previous
 	****************************************/			
-	assign	oPREVIOUS_LOCK			=		iNEXT_LOCK;
+	assign oPREVIOUS_LOCK = iNEXT_LOCK;
 				
 	/****************************************
 	This -> Next
 	****************************************/
 	//Pipeline1
-	assign					oNEXT_VALID					=		b_valid;
+	assign oNEXT_VALID = b_valid;
 	assign oNEXT_FAULT_PAGEFAULT = b_fault_pagefault;
 	assign oNEXT_FAULT_PRIVILEGE_ERROR = b_fault_page_privilege_error;
 	assign oNEXT_FAULT_INVALID_INST = b_fault_page_invalid_inst;
 	assign oNEXT_PAGING_ENA = b_paging_ena;
 	assign oNEXT_KERNEL_ACCESS = b_kernel_access;
-	assign					oNEXT_SOURCE0_ACTIVE			=		b_source0_active;
-	assign					oNEXT_SOURCE1_ACTIVE			=		b_source1_active;
-	assign					oNEXT_SOURCE0_SYSREG			=		b_source0_sysreg;
-	assign					oNEXT_SOURCE1_SYSREG			=		b_source1_sysreg;
-	assign					oNEXT_SOURCE0_SYSREG_RENAME	=		b_source0_sysreg_rename;
-	assign					oNEXT_SOURCE1_SYSREG_RENAME	=		b_source1_sysreg_rename;
-	assign					oNEXT_DESTINATION_SYSREG		=		b_destination_sysreg;
-	assign					oNEXT_DEST_RENAME				=		b_dest_rename;
-	assign					oNEXT_WRITEBACK				=		b_writeback;
-	assign					oNEXT_FLAGS_WRITEBACK			=		b_flag_writeback;
-	assign					oNEXT_FRONT_COMMIT_WAIT		=		b_commit_wait_inst;
-	assign					oNEXT_CMD						=		b_cmd;
-	assign					oNEXT_CC_AFE					=		b_cc_afe;
-	assign					oNEXT_SOURCE0					=		b_source0;
-	assign					oNEXT_SOURCE1					=		b_source1;
-	assign					oNEXT_SOURCE0_FLAGS			=		b_source0_flags;
-	assign					oNEXT_SOURCE1_IMM				=		b_source1_imm;
-	assign					oNEXT_DESTINATION				=		b_destination;
-	assign					oNEXT_EX_SYS_REG				=		b_ex_sys_reg;
-	assign					oNEXT_EX_SYS_LDST				=		b_ex_sys_ldst;
-	assign					oNEXT_EX_LOGIC				=		b_ex_logic;
-	assign					oNEXT_EX_SHIFT				=		b_ex_shift;
-	assign					oNEXT_EX_ADDER				=		b_ex_adder;
-	assign					oNEXT_EX_MUL					=		b_ex_mul;
-	assign					oNEXT_EX_SDIV					=		b_ex_sdiv;
-	assign					oNEXT_EX_UDIV					=		b_ex_udiv;
-	assign					oNEXT_EX_LDST					=		b_ex_ldst;
-	assign					oNEXT_EX_BRANCH				=		b_ex_branch;
-	assign					oNEXT_PC						=		b_pc;
+	assign oNEXT_BRANCH_PREDICTOR = b_branch_predictor;
+	assign oNEXT_SOURCE0_ACTIVE = b_source0_active;
+	assign oNEXT_SOURCE1_ACTIVE = b_source1_active;
+	assign oNEXT_SOURCE0_SYSREG = b_source0_sysreg;
+	assign oNEXT_SOURCE1_SYSREG = b_source1_sysreg;
+	assign oNEXT_SOURCE0_SYSREG_RENAME = b_source0_sysreg_rename;
+	assign oNEXT_SOURCE1_SYSREG_RENAME = b_source1_sysreg_rename;
+	assign oNEXT_DESTINATION_SYSREG = b_destination_sysreg;
+	assign oNEXT_DEST_RENAME = b_dest_rename;
+	assign oNEXT_WRITEBACK = b_writeback;
+	assign oNEXT_FLAGS_WRITEBACK = b_flag_writeback;
+	assign oNEXT_FRONT_COMMIT_WAIT = b_commit_wait_inst;
+	assign oNEXT_CMD = b_cmd;
+	assign oNEXT_CC_AFE = b_cc_afe;
+	assign oNEXT_SOURCE0 = b_source0;
+	assign oNEXT_SOURCE1 = b_source1;
+	assign oNEXT_SOURCE0_FLAGS = b_source0_flags;
+	assign oNEXT_SOURCE1_IMM = b_source1_imm;
+	assign oNEXT_DESTINATION = b_destination;
+	assign oNEXT_EX_SYS_REG = b_ex_sys_reg;
+	assign oNEXT_EX_SYS_LDST = b_ex_sys_ldst;
+	assign oNEXT_EX_LOGIC = b_ex_logic;
+	assign oNEXT_EX_SHIFT = b_ex_shift;
+	assign oNEXT_EX_ADDER = b_ex_adder;
+	assign oNEXT_EX_MUL = b_ex_mul;
+	assign oNEXT_EX_SDIV = b_ex_sdiv;
+	assign oNEXT_EX_UDIV = b_ex_udiv;
+	assign oNEXT_EX_LDST = b_ex_ldst;
+	assign oNEXT_EX_BRANCH = b_ex_branch;
+	assign oNEXT_PC = b_pc;
 
 	
 	
