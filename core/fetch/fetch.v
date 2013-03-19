@@ -7,6 +7,7 @@
 	Update	:	2010/10/03
 ****************************************/
 `default_nettype none
+`include "core.h"
 
 module fetch(
 				//System
@@ -36,7 +37,8 @@ module fetch(
 				output [13:0] oNEXT_MMU_FLAGS,
 				output oNEXT_PAGING_ENA,
 				output oNEXT_KERNEL_ACCESS,
-				output oNEXT_BRANCH_PREDICTOR,					///
+				output oNEXT_BRANCH_PREDICT,					///
+				output [31:0] oNEXT_BRANCH_PREDICT_ADDR,
 				output [31:0] oNEXT_INST,
 				output [31:0] oNEXT_PC,
 				input iNEXT_FETCH_STOP,
@@ -82,6 +84,45 @@ module fetch(
 		.oRD_EMPTY(/* Not Use */)
 	);
 
+	
+	/****************************************
+	Branch Predictor
+	****************************************/
+	//Branch pick up
+	function func_branch_inst_check;
+		input [31:0] func_inst;
+		begin
+			case(func_inst[30:21])
+				`OC_BUR,
+				`OC_BR,
+				`OC_B : func_branch_inst_check = 1'b1;
+				default : func_branch_inst_check = 1'b0;
+			endcase
+		end
+	endfunction
+	
+	/*
+	branch_predictor BRANCH_PREDICTOR(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		.iFLUSH(1'b0),
+		//Flush
+		//.oFLUSH_PIPELINE(),
+		//.oFLUSH_
+		//Search
+		.iSEARCH_STB(func_branch_inst_check(iPREVIOUS_INST) && iPREVIOUS_INST_VALID),
+		.iSEARCH_INST_ADDR(fetch_queue_addr),
+		.oSEARCH_VALID(),
+		.oSEARCH_HIT(),
+		.oSEARCH_ADDR(),
+		//Jump
+		.iJUMP_STB(),
+		.iJUMP_VALID(),
+		.iJUMP_ADDR(),		
+		.iJUMP_INST_ADDR()	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
+	)
+	*/
+	
 	
 	/****************************************
 	This -> Previous

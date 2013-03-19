@@ -18,7 +18,8 @@ module decoder(
 		input iPREVIOUS_FAULT_INVALID_INST,
 		input iPREVIOUS_PAGING_ENA,
 		input iPREVIOUS_KERNEL_ACCESS,
-		input iPREVIOUS_BRANCH_PREDICTOR,
+		input iPREVIOUS_BRANCH_PREDICT,
+		input [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
 		input [31:0] iPREVIOUS_INST,
 		input [31:0] iPREVIOUS_PC,
 		output oPREVIOUS_LOCK,
@@ -29,7 +30,8 @@ module decoder(
 		output oNEXT_FAULT_INVALID_INST,
 		output oNEXT_PAGING_ENA,
 		output oNEXT_KERNEL_ACCESS,
-		output oNEXT_BRANCH_PREDICTOR,
+		output oNEXT_BRANCH_PREDICT,
+		output [31:0] oNEXT_BRANCH_PREDICT_ADDR,
 		output oNEXT_SOURCE0_ACTIVE,			
 		output oNEXT_SOURCE1_ACTIVE,		
 		output oNEXT_SOURCE0_SYSREG,		
@@ -69,7 +71,8 @@ module decoder(
 	reg b_fault_page_invalid_inst;		
 	reg b_paging_ena;
 	reg b_kernel_access;
-	reg b_branch_predictor;
+	reg b_branch_predict;
+	reg [31:0] b_branch_predict_addr;
 	reg [13:0] b_mmu_flags;
 	reg b_destination_sysreg;			
 	reg b_dest_rename;			
@@ -111,7 +114,8 @@ module decoder(
 			b_fault_page_invalid_inst <= 1'b0;			
 			b_paging_ena <= 1'b0;
 			b_kernel_access <= 1'b0;	
-			b_branch_predictor <= 1'b0;
+			b_branch_predict <= 1'b0;
+			b_branch_predict_addr <= 32'h0;
 			b_source0_active <= 1'b0;			
 			b_source1_active <= 1'b0;	
 			b_source0_sysreg <= 1'b0;	
@@ -150,7 +154,8 @@ module decoder(
 			b_fault_page_invalid_inst <= 1'b0;		
 			b_paging_ena <= 1'b0;
 			b_kernel_access <= 1'b0;
-			b_branch_predictor <= 1'b0;
+			b_branch_predict <= 1'b0;
+			b_branch_predict_addr <= 32'h0;
 			b_source0_active <= 1'b0;			
 			b_source1_active <= 1'b0;	
 			b_source0_sysreg <= 1'b0;	
@@ -192,7 +197,8 @@ module decoder(
 				b_fault_page_invalid_inst <= iPREVIOUS_FAULT_INVALID_INST;
 				b_paging_ena <= iPREVIOUS_PAGING_ENA;
 				b_kernel_access <= iPREVIOUS_KERNEL_ACCESS;
-				b_branch_predictor <= iPREVIOUS_BRANCH_PREDICTOR;
+				b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+				b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 				//Inst
 				{
 					b_error, b_commit_wait_inst, b_cc_afe,
@@ -3433,7 +3439,8 @@ module decoder(
 	assign oNEXT_FAULT_INVALID_INST = b_fault_page_invalid_inst;
 	assign oNEXT_PAGING_ENA = b_paging_ena;
 	assign oNEXT_KERNEL_ACCESS = b_kernel_access;
-	assign oNEXT_BRANCH_PREDICTOR = b_branch_predictor;
+	assign oNEXT_BRANCH_PREDICT = b_branch_predict;
+	assign oNEXT_BRANCH_PREDICT_ADDR = b_branch_predict_addr;
 	assign oNEXT_SOURCE0_ACTIVE = b_source0_active;
 	assign oNEXT_SOURCE1_ACTIVE = b_source1_active;
 	assign oNEXT_SOURCE0_SYSREG = b_source0_sysreg;

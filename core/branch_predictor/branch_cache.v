@@ -13,17 +13,18 @@ module branch_cache #(
 		input iCLOCK,
 		input inRESET,
 		input iFLUSH,
-		//Jump
-		input iJUMP_STB,
-		input iJUMP_VALID,
-		input [31:0] iJUMP_ADDR,		
-		input [31:0] iJUMP_INST_ADDR,	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
 		//Search
 		input iSEARCH_STB,
 		input [31:0] iSEARCH_INST_ADDR,
 		output oSEARCH_VALID,
 		output oSEARCH_HIT,
-		output [31:0] oSEARCH_ADDR
+		output oSRARCH_PREDICT_BRANCH,	//1 : Branch is valid predict
+		output [31:0] oSEARCH_ADDR,
+		//Jump
+		input iJUMP_STB,
+		input iJUMP_VALID,
+		input [31:0] iJUMP_ADDR,		
+		input [31:0] iJUMP_INST_ADDR	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
 	);
 
 
@@ -206,6 +207,7 @@ module branch_cache #(
 	
 	assign oSEARCH_VALID =  iSEARCH_STB;
 	assign oSEARCH_HIT = request_hit;
+	assign oSRARCH_PREDICT_BRANCH = (b_tag1_predict[read_tag_array_addr] == 2'h0 || b_tag1_predict[read_tag_array_addr] == 2'h1)? 1'b1 : 1'b0;
 	assign oSEARCH_ADDR = (!hit_way)? b_tag0_jump_addr[read_tag_array_addr] : b_tag1_jump_addr[read_tag_array_addr];
 	
 

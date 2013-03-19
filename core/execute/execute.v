@@ -11,18 +11,19 @@ module execute(
 		input iFREE_REGISTER_LOCK,
 		input iFREE_PIPELINE_STOP,
 		input iFREE_REFRESH,
-		 //Lock
+		//Lock
 		output oEXCEPTION_LOCK,
 		//System Register
 		output [31:0] oSYSREG_FLAGR,
-		 //Pipeline 
+		//Pipeline 
 		input iPREVIOUS_VALID,	
 		input iPREVIOUS_FAULT_PAGEFAULT,
 		input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
 		input iPREVIOUS_FAULT_INVALID_INST,
 		input iPREVIOUS_PAGING_ENA,
 		input iPREVIOUS_KERNEL_ACCESS,
-		input iPREVIOUS_BRANCH_PREDICT,	
+		input iPREVIOUS_BRANCH_PREDICT,
+		input [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,	
 		input [31:0] iPREVIOUS_SYSREG_PSR,
 		input [31:0] iPREVIOUS_SYSREG_TIDR,
 		input [31:0] iPREVIOUS_SYSREG_PDTR,
@@ -53,7 +54,7 @@ module execute(
 		input iPREVIOUS_EX_BRANCH,
 		input	[31:0] iPREVIOUS_PC,
 		output oPREVIOUS_LOCK,
-		 //Load Store Pipe
+		//Load Store Pipe
 		output oDATAIO_REQ,
 		input iDATAIO_BUSY,
 		output [1:0] oDATAIO_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
@@ -89,6 +90,12 @@ module execute(
 		output oFAULT_VALID,
 		output [6:0] oFAULT_NUM,	
 		output [31:0] oFAULT_FI0R,
+		//Branch Predictor			
+		output oBPREDICT_PREDICT,				//Branch Guess
+		output oBPREDICT_HIT,					//Guess Hit!
+		output oBPREDICT_JUMP,					//Branch Active
+		output [31:0] oBPREDICT_JUMP_ADDR,		//Branch Address
+		output [31:0] oBPREDICT_INST_ADDR,		//Branch Instruction Memory Address
 		//Debug
 		input iDEBUG_CTRL_REQ,
 		input iDEBUG_CTRL_STOP,
@@ -705,6 +712,7 @@ module execute(
 	reg b_ib;
 	reg [31:0] b_branch_addr;
 	reg b_branch_predict;	
+	reg [31:0] b_branch_predict_addr;
 	reg [31:0] b_pc;
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -738,6 +746,7 @@ module execute(
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_branch_predict <= 1'b0;
+			b_branch_predict_addr <= 32'h0;
 			b_pc <= 32'h0;
 		end
 		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
@@ -770,6 +779,7 @@ module execute(
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_branch_predict <= 1'b0;
+			b_branch_predict_addr <= 32'h0;
 			b_pc <= 32'h0;
 		end
 		else begin
@@ -999,7 +1009,8 @@ module execute(
 										b_pdts <= 1'b0;
 										b_ib <= branch_ib_valid;
 										b_branch_addr <= branch_branch_addr;
-										b_branch_predict <= branch_jump_valid && iPREVIOUS_BRANCH_PREDICT;
+										b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+										b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 									end
 									//Non Branch(Compiler predict instruction)
 									else begin
@@ -1017,6 +1028,7 @@ module execute(
 										b_ib <= branch_ib_valid;
 										b_branch_addr <= branch_branch_addr;
 										b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+										b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 									end
 								end
 							end
@@ -1329,8 +1341,16 @@ module execute(
 	assign oFAULT_FI0R = b_exception_fi0r;
 	
 	assign oSYSREG_FLAGR = b_sysreg_flags;
+	
+	
+	assign oBPREDICT_PREDICT = b_branch_predict;
+	assign oBPREDICT_HIT = (b_jump && b_branch_predict && b_branch_addr == b_branch_predict_addr) || (!b_jump && !b_branch_predict);
+	assign oBPREDICT_JUMP = b_jump;
+	assign oBPREDICT_JUMP_ADDR = b_branch_addr;
+	assign oBPREDICT_INST_ADDR = b_pc - 32'h00000004;
 		
 		
 endmodule
+
 
 `default_nettype wire
