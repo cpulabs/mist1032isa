@@ -1,28 +1,25 @@
 `default_nettype none
 
 
-
-
-
 module dps_sci(
-		input				iIF_CLOCK,
-		input				iDPS_BASE_CLOCK,
+		input iIF_CLOCK,
+		input iDPS_BASE_CLOCK,
 		//Reset
-		input				inRESET,
+		input inRESET,
 		//CPU Interface
-		input				iREQ_VALID,
-		output				oREQ_BUSY,		//Ignore
-		input				iREQ_RW,
-		input	[1:0]		iREQ_ADDR,
-		input	[31:0]		iREQ_DATA,
-		output				oREQ_VALID,
-		output	[31:0]		oREQ_DATA,
+		input iREQ_VALID,
+		output oREQ_BUSY,		//Ignore
+		input iREQ_RW,
+		input [1:0] iREQ_ADDR,
+		input [31:0] iREQ_DATA,
+		output oREQ_VALID,
+		output [31:0] oREQ_DATA,
 		//IRQ
-		output				oIRQ_VALID,
-		input				iIRQ_ACK,
+		output oIRQ_VALID,
+		input iIRQ_ACK,
 		//UART
-		output				oUART_TXD,
-		input				iUART_RXD
+		output oUART_TXD,
+		input iUART_RXD
 	);
 
 	localparam SCITX = 2'h0;

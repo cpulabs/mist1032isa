@@ -101,7 +101,10 @@ module fetch(
 		end
 	endfunction
 	
-	/*
+	wire branch_predictor_valid;
+	wire branch_predictor_predict_branch;
+	wire [31:0] branch_predictor_addr;
+	
 	branch_predictor BRANCH_PREDICTOR(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -112,16 +115,16 @@ module fetch(
 		//Search
 		.iSEARCH_STB(func_branch_inst_check(iPREVIOUS_INST) && iPREVIOUS_INST_VALID),
 		.iSEARCH_INST_ADDR(fetch_queue_addr),
-		.oSEARCH_VALID(),
-		.oSEARCH_HIT(),
-		.oSEARCH_ADDR(),
+		.oSEARCH_VALID(branch_predictor_valid),
+		.oSRARCH_PREDICT_BRANCH(branch_predictor_predict_branch),
+		.oSEARCH_ADDR(branch_predictor_addr),
 		//Jump
-		.iJUMP_STB(),
-		.iJUMP_VALID(),
-		.iJUMP_ADDR(),		
-		.iJUMP_INST_ADDR()	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
-	)
-	*/
+		.iJUMP_STB(1'b0),
+		.iJUMP_VALID(1'b0),
+		.iJUMP_ADDR(1'b0),		
+		.iJUMP_INST_ADDR(32'h0)	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
+	);
+	
 	
 	
 	/****************************************
@@ -222,6 +225,8 @@ module fetch(
 	assign oNEXT_MMU_FLAGS = b_next_mmu_flags;
 	assign oNEXT_PAGING_ENA = b_next_paging_ena;
 	assign oNEXT_KERNEL_ACCESS = b_next_kernel_access;
+	assign oNEXT_BRANCH_PREDICT = branch_predictor_valid && branch_predictor_predict_branch;
+	assign oNEXT_BRANCH_PREDICT_ADDR = branch_predictor_addr;
 	assign oNEXT_PC = b_pc_out;
 
 	

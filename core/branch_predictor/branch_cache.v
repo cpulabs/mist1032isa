@@ -32,7 +32,7 @@ module branch_cache #(
 	Wire and Register
 	*****************************************************************************/
 	//Generate
-	genvar i;
+	integer i;
 	//Branch Address Buffer
 	reg [1:0] b_tag0_lru[0:7];
 	reg [1:0] b_tag1_lru[0:7];
@@ -80,7 +80,7 @@ module branch_cache #(
 			if(func_tag_priority_lru0 != 2'h0 && func_req_addr == func_tag_addr0)begin
 				func_get_hit_way = 2'b10;
 			end
-			else if(func_tag_priority_lru1 =! 2'h0 && func_req_addr == func_tag_addr1)begin
+			else if(func_tag_priority_lru1 != 2'h0 && func_req_addr == func_tag_addr1)begin
 				func_get_hit_way = 2'b11;
 			end
 			else begin
@@ -142,15 +142,15 @@ module branch_cache #(
 			//Tag0
 			for(i = 0; i < 8; i = i + 1)begin : MAIN_ALWAYS_TAG0
 				//Write
-				if(iJUMP_STB && write_tag_array_addr == i && func_get_write_way(b_tag0_lru[write_tag_array_addr], b_tag1_lru[write_tag_array_addr])begin
+				if(iJUMP_STB && write_tag_array_addr == i && func_get_write_way(b_tag0_lru[write_tag_array_addr], b_tag1_lru[write_tag_array_addr]))begin
 					b_tag0_lru[write_tag_array_addr] <= 2'h3;
 					b_tag0_addr[write_tag_array_addr] <= write_tag_addr_tag;
-					b_tag0_predict[write_tag_array_addr] <= func_predict_update(iJUMP_VALID, b_tag0_predict[write_tag_array_addr]),
+					b_tag0_predict[write_tag_array_addr] <= func_predict_update(iJUMP_VALID, b_tag0_predict[write_tag_array_addr]);
 					b_tag0_jump_addr[write_tag_array_addr] <= iJUMP_ADDR;
 				end
 				//Read
 				else if(iSEARCH_STB && read_tag_array_addr == i && read_tag_addr_tag == b_tag0_addr[i])begin
-					b_tag0_lru[i] <= (b_tag0_lru != 2'h0 && b_tag0_lru != 2'h3)? b_tag0_lru + 2'h1 : b_tag0_lru;
+					b_tag0_lru[i] <= (b_tag0_lru[i] != 2'h0 && b_tag0_lru[i] != 2'h3)? b_tag0_lru[i] + 2'h1 : b_tag0_lru[i];
 				end
 				//LRU
 				else if(lru_timing)begin
@@ -160,15 +160,15 @@ module branch_cache #(
 			//Tag1
 			for(i = 0; i < 8; i = i + 1)begin : MAIN_ALWAYS_TAG1
 				//Write
-				if(iJUMP_STB && write_tag_array_addr == i && !func_get_write_way(b_tag0_lru[write_tag_array_addr], b_tag1_lru[write_tag_array_addr])begin
+				if(iJUMP_STB && write_tag_array_addr == i && !func_get_write_way(b_tag0_lru[write_tag_array_addr], b_tag1_lru[write_tag_array_addr]))begin
 					b_tag1_lru[write_tag_array_addr] <= 2'h3;
 					b_tag1_addr[write_tag_array_addr] <= write_tag_addr_tag;
-					b_tag1_predict[write_tag_array_addr] <= func_predict_update(iJUMP_VALID, b_tag1_predict[write_tag_array_addr]),
+					b_tag1_predict[write_tag_array_addr] <= func_predict_update(iJUMP_VALID, b_tag1_predict[write_tag_array_addr]);
 					b_tag1_jump_addr[write_tag_array_addr] <= iJUMP_ADDR;
 				end
 				//Read
 				else if(iSEARCH_STB && read_tag_array_addr == i && read_tag_addr_tag == b_tag1_addr[i])begin
-					b_tag1_lru[i] <= (b_tag1_lru != 2'h0 && b_tag1_lru != 2'h3)? b_tag1_lru + 2'h1 : b_tag1_lru;
+					b_tag1_lru[i] <= (b_tag1_lru[i] != 2'h0 && b_tag1_lru[i] != 2'h3)? b_tag1_lru[i] + 2'h1 : b_tag1_lru[i];
 				end
 				//LRU
 				else if(lru_timing)begin
@@ -202,7 +202,7 @@ module branch_cache #(
 														b_tag0_lru[read_tag_array_addr],
 														b_tag1_lru[read_tag_array_addr],
 														b_tag0_addr[read_tag_array_addr],
-														b_tag1_addr[read_tag_array_addr],
+														b_tag1_addr[read_tag_array_addr]
 													);
 	
 	assign oSEARCH_VALID =  iSEARCH_STB;
@@ -214,11 +214,6 @@ module branch_cache #(
 endmodule
 
 `default_nettype wire
-
-
-
-
-
 
 
 
