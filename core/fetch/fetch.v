@@ -20,6 +20,12 @@ module fetch(
 				input iEXCEPTION_ADDR_SET,
 				input [31:0] iEXCEPTION_ADDR,
 				input iEXCEPTION_RESTART,
+				//Branch Predict
+				input iBRANCH_PREDICT_RESULT_PREDICT,
+				input iBRANCH_PREDICT_RESULT_HIT,
+				input iBRANCH_PREDICT_RESULT_JUMP,
+				input [31:0] iBRANCH_PREDICT_RESULT_JUMP_ADDR,
+				input [31:0] iBRANCH_PREDICT_RESULT_INST_ADDR,
 				//Previous
 				input iPREVIOUS_INST_VALID,
 				input iPREVIOUS_PAGEFAULT,
@@ -37,7 +43,7 @@ module fetch(
 				output [13:0] oNEXT_MMU_FLAGS,
 				output oNEXT_PAGING_ENA,
 				output oNEXT_KERNEL_ACCESS,
-				output oNEXT_BRANCH_PREDICT,					///
+				output oNEXT_BRANCH_PREDICT,			
 				output [31:0] oNEXT_BRANCH_PREDICT_ADDR,
 				output [31:0] oNEXT_INST,
 				output [31:0] oNEXT_PC,
@@ -114,17 +120,20 @@ module fetch(
 		//.oFLUSH_
 		//Search
 		.iSEARCH_STB(func_branch_inst_check(iPREVIOUS_INST) && iPREVIOUS_INST_VALID),
-		.iSEARCH_INST_ADDR(fetch_queue_addr),
+		.iSEARCH_INST_ADDR(fetch_queue_addr - 32'h00000004),
 		.oSEARCH_VALID(branch_predictor_valid),
+		.iSEARCH_LOCK(iNEXT_LOCK),
 		.oSRARCH_PREDICT_BRANCH(branch_predictor_predict_branch),
 		.oSEARCH_ADDR(branch_predictor_addr),
 		//Jump
-		.iJUMP_STB(1'b0),
-		.iJUMP_VALID(1'b0),
-		.iJUMP_ADDR(1'b0),		
-		.iJUMP_INST_ADDR(32'h0)	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
+		.iJUMP_STB(iBRANCH_PREDICT_RESULT_JUMP),
+		.iJUMP_HIT(iBRANCH_PREDICT_RESULT_HIT/* && iBRANCH_PREDICT_RESULT_PREDICT*/),
+		.iJUMP_ADDR(iBRANCH_PREDICT_RESULT_JUMP_ADDR),		
+		.iJUMP_INST_ADDR(iBRANCH_PREDICT_RESULT_INST_ADDR)	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
 	);
 	
+	
+
 	
 	
 	/****************************************

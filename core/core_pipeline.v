@@ -550,6 +550,12 @@ module core_pipeline
 		.iEXCEPTION_ADDR_SET(free_pc_set),
 		.iEXCEPTION_ADDR(free_pc),
 		.iEXCEPTION_RESTART(free_restart),
+		//Branch Predict
+		.iBRANCH_PREDICT_RESULT_PREDICT(branch_predict_result_predict),
+		.iBRANCH_PREDICT_RESULT_HIT(branch_predict_result_hit),
+		.iBRANCH_PREDICT_RESULT_JUMP(branch_predict_result_jump),
+		.iBRANCH_PREDICT_RESULT_JUMP_ADDR(branch_predict_result_jump_addr),
+		.iBRANCH_PREDICT_RESULT_INST_ADDR(branch_predict_result_inst_addr),
 		//Previous
 		.iPREVIOUS_INST_VALID(icache2fetch_valid),
 		.iPREVIOUS_PAGEFAULT(icache2fetch_pagefault),

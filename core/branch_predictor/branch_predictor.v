@@ -21,7 +21,7 @@ module branch_predictor(
 		output [31:0] oSEARCH_ADDR,
 		//Jump
 		input iJUMP_STB,
-		input iJUMP_VALID,
+		input iJUMP_HIT,
 		input [31:0] iJUMP_ADDR,		
 		input [31:0] iJUMP_INST_ADDR
 	);
@@ -37,7 +37,7 @@ module branch_predictor(
 	reg b_branch_cache_predict_branch;
 	reg [31:0] b_branch_cache_addr;
 	
-	branch_cache #(8) BRANCH_CACHE(
+	branch_cache #(16) BRANCH_CACHE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iFLUSH(iFLUSH),
@@ -50,7 +50,7 @@ module branch_predictor(
 		.oSEARCH_ADDR(branch_cache_addr),
 		//Jump
 		.iJUMP_STB(iJUMP_STB),
-		.iJUMP_VALID(iJUMP_VALID),
+		.iJUMP_HIT(iJUMP_HIT),
 		.iJUMP_ADDR(iJUMP_ADDR),		
 		.iJUMP_INST_ADDR(iJUMP_INST_ADDR)	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
 	);

@@ -22,7 +22,7 @@ module branch_cache #(
 		output [31:0] oSEARCH_ADDR,
 		//Jump
 		input iJUMP_STB,
-		input iJUMP_VALID,
+		input iJUMP_HIT,
 		input [31:0] iJUMP_ADDR,		
 		input [31:0] iJUMP_INST_ADDR	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
 	);
@@ -53,6 +53,7 @@ module branch_cache #(
 		input [1:0] func_priority_lru0;
 		input [1:0] func_priority_lru1;
 		begin
+			/*
 			if(func_priority_lru0 == 2'h0)begin
 				func_get_write_way = 1'h0;
 			end
@@ -65,12 +66,14 @@ module branch_cache #(
 			else begin
 				func_get_write_way = 1'b1;
 			end
+			*/
+			func_get_write_way = 1'h0;			//Debug
 		end
 	endfunction
 	
 	//[1] : Hit valid
 	//[0] : Hit Way
-	function func_get_hit_way;
+	function [1:0] func_get_hit_way;
 		input [28:0] func_req_addr;
 		input [1:0] func_tag_priority_lru0;
 		input [1:0] func_tag_priority_lru1;
@@ -90,17 +93,17 @@ module branch_cache #(
 	endfunction 
 	
 	function [1:0] func_predict_update;
-		input func_jump_req;
+		input func_jump_hit;
 		input [1:0] func_now_predict;
 		begin
-			if(func_now_predict == 2'h3 && func_jump_req)begin
+			if(func_now_predict == 2'h3 && !func_jump_hit)begin
 				func_predict_update = 2'h3;
 			end
-			else if(func_now_predict == 2'h0 && !func_jump_req)begin
+			else if(func_now_predict == 2'h0 && func_jump_hit)begin
 				func_predict_update = 2'h0;
 			end
 			else begin
-				func_predict_update = (func_jump_req)? func_now_predict + 2'h1 : func_now_predict - 2'h1;
+				func_predict_update = (!func_jump_hit)? func_now_predict + 2'h1 : func_now_predict - 2'h1;
 			end
 		end
 	endfunction
@@ -130,22 +133,26 @@ module branch_cache #(
 			for(i = 0; i < 8; i = i + 1)begin : RESET
 				b_tag0_lru[i] <= 2'h0;
 				b_tag1_lru[i] <= 2'h0;
+				b_tag0_predict[i] <= 2'h0;
+				b_tag1_predict[i] <= 2'h0;
 			end
 		end
 		else if(iFLUSH)begin
 			for(i = 0; i < 8; i = i + 1)begin : FLUSH
 				b_tag0_lru[i] <= 2'h0;
 				b_tag1_lru[i] <= 2'h0; 
+				b_tag0_predict[i] <= 2'h0;
+				b_tag1_predict[i] <= 2'h0;
 			end
 		end
 		else begin
 			//Tag0
 			for(i = 0; i < 8; i = i + 1)begin : MAIN_ALWAYS_TAG0
 				//Write
-				if(iJUMP_STB && write_tag_array_addr == i && func_get_write_way(b_tag0_lru[write_tag_array_addr], b_tag1_lru[write_tag_array_addr]))begin
+				if(iJUMP_STB && write_tag_array_addr == i && !func_get_write_way(b_tag0_lru[write_tag_array_addr], b_tag1_lru[write_tag_array_addr]))begin
 					b_tag0_lru[write_tag_array_addr] <= 2'h3;
 					b_tag0_addr[write_tag_array_addr] <= write_tag_addr_tag;
-					b_tag0_predict[write_tag_array_addr] <= func_predict_update(iJUMP_VALID, b_tag0_predict[write_tag_array_addr]);
+					b_tag0_predict[write_tag_array_addr] <= func_predict_update(iJUMP_HIT, b_tag0_predict[write_tag_array_addr]);
 					b_tag0_jump_addr[write_tag_array_addr] <= iJUMP_ADDR;
 				end
 				//Read
@@ -160,10 +167,10 @@ module branch_cache #(
 			//Tag1
 			for(i = 0; i < 8; i = i + 1)begin : MAIN_ALWAYS_TAG1
 				//Write
-				if(iJUMP_STB && write_tag_array_addr == i && !func_get_write_way(b_tag0_lru[write_tag_array_addr], b_tag1_lru[write_tag_array_addr]))begin
+				if(iJUMP_STB && write_tag_array_addr == i && func_get_write_way(b_tag0_lru[write_tag_array_addr], b_tag1_lru[write_tag_array_addr]))begin
 					b_tag1_lru[write_tag_array_addr] <= 2'h3;
 					b_tag1_addr[write_tag_array_addr] <= write_tag_addr_tag;
-					b_tag1_predict[write_tag_array_addr] <= func_predict_update(iJUMP_VALID, b_tag1_predict[write_tag_array_addr]);
+					b_tag1_predict[write_tag_array_addr] <= func_predict_update(iJUMP_HIT, b_tag1_predict[write_tag_array_addr]);
 					b_tag1_jump_addr[write_tag_array_addr] <= iJUMP_ADDR;
 				end
 				//Read
@@ -207,10 +214,42 @@ module branch_cache #(
 	
 	assign oSEARCH_VALID =  iSEARCH_STB;
 	assign oSEARCH_HIT = request_hit;
-	assign oSRARCH_PREDICT_BRANCH = (b_tag1_predict[read_tag_array_addr] == 2'h0 || b_tag1_predict[read_tag_array_addr] == 2'h1)? 1'b1 : 1'b0;
+	assign oSRARCH_PREDICT_BRANCH = func_check_predict(
+										hit_way,
+										b_tag0_predict[read_tag_array_addr],
+										b_tag1_predict[read_tag_array_addr]
+									);
 	assign oSEARCH_ADDR = (!hit_way)? b_tag0_jump_addr[read_tag_array_addr] : b_tag1_jump_addr[read_tag_array_addr];
 	
 
+	function func_check_predict;
+		input func_hit_way;
+		input [1:0] func_tag0_predict;
+		input [1:0] func_tag1_predict;
+		begin
+			case(func_hit_way)
+				1'h0:
+					begin
+						if(func_tag0_predict == 2'h2 || func_tag0_predict == 2'h3)begin
+							func_check_predict = 1'b1;
+						end
+						else begin
+							func_check_predict = 1'b0;
+						end
+					end
+				1'b1:
+					begin
+						if(func_tag1_predict == 2'h2 || func_tag1_predict == 2'h3)begin
+							func_check_predict = 1'b1;
+						end
+						else begin
+							func_check_predict = 1'b0;
+						end
+					end
+			endcase
+		end
+	endfunction
+	
 endmodule
 
 `default_nettype wire
