@@ -53,7 +53,6 @@ module branch_cache #(
 		input [1:0] func_priority_lru0;
 		input [1:0] func_priority_lru1;
 		begin
-			/*
 			if(func_priority_lru0 == 2'h0)begin
 				func_get_write_way = 1'h0;
 			end
@@ -66,8 +65,6 @@ module branch_cache #(
 			else begin
 				func_get_write_way = 1'b1;
 			end
-			*/
-			func_get_write_way = 1'h0;			//Debug
 		end
 	endfunction
 	

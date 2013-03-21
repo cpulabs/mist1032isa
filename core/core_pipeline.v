@@ -245,6 +245,7 @@ module core_pipeline
 	wire execution2dispatch_branch;
 	wire [31:0] execution2dispatch_branch_pc;
 	//Branch Predict
+	wire branch_predict_fetch_flush;
 	wire branch_predict_result_predict;
 	wire branch_predict_result_hit;
 	wire branch_predict_result_jump;
@@ -501,7 +502,7 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Remove
-		.iREMOVE(free_pipeline_flush),
+		.iREMOVE(free_pipeline_flush || branch_predict_fetch_flush),
 		.iCACHE_FLASH(/*cache_flash || free_cache_flush*/1'b0),
 		/****************************************
 		Memory Port Memory
@@ -550,6 +551,7 @@ module core_pipeline
 		.iEXCEPTION_ADDR(free_pc),
 		.iEXCEPTION_RESTART(free_restart),
 		//Branch Predict
+		.oBRANCH_PREDICT_FETCH_FLUSH(branch_predict_fetch_flush),
 		.iBRANCH_PREDICT_RESULT_PREDICT(branch_predict_result_predict),
 		.iBRANCH_PREDICT_RESULT_HIT(branch_predict_result_hit),
 		.iBRANCH_PREDICT_RESULT_JUMP(branch_predict_result_jump),

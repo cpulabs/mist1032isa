@@ -52,7 +52,7 @@ module execute(
 		input iPREVIOUS_EX_UDIV,
 		input iPREVIOUS_EX_LDST,
 		input iPREVIOUS_EX_BRANCH,
-		input	[31:0] iPREVIOUS_PC,
+		input [31:0] iPREVIOUS_PC,
 		output oPREVIOUS_LOCK,
 		//Load Store Pipe
 		output oDATAIO_REQ,
@@ -993,8 +993,67 @@ module execute(
 									if(branch_halt_valid)begin
 										b_state <= L_PARAM_STT_HALT;
 									end
+									else if(branch_jump_valid)begin
+										//Branch Predict Hardware Enable / Disable
+										if(`BRANCH_PREDICTOR)begin
+											//Hit Branch Predict
+											if(iPREVIOUS_BRANCH_PREDICT && iPREVIOUS_BRANCH_PREDICT_ADDR == branch_branch_addr)begin
+												b_writeback <= 1'b0;
+												b_destination_sysreg  <= 1'b0;
+												b_destination <= 5'h0;
+												b_r_data <= 32'h0;
+												b_spr_writeback <= 1'b0;
+												b_r_spr <= 32'h0;
+												b_ldst_pipe_valid <= 1'b0;
+												b_jump <= 1'b0;
+												b_idts <= 1'b0;
+												b_pdts <= 1'b0;
+												b_ib <= 1'b0;
+												b_branch_addr <= branch_branch_addr;
+												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
+											end
+											//Un Hit
+											else begin
+												b_valid <= 1'b0;
+												b_state <= L_PARAM_STT_BRANCH;
+												b_writeback <= 1'b0;
+												b_destination_sysreg  <= 1'b0;
+												b_destination <= 5'h0;
+												b_r_data <= 32'h0;
+												b_spr_writeback <= 1'b0;
+												b_r_spr <= 32'h0;
+												b_ldst_pipe_valid <= 1'b0;
+												b_jump <= branch_jump_valid;
+												b_idts <= branch_idts_valid;
+												b_pdts <= 1'b0;
+												b_ib <= branch_ib_valid;
+												b_branch_addr <= branch_branch_addr;
+												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
+											end
+										end
+										else begin
+											b_valid <= 1'b0;
+											b_state <= L_PARAM_STT_BRANCH;
+											b_writeback <= 1'b0;
+											b_destination_sysreg  <= 1'b0;
+											b_destination <= 5'h0;
+											b_r_data <= 32'h0;
+											b_spr_writeback <= 1'b0;
+											b_r_spr <= 32'h0;
+											b_ldst_pipe_valid <= 1'b0;
+											b_jump <= branch_jump_valid;
+											b_idts <= branch_idts_valid;
+											b_pdts <= 1'b0;
+											b_ib <= branch_ib_valid;
+											b_branch_addr <= branch_branch_addr;
+											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+											b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
+										end
+									end
 									//Other Branch
-									else if(branch_jump_valid || branch_idts_valid || branch_ib_valid)begin
+									else if(branch_idts_valid || branch_ib_valid)begin
 										b_valid <= 1'b0;
 										b_state <= L_PARAM_STT_BRANCH;
 										b_writeback <= 1'b0;
@@ -1344,11 +1403,13 @@ module execute(
 	
 	
 	assign oBPREDICT_PREDICT = b_branch_predict;
-	assign oBPREDICT_HIT = (b_jump && b_branch_predict && b_branch_addr == b_branch_predict_addr) || (!b_jump && !b_branch_predict);
+	assign oBPREDICT_HIT = (b_jump && b_branch_predict && (b_branch_addr == b_branch_predict_addr)) || (!b_jump && !b_branch_predict);
 	assign oBPREDICT_JUMP = b_jump;
 	assign oBPREDICT_JUMP_ADDR = b_branch_addr;
 	assign oBPREDICT_INST_ADDR = b_pc - 32'h00000004;
-		
+	
+	wire test_test_test = (b_branch_addr != b_branch_predict_addr);
+	wire testtest = (b_state == L_PARAM_STT_BRANCH);
 		
 endmodule
 
