@@ -149,45 +149,45 @@ module fetch(
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_pc　<=　{32{1'b0}};
-			b_fetch_valid　<=　1'b0;
-			b_fetch_state　<=　2'b00;
+			b_pc <= {32{1'b0}};
+			b_fetch_valid <= 1'b0;
+			b_fetch_state <= 2'b00;
 		end
 		else if(iEXCEPTION_ADDR_SET)begin		//Jump
-			b_pc　<=　{iEXCEPTION_ADDR[31:1], 1'b0};
-			b_fetch_valid　<=　1'b1;
-			b_fetch_state　<=　2'h1;
+			b_pc <= {iEXCEPTION_ADDR[31:1], 1'b0};
+			b_fetch_valid <= 1'b1;
+			b_fetch_state <= 2'h1;
 		end
 		else if(iEXCEPTION_EVENT)begin
-			b_fetch_valid　<=　1'b0;
-			b_fetch_state　<=　2'h2;
+			b_fetch_valid <= 1'b0;
+			b_fetch_state <= 2'h2;
 		end
 		else begin
 			case(b_fetch_state)
 				2'h0 :		//Reset Start
 					begin
-						b_fetch_valid　<=　1'b1;
-						b_fetch_state　<=　2'h1;
-						b_pc　<=　32'h00000000;
+						b_fetch_valid <= 1'b1;
+						b_fetch_state <= 2'h1;
+						b_pc <= 32'h00000000;
 					end
 				2'h1 : 		//Fetch State
 					begin
 						if(!iEXCEPTION_EVENT && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP)begin	
-							b_pc　<=　b_pc + 32'h4;		//Single Pipeline
-							b_fetch_valid　<=　1'b1;
+							b_pc <= b_pc + 32'h4;		//Single Pipeline
+							b_fetch_valid <= 1'b1;
 						end
 					end
 				2'h2:
 					begin
 						if(iEXCEPTION_ADDR_SET)begin		//Jump
-							b_pc　<=　{iEXCEPTION_ADDR[31:1], 1'b0};
-							b_fetch_valid　<=　1'b1;
-							b_fetch_state　<=　2'h1;
+							b_pc <= {iEXCEPTION_ADDR[31:1], 1'b0};
+							b_fetch_valid <= 1'b1;
+							b_fetch_state <= 2'h1;
 						end
 					end
 				default :
 					begin
-						b_pc　<=　b_pc;
+						b_pc <= b_pc;
 					end	
 			endcase
 		end
