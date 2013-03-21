@@ -8,7 +8,7 @@ UART Transmitter Module
 
 -parameter BAUDRATE_COUNTER
 	Uart Baudrate Parameter	(Clock / Baudrate)/4-1
-	BAUDRATE_COUNTER is must be greater than 4. (BAUDRATE_COUNTER >= 13'h4)
+	BAUDRATE_COUNTER is must be greater than 4. (BAUDRATE_COUNTER >= 20'h4)
 	Example : Clock : 50MHz
 		9600bps		: 13'd1301
 		115.2Kbps	: 13'd108
@@ -28,13 +28,13 @@ Takahiro Ito
 
 module uart_transmitter #(
 		parameter BAUDRATE_FIXED = 1'b1,		//0:Use iEXTBAUD_COUNT | 1:Use Parameter BAUDRATE_COUNTER
-		parameter BAUDRATE_COUNTER = 13'd108	//(Clock / Baudrate) / 4 - 1
+		parameter BAUDRATE_COUNTER = 20'd108	//(Clock / Baudrate) / 4 - 1
 	)(
 		//Clock
 		input iCLOCK,
 		input inRESET,
 		//External Baudrate Timing
-		input [12:0] iEXTBAUD_COUNT,
+		input [19:0] iEXTBAUD_COUNT,
 		//Request
 		input iTX_REQ,
 		output oTX_BUSY,
@@ -68,7 +68,7 @@ module uart_transmitter #(
 	reg b_txd_ack;
 	reg b_txd_end;
 	//Baudrate 
-	reg [12:0] b_bd_wait_counter;
+	reg [19:0] b_bd_wait_counter;
 	reg b_bd_clock;
 	
 	/**************************************************************
@@ -188,16 +188,16 @@ module uart_transmitter #(
 	**************************************************************/
 	always@(posedge iCLOCK or negedge inRESET)begin	
 		if(!inRESET)begin
-			b_bd_wait_counter <= 13'h0;
+			b_bd_wait_counter <= 20'h0;
 			b_bd_clock <= 1'b0;
 		end
 		else begin
 			if((BAUDRATE_FIXED && b_bd_wait_counter == BAUDRATE_COUNTER) || (!BAUDRATE_FIXED && b_bd_wait_counter == iEXTBAUD_COUNT))begin
-				b_bd_wait_counter <= 13'h0;
+				b_bd_wait_counter <= 20'h0;
 				b_bd_clock <= 1'b1;
 			end
 			else begin
-				b_bd_wait_counter <= b_bd_wait_counter + 13'h1;
+				b_bd_wait_counter <= b_bd_wait_counter + 20'h1;
 				b_bd_clock <= 1'b0;
 			end
 		end

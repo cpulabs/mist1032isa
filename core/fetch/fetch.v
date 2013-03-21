@@ -10,46 +10,46 @@
 `include "core.h"
 
 module fetch(
-				//System
-				input iCLOCK,
-				input inRESET,
-				//System Register
-				input [31:0] iSYSREG_PSR,
-				//Exception
-				input iEXCEPTION_EVENT,
-				input iEXCEPTION_ADDR_SET,
-				input [31:0] iEXCEPTION_ADDR,
-				input iEXCEPTION_RESTART,
-				//Branch Predict
-				input iBRANCH_PREDICT_RESULT_PREDICT,
-				input iBRANCH_PREDICT_RESULT_HIT,
-				input iBRANCH_PREDICT_RESULT_JUMP,
-				input [31:0] iBRANCH_PREDICT_RESULT_JUMP_ADDR,
-				input [31:0] iBRANCH_PREDICT_RESULT_INST_ADDR,
-				//Previous
-				input iPREVIOUS_INST_VALID,
-				input iPREVIOUS_PAGEFAULT,
-				input [13:0] iPREVIOUS_MMU_FLAGS,
-				input [31:0] iPREVIOUS_INST,
-				output oPREVIOUS_LOCK,
-				//Fetch
-				output oPREVIOUS_FETCH_REQ,
-				input iPREVIOUS_FETCH_LOCK,
-				output [1:0] oPREVIOUS_MMUMOD,
-				output [31:0] oPREVIOUS_FETCH_ADDR,
-				//Next
-				output oNEXT_INST_VALID,
-				output oNEXT_PAGEFAULT,
-				output [13:0] oNEXT_MMU_FLAGS,
-				output oNEXT_PAGING_ENA,
-				output oNEXT_KERNEL_ACCESS,
-				output oNEXT_BRANCH_PREDICT,			
-				output [31:0] oNEXT_BRANCH_PREDICT_ADDR,
-				output [31:0] oNEXT_INST,
-				output [31:0] oNEXT_PC,
-				input iNEXT_FETCH_STOP,
-				input iNEXT_LOCK
-			);
+		//System
+		input iCLOCK,
+		input inRESET,
+		//System Register
+		input [31:0] iSYSREG_PSR,
+		//Exception
+		input iEXCEPTION_EVENT,
+		input iEXCEPTION_ADDR_SET,
+		input [31:0] iEXCEPTION_ADDR,
+		input iEXCEPTION_RESTART,
+		//Branch Predict
+		input iBRANCH_PREDICT_RESULT_PREDICT,
+		input iBRANCH_PREDICT_RESULT_HIT,
+		input iBRANCH_PREDICT_RESULT_JUMP,
+		input [31:0] iBRANCH_PREDICT_RESULT_JUMP_ADDR,
+		input [31:0] iBRANCH_PREDICT_RESULT_INST_ADDR,
+		//Previous
+		input iPREVIOUS_INST_VALID,
+		input iPREVIOUS_PAGEFAULT,
+		input [13:0] iPREVIOUS_MMU_FLAGS,
+		input [31:0] iPREVIOUS_INST,
+		output oPREVIOUS_LOCK,
+		//Fetch
+		output oPREVIOUS_FETCH_REQ,
+		input iPREVIOUS_FETCH_LOCK,
+		output [1:0] oPREVIOUS_MMUMOD,
+		output [31:0] oPREVIOUS_FETCH_ADDR,
+		//Next
+		output oNEXT_INST_VALID,
+		output oNEXT_PAGEFAULT,
+		output [13:0] oNEXT_MMU_FLAGS,
+		output oNEXT_PAGING_ENA,
+		output oNEXT_KERNEL_ACCESS,
+		output oNEXT_BRANCH_PREDICT,			
+		output [31:0] oNEXT_BRANCH_PREDICT_ADDR,
+		output [31:0] oNEXT_INST,
+		output [31:0] oNEXT_PC,
+		input iNEXT_FETCH_STOP,
+		input iNEXT_LOCK
+	);
 			
 
 	/****************************************
@@ -149,45 +149,45 @@ module fetch(
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_pc			<=		{32{1'b0}};
-			b_fetch_valid	<=		1'b0;
-			b_fetch_state	<=		2'b00;
+			b_pc　<=　{32{1'b0}};
+			b_fetch_valid　<=　1'b0;
+			b_fetch_state　<=　2'b00;
 		end
 		else if(iEXCEPTION_ADDR_SET)begin		//Jump
-			b_pc			<=		{iEXCEPTION_ADDR[31:1], 1'b0};
-			b_fetch_valid	<=		1'b1;
-			b_fetch_state	<=		2'h1;
+			b_pc　<=　{iEXCEPTION_ADDR[31:1], 1'b0};
+			b_fetch_valid　<=　1'b1;
+			b_fetch_state　<=　2'h1;
 		end
 		else if(iEXCEPTION_EVENT)begin
-			b_fetch_valid	<=		1'b0;
-			b_fetch_state	<=		2'h2;
+			b_fetch_valid　<=　1'b0;
+			b_fetch_state　<=　2'h2;
 		end
 		else begin
 			case(b_fetch_state)
 				2'h0 :		//Reset Start
 					begin
-						b_fetch_valid	<=		1'b1;
-						b_fetch_state	<=		2'h1;
-						b_pc			<=		32'h00000000;
+						b_fetch_valid　<=　1'b1;
+						b_fetch_state　<=　2'h1;
+						b_pc　<=　32'h00000000;
 					end
 				2'h1 : 		//Fetch State
 					begin
 						if(!iEXCEPTION_EVENT && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP)begin	
-							b_pc			<=		b_pc + 32'h4;		//Single Pipeline
-							b_fetch_valid	<=		1'b1;
+							b_pc　<=　b_pc + 32'h4;		//Single Pipeline
+							b_fetch_valid　<=　1'b1;
 						end
 					end
 				2'h2:
 					begin
 						if(iEXCEPTION_ADDR_SET)begin		//Jump
-							b_pc			<=		{iEXCEPTION_ADDR[31:1], 1'b0};
-							b_fetch_valid	<=		1'b1;
-							b_fetch_state	<=		2'h1;
+							b_pc　<=　{iEXCEPTION_ADDR[31:1], 1'b0};
+							b_fetch_valid　<=　1'b1;
+							b_fetch_state　<=　2'h1;
 						end
 					end
 				default :
 					begin
-						b_pc			<=		b_pc;
+						b_pc　<=　b_pc;
 					end	
 			endcase
 		end

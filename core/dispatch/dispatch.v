@@ -169,8 +169,8 @@ module dispatch
 	wire [31:0] w_sysreg_pcr_regist_data;
 	wire [31:0] w_sysreg_pcr_info_data;
 	
-	assign	oSYSREG_PCR		=		w_sysreg_pcr_info_data;
-	assign	oEXCEPTION_LOCK	=		!b_pcr_valid || !b_valid || (b_valid && b_ex_branch);
+	assign oSYSREG_PCR = w_sysreg_pcr_info_data;
+	assign oEXCEPTION_LOCK = !b_pcr_valid || !b_valid || (b_valid && b_ex_branch);
 	//PCR
 	system_register PCR	(
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
@@ -178,10 +178,10 @@ module dispatch
 		.iREGIST_DATA(w_sysreg_pcr_regist_data), 
 		.oINFO_DATA(w_sysreg_pcr_info_data)
 	);
-	assign		w_sysreg_pcr_regist_valid		=		iWB_VALID && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
-	assign		w_sysreg_pcr_regist_data		=		(iWB_BRANCH)? iWB_BRANCH_PC : iWB_PC;
+	assign w_sysreg_pcr_regist_valid = iWB_VALID && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
+	assign w_sysreg_pcr_regist_data = (iWB_BRANCH)? iWB_BRANCH_PC : iWB_PC;
 	
-	reg			b_pcr_valid;
+	reg b_pcr_valid;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_pcr_valid <= 1'b0;

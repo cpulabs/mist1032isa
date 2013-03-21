@@ -119,7 +119,6 @@ module core
 	reg b_ldst_state;
 	reg b_ldst_type;	//0:IO | 1:DATA
 	//Core Info
-	wire core_flash;
 	//Instruction
 	wire core2inst_fetch_req;
 	wire [13:0] core2inst_fetch_tid;
@@ -164,7 +163,6 @@ module core
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Core
-		.oCORE_FLASH(core_flash),
 		.oFREE_TLB_FLUSH(oFREE_TLB_FLUSH),
 		//GCI Interrupt Controll
 		//Interrupt Control

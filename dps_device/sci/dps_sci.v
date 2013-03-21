@@ -116,7 +116,7 @@ module dps_sci(
 	);
 
 	/**********************************
-	IRQ
+	IRQ - SCICFG_TIRE & SCICFG_RIRE Register
 	**********************************/
 	//Transmit Buffer
 	always@(posedge iIF_CLOCK or negedge inRESET)begin
@@ -197,7 +197,7 @@ module dps_sci(
 		else begin
 			//IRQ Watch
 			if(!b_irq_receive_buff_irq)begin
-				if(uart_mod_txd_transmit)begin
+				if(uart_mod_rxd_receive)begin
 					case(b_scicfg_tire)
 						3'h0 : b_irq_receive_buff_irq <= 1'b0;
 						3'h1 : 

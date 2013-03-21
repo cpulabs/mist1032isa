@@ -15,7 +15,6 @@ module core_pipeline
 		/****************************************
 		System
 		****************************************/
-		output oCORE_FLASH,	
 		output oFREE_TLB_FLUSH,
 		/****************************************
 		GCI Controll
@@ -503,7 +502,7 @@ module core_pipeline
 		.inRESET(inRESET),
 		//Remove
 		.iREMOVE(free_pipeline_flush),
-		.iCACHE_FLASH(cache_flash || free_cache_flush),
+		.iCACHE_FLASH(/*cache_flash || free_cache_flush*/1'b0),
 		/****************************************
 		Memory Port Memory
 		****************************************/
@@ -998,7 +997,7 @@ module core_pipeline
 		.inRESET(inRESET),
 		//Remove
 		.iREMOVE(free_pipeline_flush),
-		.iCACHE_FLASH(cache_flash || free_cache_flush),
+		.iCACHE_FLASH(/*cache_flash || free_cache_flush*/1'b0),
 		//IOSR
 		.iSYSINFO_IOSR_VALID(iSYSINFO_IOSR_VALID),
 		.iSYSINFO_IOSR(iSYSINFO_IOSR),
@@ -1132,8 +1131,7 @@ module core_pipeline
 	
 	
 	//System
-	assign oCORE_FLASH = free_pipeline_flush;
-	assign oFREE_TLB_FLUSH = free_tlb_flush;
+	assign oFREE_TLB_FLUSH = 1'b0;//free_tlb_flush;
 	
 endmodule
 

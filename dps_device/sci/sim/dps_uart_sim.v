@@ -65,7 +65,7 @@ module dps_sci_sim;
 				iREQ_ADDR = 2'h0;
 				iREQ_DATA = 32'h0;
 				iIRQ_ACK = 1'b0;
-				iUART_RXD = 1'b0;
+				iUART_RXD = 1'b1;
 			end
 		#1
 			begin
