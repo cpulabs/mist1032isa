@@ -653,6 +653,7 @@ module execute(
 	****************************************/
 	wire [31:0] branch_branch_addr;
 	wire branch_jump_valid;
+	wire branch_not_jump_valid;
 	wire branch_ib_valid;
 	wire branch_idts_valid;
 	wire branch_halt_valid;
@@ -665,6 +666,7 @@ module execute(
 		.iCMD(iPREVIOUS_CMD),
 		.oBRANCH_ADDR(branch_branch_addr),
 		.oJUMP_VALID(branch_jump_valid),
+		.oNOT_JUMP_VALID(branch_not_jump_valid),
 		.oIB_VALID(branch_ib_valid),
 		.oIDTS_VALID(branch_idts_valid),
 		.oHALT_VALID(branch_halt_valid)
@@ -1073,21 +1075,64 @@ module execute(
 									end
 									//Non Branch(Compiler predict instruction)
 									else begin
-										b_valid <= 1'b1;
-										b_writeback <= 1'b0;
-										b_destination_sysreg  <= 1'b0;
-										b_destination <= 5'h0;
-										b_r_data <= 32'h0;
-										b_spr_writeback <= 1'b0;
-										b_r_spr <= 32'h0;
-										b_ldst_pipe_valid <= 1'b0;
-										b_jump <= branch_jump_valid;
-										b_idts <= branch_idts_valid;
-										b_pdts <= 1'b0;
-										b_ib <= branch_ib_valid;
-										b_branch_addr <= branch_branch_addr;
-										b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
-										b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
+										//Branch Predict Enable
+										if(`BRANCH_PREDICTOR)begin
+											//Branch Predict Mis hit
+											if(branch_not_jump_valid && iPREVIOUS_BRANCH_PREDICT)begin
+												b_valid <= 1'b0;
+												b_state <= L_PARAM_STT_BRANCH;
+												b_writeback <= 1'b0;
+												b_destination_sysreg  <= 1'b0;
+												b_destination <= 5'h0;
+												b_r_data <= 32'h0;
+												b_spr_writeback <= 1'b0;
+												b_r_spr <= 32'h0;
+												b_ldst_pipe_valid <= 1'b0;
+												b_jump <= branch_not_jump_valid;	//
+												b_idts <= branch_idts_valid;
+												b_pdts <= 1'b0;
+												b_ib <= branch_ib_valid;
+												b_branch_addr <= iPREVIOUS_PC;		//Re Fetch
+												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
+											end
+											//Other Branch
+											else begin
+												b_valid <= 1'b1;
+												b_writeback <= 1'b0;
+												b_destination_sysreg  <= 1'b0;
+												b_destination <= 5'h0;
+												b_r_data <= 32'h0;
+												b_spr_writeback <= 1'b0;
+												b_r_spr <= 32'h0;
+												b_ldst_pipe_valid <= 1'b0;
+												b_jump <= branch_jump_valid;
+												b_idts <= branch_idts_valid;
+												b_pdts <= 1'b0;
+												b_ib <= branch_ib_valid;
+												b_branch_addr <= branch_branch_addr;
+												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
+											end
+										end
+										//Predict Disable
+										else begin
+											b_valid <= 1'b1;
+											b_writeback <= 1'b0;
+											b_destination_sysreg  <= 1'b0;
+											b_destination <= 5'h0;
+											b_r_data <= 32'h0;
+											b_spr_writeback <= 1'b0;
+											b_r_spr <= 32'h0;
+											b_ldst_pipe_valid <= 1'b0;
+											b_jump <= branch_jump_valid;
+											b_idts <= branch_idts_valid;
+											b_pdts <= 1'b0;
+											b_ib <= branch_ib_valid;
+											b_branch_addr <= branch_branch_addr;
+											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+											b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
+										end
 									end
 								end
 							end

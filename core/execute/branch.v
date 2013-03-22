@@ -11,6 +11,7 @@ module branch(
 			input [4:0] iCMD,
 			output [31:0] oBRANCH_ADDR,
 			output oJUMP_VALID,
+			output oNOT_JUMP_VALID,
 			output oIB_VALID,
 			output oIDTS_VALID,
 			output oHALT_VALID
@@ -58,6 +59,7 @@ module branch(
 	
 	
 	assign oJUMP_VALID = (iCMD != `EXE_BRANCH_INTB && iCMD != `EXE_BRANCH_IDTS)? func_ex_branch_check(iCC, iFLAG) : 1'b0;
+	assign oNOT_JUMP_VALID = (iCMD != `EXE_BRANCH_INTB && iCMD != `EXE_BRANCH_IDTS)? !func_ex_branch_check(iCC, iFLAG) : 1'b0;
 	assign oIB_VALID = (iCMD == `EXE_BRANCH_INTB)? 1'b1 : 1'b0;
 	assign oIDTS_VALID = (iCMD == `EXE_BRANCH_IDTS)? 1'b1 : 1'b0;
 	assign oHALT_VALID = (iCMD == `EXE_BRANCH_HALT)? 1'b1 : 1'b0;
