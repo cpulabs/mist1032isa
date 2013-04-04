@@ -8,7 +8,8 @@
 	Update	:	
 ****************************************/
 `default_nettype none		
-`include "global.h"
+//`include "global.h"
+`include "processor.h"
 
 
 
@@ -293,7 +294,7 @@ module mmu(
 	Matching Bridge
 	************************************************************/	
 	//Matching Bridge 
-	arbiter_matching_queue #(16, 4, 1) MMU_MATCHING_BRIDGE(
+	mist1032isa_arbiter_matching_queue #(16, 4, 1) MMU_MATCHING_BRIDGE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash
@@ -313,7 +314,7 @@ module mmu(
 	/************************************************************
 	Busy Controll
 	************************************************************/
-	assign		cache_request_busy		=		(tlb_rd_valid && !tlb_rd_hit && b_mode != 2'h0) || b_main_state != MAIN_STT_CACHE;
+	assign cache_request_busy = (tlb_rd_valid && !tlb_rd_hit && b_mode != 2'h0) || b_main_state != MAIN_STT_CACHE;
 	
 	/************************************************************
 	TLB Check

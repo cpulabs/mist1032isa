@@ -128,7 +128,7 @@ module fetch(
 	/****************************************
 	Fetch Address & Flag Queue
 	****************************************/
-	sync_fifo #(34, 8, 3) FETCH_REQ_ADDR_QUEUE(
+	mist1032isa_sync_fifo #(34, 8, 3) FETCH_REQ_ADDR_QUEUE(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iREMOVE(iEXCEPTION_EVENT || branch_predictor_flush), 
@@ -338,7 +338,7 @@ module fetch_________(
 	/****************************************
 	Fetch Address & Flag Queue
 	****************************************/
-	sync_fifo #(34, 8, 3) FETCH_REQ_ADDR_QUEUE(
+	mist1032isa_sync_fifo #(34, 8, 3) FETCH_REQ_ADDR_QUEUE(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iREMOVE(iEXCEPTION_EVENT), 

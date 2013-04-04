@@ -9,7 +9,8 @@ Branch Cache
 
 module branch_cache #(
 		parameter LRU_TIMER_N = 8
-	)(
+	)
+	(
 		input iCLOCK,
 		input inRESET,
 		input iFLUSH,

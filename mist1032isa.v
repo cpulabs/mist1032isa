@@ -6,8 +6,8 @@
 	Update	:	2013/01/19
 ****************************************/
 `default_nettype none	
-`include "global.h"
-
+//`include "global.h"
+`include "processor.h"
 
 module mist1032isa(
 		/****************************************

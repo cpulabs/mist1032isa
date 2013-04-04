@@ -26,7 +26,7 @@ Takahiro Ito
 `default_nettype none
 
 
-module uart_transmitter #(
+module mist1032isa_uart_transmitter #(
 		parameter BAUDRATE_FIXED = 1'b1,		//0:Use iEXTBAUD_COUNT | 1:Use Parameter BAUDRATE_COUNTER
 		parameter BAUDRATE_COUNTER = 20'd108	//(Clock / Baudrate) / 4 - 1
 	)(
@@ -131,7 +131,7 @@ module uart_transmitter #(
 	endfunction
 	
 	//Metastable Cancel
-	uart_transmitter_double_flipflop #(1) DOUBLE_FLIPFLOP(
+	mist1032isa_uart_transmitter_double_flipflop #(1) DOUBLE_FLIPFLOP(
 		.iCLOCK(b_bd_clock),
 		.inRESET(inRESET),
 		//Input
@@ -141,7 +141,7 @@ module uart_transmitter #(
 	);
 	
 	//Async 2 Sync
-	uart_transmitter_async2sync #(1) ASYNC2SYNC(
+	mist1032isa_uart_transmitter_async2sync #(1) ASYNC2SYNC(
 		.iCLOCK(b_bd_clock),
 		.inRESET(inRESET),
 		//Ena-Signal

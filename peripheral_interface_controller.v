@@ -2,66 +2,66 @@
 `default_nettype none	
 
 module peripheral_interface_controller(
-							//System
-							input						iCLOCK,
-							input						inRESET,
-							/****************************************
-							System Infomation
-							****************************************/
-							output						oSYSINFO_IOSR_VALID,
-							output		[31:0]			oSYSINFO_IOSR,			//IO Start Address
-							/****************************************
-							IO - CPU Connection
-							****************************************/
-							//Req
-							input						iIO_REQ,
-							output						oIO_BUSY,
-							input		[1:0]			iIO_ORDER,				//if (!iIO_RW && iIO_ORDER!=2'h2) then Alignment Fault
-							input						iIO_RW,					//0=Write 1=Read
-							input		[31:0]			iIO_ADDR,
-							input		[31:0]			iIO_DATA,
-							//Output
-							output						oIO_VALID,
-							input						iIO_BUSY,
-							output		[31:0]			oIO_DATA,
-							//Interrupt
-							output						oIO_INTERRUPT_VALID,
-							output		[5:0]			oIO_INTERRUPT_NUM,
-							input						iIO_INTERRUPT_ACK,
-							/****************************************
-							To DPS Connection
-							****************************************/
-							//Request
-							output						oDPS_REQ,				//Input
-							input						iDPS_BUSY,
-							output						oDPS_RW,				//0=Read : 1=Write
-							output		[31:0]			oDPS_ADDR,
-							output		[31:0]			oDPS_DATA,
-							//Return
-							input						iDPS_REQ,				//Output
-							output						oDPS_BUSY,
-							input		[31:0]			iDPS_DATA,
-							//Interrupt
-							input						iDPS_IRQ_REQ,
-							input		[5:0]			iDPS_IRQ_NUM,	
-							output						oDPS_IRQ_ACK,
-							/****************************************
-							To GCI Connection
-							****************************************/						
-							//Request
-							output						oGCI_REQ,				//Input
-							input						iGCI_BUSY,
-							output						oGCI_RW,				//0=Read : 1=Write
-							output		[31:0]			oGCI_ADDR,
-							output		[31:0]			oGCI_DATA,
-							//Return
-							input						iGCI_REQ,				//Output
-							output						oGCI_BUSY,
-							input		[31:0]			iGCI_DATA,
-							//Interrupt
-							input						iGCI_IRQ_REQ,
-							input		[5:0]			iGCI_IRQ_NUM,
-							output						oGCI_IRQ_ACK
+		//System
+		input						iCLOCK,
+		input						inRESET,
+		/****************************************
+		System Infomation
+		****************************************/
+		output						oSYSINFO_IOSR_VALID,
+		output		[31:0]			oSYSINFO_IOSR,			//IO Start Address
+		/****************************************
+		IO - CPU Connection
+		****************************************/
+		//Req
+		input						iIO_REQ,
+		output						oIO_BUSY,
+		input		[1:0]			iIO_ORDER,				//if (!iIO_RW && iIO_ORDER!=2'h2) then Alignment Fault
+		input						iIO_RW,					//0=Write 1=Read
+		input		[31:0]			iIO_ADDR,
+		input		[31:0]			iIO_DATA,
+		//Output
+		output						oIO_VALID,
+		input						iIO_BUSY,
+		output		[31:0]			oIO_DATA,
+		//Interrupt
+		output						oIO_INTERRUPT_VALID,
+		output		[5:0]			oIO_INTERRUPT_NUM,
+		input						iIO_INTERRUPT_ACK,
+		/****************************************
+		To DPS Connection
+		****************************************/
+		//Request
+		output						oDPS_REQ,				//Input
+		input						iDPS_BUSY,
+		output						oDPS_RW,				//0=Read : 1=Write
+		output		[31:0]			oDPS_ADDR,
+		output		[31:0]			oDPS_DATA,
+		//Return
+		input						iDPS_REQ,				//Output
+		output						oDPS_BUSY,
+		input		[31:0]			iDPS_DATA,
+		//Interrupt
+		input						iDPS_IRQ_REQ,
+		input		[5:0]			iDPS_IRQ_NUM,	
+		output						oDPS_IRQ_ACK,
+		/****************************************
+		To GCI Connection
+		****************************************/						
+		//Request
+		output						oGCI_REQ,				//Input
+		input						iGCI_BUSY,
+		output						oGCI_RW,				//0=Read : 1=Write
+		output		[31:0]			oGCI_ADDR,
+		output		[31:0]			oGCI_DATA,
+		//Return
+		input						iGCI_REQ,				//Output
+		output						oGCI_BUSY,
+		input		[31:0]			iGCI_DATA,
+		//Interrupt
+		input						iGCI_IRQ_REQ,
+		input		[5:0]			iGCI_IRQ_NUM,
+		output						oGCI_IRQ_ACK
 							
 	);
 	

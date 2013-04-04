@@ -1,5 +1,4 @@
 
-`include "global.h"
 `include "processor.h"
 `default_nettype none
 

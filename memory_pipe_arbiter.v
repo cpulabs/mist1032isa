@@ -94,7 +94,7 @@ module memory_pipe_arbiter(
 	/*********************************************************
 	Memory Matching Controal
 	*********************************************************/	
-	arbiter_matching_queue #(16, 4, 1) MEM_MATCHING_BRIDGE(	//Queue deep : 16, Queue deep_n : 4, Flag_n : 1
+	mist1032isa_arbiter_matching_queue #(16, 4, 1) MEM_MATCHING_BRIDGE(	//Queue deep : 16, Queue deep_n : 4, Flag_n : 1
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash

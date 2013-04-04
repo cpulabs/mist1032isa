@@ -1,7 +1,7 @@
 
 `default_nettype none
 
-module uart_transmitter_async2sync #(
+module mist1032isa_uart_receiver_async2sync #(
 		parameter N = 1
 	)(
 		input iCLOCK,

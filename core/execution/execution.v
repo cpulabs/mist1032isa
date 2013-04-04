@@ -5,7 +5,7 @@
 `include "irq.h"
 
 
-module execute(
+module execution(
 		input iCLOCK,
 		input inRESET,
 		input iFREE_REGISTER_LOCK,
@@ -546,6 +546,7 @@ module execute(
 	/****************************************
 	Mul 
 	****************************************/	
+	/*
 	wire [63:0]	mul_tmp = ex_module_source0 * ex_module_source1;
 	wire mul_sf_l = mul_tmp[31];
 	wire mul_cf_l = mul_tmp[32];
@@ -560,6 +561,41 @@ module execute(
 	
 	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
 	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
+	*/
+	
+	wire [63:0]	mul_tmp;
+	wire mul_sf_l;
+	wire mul_cf_l;
+	wire mul_of_l;
+	wire mul_pf_l;
+	wire mul_zf_l;
+	wire mul_sf_h;
+	wire mul_cf_h;
+	wire mul_of_h;
+	wire mul_pf_h;
+	wire mul_zf_h;
+	
+	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
+	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
+	
+	
+	mul_booth32 EXE_MUL_BOOTH(
+		//iDATA
+		.iDATA_0(ex_module_source0),
+		.iDATA_1(ex_module_source1),
+		//oDATA
+		.oDATA(mul_tmp),
+		.oHSF(mul_sf_h),				
+		.oHCF(mul_cf_h),
+		.oHOF(mul_of_h),
+		.oHPF(mul_pf_h),
+		.oHZF(mul_zf_h),
+		.oLSF(mul_sf_l),				
+		.oLCF(mul_cf_l),
+		.oLOF(mul_of_l),
+		.oLPF(mul_pf_l),
+		.oLZF(mul_zf_l)
+	);
 	
 	
 	/****************************************
@@ -714,6 +750,7 @@ module execute(
 	reg b_ib;
 	reg [31:0] b_branch_addr;
 	reg b_branch_predict;	
+	reg b_branch_predict_hit;
 	reg [31:0] b_branch_predict_addr;
 	reg [31:0] b_pc;
 	
@@ -748,6 +785,7 @@ module execute(
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_branch_predict <= 1'b0;
+			b_branch_predict_hit <= 1'b0;
 			b_branch_predict_addr <= 32'h0;
 			b_pc <= 32'h0;
 		end
@@ -781,6 +819,7 @@ module execute(
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_branch_predict <= 1'b0;
+			b_branch_predict_hit <= 1'b0;
 			b_branch_predict_addr <= 32'h0;
 			b_pc <= 32'h0;
 		end
@@ -802,24 +841,32 @@ module execute(
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_PAGEFAULT;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_branch_predict <= 1'b0;
+								b_branch_predict_hit <= 1'b0;
 							end
 							else if(iPREVIOUS_FAULT_PRIVILEGE_ERROR)begin
 								b_state <= L_PARAM_STT_EXCEPTION;
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_branch_predict <= 1'b0;
+								b_branch_predict_hit <= 1'b0;
 							end
 							else if(iPREVIOUS_FAULT_INVALID_INST)begin
 								b_state <= L_PARAM_STT_EXCEPTION;
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_INSTRUCTION_INVALID;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_branch_predict <= 1'b0;
+								b_branch_predict_hit <= 1'b0;
 							end
 							else if((iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV) && (ex_module_source1 == 32'h0))begin
 								b_state <= L_PARAM_STT_EXCEPTION;
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_DIVIDER_ERROR;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_branch_predict <= 1'b0;
+								b_branch_predict_hit <= 1'b0;
 							end
 							//Execute latch
 							else begin
@@ -837,6 +884,8 @@ module execute(
 									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;	
+									b_branch_predict <= 1'b0;
+									b_branch_predict_hit <= 1'b0;
 								end		
 								//Load Store
 								else if(iPREVIOUS_EX_LDST)begin 								
@@ -858,6 +907,8 @@ module execute(
 										b_load_pipe_shift <= load_pipe_shift;
 										b_load_pipe_mask <= load_pipe_mask;
 										b_state <= L_PARAM_STT_LOAD;
+										b_branch_predict <= 1'b0;
+										b_branch_predict_hit <= 1'b0;
 									end
 									else begin
 										//Store 
@@ -880,6 +931,8 @@ module execute(
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
 										b_state <= L_PARAM_STT_STORE;
+										b_branch_predict <= 1'b0;
+										b_branch_predict_hit <= 1'b0;
 									end
 								end
 								else if(iPREVIOUS_EX_SYS_LDST)begin
@@ -897,6 +950,8 @@ module execute(
 										b_pdts <= 1'b0;
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
+										b_branch_predict <= 1'b0;
+										b_branch_predict_hit <= 1'b0;
 									end
 									//SPR Read
 									else begin
@@ -912,6 +967,8 @@ module execute(
 										b_pdts <= 1'b0;
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
+										b_branch_predict <= 1'b0;
+										b_branch_predict_hit <= 1'b0;
 									end
 								end
 								//System Register
@@ -928,6 +985,8 @@ module execute(
 									b_pdts <= iPREVIOUS_WRITEBACK && (iPREVIOUS_DESTINATION_SYSREG == `SYSREG_PDTR);
 									b_ib <= 1'b0;
 									b_branch_addr <= iPREVIOUS_PC;
+									b_branch_predict <= 1'b0;
+									b_branch_predict_hit <= 1'b0;
 								end
 								//Logic
 								else if(iPREVIOUS_EX_LOGIC)begin
@@ -943,6 +1002,8 @@ module execute(
 									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
+									b_branch_predict <= 1'b0;
+									b_branch_predict_hit <= 1'b0;
 								end
 								//SGHIFT
 								else if(iPREVIOUS_EX_SHIFT)begin
@@ -958,6 +1019,8 @@ module execute(
 									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
+									b_branch_predict <= 1'b0;
+									b_branch_predict_hit <= 1'b0;
 								end
 								//ADDER
 								else if(iPREVIOUS_EX_ADDER)begin
@@ -973,6 +1036,8 @@ module execute(
 									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
+									b_branch_predict <= 1'b0;
+									b_branch_predict_hit <= 1'b0;
 								end
 								//MUL
 								else if(iPREVIOUS_EX_MUL)begin
@@ -988,6 +1053,8 @@ module execute(
 									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
+									b_branch_predict <= 1'b0;
+									b_branch_predict_hit <= 1'b0;
 								end
 								//Branch
 								else if(iPREVIOUS_EX_BRANCH)begin
@@ -1013,6 +1080,7 @@ module execute(
 												b_ib <= 1'b0;
 												b_branch_addr <= branch_branch_addr;
 												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+												b_branch_predict_hit <= 1'b1;
 												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 											end
 											//Un Hit
@@ -1032,6 +1100,7 @@ module execute(
 												b_ib <= branch_ib_valid;
 												b_branch_addr <= branch_branch_addr;
 												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+												b_branch_predict_hit <= 1'b0;
 												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 											end
 										end
@@ -1051,6 +1120,7 @@ module execute(
 											b_ib <= branch_ib_valid;
 											b_branch_addr <= branch_branch_addr;
 											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+											b_branch_predict_hit <= 1'b0;
 											b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 										end
 									end
@@ -1071,6 +1141,7 @@ module execute(
 										b_ib <= branch_ib_valid;
 										b_branch_addr <= branch_branch_addr;
 										b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+										b_branch_predict_hit <= 1'b0;
 										b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 									end
 									//Non Branch(Compiler predict instruction)
@@ -1094,11 +1165,12 @@ module execute(
 												b_ib <= branch_ib_valid;
 												b_branch_addr <= iPREVIOUS_PC;		//Re Fetch
 												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+												b_branch_predict_hit <= 1'b0;
 												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 											end
 											//Other Branch
 											else begin
-												b_valid <= 1'b1;
+												//b_valid <= 1'b1;
 												b_writeback <= 1'b0;
 												b_destination_sysreg  <= 1'b0;
 												b_destination <= 5'h0;
@@ -1112,12 +1184,13 @@ module execute(
 												b_ib <= branch_ib_valid;
 												b_branch_addr <= branch_branch_addr;
 												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+												b_branch_predict_hit <= 1'b0;
 												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 											end
 										end
 										//Predict Disable
 										else begin
-											b_valid <= 1'b1;
+											//b_valid <= 1'b1;
 											b_writeback <= 1'b0;
 											b_destination_sysreg  <= 1'b0;
 											b_destination <= 5'h0;
@@ -1131,6 +1204,7 @@ module execute(
 											b_ib <= branch_ib_valid;
 											b_branch_addr <= branch_branch_addr;
 											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
+											b_branch_predict_hit <= 1'b0;
 											b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 										end
 									end
@@ -1446,15 +1520,19 @@ module execute(
 	
 	assign oSYSREG_FLAGR = b_sysreg_flags;
 	
+	wire test_predict = b_branch_predict && b_valid;
+	wire test_hit = b_branch_predict_hit && b_valid;
+	wire test_miss_hit = b_jump && b_valid;
 	
-	assign oBPREDICT_PREDICT = b_branch_predict;
-	assign oBPREDICT_HIT = (b_jump && b_branch_predict && (b_branch_addr == b_branch_predict_addr)) || (!b_jump && !b_branch_predict);
+	
+	
+	assign oBPREDICT_PREDICT = b_branch_predict && b_valid;
+	assign oBPREDICT_HIT = (b_branch_predict_hit && b_valid/* && b_branch_predict && (b_branch_addr == b_branch_predict_addr)*/) || (!b_jump && !b_branch_predict && b_valid);
 	assign oBPREDICT_JUMP = b_jump;
 	assign oBPREDICT_JUMP_ADDR = b_branch_addr;
 	assign oBPREDICT_INST_ADDR = b_pc - 32'h00000004;
 	
-	wire test_test_test = (b_branch_addr != b_branch_predict_addr);
-	wire testtest = (b_state == L_PARAM_STT_BRANCH);
+	
 		
 endmodule
 

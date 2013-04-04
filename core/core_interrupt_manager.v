@@ -1,5 +1,6 @@
 `default_nettype none
-`include "global.h"
+//`include "global.h"
+`include "processor.h"
 
 
 
@@ -68,7 +69,7 @@ module core_interrupt_manager(
 			for(i = 0; i < 64; i = i + 1)begin
 				ict_conf_valid [i] = 1'b0;
 			end
-			if(`DATA_RESET_ENABLE)begin
+			if(`PROCESSOR_DATA_RESET_EN)begin
 				for(i = 0; i < 64; i = i + 1)begin
 					ict_conf_mask [i] = 1'b0;
 					ict_conf_level [i] = 2'h0;

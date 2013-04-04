@@ -243,7 +243,7 @@ module pipelined_div_radix2(
 		.iREMOVE(iREMOVE),
 		//PREVIOUS
 		.iPREVIOUS_VALID(iSOURCE_VALID),
-		.oPREVIOUS_BUSY(latch0_busy),
+		.oPREVIOUS_BUSY(),
 		.iPREVIOUS_SIGN(signed_flag),
 		.iPREVIOUS_DIVISOR(diviend),
 		.iPREVIOUS_DIVIDEND(divider),

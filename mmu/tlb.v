@@ -9,7 +9,7 @@
 	
 */
 
-`include	"global.h"
+`include "processor.h"
 `default_nettype none	
 	
 	
@@ -216,7 +216,7 @@ module tlb
 				b_status1[i] <= {2{1'b0}};
 				b_status2[i] <= {2{1'b0}};
 				b_status3[i] <= {2{1'b0}};
-				if(`DATA_RESET_ENABLE)begin
+				if(`PROCESSOR_DATA_RESET_EN)begin
 					b_tag0[i] <= {15{1'b0}};
 					b_tag1[i] <= {15{1'b0}};
 					b_tag2[i] <= {15{1'b0}};
@@ -239,7 +239,7 @@ module tlb
 				b_status1[i] <= {2{1'b0}};
 				b_status2[i] <= {2{1'b0}};
 				b_status3[i] <= {2{1'b0}};
-				if(`DATA_RESET_ENABLE)begin
+				if(`PROCESSOR_DATA_RESET_EN)begin
 					b_tag0[i] <= {15{1'b0}};
 					b_tag1[i] <= {15{1'b0}};
 					b_tag2[i] <= {15{1'b0}};

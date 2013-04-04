@@ -166,7 +166,7 @@ module core_if
 	**************************************************************************************/	
 	//interrupt Control Queue
 	wire				core2fifo_irq_empty;
-	async_fifo #(.N(10), .DEPTH(128), .D_N(7)) CORE2MEM_INTFLAGS
+	mist1032isa_async_fifo #(.N(10), .DEPTH(128), .D_N(7)) CORE2MEM_INTFLAGS
 	(
 		//System
 		.inRESET(inRESET),
@@ -188,7 +188,7 @@ module core_if
 	
 	//instruction Request
 	wire				core2fifo_inst_fetch_empty;
-	async_fifo #(.N(80), .DEPTH(4), .D_N(2)) CORE2MEM_INST
+	mist1032isa_async_fifo #(.N(80), .DEPTH(4), .D_N(2)) CORE2MEM_INST
 	(
 		//System
 		.inRESET(inRESET),
@@ -212,7 +212,7 @@ module core_if
 
 	//Data Request
 	wire				core2fifo_data_empty;
-	async_fifo #(.N(115), .DEPTH(4), .D_N(2)) CORE2MEM_DATA
+	mist1032isa_async_fifo #(.N(115), .DEPTH(4), .D_N(2)) CORE2MEM_DATA
 	(
 		//System
 		.inRESET(inRESET),
@@ -234,7 +234,7 @@ module core_if
 
 	//IO Request
 	wire				core2fifo_io_empty;
-	async_fifo #(.N(67), .DEPTH(4), .D_N(2)) CORE2MEM_IO
+	mist1032isa_async_fifo #(.N(67), .DEPTH(4), .D_N(2)) CORE2MEM_IO
 	(
 		//System
 		.inRESET(inRESET),
@@ -410,7 +410,7 @@ module core_if
 	**************************************************************************************/
 	//Instruction
 	wire			fifo2core_inst_empty;
-	async_fifo #(.N(76), .DEPTH(4), .D_N(2)) MEM2CORE_INST
+	mist1032isa_async_fifo #(.N(76), .DEPTH(4), .D_N(2)) MEM2CORE_INST
 	(
 		//System
 		.inRESET(inRESET),
@@ -432,7 +432,7 @@ module core_if
 	
 	//DATA
 	wire			fifo2core_data_empty;
-	async_fifo #(.N(64), .DEPTH(4), .D_N(2)) MEM2CORE_DATA
+	mist1032isa_async_fifo #(.N(64), .DEPTH(4), .D_N(2)) MEM2CORE_DATA
 	(
 		//System
 		.inRESET(inRESET),
@@ -453,7 +453,7 @@ module core_if
 	
 	//IO
 	wire			fifo2core_io_empty;
-	async_fifo #(.N(32), .DEPTH(4), .D_N(2)) MEM2CORE_IO
+	mist1032isa_async_fifo #(.N(32), .DEPTH(4), .D_N(2)) MEM2CORE_IO
 	(
 		//System
 		.inRESET(inRESET),
@@ -517,7 +517,7 @@ module core_if
 	//IF 2 Core FIFO
 	wire			if2core_irq_empty;	
 	wire	[5:0]	if2core_irq_num;
-	async_fifo #(.N(6), .DEPTH(4), .D_N(2)) IF2CORE_FIFO
+	mist1032isa_async_fifo #(.N(6), .DEPTH(4), .D_N(2)) IF2CORE_FIFO
 	(
 		//System
 		.inRESET(inRESET),
@@ -538,7 +538,7 @@ module core_if
 	
 	//Core 2 If FIFO
 	wire			core2if_irq_empty;
-	async_fifo #(.N(1), .DEPTH(4), .D_N(2)) CORE2IF_FIFO
+	mist1032isa_async_fifo #(.N(1), .DEPTH(4), .D_N(2)) CORE2IF_FIFO
 	(
 		//System
 		.inRESET(inRESET),

@@ -9,7 +9,7 @@ Exception Manager
 
 
 `include "core.h"
-`include "global.h"
+//`include "global.h"
 `default_nettype none
 
 

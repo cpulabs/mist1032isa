@@ -1,5 +1,4 @@
 
-`include "global.h"
 `include "processor.h"
 `default_nettype none
 
@@ -223,7 +222,7 @@ module l1_instruction_cache(
 	wire inst_matching_bridge_full;
 	wire inst_matching_bridge_valid;
 	//Matching Queue 
-	arbiter_matching_queue #(16, 4, 1) INST_MATCHING_BRIDGE(
+	mist1032isa_arbiter_matching_queue #(16, 4, 1) INST_MATCHING_BRIDGE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash

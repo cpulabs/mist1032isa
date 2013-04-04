@@ -585,7 +585,7 @@ module core_pipeline
 	
 			
 			
-	loopbuffer LOOPBUFFER(
+	instruction_buffer LOOPBUFFER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iFREE_REFRESH(free_pipeline_flush),
@@ -833,7 +833,7 @@ module core_pipeline
 	);
 	
 	
-	execute EXECUTE(
+	execution EXECUTION(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iFREE_REGISTER_LOCK(free_register_lock),

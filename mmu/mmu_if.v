@@ -169,7 +169,7 @@ module mmu_if(
 			Type	0	:	Core Use
 					1	:	MMU Use
 	********************************************************************************/
-	arbiter_matching_queue #(16, 4, 1) MEM_MATCHING_QUEUE(	//Queue deep : 16, Queue deep_n : 4, Flag_n : 2
+	mist1032isa_arbiter_matching_queue #(16, 4, 1) MEM_MATCHING_QUEUE(	//Queue deep : 16, Queue deep_n : 4, Flag_n : 2
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash
@@ -189,7 +189,7 @@ module mmu_if(
 	/********************************************************************************
 	MMU Flags Queue
 	********************************************************************************/
-	sync_fifo #(28, 16, 4) MMUFLAGS_QUEUE(
+	mist1032isa_sync_fifo #(28, 16, 4) MMUFLAGS_QUEUE(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iREMOVE(pagefault_condition), 

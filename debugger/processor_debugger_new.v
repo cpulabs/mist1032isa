@@ -119,7 +119,7 @@ module processor_debugger(
 	);	
 	
 	//Rxd Queue
-	sync_fifo #(8, 16, 4) INST_LOOPBUFFER(
+	mist1032isa_sync_fifo #(8, 16, 4) INST_LOOPBUFFER(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iREMOVE(1'b0), 

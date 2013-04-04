@@ -145,7 +145,7 @@ module decoder(
 			b_ex_ldst <= 1'b0;
 			b_ex_branch <= 1'b0;
 			b_error <= 1'b0;
-			b_pc <= 1'b0;
+			b_pc <= 32'h0;
 		end
 		else if(iFREE_DEFAULT)begin
 			b_valid <= 1'b0;	
@@ -185,7 +185,7 @@ module decoder(
 			b_ex_ldst <= 1'b0;
 			b_ex_branch <= 1'b0;
 			b_error <= 1'b0;
-			b_pc <= 1'b0;
+			b_pc <= 32'h0;
 		end
 		else begin
 			if(!iNEXT_LOCK)begin

@@ -1,6 +1,7 @@
 
 `default_nettype none
-`include "global.h"
+//`include "global.h"
+`include "processor.h"
 
 
 module dps_irq(
@@ -40,7 +41,7 @@ module dps_irq(
 			for(i = 0; i < 2; i = i + 1)begin
 				b_ctrl_mem_valid	[i]						<=		1'b0;
 				b_ctrl_mem_mask		[i]						<=		1'b0;
-				if(`DATA_RESET_ENABLE)begin
+				if(`PROCESSOR_DATA_RESET_EN)begin
 					b_ctrl_mem_mode		[i]						<=		2'h0;
 				end
 			end

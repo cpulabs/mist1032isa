@@ -1,7 +1,8 @@
 
+
 `default_nettype none
 
-module uart_transmitter_double_flipflop
+module mist1032isa_async_fifo_double_flipflop
 	#(
 		parameter N = 1
 	)(
@@ -16,7 +17,6 @@ module uart_transmitter_double_flipflop
 	
 	reg [N-1:0] b_data0/* synthesis preserve = 1 */;		//Altera QuartusII Option
 	reg [N-1:0] b_data1/* synthesis preserve = 1 */;		//Altera QuartusII Option
-	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_data0 <= {N{1'b0}};
@@ -33,3 +33,5 @@ module uart_transmitter_double_flipflop
 endmodule
 
 `default_nettype wire
+
+	

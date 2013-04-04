@@ -2,7 +2,7 @@
 `default_nettype none
 `include "core.h"
 
-module loopbuffer(
+module instruction_buffer(
 		input iCLOCK,
 		input inRESET,
 		input iFREE_REFRESH,
@@ -117,7 +117,7 @@ module loopbuffer(
 	/*************************************************
 	Instruction Loop Buffer
 	*************************************************/
-	sync_fifo #(102, 32, 5) INST_LOOPBUFFER(
+	mist1032isa_sync_fifo #(102, 32, 5) INST_LOOPBUFFER(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iREMOVE(iFREE_REFRESH), 

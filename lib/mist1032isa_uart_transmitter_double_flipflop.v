@@ -1,7 +1,7 @@
 
 `default_nettype none
 
-module uart_receiver_double_flipflop
+module mist1032isa_uart_transmitter_double_flipflop
 	#(
 		parameter N = 1
 	)(
