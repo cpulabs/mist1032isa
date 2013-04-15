@@ -123,16 +123,44 @@ module instruction_buffer(
 		.iREMOVE(iFREE_REFRESH), 
 		.oCOUNT(fifo_count), 	
 		.iWR_EN(!fifo_full && iPREVIOUS_INST_VALID), 
-		.iWR_DATA({fault, iPREVIOUS_PAGING_ENA, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_BRANCH_PREDICT, iPREVIOUS_BRANCH_PREDICT_ADDR, iPREVIOUS_INST, iPREVIOUS_PC}), 
+		.iWR_DATA({fault, 
+				iPREVIOUS_PAGING_ENA, 
+				iPREVIOUS_KERNEL_ACCESS, 
+				iPREVIOUS_BRANCH_PREDICT, 
+				iPREVIOUS_BRANCH_PREDICT_ADDR, 
+				iPREVIOUS_INST, iPREVIOUS_PC}
+			), 
 		.oWR_FULL(fifo_full),
 		.iRD_EN(!fifo_empty && !iNEXT_LOCK), 
-		.oRD_DATA({oNEXT_FAULT_PAGEFAULT, oNEXT_FAULT_PRIVILEGE_ERROR, oNEXT_FAULT_INVALID_INST, oNEXT_PAGING_ENA, oNEXT_KERNEL_ACCESS, oNEXT_BRANCH_PREDICT, oNEXT_BRANCH_PREDICT_ADDR, oNEXT_INST, oNEXT_PC}), 
+		.oRD_DATA({oNEXT_FAULT_PAGEFAULT, 
+				oNEXT_FAULT_PRIVILEGE_ERROR, 
+				oNEXT_FAULT_INVALID_INST, 
+				oNEXT_PAGING_ENA, 
+				oNEXT_KERNEL_ACCESS, 
+				oNEXT_BRANCH_PREDICT, 
+				oNEXT_BRANCH_PREDICT_ADDR, 
+				oNEXT_INST, oNEXT_PC}
+			), 
 		.oRD_EMPTY(fifo_empty)
 	);
 
 	assign oPREVIOUS_LOCK = fifo_full;	
 	assign oNEXT_INST_VALID = !fifo_empty && !iNEXT_LOCK;			
 	assign oPREVIOUS_FETCH_STOP = (fifo_count > 5'h1A)? 1'b1 : 1'b0;
+	
+	
+	
+	/*************************************************
+	Assertion - SVA
+	*************************************************/
+	`ifdef MIST1032ISA_SVA_ASSERTION
+		property FIFO_FULL_CHECK;
+			@(posedge iCLOCK) disable iff (!inRESET) (fifo_full |-> !(!fifo_full && iPREVIOUS_INST_VALID));
+		endproperty
+		
+		assert property(FIFO_FULL_CHECK);
+	`endif
+	
 	
 endmodule
 	

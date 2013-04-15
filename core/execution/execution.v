@@ -546,7 +546,7 @@ module execution(
 	/****************************************
 	Mul 
 	****************************************/	
-	/*
+	
 	wire [63:0]	mul_tmp = ex_module_source0 * ex_module_source1;
 	wire mul_sf_l = mul_tmp[31];
 	wire mul_cf_l = mul_tmp[32];
@@ -561,8 +561,9 @@ module execution(
 	
 	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
 	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
-	*/
 	
+	
+	/*
 	wire [63:0]	mul_tmp;
 	wire mul_sf_l;
 	wire mul_cf_l;
@@ -596,7 +597,7 @@ module execution(
 		.oLPF(mul_pf_l),
 		.oLZF(mul_zf_l)
 	);
-	
+	*/
 	
 	/****************************************
 	Div
@@ -1170,7 +1171,7 @@ module execution(
 											end
 											//Other Branch
 											else begin
-												//b_valid <= 1'b1;
+												//b_valid <= 1'b1;/////////////////////////////////// koko kesiteita
 												b_writeback <= 1'b0;
 												b_destination_sysreg  <= 1'b0;
 												b_destination <= 5'h0;
@@ -1190,7 +1191,7 @@ module execution(
 										end
 										//Predict Disable
 										else begin
-											//b_valid <= 1'b1;
+											//b_valid <= 1'b1;////////////////////////////////// koko kesiteita
 											b_writeback <= 1'b0;
 											b_destination_sysreg  <= 1'b0;
 											b_destination <= 5'h0;
@@ -1532,6 +1533,18 @@ module execution(
 	assign oBPREDICT_JUMP_ADDR = b_branch_addr;
 	assign oBPREDICT_INST_ADDR = b_pc - 32'h00000004;
 	
+	
+	/*************************************************
+	Assertion - SVA
+	*************************************************/
+	`ifdef MIST1032ISA_SVA_ASSERTION
+	
+		property PRO_DATAPIPE_REQ_ACK;
+			@(posedge iCLOCK) disable iff (!inRESET || iFREE_REFRESH) (oDATAIO_REQ |-> ##[1:50] iDATAIO_REQ);
+		endproperty
+		
+		assert property(PRO_DATAPIPE_REQ_ACK);
+	`endif
 	
 		
 endmodule

@@ -140,12 +140,6 @@ module fetch(
 		.oRD_DATA({fetch_queue_kernel_access, fetch_queue_paging_ena, fetch_queue_addr}), 
 		.oRD_EMPTY(/* Not Use */)
 	);
-
-	
-
-	
-	
-
 	
 	
 	/****************************************
