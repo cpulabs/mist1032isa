@@ -7,11 +7,6 @@ module branch_predictor(
 		input iCLOCK,
 		input inRESET,
 		input iFLUSH,
-		//Flush
-		/*
-		output oFLUSH_PIPELINE,
-		output oFLUSH_
-		*/
 		//Search
 		input iSEARCH_STB,
 		input [31:0] iSEARCH_INST_ADDR,
@@ -74,12 +69,6 @@ module branch_predictor(
 	assign oSEARCH_VALID = b_branch_cache_valid;
 	assign oSRARCH_PREDICT_BRANCH = b_branch_cache_predict_branch;
 	assign oSEARCH_ADDR = b_branch_cache_addr;
-	
-/*
-	assign oSEARCH_VALID = 1'b0;
-	assign oSRARCH_PREDICT_BRANCH = 1'b0;
-	assign oSEARCH_ADDR = 32'h0;
-*/
 	
 endmodule
 

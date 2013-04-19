@@ -12,8 +12,6 @@
 
 
 
-
-
 module l1_cache_64entry_4way_line64b_bus_8b_damy(
 		/********************************
 		System
@@ -252,46 +250,92 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	Byte Enable		: YES(64bit)
 	Read==Write		: Dont care
 	---------------------------------------*/
-	cache_ram_16entry_512bit MEMORY_BLOCK0(
-		.clock(iCLOCK),
-		.data(memory_write_data),				//512bit
-		.rdaddress(read_pointer),				//4bit
-		.wraddress(write_pointer),				//4bit
-		.byteena_a(memory_write_byte_enable),	//64bit
-		.wren(memory_write_way0_condition),
-		.q(memory_way0_out_data)				//512bit
-	);
-	
-	cache_ram_16entry_512bit MEMORY_BLOCK1(
-		.clock(iCLOCK),
-		.data(memory_write_data),				//512bit
-		.rdaddress(read_pointer),				//4bit
-		.wraddress(write_pointer),				//4bit
-		.byteena_a(memory_write_byte_enable),	//64bit
-		.wren(memory_write_way1_condition),
-		.q(memory_way1_out_data)				//512bit
-	);
-	
-	cache_ram_16entry_512bit MEMORY_BLOCK2(
-		.clock(iCLOCK),
-		.data(memory_write_data),				//512bit
-		.rdaddress(read_pointer),				//4bit
-		.wraddress(write_pointer),				//4bit
-		.byteena_a(memory_write_byte_enable),	//64bit
-		.wren(memory_write_way2_condition),
-		.q(memory_way2_out_data)				//512bit
-	);
-	
-	cache_ram_16entry_512bit MEMORY_BLOCK3(
-		.clock(iCLOCK),
-		.data(memory_write_data),				//512bit
-		.rdaddress(read_pointer),				//4bit
-		.wraddress(write_pointer),				//4bit
-		.byteena_a(memory_write_byte_enable),	//64bit
-		.wren(memory_write_way3_condition),
-		.q(memory_way3_out_data)				//512bit
-	);
-	
+	`ifdef MIST1032ISA_SIMULATION
+		damy_memory_16entry_512bit MEMORY_DAMY_BLOCK0(
+			.iCLOCK(iCLOCK),
+			.iBYTE_ENA(memory_write_byte_enable),
+			//Write
+			.iWR_ENA(memory_write_way0_condition),
+			.iWR_ADDR(write_pointer),
+			.iWR_DATA(memory_write_data),
+			//Read
+			.iRD_ADDR(read_pointer),
+			.oRD_DATA(memory_way0_out_data)
+		);
+		damy_memory_16entry_512bit MEMORY_DAMY_BLOCK1(
+			.iCLOCK(iCLOCK),
+			.iBYTE_ENA(memory_write_byte_enable),
+			//Write
+			.iWR_ENA(memory_write_way1_condition),
+			.iWR_ADDR(write_pointer),
+			.iWR_DATA(memory_write_data),
+			//Read
+			.iRD_ADDR(read_pointer),
+			.oRD_DATA(memory_way1_out_data)
+		);
+		damy_memory_16entry_512bit MEMORY_DAMY_BLOCK2(
+			.iCLOCK(iCLOCK),
+			.iBYTE_ENA(memory_write_byte_enable),
+			//Write
+			.iWR_ENA(memory_write_way2_condition),
+			.iWR_ADDR(write_pointer),
+			.iWR_DATA(memory_write_data),
+			//Read
+			.iRD_ADDR(read_pointer),
+			.oRD_DATA(memory_way2_out_data)
+		);
+		damy_memory_16entry_512bit MEMORY_DAMY_BLOCK3(
+			.iCLOCK(iCLOCK),
+			.iBYTE_ENA(memory_write_byte_enable),
+			//Write
+			.iWR_ENA(memory_write_way3_condition),
+			.iWR_ADDR(write_pointer),
+			.iWR_DATA(memory_write_data),
+			//Read
+			.iRD_ADDR(read_pointer),
+			.oRD_DATA(memory_way3_out_data)
+		);
+	`else
+		cache_ram_16entry_512bit MEMORY_BLOCK0(
+			.clock(iCLOCK),
+			.data(memory_write_data),				//512bit
+			.rdaddress(read_pointer),				//4bit
+			.wraddress(write_pointer),				//4bit
+			.byteena_a(memory_write_byte_enable),	//64bit
+			.wren(memory_write_way0_condition),
+			.q(memory_way0_out_data)				//512bit
+		);
+		
+		cache_ram_16entry_512bit MEMORY_BLOCK1(
+			.clock(iCLOCK),
+			.data(memory_write_data),				//512bit
+			.rdaddress(read_pointer),				//4bit
+			.wraddress(write_pointer),				//4bit
+			.byteena_a(memory_write_byte_enable),	//64bit
+			.wren(memory_write_way1_condition),
+			.q(memory_way1_out_data)				//512bit
+		);
+		
+		cache_ram_16entry_512bit MEMORY_BLOCK2(
+			.clock(iCLOCK),
+			.data(memory_write_data),				//512bit
+			.rdaddress(read_pointer),				//4bit
+			.wraddress(write_pointer),				//4bit
+			.byteena_a(memory_write_byte_enable),	//64bit
+			.wren(memory_write_way2_condition),
+			.q(memory_way2_out_data)				//512bit
+		);
+		
+		cache_ram_16entry_512bit MEMORY_BLOCK3(
+			.clock(iCLOCK),
+			.data(memory_write_data),				//512bit
+			.rdaddress(read_pointer),				//4bit
+			.wraddress(write_pointer),				//4bit
+			.byteena_a(memory_write_byte_enable),	//64bit
+			.wren(memory_write_way3_condition),
+			.q(memory_way3_out_data)				//512bit
+		);
+	`endif
 	
 	/*--------------------------------------- 
 	Altera Quartus II MegaWizard
@@ -305,46 +349,93 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	Byte Enable		: YES(8bit)
 	Read==Write		: Dont care
 	---------------------------------------*/
-	cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK0(
-		.clock(iCLOCK),
-		.byteena_a(memory_mmuflag_write_byte_enable),
-		.data(memory_mmuflag_write_data),		//256bit
-		.rdaddress(read_pointer),				//4bit
-		.wraddress(write_pointer),				//4bit
-		.wren(memory_mmuflag_write_way0_condition),
-		.q(memory_mmuflag_way0_out_data)		//256bit
-	);
-	
-	cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK1(
-		.clock(iCLOCK),
-		.byteena_a(memory_mmuflag_write_byte_enable),
-		.data(memory_mmuflag_write_data),		//256bit
-		.rdaddress(read_pointer),				//4bit
-		.wraddress(write_pointer),				//4bit
-		.wren(memory_mmuflag_write_way1_condition),
-		.q(memory_mmuflag_way1_out_data)		//256bit
-	);
-	
-	cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK2(
-		.clock(iCLOCK),
-		.byteena_a(memory_mmuflag_write_byte_enable),
-		.data(memory_mmuflag_write_data),		//256bit
-		.rdaddress(read_pointer),				//4bit
-		.wraddress(write_pointer),				//4bit
-		.wren(memory_mmuflag_write_way2_condition),
-		.q(memory_mmuflag_way2_out_data)		//256bit
-	);
-	
-	cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK3(
-		.clock(iCLOCK),
-		.byteena_a(memory_mmuflag_write_byte_enable),
-		.data(memory_mmuflag_write_data),		//256bit
-		.rdaddress(read_pointer),				//4bit
-		.wraddress(write_pointer),				//4bit
-		.wren(memory_mmuflag_write_way3_condition),
-		.q(memory_mmuflag_way3_out_data)		//256bit
-	);
-	
+	`ifdef MIST1032ISA_SIMULATION
+		damy_memory_16entry_256bit MEMORY_MMUFLAG_DAMY_BLOCK0(
+			.iCLOCK(iCLOCK),
+			.iBYTE_ENA(memory_mmuflag_write_byte_enable),
+			//Write
+			.iWR_ENA(memory_mmuflag_write_way0_condition),
+			.iWR_ADDR(write_pointer),
+			.iWR_DATA(memory_mmuflag_write_data),
+			//Read
+			.iRD_ADDR(read_pointer),
+			.oRD_DATA(memory_mmuflag_way0_out_data)
+		);
+		damy_memory_16entry_256bit MEMORY_MMUFLAG_DAMY_BLOCK1(
+			.iCLOCK(iCLOCK),
+			.iBYTE_ENA(memory_mmuflag_write_byte_enable),
+			//Write
+			.iWR_ENA(memory_mmuflag_write_way1_condition),
+			.iWR_ADDR(write_pointer),
+			.iWR_DATA(memory_mmuflag_write_data),
+			//Read
+			.iRD_ADDR(read_pointer),
+			.oRD_DATA(memory_mmuflag_way1_out_data)
+		);
+		damy_memory_16entry_256bit MEMORY_MMUFLAG_DAMY_BLOCK2(
+			.iCLOCK(iCLOCK),
+			.iBYTE_ENA(memory_mmuflag_write_byte_enable),
+			//Write
+			.iWR_ENA(memory_mmuflag_write_way2_condition),
+			.iWR_ADDR(write_pointer),
+			.iWR_DATA(memory_mmuflag_write_data),
+			//Read
+			.iRD_ADDR(read_pointer),
+			.oRD_DATA(memory_mmuflag_way2_out_data)
+		);
+		damy_memory_16entry_256bit MEMORY_MMUFLAG_DAMY_BLOCK3(
+			.iCLOCK(iCLOCK),
+			.iBYTE_ENA(memory_mmuflag_write_byte_enable),
+			//Write
+			.iWR_ENA(memory_mmuflag_write_way3_condition),
+			.iWR_ADDR(write_pointer),
+			.iWR_DATA(memory_mmuflag_write_data),
+			//Read
+			.iRD_ADDR(read_pointer),
+			.oRD_DATA(memory_mmuflag_way3_out_data)
+		);
+		
+	`else
+		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK0(
+			.clock(iCLOCK),
+			.byteena_a(memory_mmuflag_write_byte_enable),
+			.data(memory_mmuflag_write_data),		//256bit
+			.rdaddress(read_pointer),				//4bit
+			.wraddress(write_pointer),				//4bit
+			.wren(memory_mmuflag_write_way0_condition),
+			.q(memory_mmuflag_way0_out_data)		//256bit
+		);
+		
+		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK1(
+			.clock(iCLOCK),
+			.byteena_a(memory_mmuflag_write_byte_enable),
+			.data(memory_mmuflag_write_data),		//256bit
+			.rdaddress(read_pointer),				//4bit
+			.wraddress(write_pointer),				//4bit
+			.wren(memory_mmuflag_write_way1_condition),
+			.q(memory_mmuflag_way1_out_data)		//256bit
+		);
+		
+		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK2(
+			.clock(iCLOCK),
+			.byteena_a(memory_mmuflag_write_byte_enable),
+			.data(memory_mmuflag_write_data),		//256bit
+			.rdaddress(read_pointer),				//4bit
+			.wraddress(write_pointer),				//4bit
+			.wren(memory_mmuflag_write_way2_condition),
+			.q(memory_mmuflag_way2_out_data)		//256bit
+		);
+		
+		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK3(
+			.clock(iCLOCK),
+			.byteena_a(memory_mmuflag_write_byte_enable),
+			.data(memory_mmuflag_write_data),		//256bit
+			.rdaddress(read_pointer),				//4bit
+			.wraddress(write_pointer),				//4bit
+			.wren(memory_mmuflag_write_way3_condition),
+			.q(memory_mmuflag_way3_out_data)		//256bit
+		);
+	`endif
 	
 	/********************************************
 	Function
