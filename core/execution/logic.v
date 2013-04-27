@@ -8,36 +8,31 @@
 ****************************************/
 `default_nettype none
 
-module	logic_n
-	#(
-		parameter	N	=	32
-	)
-	(
+module logic_n #(
+		parameter N	= 32
+	)(
 		//Control
-		input	[4:0]			iCONTROL_CMD,
+		input wire [4:0] iCONTROL_CMD,
 		//iDATA
-		input	[N-1:0]			iDATA_0,
-		input	[N-1:0]			iDATA_1,
+		input wire [N-1:0] iDATA_0,
+		input wire [N-1:0] iDATA_1,
 		//oDATA
-		output	[N-1:0]			oDATA,
-		output					oSF,
-		output					oOF,				
-		output					oCF,
-		output					oPF,
-		output					oZF
+		output wire [N-1:0] oDATA,
+		output wire oSF,
+		output wire oOF,				
+		output wire oCF,
+		output wire oPF,
+		output wire oZF
 	);
 
-				
-
-	
-	wire	[31:0]		tmp;
-	assign	tmp		=	f_logic(iCONTROL_CMD, iDATA_0, iDATA_1);
+	wire [31:0] tmp;
+	assign tmp = f_logic(iCONTROL_CMD, iDATA_0, iDATA_1);
 	
 	
 	function [N-1 : 0] f_logic;
-		input	[4 : 0]		f_cmd;
-		input	[N-1 : 0]	f_data0;
-		input	[N-1 : 0]	f_data1;
+		input [4 : 0] f_cmd;
+		input [N-1 : 0] f_data0;
+		input [N-1 : 0] f_data1;
 		begin
 			case(f_cmd)
 				5'h0 : f_logic		=		f_data0;														//Buffer
@@ -89,14 +84,13 @@ module	logic_n
 	
 	
 	//Output assign
-		assign	oDATA	=	tmp;
-	assign	oSF		=	tmp[31];
-	assign	oOF		=	1'b0;
-	assign	oCF		=	1'b0;
-	assign	oPF		=	tmp[0];
-	assign	oZF		=	(tmp == {N{1'b0}})? 1'b1 : 1'b0;
+	assign oDATA = tmp;
+	assign oSF = tmp[31];
+	assign oOF = 1'b0;
+	assign oCF = 1'b0;
+	assign oPF = tmp[0];
+	assign oZF = (tmp == {N{1'b0}})? 1'b1 : 1'b0;
 	
-
 endmodule
 
 `default_nettype wire

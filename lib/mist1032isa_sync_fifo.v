@@ -30,19 +30,19 @@ module mist1032isa_sync_fifo
 	)	
 	(
 		//System
-		input iCLOCK,
-		input inRESET,
-		input iREMOVE,
+		input wire iCLOCK,
+		input wire inRESET,
+		input wire iREMOVE,
 		//Counter
-		output [D_N-1:0] oCOUNT,
+		output wire [D_N-1:0] oCOUNT,
 		//WR
-		input iWR_EN,
-		input [N-1:0] iWR_DATA,
-		output oWR_FULL,
+		input wire iWR_EN,
+		input wire [N-1:0] iWR_DATA,
+		output wire oWR_FULL,
 		//RD
-		input iRD_EN,
-		output [N-1:0] oRD_DATA,
-		output oRD_EMPTY
+		input wire iRD_EN,
+		output wire [N-1:0] oRD_DATA,
+		output wire oRD_EMPTY
 	);
 	
 	//Count - Wire

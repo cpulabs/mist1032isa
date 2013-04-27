@@ -32,15 +32,15 @@ module mist1032isa_uart_receiver #(
 		parameter BAUDRATE_COUNTER = 20'd108	//(Clock / Baudrate) / 4 - 1
 	)(
 		//Clock
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//External Baudrate Timing
-		input [19:0] iEXTBAUD_COUNT,
+		input wire [19:0] iEXTBAUD_COUNT,
 		//R Data	
-		output oRX_VALID,
-		output [7:0] oRX_DATA,
+		output wire oRX_VALID,
+		output wire [7:0] oRX_DATA,
 		//UART
-		input iUART_RXD
+		input wire iUART_RXD
 	);	
 
 	

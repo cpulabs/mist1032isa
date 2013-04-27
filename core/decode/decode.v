@@ -7,65 +7,65 @@
 
 module decoder(
 		//System
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Free
-		input iFREE_DEFAULT,	
+		input wire iFREE_DEFAULT,	
 		//Previous
-		input iPREVIOUS_INST_VALID,
-		input iPREVIOUS_FAULT_PAGEFAULT,
-		input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
-		input iPREVIOUS_FAULT_INVALID_INST,
-		input iPREVIOUS_PAGING_ENA,
-		input iPREVIOUS_KERNEL_ACCESS,
-		input iPREVIOUS_BRANCH_PREDICT,
-		input [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
-		input [31:0] iPREVIOUS_INST,
-		input [31:0] iPREVIOUS_PC,
-		output oPREVIOUS_LOCK,
+		input wire iPREVIOUS_INST_VALID,
+		input wire iPREVIOUS_FAULT_PAGEFAULT,
+		input wire iPREVIOUS_FAULT_PRIVILEGE_ERROR,
+		input wire iPREVIOUS_FAULT_INVALID_INST,
+		input wire iPREVIOUS_PAGING_ENA,
+		input wire iPREVIOUS_KERNEL_ACCESS,
+		input wire iPREVIOUS_BRANCH_PREDICT,
+		input wire [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
+		input wire [31:0] iPREVIOUS_INST,
+		input wire [31:0] iPREVIOUS_PC,
+		output wire oPREVIOUS_LOCK,
 		//Next-0		
-		output oNEXT_VALID,
-		output oNEXT_FAULT_PAGEFAULT,
-		output oNEXT_FAULT_PRIVILEGE_ERROR,
-		output oNEXT_FAULT_INVALID_INST,
-		output oNEXT_PAGING_ENA,
-		output oNEXT_KERNEL_ACCESS,
-		output oNEXT_BRANCH_PREDICT,
-		output [31:0] oNEXT_BRANCH_PREDICT_ADDR,
-		output oNEXT_SOURCE0_ACTIVE,			
-		output oNEXT_SOURCE1_ACTIVE,		
-		output oNEXT_SOURCE0_SYSREG,		
-		output oNEXT_SOURCE1_SYSREG,		
-		output oNEXT_SOURCE0_SYSREG_RENAME,	
-		output oNEXT_SOURCE1_SYSREG_RENAME,	
-		output oNEXT_DESTINATION_SYSREG,	
-		output oNEXT_DEST_RENAME,	
-		output oNEXT_WRITEBACK,
-		output oNEXT_FLAGS_WRITEBACK,
-		output oNEXT_FRONT_COMMIT_WAIT,				
-		output [4:0] oNEXT_CMD,
-		output [3:0] oNEXT_CC_AFE,
-		output [4:0] oNEXT_SOURCE0,
-		output [31:0] oNEXT_SOURCE1,
-		output oNEXT_SOURCE0_FLAGS,
-		output oNEXT_SOURCE1_IMM,
-		output [4:0] oNEXT_DESTINATION,
-		output oNEXT_EX_SYS_REG,	
-		output oNEXT_EX_SYS_LDST,	
-		output oNEXT_EX_LOGIC,
-		output oNEXT_EX_SHIFT,
-		output oNEXT_EX_ADDER,
-		output oNEXT_EX_MUL,			
-		output oNEXT_EX_SDIV,		
-		output oNEXT_EX_UDIV,		
-		output oNEXT_EX_LDST,
-		output oNEXT_EX_BRANCH,
-		output [31:0] oNEXT_PC,
-		input iNEXT_LOCK
+		output wire oNEXT_VALID,
+		output wire oNEXT_FAULT_PAGEFAULT,
+		output wire oNEXT_FAULT_PRIVILEGE_ERROR,
+		output wire oNEXT_FAULT_INVALID_INST,
+		output wire oNEXT_PAGING_ENA,
+		output wire oNEXT_KERNEL_ACCESS,
+		output wire oNEXT_BRANCH_PREDICT,
+		output wire [31:0] oNEXT_BRANCH_PREDICT_ADDR,
+		output wire oNEXT_SOURCE0_ACTIVE,			
+		output wire oNEXT_SOURCE1_ACTIVE,		
+		output wire oNEXT_SOURCE0_SYSREG,		
+		output wire oNEXT_SOURCE1_SYSREG,		
+		output wire oNEXT_SOURCE0_SYSREG_RENAME,	
+		output wire oNEXT_SOURCE1_SYSREG_RENAME,	
+		output wire oNEXT_DESTINATION_SYSREG,	
+		output wire oNEXT_DEST_RENAME,	
+		output wire oNEXT_WRITEBACK,
+		output wire oNEXT_FLAGS_WRITEBACK,
+		output wire oNEXT_FRONT_COMMIT_WAIT,				
+		output wire [4:0] oNEXT_CMD,
+		output wire [3:0] oNEXT_CC_AFE,
+		output wire [4:0] oNEXT_SOURCE0,
+		output wire [31:0] oNEXT_SOURCE1,
+		output wire oNEXT_SOURCE0_FLAGS,
+		output wire oNEXT_SOURCE1_IMM,
+		output wire [4:0] oNEXT_DESTINATION,
+		output wire oNEXT_EX_SYS_REG,	
+		output wire oNEXT_EX_SYS_LDST,	
+		output wire oNEXT_EX_LOGIC,
+		output wire oNEXT_EX_SHIFT,
+		output wire oNEXT_EX_ADDER,
+		output wire oNEXT_EX_MUL,			
+		output wire oNEXT_EX_SDIV,		
+		output wire oNEXT_EX_UDIV,		
+		output wire oNEXT_EX_LDST,
+		output wire oNEXT_EX_BRANCH,
+		output wire [31:0] oNEXT_PC,
+		input wire iNEXT_LOCK
 	);
 	
 	//Pipeline 
-	reg					b_valid;	
+	reg b_valid;	
 	reg b_fault_pagefault;
 	reg b_fault_page_privilege_error;
 	reg b_fault_page_invalid_inst;		
@@ -3471,8 +3471,6 @@ module decoder(
 	assign oNEXT_EX_BRANCH = b_ex_branch;
 	assign oNEXT_PC = b_pc;
 
-	
-	
 endmodule
 
 

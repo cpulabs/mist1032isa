@@ -1,61 +1,56 @@
 /****************************************
-	Memory Management Unit
+Memory Management Unit
 	- MMU V1
 	- 1page = 16KB
-	
-	
-	Make	:	2011/03/@@
-	Update	:	
 ****************************************/
-`default_nettype none		
-//`include "global.h"
+`default_nettype none
 `include "processor.h"
 
 
 
 module mmu(			
 		//System
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//TLB Flash
-		input iTLB_FLASH,
+		input wire iTLB_FLASH,
 		/***********************
 		Logic Addres Request
 		***********************/
-		input iLOGIC_REQ,
-		output oLOGIC_LOCK,
-		input iLOGIC_DATA_STORE_ACK,
-		input [1:0] iLOGIC_MODE,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
-		input [31:0] iLOGIC_PDT,		//Page Directory Table 
-		input [1:0] iLOGIC_ORDER,
-		input iLOGIC_RW,				//0=Read 1=Write
-		input [31:0] iLOGIC_ADDR,
-		input [31:0] iLOGIC_DATA,		
+		input wire iLOGIC_REQ,
+		output wire oLOGIC_LOCK,
+		input wire iLOGIC_DATA_STORE_ACK,
+		input wire [1:0] iLOGIC_MODE,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		input wire [31:0] iLOGIC_PDT,		//Page Directory Table 
+		input wire [1:0] iLOGIC_ORDER,
+		input wire iLOGIC_RW,				//0=Read 1=Write
+		input wire [31:0] iLOGIC_ADDR,
+		input wire [31:0] iLOGIC_DATA,		
 		/***********************
 		MMU Flags Output
 		***********************/
-		output oMMUFLAGS_REQ,
-		input iMMUFLAGS_LOCK,
-		output [27:0] oMMUFLAGS_FLAGS,		
+		output wire oMMUFLAGS_REQ,
+		input wire iMMUFLAGS_LOCK,
+		output wire [27:0] oMMUFLAGS_FLAGS,		
 		/***********************
 		Page Fault
 		***********************/
-		output oPAGEFAULT_VALID,
+		output wire oPAGEFAULT_VALID,
 		/***********************
 		To Memory
 		***********************/
-		output oMEMORY_REQ,
-		input iMEMORY_LOCK,			
-		output oMEMORY_DATA_STORE_ACK,
-		output oMEMORY_MMU_USE,
-		output [1:0] oMEMORY_ORDER,
-		output oMEMORY_RW,
-		output [31:0] oMEMORY_ADDR,
-		output [31:0] oMEMORY_DATA,
+		output wire oMEMORY_REQ,
+		input wire iMEMORY_LOCK,			
+		output wire oMEMORY_DATA_STORE_ACK,
+		output wire oMEMORY_MMU_USE,
+		output wire [1:0] oMEMORY_ORDER,
+		output wire oMEMORY_RW,
+		output wire [31:0] oMEMORY_ADDR,
+		output wire [31:0] oMEMORY_DATA,
 		//Data RAM -> This
-		input iMEMORY_VALID,
-		output oMEMORY_LOCK,
-		input [63:0] iMEMORY_DATA
+		input wire iMEMORY_VALID,
+		output wire oMEMORY_LOCK,
+		input wire [63:0] iMEMORY_DATA
 	);
 
 	

@@ -6,162 +6,162 @@
 
 module dispatch
 	#(
-		parameter		CORE_ID		=		0
+		parameter CORE_ID = 0
 	)(
 		//System 
-		input iCLOCK,
-		input inRESET,
-		input iFREE_REGISTER_LOCK,
-		input iFREE_PIPELINE_STOP,
-		input iFREE_REFRESH,
+		input wire iCLOCK,
+		input wire inRESET,
+		input wire iFREE_REGISTER_LOCK,
+		input wire iFREE_PIPELINE_STOP,
+		input wire iFREE_REFRESH,
 		//Exception Lock
-		output oEXCEPTION_LOCK,
+		output wire oEXCEPTION_LOCK,
 		//IOSR
-		input iSYSREGINFO_IOSR_VALID,
-		input [31:0] iSYSREGINFO_IOSR,
+		input wire iSYSREGINFO_IOSR_VALID,
+		input wire [31:0] iSYSREGINFO_IOSR,
 		//System Register
-		input iFREE_SYSREG_SET_IRQ_MODE,
-		input iFREE_SYSREG_CLR_IRQ_MODE,		
+		input wire iFREE_SYSREG_SET_IRQ_MODE,
+		input wire iFREE_SYSREG_CLR_IRQ_MODE,		
 		//PPCR Set
-		input iFREE_PPCR_SET,
-		input [31:0] iFREE_PPCR,
+		input wire iFREE_PPCR_SET,
+		input wire [31:0] iFREE_PPCR,
 		//FI0R Set
-		input iFREE_FI0R_SET,
-		input [31:0] iFREE_FI0R,
+		input wire iFREE_FI0R_SET,
+		input wire [31:0] iFREE_FI0R,
 		//System Register Input
-		input [31:0] iSYSREG_FLAGR,
+		input wire [31:0] iSYSREG_FLAGR,
 		//System Register Output
-		output [31:0] oSYSREG_PCR,
-		output [31:0] oSYSREG_IDTR,
-		output [31:0] oSYSREG_TISR,
-		output [31:0] oSYSREG_TIDR,
-		output [31:0] oSYSREG_PSR,
-		output [31:0] oSYSREG_PPSR,
-		output [31:0] oSYSREG_PPCR,
-		output [31:0] oSYSREG_SPR,
+		output wire [31:0] oSYSREG_PCR,
+		output wire [31:0] oSYSREG_IDTR,
+		output wire [31:0] oSYSREG_TISR,
+		output wire [31:0] oSYSREG_TIDR,
+		output wire [31:0] oSYSREG_PSR,
+		output wire [31:0] oSYSREG_PPSR,
+		output wire [31:0] oSYSREG_PPCR,
+		output wire [31:0] oSYSREG_SPR,
 		//Pipeline 
-		input iPREVIOUS_VALID,
-		input iPREVIOUS_FAULT_PAGEFAULT,
-		input iPREVIOUS_FAULT_PRIVILEGE_ERROR,
-		input iPREVIOUS_FAULT_INVALID_INST,
-		input iPREVIOUS_PAGING_ENA,
-		input iPREVIOUS_KERNEL_ACCESS,
-		input iPREVIOUS_BRANCH_PREDICT,
-		input [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
-		input iPREVIOUS_SOURCE0_ACTIVE,			
-		input iPREVIOUS_SOURCE1_ACTIVE,		
-		input iPREVIOUS_SOURCE0_SYSREG,		
-		input iPREVIOUS_SOURCE1_SYSREG,		
-		input iPREVIOUS_DESTINATION_SYSREG,
-		input [4:0] iPREVIOUS_DESTINATION,			
-		input iPREVIOUS_WRITEBACK,	
-		input iPREVIOUS_FLAGS_WRITEBACK,	
-		input [4:0] iPREVIOUS_CMD,
-		input [3:0] iPREVIOUS_CC_AFE,
-		input [4:0] iPREVIOUS_SOURCE0,
-		input [31:0] iPREVIOUS_SOURCE1,
-		input iPREVIOUS_SOURCE0_FLAGS,
-		input iPREVIOUS_SOURCE1_IMM,	
-		input iPREVIOUS_EX_SYS_REG,		
-		input iPREVIOUS_EX_SYS_LDST,		
-		input iPREVIOUS_EX_LOGIC,
-		input iPREVIOUS_EX_SHIFT,
-		input iPREVIOUS_EX_ADDER,
-		input iPREVIOUS_EX_MUL,
-		input iPREVIOUS_EX_SDIV,
-		input iPREVIOUS_EX_UDIV,
-		input iPREVIOUS_EX_LDST,
-		input iPREVIOUS_EX_BRANCH,
-		input [31:0] iPREVIOUS_PC,
-		output oPREVIOUS_LOCK,
+		input wire iPREVIOUS_VALID,
+		input wire iPREVIOUS_FAULT_PAGEFAULT,
+		input wire iPREVIOUS_FAULT_PRIVILEGE_ERROR,
+		input wire iPREVIOUS_FAULT_INVALID_INST,
+		input wire iPREVIOUS_PAGING_ENA,
+		input wire iPREVIOUS_KERNEL_ACCESS,
+		input wire iPREVIOUS_BRANCH_PREDICT,
+		input wire [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
+		input wire iPREVIOUS_SOURCE0_ACTIVE,			
+		input wire iPREVIOUS_SOURCE1_ACTIVE,		
+		input wire iPREVIOUS_SOURCE0_SYSREG,		
+		input wire iPREVIOUS_SOURCE1_SYSREG,		
+		input wire iPREVIOUS_DESTINATION_SYSREG,
+		input wire [4:0] iPREVIOUS_DESTINATION,			
+		input wire iPREVIOUS_WRITEBACK,	
+		input wire iPREVIOUS_FLAGS_WRITEBACK,	
+		input wire [4:0] iPREVIOUS_CMD,
+		input wire [3:0] iPREVIOUS_CC_AFE,
+		input wire [4:0] iPREVIOUS_SOURCE0,
+		input wire [31:0] iPREVIOUS_SOURCE1,
+		input wire iPREVIOUS_SOURCE0_FLAGS,
+		input wire iPREVIOUS_SOURCE1_IMM,	
+		input wire iPREVIOUS_EX_SYS_REG,		
+		input wire iPREVIOUS_EX_SYS_LDST,		
+		input wire iPREVIOUS_EX_LOGIC,
+		input wire iPREVIOUS_EX_SHIFT,
+		input wire iPREVIOUS_EX_ADDER,
+		input wire iPREVIOUS_EX_MUL,
+		input wire iPREVIOUS_EX_SDIV,
+		input wire iPREVIOUS_EX_UDIV,
+		input wire iPREVIOUS_EX_LDST,
+		input wire iPREVIOUS_EX_BRANCH,
+		input wire [31:0] iPREVIOUS_PC,
+		output wire oPREVIOUS_LOCK,
 		//Next
-		output oNEXT_VALID,	
-		output oNEXT_FAULT_PAGEFAULT,
-		output oNEXT_FAULT_PRIVILEGE_ERROR,
-		output oNEXT_FAULT_INVALID_INST,
-		output oNEXT_PAGING_ENA,
-		output oNEXT_KERNEL_ACCESS,
-		output oNEXT_BRANCH_PREDICT,
-		output [31:0] oNEXT_BRANCH_PREDICT_ADDR,
-		output [31:0] oNEXT_SYSREG_PSR,	
-		output [31:0] oNEXT_SYSREG_TIDR,	
-		output [31:0] oNEXT_SYSREG_PDTR,
-		output oNEXT_DESTINATION_SYSREG,
-		output [4:0] oNEXT_DESTINATION,			
-		output oNEXT_WRITEBACK,	
-		output oNEXT_FLAGS_WRITEBACK,	
-		output [4:0] oNEXT_CMD,
-		output [3:0] oNEXT_CC_AFE,			
-		output [31:0] oNEXT_SPR,	
-		output [31:0] oNEXT_SOURCE0,
-		output [31:0] oNEXT_SOURCE1,	
-		output [4:0] oNEXT_SOURCE0_POINTER,
-		output [4:0] oNEXT_SOURCE1_POINTER,
-		output oNEXT_SOURCE0_SYSREG,
-		output oNEXT_SOURCE1_SYSREG,
-		output oNEXT_SOURCE1_IMM,
-		output oNEXT_SOURCE0_FLAGS,
-		output oNEXT_EX_SYS_REG,		
-		output oNEXT_EX_SYS_LDST,		
-		output oNEXT_EX_LOGIC,
-		output oNEXT_EX_SHIFT,
-		output oNEXT_EX_ADDER,
-		output oNEXT_EX_MUL,
-		output oNEXT_EX_SDIV,
-		output oNEXT_EX_UDIV,
-		output oNEXT_EX_LDST,
-		output oNEXT_EX_BRANCH,
-		output [31:0] oNEXT_PC,
-		input iNEXT_LOCK,
+		output wire oNEXT_VALID,	
+		output wire oNEXT_FAULT_PAGEFAULT,
+		output wire oNEXT_FAULT_PRIVILEGE_ERROR,
+		output wire oNEXT_FAULT_INVALID_INST,
+		output wire oNEXT_PAGING_ENA,
+		output wire oNEXT_KERNEL_ACCESS,
+		output wire oNEXT_BRANCH_PREDICT,
+		output wire [31:0] oNEXT_BRANCH_PREDICT_ADDR,
+		output wire [31:0] oNEXT_SYSREG_PSR,	
+		output wire [31:0] oNEXT_SYSREG_TIDR,	
+		output wire [31:0] oNEXT_SYSREG_PDTR,
+		output wire oNEXT_DESTINATION_SYSREG,
+		output wire [4:0] oNEXT_DESTINATION,			
+		output wire oNEXT_WRITEBACK,	
+		output wire oNEXT_FLAGS_WRITEBACK,	
+		output wire [4:0] oNEXT_CMD,
+		output wire [3:0] oNEXT_CC_AFE,			
+		output wire [31:0] oNEXT_SPR,	
+		output wire [31:0] oNEXT_SOURCE0,
+		output wire [31:0] oNEXT_SOURCE1,	
+		output wire [4:0] oNEXT_SOURCE0_POINTER,
+		output wire [4:0] oNEXT_SOURCE1_POINTER,
+		output wire oNEXT_SOURCE0_SYSREG,
+		output wire oNEXT_SOURCE1_SYSREG,
+		output wire oNEXT_SOURCE1_IMM,
+		output wire oNEXT_SOURCE0_FLAGS,
+		output wire oNEXT_EX_SYS_REG,		
+		output wire oNEXT_EX_SYS_LDST,		
+		output wire oNEXT_EX_LOGIC,
+		output wire oNEXT_EX_SHIFT,
+		output wire oNEXT_EX_ADDER,
+		output wire oNEXT_EX_MUL,
+		output wire oNEXT_EX_SDIV,
+		output wire oNEXT_EX_UDIV,
+		output wire oNEXT_EX_LDST,
+		output wire oNEXT_EX_BRANCH,
+		output wire [31:0] oNEXT_PC,
+		input wire iNEXT_LOCK,
 		//Write Back
-		input iWB_VALID,
-		input [31:0] iWB_DATA,
-		input [4:0] iWB_DESTINATION,
-		input iWB_DESTINATION_SYSREG,
-		input iWB_WRITEBACK,
-		input iWB_SPR_WRITEBACK,
-		input [31:0] iWB_SPR,
-		input [31:0] iWB_PC,
-		input iWB_BRANCH,
-		input [31:0] iWB_BRANCH_PC,
+		input wire iWB_VALID,
+		input wire [31:0] iWB_DATA,
+		input wire [4:0] iWB_DESTINATION,
+		input wire iWB_DESTINATION_SYSREG,
+		input wire iWB_WRITEBACK,
+		input wire iWB_SPR_WRITEBACK,
+		input wire [31:0] iWB_SPR,
+		input wire [31:0] iWB_PC,
+		input wire iWB_BRANCH,
+		input wire [31:0] iWB_BRANCH_PC,
 		//Debug Module
-		output [31:0] oDEBUG_REG_OUT_GR0,
-		output [31:0] oDEBUG_REG_OUT_GR1,
-		output [31:0] oDEBUG_REG_OUT_GR2,
-		output [31:0] oDEBUG_REG_OUT_GR3,
-		output [31:0] oDEBUG_REG_OUT_GR4,
-		output [31:0] oDEBUG_REG_OUT_GR5,
-		output [31:0] oDEBUG_REG_OUT_GR6,
-		output [31:0] oDEBUG_REG_OUT_GR7,
-		output [31:0] oDEBUG_REG_OUT_GR8,
-		output [31:0] oDEBUG_REG_OUT_GR9,
-		output [31:0] oDEBUG_REG_OUT_GR10,
-		output [31:0] oDEBUG_REG_OUT_GR11,
-		output [31:0] oDEBUG_REG_OUT_GR12,
-		output [31:0] oDEBUG_REG_OUT_GR13,
-		output [31:0] oDEBUG_REG_OUT_GR14,
-		output [31:0] oDEBUG_REG_OUT_GR15,
-		output [31:0] oDEBUG_REG_OUT_GR16,
-		output [31:0] oDEBUG_REG_OUT_GR17,
-		output [31:0] oDEBUG_REG_OUT_GR18,
-		output [31:0] oDEBUG_REG_OUT_GR19,
-		output [31:0] oDEBUG_REG_OUT_GR20,
-		output [31:0] oDEBUG_REG_OUT_GR21,
-		output [31:0] oDEBUG_REG_OUT_GR22,
-		output [31:0] oDEBUG_REG_OUT_GR23,
-		output [31:0] oDEBUG_REG_OUT_GR24,
-		output [31:0] oDEBUG_REG_OUT_GR25,
-		output [31:0] oDEBUG_REG_OUT_GR26,
-		output [31:0] oDEBUG_REG_OUT_GR27,
-		output [31:0] oDEBUG_REG_OUT_GR28,
-		output [31:0] oDEBUG_REG_OUT_GR29,
-		output [31:0] oDEBUG_REG_OUT_GR30,
-		output [31:0] oDEBUG_REG_OUT_GR31,
-		output [31:0] oDEBUG_REG_OUT_SPR,
-		output [31:0] oDEBUG_REG_OUT_PCR,
-		output [31:0] oDEBUG_REG_OUT_PPCR,
-		output [31:0] oDEBUG_REG_OUT_PSR,
-		output [31:0] oDEBUG_REG_OUT_PPSR
+		output wire [31:0] oDEBUG_REG_OUT_GR0,
+		output wire [31:0] oDEBUG_REG_OUT_GR1,
+		output wire [31:0] oDEBUG_REG_OUT_GR2,
+		output wire [31:0] oDEBUG_REG_OUT_GR3,
+		output wire [31:0] oDEBUG_REG_OUT_GR4,
+		output wire [31:0] oDEBUG_REG_OUT_GR5,
+		output wire [31:0] oDEBUG_REG_OUT_GR6,
+		output wire [31:0] oDEBUG_REG_OUT_GR7,
+		output wire [31:0] oDEBUG_REG_OUT_GR8,
+		output wire [31:0] oDEBUG_REG_OUT_GR9,
+		output wire [31:0] oDEBUG_REG_OUT_GR10,
+		output wire [31:0] oDEBUG_REG_OUT_GR11,
+		output wire [31:0] oDEBUG_REG_OUT_GR12,
+		output wire [31:0] oDEBUG_REG_OUT_GR13,
+		output wire [31:0] oDEBUG_REG_OUT_GR14,
+		output wire [31:0] oDEBUG_REG_OUT_GR15,
+		output wire [31:0] oDEBUG_REG_OUT_GR16,
+		output wire [31:0] oDEBUG_REG_OUT_GR17,
+		output wire [31:0] oDEBUG_REG_OUT_GR18,
+		output wire [31:0] oDEBUG_REG_OUT_GR19,
+		output wire [31:0] oDEBUG_REG_OUT_GR20,
+		output wire [31:0] oDEBUG_REG_OUT_GR21,
+		output wire [31:0] oDEBUG_REG_OUT_GR22,
+		output wire [31:0] oDEBUG_REG_OUT_GR23,
+		output wire [31:0] oDEBUG_REG_OUT_GR24,
+		output wire [31:0] oDEBUG_REG_OUT_GR25,
+		output wire [31:0] oDEBUG_REG_OUT_GR26,
+		output wire [31:0] oDEBUG_REG_OUT_GR27,
+		output wire [31:0] oDEBUG_REG_OUT_GR28,
+		output wire [31:0] oDEBUG_REG_OUT_GR29,
+		output wire [31:0] oDEBUG_REG_OUT_GR30,
+		output wire [31:0] oDEBUG_REG_OUT_GR31,
+		output wire [31:0] oDEBUG_REG_OUT_SPR,
+		output wire [31:0] oDEBUG_REG_OUT_PCR,
+		output wire [31:0] oDEBUG_REG_OUT_PPCR,
+		output wire [31:0] oDEBUG_REG_OUT_PSR,
+		output wire [31:0] oDEBUG_REG_OUT_PPSR
 	);
 	
 	
@@ -199,10 +199,6 @@ module dispatch
 	end
 	
 
-	
-	
-	
-	
 	//System Register
 	wire [31:0] w_sysreg_cpuidr_info_data;
 	wire [31:0] w_sysreg_coreidr_info_data;
@@ -291,17 +287,17 @@ module dispatch
 	
 	function [32:0] func_writeback_set;
 		//Select
-		input	[4:0]		func_register;
-		input				func_sysreg;
+		input [4:0] func_register;
+		input func_sysreg;
 		/*******Writeback*******/
-		input				func_wb_valid;
-		input	[31:0]		func_wb_data;
-		input	[4:0]		func_wb_destination;
-		input				func_wb_destination_sysreg;
-		input				func_wb_writeback;
-		input				func_wb_spr_writeback;
-		input	[31:0]		func_wb_spr;
-		input	[31:0]		func_wb_pc;
+		input func_wb_valid;
+		input [31:0] func_wb_data;
+		input [4:0] func_wb_destination;
+		input func_wb_destination_sysreg;
+		input func_wb_writeback;
+		input func_wb_spr_writeback;
+		input [31:0] func_wb_spr;
+		input [31:0] func_wb_pc;
 		begin
 			if(func_wb_valid)begin
 				if(func_sysreg)begin
@@ -341,18 +337,18 @@ module dispatch
 	
 	function [32:0] func_writeback_set_imm;
 		//Select
-		input	[4:0]		func_register;
-		input				func_sysreg;
-		input				func_imm;
+		input [4:0] func_register;
+		input func_sysreg;
+		input func_imm;
 		/*******Writeback*******/
-		input				func_wb_valid;
-		input	[31:0]		func_wb_data;
-		input	[4:0]		func_wb_destination;
-		input				func_wb_destination_sysreg;
-		input				func_wb_writeback;
-		input				func_wb_spr_writeback;
-		input	[31:0]		func_wb_spr;
-		input	[31:0]		func_wb_pc;
+		input func_wb_valid;
+		input [31:0] func_wb_data;
+		input [4:0] func_wb_destination;
+		input func_wb_destination_sysreg;
+		input func_wb_writeback;
+		input func_wb_spr_writeback;
+		input [31:0] func_wb_spr;
+		input [31:0] func_wb_pc;
 		begin
 			if(!func_imm)begin
 				if(func_wb_valid)begin
@@ -397,8 +393,8 @@ module dispatch
 	
 	
 	
-	wire			sysreg_source0_valid, sysreg_source1_valid;
-	wire	[31:0]	sysreg_source0, sysreg_source1;
+	wire sysreg_source0_valid, sysreg_source1_valid;
+	wire [31:0] sysreg_source0, sysreg_source1;
 
 	assign	{sysreg_source0_valid, sysreg_source0}	=	func_sysreg_set(
 																			iPREVIOUS_SOURCE0_ACTIVE,
@@ -603,27 +599,27 @@ module dispatch
 	
 	function [32:0] func_sysreg_set;
 		//Active
-		input				func_active;
+		input func_active;
 		//Select
-		input	[4:0]		func_sysreg;
+		input [4:0] func_sysreg;
 		//Sysreg
-		input	[31:0]		func_cpuidr;
-		input	[31:0]		func_coreidr;
-		input	[31:0]		func_tidr;
-		input	[31:0]		func_pcr;
-		input	[31:0]		func_spr;
-		input	[31:0]		func_psr;
-		input	[31:0]		func_idtr;
-		input	[31:0]		func_pdtr;
-		input	[31:0]		func_tisr;
-		input	[31:0]		func_kpdtr;
-		input	[31:0]		func_iosr;	
-		input	[31:0]		func_ppsr;	
-		input	[31:0]		func_ppcr;	
-		input	[31:0]		func_ppdtr;
-		input	[31:0]		func_ptidr;
-		input	[31:0]		func_frclr;
-		input	[31:0]		func_frchr;
+		input [31:0] func_cpuidr;
+		input [31:0] func_coreidr;
+		input [31:0] func_tidr;
+		input [31:0] func_pcr;
+		input [31:0] func_spr;
+		input [31:0] func_psr;
+		input [31:0] func_idtr;
+		input [31:0] func_pdtr;
+		input [31:0] func_tisr;
+		input [31:0] func_kpdtr;
+		input [31:0] func_iosr;	
+		input [31:0] func_ppsr;	
+		input [31:0] func_ppcr;	
+		input [31:0] func_ppdtr;
+		input [31:0] func_ptidr;
+		input [31:0] func_frclr;
+		input [31:0] func_frchr;
 		begin
 			if(func_active)begin
 				case(func_sysreg)
@@ -647,12 +643,12 @@ module dispatch
 					`SYSREG_FRCHR		:	func_sysreg_set		=		{1'b1, func_frchr};
 					default	:
 						begin
-							func_sysreg_set		=		{1'b0, 32'h0};
+							func_sysreg_set = {1'b0, 32'h0};
 						end
 				endcase
 			end
 			else begin
-				func_sysreg_set		=		{1'b0, 27'h0, func_sysreg};	
+				func_sysreg_set = {1'b0, 27'h0, func_sysreg};	
 			end
 		end
 	endfunction
@@ -664,19 +660,19 @@ module dispatch
 	/****************************************
 	General Register File
 	****************************************/
-	reg		[31:0]		b_gr_register[0:31];
+	reg [31:0] b_gr_register[0:31];
 	integer i;
 	
 	//Write Back
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			for(i = 0; i < 32; i = i + 1)begin
-				b_gr_register	[i]						<=		32'h0;
+				b_gr_register [i] <= 32'h0;
 			end
 		end
 		else begin
 			if(iWB_VALID && !iWB_DESTINATION_SYSREG && iWB_WRITEBACK && !iFREE_PIPELINE_STOP)begin
-				b_gr_register	[iWB_DESTINATION]		<=		iWB_DATA;
+				b_gr_register [iWB_DESTINATION] <= iWB_DATA;
 			end
 		end
 	end//General Register Write Back
@@ -706,8 +702,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_tidr_regist_valid), .iREGIST_DATA(w_sysreg_tidr_regist_data), 
 		.oINFO_DATA(w_sysreg_tidr_info_data)
 	);
-	assign		w_sysreg_tidr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_TIDR);
-	assign		w_sysreg_tidr_regist_data		=		iWB_DATA;
+	assign w_sysreg_tidr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_TIDR);
+	assign w_sysreg_tidr_regist_data = iWB_DATA;
 	
 	
 	//FLAGR : Renaming System Register
@@ -720,8 +716,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_psr_regist_valid), .iREGIST_DATA(w_sysreg_psr_regist_data), 
 		.oINFO_DATA(w_sysreg_psr_info_data)
 	);							
-	assign		w_sysreg_psr_regist_valid		=		iFREE_SYSREG_SET_IRQ_MODE || iFREE_SYSREG_CLR_IRQ_MODE || (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PSR);
-	assign		w_sysreg_psr_regist_data		=		(iFREE_SYSREG_SET_IRQ_MODE)? {w_sysreg_psr_info_data[31:7], 2'h0, w_sysreg_psr_info_data[4:3], 1'b0, w_sysreg_psr_info_data[1:0]} : (
+	assign w_sysreg_psr_regist_valid = iFREE_SYSREG_SET_IRQ_MODE || iFREE_SYSREG_CLR_IRQ_MODE || (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PSR);
+	assign w_sysreg_psr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? {w_sysreg_psr_info_data[31:7], 2'h0, w_sysreg_psr_info_data[4:3], 1'b0, w_sysreg_psr_info_data[1:0]} : (
 															(iFREE_SYSREG_CLR_IRQ_MODE)? w_sysreg_ppsr_info_data : iWB_DATA
 														);
 														
@@ -731,8 +727,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_spr_regist_valid), .iREGIST_DATA(w_sysreg_spr_regist_data), 
 		.oINFO_DATA(w_sysreg_spr_info_data)
 	);
-	assign		w_sysreg_spr_regist_valid		=		((!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_SPR) || !iFREE_PIPELINE_STOP && iWB_SPR_WRITEBACK && iWB_VALID);
-	assign		w_sysreg_spr_regist_data		=		(!iFREE_PIPELINE_STOP && iWB_SPR_WRITEBACK && iWB_VALID)? iWB_SPR : iWB_DATA;
+	assign w_sysreg_spr_regist_valid = ((!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_SPR) || !iFREE_PIPELINE_STOP && iWB_SPR_WRITEBACK && iWB_VALID);
+	assign w_sysreg_spr_regist_data = (!iFREE_PIPELINE_STOP && iWB_SPR_WRITEBACK && iWB_VALID)? iWB_SPR : iWB_DATA;
 			
 			
 	//IDTR
@@ -741,8 +737,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_idtr_regist_valid), .iREGIST_DATA(w_sysreg_idtr_regist_data), 
 		.oINFO_DATA(w_sysreg_idtr_info_data)
 	);
-	assign		w_sysreg_idtr_regist_valid		=		!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_IDTR;
-	assign		w_sysreg_idtr_regist_data		=		iWB_DATA;
+	assign w_sysreg_idtr_regist_valid = !iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_IDTR;
+	assign w_sysreg_idtr_regist_data = iWB_DATA;
 	
 	//FI0R
 	system_register FI0R (
@@ -752,34 +748,34 @@ module dispatch
 	);
 	
 	//PDTR : Page Directory Table Register
-	system_register PDTR	(
+	system_register PDTR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_pdtr_regist_valid), .iREGIST_DATA(w_sysreg_pdtr_regist_data), 
 		.oINFO_DATA(w_sysreg_pdtr_info_data)
 	);
-	assign		w_sysreg_pdtr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PDTR);
-	assign		w_sysreg_pdtr_regist_data		=		iWB_DATA;	
+	assign w_sysreg_pdtr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PDTR);
+	assign w_sysreg_pdtr_regist_data = iWB_DATA;	
 	
 	//TISR
-	system_register TISR	(
+	system_register TISR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_tisr_regist_valid), .iREGIST_DATA(w_sysreg_tisr_regist_data), 
 		.oINFO_DATA(w_sysreg_tisr_info_data)
 	);
-	assign		w_sysreg_tisr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_TISR);
-	assign		w_sysreg_tisr_regist_data		=		iWB_DATA;	
+	assign w_sysreg_tisr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_TISR);
+	assign w_sysreg_tisr_regist_data = iWB_DATA;	
 	
 	//KPDTR
-	system_register KPDTR	(
+	system_register KPDTR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_kpdtr_regist_valid), .iREGIST_DATA(w_sysreg_kpdtr_regist_data), 
 		.oINFO_DATA(w_sysreg_kpdtr_info_data)
 	);
-	assign		w_sysreg_kpdtr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_KPDTR);
-	assign		w_sysreg_kpdtr_regist_data		=		iWB_DATA;	
+	assign w_sysreg_kpdtr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_KPDTR);
+	assign w_sysreg_kpdtr_regist_data = iWB_DATA;	
 	
 	//IOSR
-	system_register IOSR	(
+	system_register IOSR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(iSYSREGINFO_IOSR_VALID), .iREGIST_DATA(iSYSREGINFO_IOSR), 
 		.oINFO_DATA(w_sysreg_iosr_info_data)
@@ -787,13 +783,13 @@ module dispatch
 	
 	
 	//PPSR : Previous Program Status Register
-	system_register PPSR	(
+	system_register PPSR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_ppsr_regist_valid), .iREGIST_DATA(w_sysreg_ppsr_regist_data), 
 		.oINFO_DATA(w_sysreg_ppsr_info_data)
 	);
-	assign		w_sysreg_ppsr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPSR) || iFREE_SYSREG_SET_IRQ_MODE;
-	assign		w_sysreg_ppsr_regist_data		=		(iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_psr_info_data : iWB_DATA;
+	assign w_sysreg_ppsr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPSR) || iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_ppsr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_psr_info_data : iWB_DATA;
 
 
 	//PPCR : Previous Program Counter
@@ -802,8 +798,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ppcr_regist_valid), .iREGIST_DATA(w_sysreg_ppcr_regist_data), 
 		.oINFO_DATA(w_sysreg_ppcr_info_data)
 	);
-	assign		w_sysreg_ppcr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iFREE_PPCR_SET;
-	assign		w_sysreg_ppcr_regist_data		=		(iFREE_PPCR_SET)? iFREE_PPCR : iWB_DATA;
+	assign w_sysreg_ppcr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iFREE_PPCR_SET;
+	assign w_sysreg_ppcr_regist_data = (iFREE_PPCR_SET)? iFREE_PPCR : iWB_DATA;
 	
 	
 	//PPDTR : Previous Page Directry Table Register
@@ -813,8 +809,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ppdtr_regist_valid), .iREGIST_DATA(w_sysreg_ppdtr_regist_data), 
 		.oINFO_DATA(w_sysreg_ppdtr_info_data)
 	);
-	assign		w_sysreg_ppdtr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPDTR) || iFREE_SYSREG_SET_IRQ_MODE;
-	assign		w_sysreg_ppdtr_regist_data		=		(iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_pdtr_info_data : iWB_DATA;
+	assign w_sysreg_ppdtr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPDTR) || iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_ppdtr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_pdtr_info_data : iWB_DATA;
 
 	//PFLAGR : Previous Flag Register
 	system_register PFLAGR(
@@ -829,19 +825,19 @@ module dispatch
 
 	
 	//PTIDR : Previous Task Id Register
-	system_register PTIDR	(
+	system_register PTIDR (
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_ptidr_regist_valid), .iREGIST_DATA(w_sysreg_ptidr_regist_data), 
 		.oINFO_DATA(w_sysreg_ptidr_info_data)
 	);
-	assign		w_sysreg_ptidr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PTIDR) || iFREE_SYSREG_SET_IRQ_MODE;
-	assign		w_sysreg_ptidr_regist_data		=		(iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_tidr_info_data : iWB_DATA;
+	assign w_sysreg_ptidr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PTIDR) || iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_ptidr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_tidr_info_data : iWB_DATA;
 
 
 	//FRCR
-	wire			frcr_64bit_write_condition;
-	wire	[63:0]	frcr_64bit_timer;
-	assign			frcr_64bit_write_condition		=	(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR);
+	wire frcr_64bit_write_condition;
+	wire [63:0] frcr_64bit_timer;
+	assign frcr_64bit_write_condition = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR);
 
 	
 	frcr_timer FRCR(
@@ -854,7 +850,7 @@ module dispatch
 	
 	
 	//FRCLR
-	system_register FRCLR	(
+	system_register FRCLR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_frclr_regist_valid), 
@@ -862,13 +858,13 @@ module dispatch
 		.oINFO_DATA(w_sysreg_frclr_info_data)
 	);
 	
-	assign		w_sysreg_frclr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR) || 
+	assign w_sysreg_frclr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR) || 
 														(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR2FRCXR);
-	assign		w_sysreg_frclr_regist_data		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR)? iWB_DATA : frcr_64bit_timer[31:0];
+	assign w_sysreg_frclr_regist_data = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR)? iWB_DATA : frcr_64bit_timer[31:0];
 	
 
 	//FRCHR
-	system_register FRCHR	(
+	system_register FRCHR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET),
 		.iREGIST_DATA_VALID(w_sysreg_frchr_regist_valid), 
@@ -877,9 +873,9 @@ module dispatch
 	);
 	
 	
-	assign		w_sysreg_frchr_regist_valid		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR) || 
+	assign w_sysreg_frchr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR) || 
 														(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR2FRCXR);
-	assign		w_sysreg_frchr_regist_data		=		(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR)? iWB_DATA : frcr_64bit_timer[63:32];
+	assign w_sysreg_frchr_regist_data = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR)? iWB_DATA : frcr_64bit_timer[63:32];
 	
 
 	
@@ -1017,7 +1013,7 @@ module dispatch
 	assign oSYSREG_PPCR = w_sysreg_ppcr_info_data;
 	assign oSYSREG_SPR = w_sysreg_spr_info_data;
 	
-	assign	oPREVIOUS_LOCK = iNEXT_LOCK;//this_lock;
+	assign oPREVIOUS_LOCK = iNEXT_LOCK;//this_lock;
 	
 endmodule
 

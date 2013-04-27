@@ -4,65 +4,65 @@
 
 
 module l1_data_cache(
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Remove
-		input iREMOVE,
-		input iCACHE_FLASH,
+		input wire iREMOVE,
+		input wire iCACHE_FLASH,
 		//IOSR
-		input iSYSINFO_IOSR_VALID,
-		input [31:0] iSYSINFO_IOSR,
+		input wire iSYSINFO_IOSR_VALID,
+		input wire [31:0] iSYSINFO_IOSR,
 		/****************************************
 		Load/Store Module
 		****************************************/
 		//Load Store -> Cache
-		input iLDST_REQ,
-		output oLDST_BUSY,
-		input [1:0] iLDST_ORDER,
-		input iLDST_RW,
-		input [31:0] iLDST_TID,
-		input [1:0] iLDST_MMUMOD,
-		input [31:0] iLDST_PDT,
-		input [31:0] iLDST_ADDR,
-		input [31:0] iLDST_DATA,
+		input wire iLDST_REQ,
+		output wire oLDST_BUSY,
+		input wire [1:0] iLDST_ORDER,
+		input wire iLDST_RW,
+		input wire [31:0] iLDST_TID,
+		input wire [1:0] iLDST_MMUMOD,
+		input wire [31:0] iLDST_PDT,
+		input wire [31:0] iLDST_ADDR,
+		input wire [31:0] iLDST_DATA,
 		//Cache -> Load Store
-		output oLDST_VALID,
-		output oLDST_PAGEFAULT,
-		output [13:0] oLDST_MMU_FLAGS,
-		output [31:0] oLDST_DATA,
+		output wire oLDST_VALID,
+		output wire oLDST_PAGEFAULT,
+		output wire [13:0] oLDST_MMU_FLAGS,
+		output wire [31:0] oLDST_DATA,
 		/****************************************
 		Data Memory
 		****************************************/
 		//Req
-		output oDATA_REQ,
-		input iDATA_LOCK,
-		output [1:0] oDATA_ORDER,
-		output oDATA_RW,		//0=Write 1=Read
-		output [13:0] oDATA_TID,
-		output [1:0] oDATA_MMUMOD,
-		output [31:0] oDATA_PDT,
-		output [31:0] oDATA_ADDR,
+		output wire oDATA_REQ,
+		input wire iDATA_LOCK,
+		output wire [1:0] oDATA_ORDER,
+		output wire oDATA_RW,		//0=Write 1=Read
+		output wire [13:0] oDATA_TID,
+		output wire [1:0] oDATA_MMUMOD,
+		output wire [31:0] oDATA_PDT,
+		output wire [31:0] oDATA_ADDR,
 		//This -> Data RAM
-		output [31:0] oDATA_DATA,
+		output wire [31:0] oDATA_DATA,
 		//Data RAM -> This
-		input iDATA_VALID,
-		input iDATA_PAGEFAULT,
-		input [27:0] iDATA_MMU_FLAGS,
-		input [63:0] iDATA_DATA,
+		input wire iDATA_VALID,
+		input wire iDATA_PAGEFAULT,
+		input wire [27:0] iDATA_MMU_FLAGS,
+		input wire [63:0] iDATA_DATA,
 		/****************************************
 		IO
 		****************************************/
 		//Req
-		output oIO_REQ,
-		input iIO_BUSY,
-		output [1:0] oIO_ORDER,
-		output oIO_RW,			//0=Write 1=Read
-		output [31:0] oIO_ADDR,
+		output wire oIO_REQ,
+		input wire iIO_BUSY,
+		output wire [1:0] oIO_ORDER,
+		output wire oIO_RW,			//0=Write 1=Read
+		output wire [31:0] oIO_ADDR,
 		//Write
-		output [31:0] oIO_DATA,
+		output wire [31:0] oIO_DATA,
 		//Rec
-		input iIO_VALID,
-		input [31:0] iIO_DATA		
+		input wire iIO_VALID,
+		input wire [31:0] iIO_DATA		
 	);
 	
 	//IO Start Address Buffer
@@ -70,13 +70,13 @@ module l1_data_cache(
 	reg [31:0] b_io_startaddr;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_io_startaddr_valid	<=		1'b0;	
-			b_io_startaddr			<=		{32{1'b0}};
+			b_io_startaddr_valid <= 1'b0;	
+			b_io_startaddr <= {32{1'b0}};
 		end
 		else begin
 			if(iSYSINFO_IOSR_VALID)begin
-				b_io_startaddr_valid	<=		1'b1;
-				b_io_startaddr			<=		iSYSINFO_IOSR;
+				b_io_startaddr_valid <= 1'b1;
+				b_io_startaddr <= iSYSINFO_IOSR;
 			end
 		end
 	end

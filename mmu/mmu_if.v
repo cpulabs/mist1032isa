@@ -3,44 +3,44 @@
 
 
 module mmu_if(
-		input iCLOCK,
-		input inRESET,
-		input iFREE_TLB_FLUSH,
+		input wire iCLOCK,
+		input wire inRESET,
+		input wire iFREE_TLB_FLUSH,
 		/*************************
 		To Core
 		*************************/
 		//Core -> This
-		input iCORE_REQ,
-		output oCORE_LOCK,
-		input iCORE_DATA_STORE_ACK,
-		input [1:0] iCORE_MMU_MODE,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
-		input [31:0] iCORE_PDT,			//Page Table Register
-		input [1:0] iCORE_ORDER,
-		input iCORE_RW,
-		input [31:0] iCORE_ADDR,
-		input [31:0] iCORE_DATA,
+		input wire iCORE_REQ,
+		output wire oCORE_LOCK,
+		input wire iCORE_DATA_STORE_ACK,
+		input wire [1:0] iCORE_MMU_MODE,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		input wire [31:0] iCORE_PDT,			//Page Table Register
+		input wire [1:0] iCORE_ORDER,
+		input wire iCORE_RW,
+		input wire [31:0] iCORE_ADDR,
+		input wire [31:0] iCORE_DATA,
 		//This -> Core
-		output oCORE_REQ,
-		input iCORE_LOCK,
-		output oCORE_STORE_ACK,
-		output oCORE_PAGE_FAULT,	
-		output oCORE_QUEUE_FLUSH,	
-		output [63:0] oCORE_DATA,
-		output [27:0] oCORE_MMU_FLAGS,
+		output wire oCORE_REQ,
+		input wire iCORE_LOCK,
+		output wire oCORE_STORE_ACK,
+		output wire oCORE_PAGE_FAULT,	
+		output wire oCORE_QUEUE_FLUSH,	
+		output wire [63:0] oCORE_DATA,
+		output wire [27:0] oCORE_MMU_FLAGS,
 		/************************
 		To Memory
 		************************/
 		//This -> Memory
-		output oMEMORY_REQ,
-		input iMEMORY_LOCK,
-		output [1:0] oMEMORY_ORDER,
-		output oMEMORY_RW,
-		output [31:0] oMEMORY_ADDR,
-		output [31:0] oMEMORY_DATA,
+		output wire oMEMORY_REQ,
+		input wire iMEMORY_LOCK,
+		output wire [1:0] oMEMORY_ORDER,
+		output wire oMEMORY_RW,
+		output wire [31:0] oMEMORY_ADDR,
+		output wire [31:0] oMEMORY_DATA,
 		//Memory -> This
-		input iMEMORY_REQ,
-		output oMEMORY_LOCK,
-		input [63:0] iMEMORY_DATA
+		input wire iMEMORY_REQ,
+		output wire oMEMORY_LOCK,
+		input wire [63:0] iMEMORY_DATA
 	);
 	
 	localparam L_PARAM_STT_PFAULT_IDLE = 2'h0;

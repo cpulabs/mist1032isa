@@ -13,20 +13,20 @@
 
 module mul_booth32(
 		//iDATA
-		input [31:0] iDATA_0,
-		input [31:0] iDATA_1,
+		input wire [31:0] iDATA_0,
+		input wire [31:0] iDATA_1,
 		//oDATA
-		output [63:0] oDATA,
-		output oHSF,
-		output oHOF,				
-		output oHCF,
-		output oHPF,
-		output oHZF,
-		output oLSF,
-		output oLOF,				
-		output oLCF,
-		output oLPF,
-		output oLZF
+		output wire [63:0] oDATA,
+		output wire oHSF,
+		output wire oHOF,				
+		output wire oHCF,
+		output wire oHPF,
+		output wire oHZF,
+		output wire oLSF,
+		output wire oLOF,				
+		output wire oLCF,
+		output wire oLPF,
+		output wire oLZF
 	);
 				
 

@@ -18,22 +18,22 @@ module tlb
 		parameter LRU_TIMER_N = 10
 	)(
 		//System
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Core Info
-		input iREMOVE,			
+		input wire iREMOVE,			
 		//Read
-		input iRD_REQ,
-		input [31:0] iRD_ADDR,	//[31:14]Tag([31:17]Address Tag | [16:15]Index | [14]Line:none) | [13:0]None
-		output oRD_VALID,
-		output oRD_HIT,
-		output [27:0] oRD_FLAGS,
-		output [63:0] oRD_PHYS_ADDR,
+		input wire iRD_REQ,
+		input wire [31:0] iRD_ADDR,	//[31:14]Tag([31:17]Address Tag | [16:15]Index | [14]Line:none) | [13:0]None
+		output wire oRD_VALID,
+		output wire oRD_HIT,
+		output wire [27:0] oRD_FLAGS,
+		output wire [63:0] oRD_PHYS_ADDR,
 		//Write
-		input iWR_REQ,
-		input [31:0] iWR_ADDR,
-		input [27:0] iWR_FLAGS,			
-		input [63:0] iWR_PHYS_ADDR
+		input wire iWR_REQ,
+		input wire [31:0] iWR_ADDR,
+		input wire [27:0] iWR_FLAGS,			
+		input wire [63:0] iWR_PHYS_ADDR
 	);
 				
 				
@@ -41,18 +41,18 @@ module tlb
 	Register and Wire
 	********************************************/
 	//Output Buffer
-	reg					b_rd_hit;
-	reg		[6:0]		b_rd_way;
-	reg		[1:0]		b_rd_index;
+	reg b_rd_hit;
+	reg [6:0] b_rd_way;
+	reg [1:0] b_rd_index;
 	//Memory Control
-	wire	[1:0]		write_index;
-	wire	[1:0]		write_way;
-	wire	[1:0]		read_index;
-	wire				read_hit;
-	wire	[1:0]		read_way;
-	wire				this_read_lock;
+	wire [1:0] write_index;
+	wire [1:0] write_way;
+	wire [1:0] read_index;
+	wire read_hit;
+	wire [1:0] read_way;
+	wire this_read_lock;
 	//Generate
-	integer		i;
+	integer i;
 	//Memory Cell
 	/*
 	reg		[1:0]	b_status0[0:3];		//0:Non Valid
@@ -99,15 +99,15 @@ module tlb
 	********************************************/
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_rd_hit		<=		1'h0;
-			b_rd_way		<=		2'h0;
-			b_rd_index		<=		2'h0;
+			b_rd_hit <= 1'h0;
+			b_rd_way <= 2'h0;
+			b_rd_index <= 2'h0;
 		end
 		else begin
 			if(!this_read_lock)begin
-				b_rd_hit		<=		read_hit;
-				b_rd_way		<=		read_way;
-				b_rd_index		<=		read_index;
+				b_rd_hit <= read_hit;
+				b_rd_way <= read_way;
+				b_rd_index <= read_index;
 			end
 		end
 	end
@@ -116,23 +116,23 @@ module tlb
 	/********************************************
 	Controll
 	********************************************/
-	assign				write_index				=		iWR_ADDR[16:15];
+	assign write_index = iWR_ADDR[16:15];
 	
-	assign				write_way				=		func_write_way_search(b_status0[write_index], b_status1[write_index], b_status2[write_index], b_status3[write_index]);
-	assign				read_index				=		iRD_ADDR[1:0];
-	assign				{read_hit, read_way}	=		func_hit_check(
-															iRD_ADDR[31:17],
-															b_status0[read_index],
-															b_status1[read_index],
-															b_status2[read_index],
-															b_status3[read_index],
-															b_tag0[read_index],
-															b_tag1[read_index],
-															b_tag2[read_index],
-															b_tag3[read_index]
-														);
+	assign write_way = func_write_way_search(b_status0[write_index], b_status1[write_index], b_status2[write_index], b_status3[write_index]);
+	assign read_index = iRD_ADDR[1:0];
+	assign {read_hit, read_way}	= func_hit_check(
+													iRD_ADDR[31:17],
+													b_status0[read_index],
+													b_status1[read_index],
+													b_status2[read_index],
+													b_status3[read_index],
+													b_tag0[read_index],
+													b_tag1[read_index],
+													b_tag2[read_index],
+													b_tag3[read_index]
+												);
 				
-	assign				this_read_lock			=		1'b0;
+	assign this_read_lock = 1'b0;
 	
 	/********************************************
 	Function

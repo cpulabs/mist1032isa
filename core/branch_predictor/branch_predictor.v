@@ -1,24 +1,22 @@
 
-
-
 `default_nettype none 
 
 module branch_predictor(
-		input iCLOCK,
-		input inRESET,
-		input iFLUSH,
+		input wire iCLOCK,
+		input wire inRESET,
+		input wire iFLUSH,
 		//Search
-		input iSEARCH_STB,
-		input [31:0] iSEARCH_INST_ADDR,
-		output oSEARCH_VALID,
-		input iSEARCH_LOCK,
-		output oSRARCH_PREDICT_BRANCH,
-		output [31:0] oSEARCH_ADDR,
+		input wire iSEARCH_STB,
+		input wire [31:0] iSEARCH_INST_ADDR,
+		output wire oSEARCH_VALID,
+		input wire iSEARCH_LOCK,
+		output wire oSRARCH_PREDICT_BRANCH,
+		output wire [31:0] oSEARCH_ADDR,
 		//Jump
-		input iJUMP_STB,
-		input iJUMP_HIT,
-		input [31:0] iJUMP_ADDR,		
-		input [31:0] iJUMP_INST_ADDR
+		input wire iJUMP_STB,
+		input wire iJUMP_HIT,
+		input wire [31:0] iJUMP_ADDR,		
+		input wire [31:0] iJUMP_INST_ADDR
 	);
 	
 	

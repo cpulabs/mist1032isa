@@ -4,11 +4,11 @@
 module mist1032isa_uart_transmitter_async2sync #(
 		parameter N = 1
 	)(
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Ena-Signal
-		input [N-1:0] iSIGNAL,
-		output [N-1:0] oSIGNAL
+		input wire [N-1:0] iSIGNAL,
+		output wire [N-1:0] oSIGNAL
 	);
 	
 	reg [N-1:0] b_buffer;

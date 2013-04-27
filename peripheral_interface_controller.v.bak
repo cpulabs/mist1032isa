@@ -89,9 +89,9 @@ module peripheral_interface_controller(
 	/******************************************************************************************
 	IOSR
 	******************************************************************************************/
-	assign gci_use_size = 33'h100000000 - b_iosize_gci_size;
-	assign oSYSINFO_IOSR_VALID = b_iosize_gci_size_valid;
-	assign oSYSINFO_IOSR = (b_iosize_gci_size_valid)? gci_use_size[31:0] + 32'h00000200 : 32'h00000000;
+	assign gci_use_size　=　33'h100000000 - b_iosize_gci_size;
+	assign oSYSINFO_IOSR_VALID　=　b_iosize_gci_size_valid;
+	assign oSYSINFO_IOSR　=　(b_iosize_gci_size_valid)? gci_use_size[31:0] + 32'h00000200 : 32'h00000000;
 	
 	
 	/******************************************************************************************

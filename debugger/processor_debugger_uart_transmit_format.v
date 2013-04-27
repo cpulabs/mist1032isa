@@ -11,19 +11,19 @@ module processor_debugger_uart_transmit_format #(
 		parameter STOP_DATA = 8'h24		//\n	//8'h26	//&
 		//parameter SEND_DATAMODE = 1'b1	//0:Binary 1:ASCII
 	)(
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//
-		input iTXD_REQ,
-		output oTXD_BUSY,
-		input iTXD_START_EN,
-		input iTXD_SPLIT_EN,
-		input iTXD_STOP_EN,
-		input [31:0] iTXD_DATA,
+		input wire iTXD_REQ,
+		output wire oTXD_BUSY,
+		input wire iTXD_START_EN,
+		input wire iTXD_SPLIT_EN,
+		input wire iTXD_STOP_EN,
+		input wire [31:0] iTXD_DATA,
 		//Uart 
-		output oUART_REQ,
-		input iUART_BUSY,
-		output [7:0] oUART_DATA
+		output wire oUART_REQ,
+		input wire iUART_BUSY,
+		output wire [7:0] oUART_DATA
 	);
 	
 	

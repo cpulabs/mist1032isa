@@ -1,72 +1,67 @@
 /****************************************
-	MIST1032SA Processor
-	
-	
-	Make	:	2011/10/04
-	Update	:	2013/01/19
+MIST1032ISA Processor
 ****************************************/
 `default_nettype none	
-//`include "global.h"
 `include "processor.h"
 
 module mist1032isa(
 		/****************************************
 		System
 		****************************************/
-		input iCORE_CLOCK,
-		input iBUS_CLOCK,
-		input iDPS_CLOCK,
-		input inRESET,
+		input wire iCORE_CLOCK,
+		input wire iBUS_CLOCK,
+		input wire iDPS_CLOCK,
+		input wire inRESET,
 		/****************************************
 		SCI
 		****************************************/
-		output oSCI_TXD,
-		input iSCI_RXD,
+		output wire oSCI_TXD,
+		input wire iSCI_RXD,
 		/****************************************
 		Memory BUS
 		****************************************/
 		//Req
-		output oMEMORY_REQ,
-		input iMEMORY_LOCK,
-		output [1:0] oMEMORY_ORDER,				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
-		output oMEMORY_RW,						//1:Write | 0:Read
-		output [31:0] oMEMORY_ADDR,
+		output wire oMEMORY_REQ,
+		input wire iMEMORY_LOCK,
+		output wire [1:0] oMEMORY_ORDER,				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		output wire oMEMORY_RW,						//1:Write | 0:Read
+		output wire [31:0] oMEMORY_ADDR,
 		//This -> Data RAM
-		output [31:0] oMEMORY_DATA,
+		output wire [31:0] oMEMORY_DATA,
 		//Data RAM -> This
-		input iMEMORY_VALID,
-		output oMEMORY_BUSY,
-		input [63:0] iMEMORY_DATA,	
+		input wire iMEMORY_VALID,
+		output wire oMEMORY_BUSY,
+		input wire [63:0] iMEMORY_DATA,	
 		/****************************************
 		GCI BUS
 		****************************************/
 		//Request
-		output oGCI_REQ,					//Input
-		input iGCI_BUSY,
-		output oGCI_RW,						//0=Read : 1=Write
-		output [31:0] oGCI_ADDR,
-		output [31:0] oGCI_DATA,
+		output wire oGCI_REQ,					//Input
+		input wire iGCI_BUSY,
+		output wire oGCI_RW,						//0=Read : 1=Write
+		output wire [31:0] oGCI_ADDR,
+		output wire [31:0] oGCI_DATA,
 		//Return
-		input iGCI_REQ,						//Output
-		output oGCI_BUSY,
-		input [31:0] iGCI_DATA,
+		input wire iGCI_REQ,						//Output
+		output wire oGCI_BUSY,
+		input wire [31:0] iGCI_DATA,
 		//Interrupt
-		input iGCI_IRQ_REQ,
-		input [5:0] iGCI_IRQ_NUM,
-		output oGCI_IRQ_ACK,
+		input wire iGCI_IRQ_REQ,
+		input wire [5:0] iGCI_IRQ_NUM,
+		output wire oGCI_IRQ_ACK,
 		//Interrupt Controll
-		output oIO_IRQ_CONFIG_TABLE_REQ,
-		output [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
-		output oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
-		output oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
-		output [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,
-		output [31:0] oDEBUG_PC,
-		output [31:0] oDEBUG0,
+		output wire oIO_IRQ_CONFIG_TABLE_REQ,
+		output wire [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
+		output wire oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
+		output wire oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
+		output wire [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,
+		output wire [31:0] oDEBUG_PC,
+		output wire [31:0] oDEBUG0,
 		/****************************************
 		Debug
 		****************************************/
-		input iDEBUG_UART_RXD,
-		output oDEBUG_UART_TXD
+		input wire iDEBUG_UART_RXD,
+		output wire oDEBUG_UART_TXD
 	);
 			
 			
@@ -460,8 +455,8 @@ module mist1032isa(
 	/********************************************************************************
 	DPS
 	********************************************************************************/
-	wire	[5:0]	core2dps_irq_tables_entry_tmp;
-	assign			core2dps_irq_tables_entry_tmp		=	core2io_irq_tables_entry - 6'd46;
+	wire [5:0] core2dps_irq_tables_entry_tmp;
+	assign core2dps_irq_tables_entry_tmp = core2io_irq_tables_entry - 6'd46;
 	
 	default_peripheral_system DPS(
 		.iCLOCK(iBUS_CLOCK),
@@ -524,9 +519,6 @@ module mist1032isa(
 			endcase
 		end
 	end
-	
-	
-
 	
 endmodule
 

@@ -32,19 +32,19 @@ module mist1032isa_async_fifo
 	)
 	(
 		//System
-		input inRESET,
+		input wire inRESET,
 		//Remove
-		input iREMOVE,
+		input wire iREMOVE,
 		//WR
-		input iWR_CLOCK,
-		input iWR_EN,
-		input [N-1:0] iWR_DATA,
-		output oWR_FULL,
+		input wire iWR_CLOCK,
+		input wire iWR_EN,
+		input wire [N-1:0] iWR_DATA,
+		output wire oWR_FULL,
 		//RD
-		input iRD_CLOCK,
-		input iRD_EN,
-		output [N-1:0] oRD_DATA,
-		output oRD_EMPTY
+		input wire iRD_CLOCK,
+		input wire iRD_EN,
+		output wire [N-1:0] oRD_DATA,
+		output wire oRD_EMPTY
 	);	
 
 	//Full

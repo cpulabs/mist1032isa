@@ -23,31 +23,31 @@
 
 module dps_uart(
 		//Clock
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Baudrate
-		input [3:0] iBAUDRATE,
+		input wire [3:0] iBAUDRATE,
 		//Transmit
-		input iTX_EN,
-		input iTX_CLEAR,
-		input iTX_REQ,
-		output oTX_BUSY,
-		input [7:0] iTX_DATA,
-		output [3:0] oTX_BUFF_CNT,
-		output oTX_TRANSMIT,
+		input wire iTX_EN,
+		input wire iTX_CLEAR,
+		input wire iTX_REQ,
+		output wire oTX_BUSY,
+		input wire [7:0] iTX_DATA,
+		output wire [3:0] oTX_BUFF_CNT,
+		output wire oTX_TRANSMIT,
 		//Receive
-		input iRX_EN,
-		input iRX_CLEAR,
-		input iRX_REQ,
-		output oRX_EMPTY,
-		output [7:0] oRX_DATA,
-		output [3:0] oRX_BUFF_CNT,
-		output oRX_RECEIVE,
+		input wire iRX_EN,
+		input wire iRX_CLEAR,
+		input wire iRX_REQ,
+		output wire oRX_EMPTY,
+		output wire [7:0] oRX_DATA,
+		output wire [3:0] oRX_BUFF_CNT,
+		output wire oRX_RECEIVE,
 		//IRQ
-		output oIRQ_VALID,
+		output wire oIRQ_VALID,
 		//UART
-		output oUART_TXD,
-		input iUART_RXD
+		output wire oUART_TXD,
+		input wire iUART_RXD
 	);
 	
 	

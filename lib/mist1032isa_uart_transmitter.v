@@ -31,16 +31,16 @@ module mist1032isa_uart_transmitter #(
 		parameter BAUDRATE_COUNTER = 20'd108	//(Clock / Baudrate) / 4 - 1
 	)(
 		//Clock
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//External Baudrate Timing
-		input [19:0] iEXTBAUD_COUNT,
+		input wire [19:0] iEXTBAUD_COUNT,
 		//Request
-		input iTX_REQ,
-		output oTX_BUSY,
-		input [7:0] iTX_DATA,
+		input wire iTX_REQ,
+		output wire oTX_BUSY,
+		input wire [7:0] iTX_DATA,
 		//UART
-		output oUART_TXD
+		output wire oUART_TXD
 	);	
 	
 

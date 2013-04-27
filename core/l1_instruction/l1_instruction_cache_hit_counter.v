@@ -1,13 +1,13 @@
 `default_nettype none 
 
 module l1_instruction_cache_counter(
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Hit Infomation
-		input iCACHE_VALID,
-		input iCACHE_HIT,
+		input wire iCACHE_VALID,
+		input wire iCACHE_HIT,
 		//Infomation
-		output [6:0] oINFO_COUNT
+		output wire [6:0] oINFO_COUNT
 	);
 
 	reg [99:0] b_counter;

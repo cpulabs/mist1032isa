@@ -42,28 +42,28 @@ Address
 
 module utim64(
 		//System
-		input				iIF_CLOCK,				//Global Clock
-		input				iTIMER_CLOCK,
-		input				inRESET,
+		input wire iIF_CLOCK,				//Global Clock
+		input wire iTIMER_CLOCK,
+		input wire inRESET,
 		//Counter
-		input				iREQ_VALID,
-		output				oREQ_BUSY,
-		input				iREQ_RW,
-		input	[3:0]		iREQ_ADDR,
-		input	[31:0]		iREQ_DATA,
-		output				oREQ_VALID,
-		output	[31:0]		oREQ_DATA,
+		input wire iREQ_VALID,
+		output wire oREQ_BUSY,
+		input wire iREQ_RW,
+		input wire [3:0] iREQ_ADDR,
+		input wire [31:0] iREQ_DATA,
+		output wire oREQ_VALID,
+		output wire [31:0] oREQ_DATA,
 		//Interrupt
-		output	[3:0]		oIRQ_IRQ
+		output wire [3:0] oIRQ_IRQ
 	);
 	
-	wire				req_fifo_full;
-	wire				req_fifo_empty;
-	wire				req_fifo_rw;
-	wire	[31:0]		req_fifo_data;
-	wire	[3:0]		req_fifo_addr;
-	wire				req_fifo_read_condition;
-	assign				req_fifo_read_condition		=		!req_fifo_empty && (req_fifo_rw || (!req_fifo_rw && !out_fifo_full));
+	wire req_fifo_full;
+	wire req_fifo_empty;
+	wire req_fifo_rw;
+	wire [31:0] req_fifo_data;
+	wire [3:0] req_fifo_addr;
+	wire req_fifo_read_condition;
+	assign req_fifo_read_condition = !req_fifo_empty && (req_fifo_rw || (!req_fifo_rw && !out_fifo_full));
 	mist1032isa_async_fifo #(37, 4, 2) FIFO_REQ(
 		//System
 		.inRESET(inRESET),
@@ -81,39 +81,32 @@ module utim64(
 		.oRD_EMPTY(req_fifo_empty)
 	);
 	
-	
-	wire		write_condition;
-	wire		read_condition;
-	assign		write_condition		=		req_fifo_read_condition && req_fifo_rw;
-	assign		read_condition		=		req_fifo_read_condition && !req_fifo_rw;
+	wire write_condition = req_fifo_read_condition && req_fifo_rw;
+	wire read_condition = req_fifo_read_condition && !req_fifo_rw;
 
 	//Configlation Table
-	integer		i;
-	reg		[31:0]			b_config_register_list[0:14];
+	integer i;
+	reg [31:0] b_config_register_list[0:14];
 	always@(posedge iTIMER_CLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			for(i = 0; i < 15; i = i + 1)begin
-				b_config_register_list	[i]				=		32'h0;
+				b_config_register_list [i] <= 32'h0;
 			end
 		end
 		else begin
 			if(write_condition)begin
-				b_config_register_list	[req_fifo_addr]		=		req_fifo_data;
+				b_config_register_list [req_fifo_addr] <= req_fifo_data;
 			end
 		end
 	end
 	
 	//Main Counter
-	wire			main_config_write_cc;
-	assign			main_config_write_cc		=		(req_fifo_addr == `UTIM6XAMCFGR)? write_condition : 1'b0;
-	wire			main_counter_low_write_cc;
-	assign			main_counter_low_write_cc	=		(req_fifo_addr == `UTIM6XAMCR31_0)? write_condition : 1'b0;
-	wire			main_counter_high_write_cc;
-	assign			main_counter_high_write_cc	=		(req_fifo_addr == `UTIM6XAMCR63_32)? write_condition : 1'b0;
-	wire	[63:0]	main_counter_write_data;
-	assign			main_counter_write_data		=		(main_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
-	wire					main_counter_working;
-	wire		[63:0]		main_counter;
+	wire main_config_write_cc = (req_fifo_addr == `UTIM6XAMCFGR)? write_condition : 1'b0;
+	wire main_counter_low_write_cc = (req_fifo_addr == `UTIM6XAMCR31_0)? write_condition : 1'b0;
+	wire main_counter_high_write_cc = (req_fifo_addr == `UTIM6XAMCR63_32)? write_condition : 1'b0;
+	wire [63:0] main_counter_write_data = (main_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
+	wire main_counter_working;
+	wire [63:0] main_counter;
 	main_counter MAIN_COUNTER(		
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
@@ -127,15 +120,11 @@ module utim64(
 	);
 	
 	//Comparator0
-	wire			compare0_config_write_cc;
-	assign			compare0_config_write_cc		=		(req_fifo_addr == `UTIM64XACC0CFRG)? write_condition : 1'b0;
-	wire			compare0_counter_low_write_cc;
-	assign			compare0_counter_low_write_cc	=		(req_fifo_addr == `UTIM64XACC0R31_0)? write_condition : 1'b0;
-	wire			compare0_counter_high_write_cc;
-	assign			compare0_counter_high_write_cc	=		(req_fifo_addr == `UTIM64XACC0R63_32)? write_condition : 1'b0;
-	wire	[63:0]	compare0_counter_write_data;
-	assign			compare0_counter_write_data		=		(compare0_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
-	wire			compare0_irq;
+	wire compare0_config_write_cc = (req_fifo_addr == `UTIM64XACC0CFRG)? write_condition : 1'b0;
+	wire compare0_counter_low_write_cc = (req_fifo_addr == `UTIM64XACC0R31_0)? write_condition : 1'b0;
+	wire compare0_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC0R63_32)? write_condition : 1'b0;
+	wire [63:0] compare0_counter_write_data = (compare0_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
+	wire compare0_irq;
 	comparator_counter COMPARATOR0(
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
@@ -154,15 +143,11 @@ module utim64(
 	
 
 	//Comparator1
-	wire			compare1_config_write_cc;
-	assign			compare1_config_write_cc		=		(req_fifo_addr == `UTIM64XACC1CFRG)? write_condition : 1'b0;
-	wire			compare1_counter_low_write_cc;
-	assign			compare1_counter_low_write_cc	=		(req_fifo_addr == `UTIM64XACC1R31_0)? write_condition : 1'b0;
-	wire			compare1_counter_high_write_cc;
-	assign			compare1_counter_high_write_cc	=		(req_fifo_addr == `UTIM64XACC1R63_32)? write_condition : 1'b0;
-	wire	[63:0]	compare1_counter_write_data;
-	assign			compare1_counter_write_data		=		(compare1_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
-	wire			compare1_irq;
+	wire compare1_config_write_cc = (req_fifo_addr == `UTIM64XACC1CFRG)? write_condition : 1'b0;
+	wire compare1_counter_low_write_cc = (req_fifo_addr == `UTIM64XACC1R31_0)? write_condition : 1'b0;
+	wire compare1_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC1R63_32)? write_condition : 1'b0;
+	wire [63:0] compare1_counter_write_data = (compare1_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
+	wire compare1_irq;
 	comparator_counter COMPARATOR1(
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
@@ -181,14 +166,10 @@ module utim64(
 	
 
 	//Comparator2
-	wire			compare2_config_write_cc;
-	assign			compare2_config_write_cc		=		(req_fifo_addr == `UTIM64XACC2CFRG)? write_condition : 1'b0;
-	wire			compare2_counter_low_write_cc;
-	assign			compare2_counter_low_write_cc	=		(req_fifo_addr == `UTIM64XACC2R31_0)? write_condition : 1'b0;
-	wire			compare2_counter_high_write_cc;
-	assign			compare2_counter_high_write_cc	=		(req_fifo_addr == `UTIM64XACC2R63_32)? write_condition : 1'b0;
-	wire	[63:0]	compare2_counter_write_data;
-	assign			compare2_counter_write_data		=		(compare2_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
+	wire compare2_config_write_cc = (req_fifo_addr == `UTIM64XACC2CFRG)? write_condition : 1'b0;
+	wire compare2_counter_low_write_cc = (req_fifo_addr == `UTIM64XACC2R31_0)? write_condition : 1'b0;
+	wire compare2_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC2R63_32)? write_condition : 1'b0;
+	wire [63:0] compare2_counter_write_data = (compare2_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
 	wire			compare2_irq;
 	comparator_counter COMPARATOR2(
 		.iCLOCK(iTIMER_CLOCK),
@@ -207,15 +188,11 @@ module utim64(
 	);
 	
 	//Comparator3
-	wire			compare3_config_write_cc;
-	assign			compare3_config_write_cc		=		(req_fifo_addr == `UTIM64XACC3CFRG)? write_condition : 1'b0;
-	wire			compare3_counter_low_write_cc;
-	assign			compare3_counter_low_write_cc	=		(req_fifo_addr == `UTIM64XACC3R31_0)? write_condition : 1'b0;
-	wire			compare3_counter_high_write_cc;
-	assign			compare3_counter_high_write_cc	=		(req_fifo_addr == `UTIM64XACC3R63_32)? write_condition : 1'b0;
-	wire	[63:0]	compare3_counter_write_data;
-	assign			compare3_counter_write_data		=		(compare3_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
-	wire			compare3_irq;
+	wire compare3_config_write_cc = (req_fifo_addr == `UTIM64XACC3CFRG)? write_condition : 1'b0;
+	wire compare3_counter_low_write_cc = (req_fifo_addr == `UTIM64XACC3R31_0)? write_condition : 1'b0;
+	wire compare3_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC3R63_32)? write_condition : 1'b0;
+	wire [63:0] compare3_counter_write_data = (compare3_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
+	wire compare3_irq;
 	comparator_counter COMPARATOR3(
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
@@ -233,11 +210,11 @@ module utim64(
 	);
 	
 	//Output Buffer
-	wire				out_fifo_full;
-	wire				out_fifo_empty;
-	wire	[31:0]		out_fifo_data;
-	wire				out_fifo_read_condition;
-	assign				out_fifo_read_condition		=		!out_fifo_empty;
+	wire out_fifo_full;
+	wire out_fifo_empty;
+	wire [31:0] out_fifo_data;
+	wire out_fifo_read_condition;
+	assign out_fifo_read_condition = !out_fifo_empty;
 	mist1032isa_async_fifo #(32, 4, 2) FIFO_OUT(
 		//System
 		.inRESET(inRESET),
@@ -255,11 +232,11 @@ module utim64(
 		.oRD_EMPTY(out_fifo_empty)
 	);
 	
-	assign		oREQ_VALID		=		out_fifo_read_condition;
-	assign		oREQ_DATA		=		out_fifo_data;
+	assign oREQ_VALID = out_fifo_read_condition;
+	assign oREQ_DATA = out_fifo_data;
 	
-	assign		oREQ_BUSY		=		req_fifo_full;	
-	assign		oIRQ_IRQ		=		{compare3_irq, compare2_irq, compare1_irq, compare0_irq};
+	assign oREQ_BUSY = req_fifo_full;	
+	assign oIRQ_IRQ = {compare3_irq, compare2_irq, compare1_irq, compare0_irq};
 	
 endmodule
 

@@ -6,10 +6,10 @@
  
  
  module sys_reg(
-		input [4:0] iCMD,
-		input [31:0] iSOURCE0,
-		input [31:0] iSOURCE1,
-		output [31:0] oOUT
+		input wire [4:0] iCMD,
+		input wire [31:0] iSOURCE0,
+		input wire [31:0] iSOURCE1,
+		output wire [31:0] oOUT
 	);
 	
 

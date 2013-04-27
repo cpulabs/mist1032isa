@@ -6,12 +6,12 @@ module mist1032isa_async_fifo_double_flipflop
 	#(
 		parameter N = 1
 	)(
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Input
-		input [N-1:0] iREQ_DATA,
+		input wire [N-1:0] iREQ_DATA,
 		//Output
-		output [N-1:0] oOUT_DATA
+		output wire [N-1:0] oOUT_DATA
 	);
 	
 	

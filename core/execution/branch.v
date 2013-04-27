@@ -3,30 +3,30 @@
 `default_nettype none
 
 module branch(
-			input [31:0] iDATA_0,
-			input [31:0] iDATA_1,		
-			input [31:0] iPC,
-			input [4:0] iFLAG,
-			input [3:0] iCC,
-			input [4:0] iCMD,
-			output [31:0] oBRANCH_ADDR,
-			output oJUMP_VALID,
-			output oNOT_JUMP_VALID,
-			output oIB_VALID,
-			output oIDTS_VALID,
-			output oHALT_VALID
+		input wire [31:0] iDATA_0,
+		input wire [31:0] iDATA_1,		
+		input wire [31:0] iPC,
+		input wire [4:0] iFLAG,
+		input wire [3:0] iCC,
+		input wire [4:0] iCMD,
+		output wire [31:0] oBRANCH_ADDR,
+		output wire oJUMP_VALID,
+		output wire oNOT_JUMP_VALID,
+		output wire oIB_VALID,
+		output wire oIDTS_VALID,
+		output wire oHALT_VALID
 	);
 	
 	
-	assign		oBRANCH_ADDR		=		func_branch_addr(
-												iCMD,
-												iPC,
-												iDATA_1
-											);//(iCMD == `EXE_BRANCH_INTB)? iDATA_1 : ((iCMD == `EXE_BRANCH_BUR)? iDATA_1 + iPC : ((iCMD == `EXE_BRANCH_BR)? iDATA_1 + iPC : iDATA_1));
+	assign oBRANCH_ADDR = func_branch_addr(
+										iCMD,
+										iPC,
+										iDATA_1
+									);//(iCMD == `EXE_BRANCH_INTB)? iDATA_1 : ((iCMD == `EXE_BRANCH_BUR)? iDATA_1 + iPC : ((iCMD == `EXE_BRANCH_BR)? iDATA_1 + iPC : iDATA_1));
 	function [31:0] func_branch_addr;
-		input	[4:0]		func_cmd;
-		input	[31:0]		func_pc;
-		input	[31:0]		func_source1;
+		input [4:0] func_cmd;
+		input [31:0] func_pc;
+		input [31:0] func_source1;
 		begin
 			case(func_cmd)
 				`EXE_BRANCH_BUR:
@@ -65,97 +65,97 @@ module branch(
 	assign oHALT_VALID = (iCMD == `EXE_BRANCH_HALT)? 1'b1 : 1'b0;
 	
 	function func_ex_branch_check;
-		input	[3:0]	func_ex_branch_check_cc;
-		input	[4:0]	func_ex_branch_check_flag;
+		input [3:0] func_ex_branch_check_cc;
+		input [4:0] func_ex_branch_check_flag;
 		begin
 			case(func_ex_branch_check_cc)
-				`CC_AL : func_ex_branch_check	=	1'b1;
+				`CC_AL : func_ex_branch_check = 1'b1;
 				`CC_EQ : 
 					begin
 						if(func_ex_branch_check_flag[`FLAGS_ZF])begin
-							func_ex_branch_check	=	1'b1;
+							func_ex_branch_check = 1'b1;
 						end
 						else begin
-							func_ex_branch_check	=	1'b0;
+							func_ex_branch_check = 1'b0;
 						end
 					end
 				`CC_NEQ : 
 					begin
 						if(!func_ex_branch_check_flag[`FLAGS_ZF])begin
-							func_ex_branch_check	=	1'b1;
+							func_ex_branch_check = 1'b1;
 						end
 						else begin
-							func_ex_branch_check	=	1'b0;
+							func_ex_branch_check = 1'b0;
 						end
 					end
 				`CC_MI : 
 					begin
-						func_ex_branch_check	=	func_ex_branch_check_flag[`FLAGS_SF];
+						func_ex_branch_check = func_ex_branch_check_flag[`FLAGS_SF];
 					end
 				`CC_PL : 
 					begin
-						func_ex_branch_check	=	!func_ex_branch_check_flag[`FLAGS_SF];
+						func_ex_branch_check = !func_ex_branch_check_flag[`FLAGS_SF];
 					end
 				`CC_EN : 
 					begin
 						if(!func_ex_branch_check_flag[`FLAGS_PF])begin
-							func_ex_branch_check	=	1'b1;
+							func_ex_branch_check = 1'b1;
 						end
 						else begin
-							func_ex_branch_check	=	1'b0;
+							func_ex_branch_check = 1'b0;
 						end
 					end
 				`CC_ON : 
 					begin
 						if(func_ex_branch_check_flag[`FLAGS_PF])begin
-							func_ex_branch_check	=	1'b1;
+							func_ex_branch_check = 1'b1;
 						end
 						else begin
-							func_ex_branch_check	=	1'b0;
+							func_ex_branch_check = 1'b0;
 						end
 					end
 				`CC_OVF : 
 					begin
 						if(func_ex_branch_check_flag[`FLAGS_OF])begin
-							func_ex_branch_check	=	1'b1;
+							func_ex_branch_check = 1'b1;
 						end
 						else begin
-							func_ex_branch_check	=	1'b0;
+							func_ex_branch_check = 1'b0;
 						end
 					end
 				`CC_UEO : 
 					begin
-						func_ex_branch_check	=	func_ex_branch_check_flag[`FLAGS_CF];
+						func_ex_branch_check = func_ex_branch_check_flag[`FLAGS_CF];
 					end
 				`CC_UU : 
 					begin
-						func_ex_branch_check	=	!func_ex_branch_check_flag[`FLAGS_CF];
+						func_ex_branch_check = !func_ex_branch_check_flag[`FLAGS_CF];
 					end
 				`CC_UO : 
 					begin
-						func_ex_branch_check	=	func_ex_branch_check_flag[`FLAGS_CF] && !func_ex_branch_check_flag[`FLAGS_ZF];
+						func_ex_branch_check = func_ex_branch_check_flag[`FLAGS_CF] && !func_ex_branch_check_flag[`FLAGS_ZF];
 					end
 				`CC_UEU : 
 					begin
-						func_ex_branch_check	=	!func_ex_branch_check_flag[`FLAGS_CF] || func_ex_branch_check_flag[`FLAGS_ZF];
+						func_ex_branch_check = !func_ex_branch_check_flag[`FLAGS_CF] || func_ex_branch_check_flag[`FLAGS_ZF];
 					end
 				`CC_SEO : 
 					begin
-						func_ex_branch_check	=	(func_ex_branch_check_flag[`FLAGS_SF] && func_ex_branch_check_flag[`FLAGS_OF]) || (!func_ex_branch_check_flag[`FLAGS_SF] && !func_ex_branch_check_flag[`FLAGS_OF]);
+						func_ex_branch_check = (func_ex_branch_check_flag[`FLAGS_SF] && func_ex_branch_check_flag[`FLAGS_OF]) || (!func_ex_branch_check_flag[`FLAGS_SF] && !func_ex_branch_check_flag[`FLAGS_OF]);
 					end
 				`CC_SU : 
 					begin
-						func_ex_branch_check	=	(func_ex_branch_check_flag[`FLAGS_SF] && !func_ex_branch_check_flag[`FLAGS_OF]) || (!func_ex_branch_check_flag[`FLAGS_SF] && func_ex_branch_check_flag[`FLAGS_OF]);
+						func_ex_branch_check = (func_ex_branch_check_flag[`FLAGS_SF] && !func_ex_branch_check_flag[`FLAGS_OF]) || (!func_ex_branch_check_flag[`FLAGS_SF] && func_ex_branch_check_flag[`FLAGS_OF]);
 					end
 				`CC_SO : 
 					begin
-						func_ex_branch_check	=	!((func_ex_branch_check_flag[`FLAGS_SF] ^ func_ex_branch_check_flag[`FLAGS_OF]) || func_ex_branch_check_flag[`FLAGS_ZF]);//!func_ex_branch_check_flag[`FLAGS_ZF] || (func_ex_branch_check_flag[`FLAGS_SF] == func_ex_branch_check_flag[`FLAGS_OF]);
+						func_ex_branch_check = !((func_ex_branch_check_flag[`FLAGS_SF] ^ func_ex_branch_check_flag[`FLAGS_OF]) || func_ex_branch_check_flag[`FLAGS_ZF]);//!func_ex_branch_check_flag[`FLAGS_ZF] || (func_ex_branch_check_flag[`FLAGS_SF] == func_ex_branch_check_flag[`FLAGS_OF]);
 					end
 				`CC_SEU : 
 					begin
-						func_ex_branch_check	=	(func_ex_branch_check_flag[`FLAGS_SF] ^ func_ex_branch_check_flag[`FLAGS_OF]) || func_ex_branch_check_flag[`FLAGS_ZF];//func_ex_branch_check_flag[`FLAGS_ZF] || (func_ex_branch_check_flag[`FLAGS_SF] != func_ex_branch_check_flag[`FLAGS_OF]);
+						func_ex_branch_check = (func_ex_branch_check_flag[`FLAGS_SF] ^ func_ex_branch_check_flag[`FLAGS_OF]) || func_ex_branch_check_flag[`FLAGS_ZF];//func_ex_branch_check_flag[`FLAGS_ZF] || (func_ex_branch_check_flag[`FLAGS_SF] != func_ex_branch_check_flag[`FLAGS_OF]);
 					end
-				default : func_ex_branch_check	=	1'b1;
+				default : func_ex_branch_check = 1'b1;
 			endcase
 		end
 	endfunction

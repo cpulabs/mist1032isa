@@ -10,46 +10,44 @@
 `include "processor.h"
 `default_nettype none
 
-
-
 module l1_cache_64entry_4way_line64b_bus_8b_damy(
 		/********************************
 		System
 		********************************/
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Remove
-		input iREMOVE,
+		input wire iREMOVE,
 		/********************************
 		Search
 		********************************/
 		//Search Request 
-		input iRD_REQ,
-		output oRD_BUSY,		
-		input [31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+		input wire iRD_REQ,
+		output wire oRD_BUSY,		
+		input wire [31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 		//Search Output Result
-		output oRD_VALID,
-		output oRD_HIT,
-		input iRD_BUSY,		
-		output [63:0] oRD_DATA,
-		output [27:0] oRD_MMU_FLAGS,	
+		output wire oRD_VALID,
+		output wire oRD_HIT,
+		input wire iRD_BUSY,		
+		output wire [63:0] oRD_DATA,
+		output wire [27:0] oRD_MMU_FLAGS,	
 		/********************************
 		Upload
 		********************************/
-		input iUP_REQ,
-		output oUP_BUSY,
-		input [1:0] iUP_ORDER,
-		input [31:0] iUP_ADDR,				
-		input [31:0] iUP_DATA,
+		input wire iUP_REQ,
+		output wire oUP_BUSY,
+		input wire [1:0] iUP_ORDER,
+		input wire [31:0] iUP_ADDR,				
+		input wire [31:0] iUP_DATA,
 		//input	[5:0] iUP_MMU_FLAGS,
 		/********************************
 		Write Request
 		********************************/
-		input iWR_REQ,
-		output oWR_BUSY,
-		input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-		input [511:0] iWR_DATA,
-		input [255:0] iWR_MMU_FLAGS
+		input wire iWR_REQ,
+		output wire oWR_BUSY,
+		input wire [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+		input wire [511:0] iWR_DATA,
+		input wire [255:0] iWR_MMU_FLAGS
 	);
 			
 	assign oRD_BUSY = 1'b0;
@@ -82,39 +80,39 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 		/********************************
 		System
 		********************************/
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Remove
-		input iREMOVE,
+		input wire iREMOVE,
 		/********************************
 		Search
 		********************************/
 		//Search Request 
-		input iRD_REQ,
-		output oRD_BUSY,		
-		input [31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+		input wire iRD_REQ,
+		output wire oRD_BUSY,		
+		input wire [31:0] iRD_ADDR,		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
 		//Search Output Result
-		output oRD_VALID,
-		output oRD_HIT,
-		input iRD_BUSY,		
-		output [63:0] oRD_DATA,
-		output [27:0] oRD_MMU_FLAGS,	
+		output wire oRD_VALID,
+		output wire oRD_HIT,
+		input wire iRD_BUSY,		
+		output wire [63:0] oRD_DATA,
+		output wire [27:0] oRD_MMU_FLAGS,	
 		/********************************
 		Upload
 		********************************/
-		input iUP_REQ,
-		output oUP_BUSY,
-		input [1:0] iUP_ORDER,
-		input [31:0] iUP_ADDR,				
-		input [31:0] iUP_DATA,
+		input wire iUP_REQ,
+		output wire oUP_BUSY,
+		input wire [1:0] iUP_ORDER,
+		input wire [31:0] iUP_ADDR,				
+		input wire [31:0] iUP_DATA,
 		/********************************
 		Write Request
 		********************************/
-		input iWR_REQ,
-		output oWR_BUSY,
-		input [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-		input [511:0] iWR_DATA,
-		input [255:0] iWR_MMU_FLAGS
+		input wire iWR_REQ,
+		output wire oWR_BUSY,
+		input wire [31:0] iWR_ADDR,	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+		input wire [511:0] iWR_DATA,
+		input wire [255:0] iWR_MMU_FLAGS
 	);
 			
 	

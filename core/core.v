@@ -13,95 +13,95 @@ module core
 		/****************************************
 		System
 		****************************************/
-		input iCLOCK,
-		input inRESET,	
+		input wire iCLOCK,
+		input wire inRESET,	
 		/****************************************
 		Core
 		****************************************/
-		//output oCORE_FLASH,
-		output oFREE_TLB_FLUSH,
+		//oCORE_FLASH,
+		output wire oFREE_TLB_FLUSH,
 		/****************************************
 		GCI Controll
 		****************************************/
 		//Interrupt Controll
-		output oIO_IRQ_CONFIG_TABLE_REQ,
-		output [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
-		output oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
-		output oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
-		output [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,		
+		output wire oIO_IRQ_CONFIG_TABLE_REQ,
+		output wire [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
+		output wire oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
+		output wire oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
+		output wire [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,		
 		/****************************************
 		Instruction Memory
 		****************************************/
 		//Req
-		output oINST_REQ,
-		input iINST_LOCK,
-		output [1:0] oINST_MMUMOD,
-		output [31:0] oINST_PDT,
-		output [31:0] oINST_ADDR,
+		output wire oINST_REQ,
+		input wire iINST_LOCK,
+		output wire [1:0] oINST_MMUMOD,
+		output wire [31:0] oINST_PDT,
+		output wire [31:0] oINST_ADDR,
 		//RAM -> This
-		input iINST_VALID,
-		output oINST_BUSY,
-		input iINST_PAGEFAULT,
-		input iINST_QUEUE_FLUSH,
-		input [63:0] iINST_DATA,
-		input [27:0] iINST_MMU_FLAGS,
+		input wire iINST_VALID,
+		output wire oINST_BUSY,
+		input wire iINST_PAGEFAULT,
+		input wire iINST_QUEUE_FLUSH,
+		input wire [63:0] iINST_DATA,
+		input wire [27:0] iINST_MMU_FLAGS,
 		/****************************************
 		Data Memory
 		****************************************/
 		//Req
-		output oDATA_REQ,
-		input iDATA_LOCK,
-		output [1:0] oDATA_ORDER,
-		output oDATA_RW,		//0=Write 1=Read
-		output [13:0] oDATA_TID,
-		output [1:0] oDATA_MMUMOD,
-		output [31:0] oDATA_PDT,
-		output [31:0] oDATA_ADDR,
+		output wire oDATA_REQ,
+		input wire iDATA_LOCK,
+		output wire [1:0] oDATA_ORDER,
+		output wire oDATA_RW,		//0=Write 1=Read
+		output wire [13:0] oDATA_TID,
+		output wire [1:0] oDATA_MMUMOD,
+		output wire [31:0] oDATA_PDT,
+		output wire [31:0] oDATA_ADDR,
 		//This -> Data RAM
-		output [31:0] oDATA_DATA,
+		output wire [31:0] oDATA_DATA,
 		//Data RAM -> This
-		input iDATA_VALID,
-		input iDATA_PAGEFAULT,
-		input [63:0] iDATA_DATA,
-		input [27:0] iDATA_MMU_FLAGS,
+		input wire iDATA_VALID,
+		input wire iDATA_PAGEFAULT,
+		input wire [63:0] iDATA_DATA,
+		input wire [27:0] iDATA_MMU_FLAGS,
 		/****************************************
 		IO
 		****************************************/
 		//Req
-		output oIO_REQ,
-		input iIO_BUSY,
-		output [1:0] oIO_ORDER,
-		output oIO_RW,			//0=Write 1=Read
-		output [31:0] oIO_ADDR,
+		output wire oIO_REQ,
+		input wire iIO_BUSY,
+		output wire [1:0] oIO_ORDER,
+		output wire oIO_RW,			//0=Write 1=Read
+		output wire [31:0] oIO_ADDR,
 		//Write
-		output [31:0] oIO_DATA,
+		output wire [31:0] oIO_DATA,
 		//Rec
-		input iIO_VALID,
-		input [31:0] iIO_DATA,
+		input wire iIO_VALID,
+		input wire [31:0] iIO_DATA,
 		/****************************************
 		Interrupt
 		****************************************/
-		input iINTERRUPT_VALID,
-		output oINTERRUPT_ACK,
-		input [5:0] iINTERRUPT_NUM,
+		input wire iINTERRUPT_VALID,
+		output wire oINTERRUPT_ACK,
+		input wire [5:0] iINTERRUPT_NUM,
 		/****************************************
 		System Infomation
 		****************************************/
-		input iSYSINFO_IOSR_VALID,
-		input [31:0] iSYSINFO_IOSR,
-		output [31:0] oDEBUG_PC,
-		output [31:0] oDEBUG0,
+		input wire iSYSINFO_IOSR_VALID,
+		input wire [31:0] iSYSINFO_IOSR,
+		output wire [31:0] oDEBUG_PC,
+		output wire [31:0] oDEBUG0,
 		/****************************************
 		Debug
 		****************************************/
-		input iDEBUG_CMD_REQ,
-		output oDEBUG_CMD_BUSY,
-		input [3:0] iDEBUG_CMD_COMMAND,
-		input [7:0] iDEBUG_CMD_TARGET,
-		input [31:0] iDEBUG_CMD_DATA,
-		output oDEBUG_CMD_VALID,
-		output oDEBUG_CMD_ERROR,
-		output [31:0] oDEBUG_CMD_DATA
+		input wire iDEBUG_CMD_REQ,
+		output wire oDEBUG_CMD_BUSY,
+		input wire [3:0] iDEBUG_CMD_COMMAND,
+		input wire [7:0] iDEBUG_CMD_TARGET,
+		input wire [31:0] iDEBUG_CMD_DATA,
+		output wire oDEBUG_CMD_VALID,
+		output wire oDEBUG_CMD_ERROR,
+		output wire [31:0] oDEBUG_CMD_DATA
 	);
 		
 	
@@ -243,11 +243,11 @@ module core
 	//assign oDEBUG0 = {iDATA_LOCK, iIO_BUSY, !b_io_startaddr_valid, dataio_valid, b_ldst_state, debug0[2:0]};
 	assign oDEBUG0 = debug0;
 	
-	assign			inst_fetch2cache_request_lock_cc		=	inst_matching_bridge_full || iINST_LOCK || inst_l1_cache_rd_lock || (inst_l1_cache_rd_valid && !inst_l1_cache_rd_hit);
+	assign inst_fetch2cache_request_lock_cc = inst_matching_bridge_full || iINST_LOCK || inst_l1_cache_rd_lock || (inst_l1_cache_rd_valid && !inst_l1_cache_rd_hit);
 	
-	assign			inst_cache2memory_request_lock_cc		=	iINST_LOCK;
+	assign inst_cache2memory_request_lock_cc = iINST_LOCK;
 	
-	assign			inst_cache_mem2fetch_request_lock_cc	=	core2inst_fetch_busy || inst_l1_cache_wr_lock || iINST_LOCK;
+	assign inst_cache_mem2fetch_request_lock_cc = core2inst_fetch_busy || inst_l1_cache_wr_lock || iINST_LOCK;
 	
 
 endmodule

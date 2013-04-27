@@ -3,33 +3,33 @@
 `include "core.h"
 
 module instruction_buffer(
-		input iCLOCK,
-		input inRESET,
-		input iFREE_REFRESH,
+		input wire iCLOCK,
+		input wire inRESET,
+		input wire iFREE_REFRESH,
 		//Prev
-		input iPREVIOUS_INST_VALID,
-		input iPREVIOUS_PAGEFAULT,
-		input [13:0] iPREVIOUS_MMU_FLAGS,
-		input iPREVIOUS_PAGING_ENA,
-		input iPREVIOUS_KERNEL_ACCESS,
-		input iPREVIOUS_BRANCH_PREDICT,
-		input [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
-		input [31:0] iPREVIOUS_INST,
-		input [31:0] iPREVIOUS_PC,
-		output oPREVIOUS_FETCH_STOP,
-		output oPREVIOUS_LOCK,
+		input wire iPREVIOUS_INST_VALID,
+		input wire iPREVIOUS_PAGEFAULT,
+		input wire [13:0] iPREVIOUS_MMU_FLAGS,
+		input wire iPREVIOUS_PAGING_ENA,
+		input wire iPREVIOUS_KERNEL_ACCESS,
+		input wire iPREVIOUS_BRANCH_PREDICT,
+		input wire [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
+		input wire [31:0] iPREVIOUS_INST,
+		input wire [31:0] iPREVIOUS_PC,
+		output wire oPREVIOUS_FETCH_STOP,
+		output wire oPREVIOUS_LOCK,
 		//Next
-		output oNEXT_INST_VALID,
-		output oNEXT_FAULT_PAGEFAULT,
-		output oNEXT_FAULT_PRIVILEGE_ERROR,
-		output oNEXT_FAULT_INVALID_INST,
-		output oNEXT_PAGING_ENA,
-		output oNEXT_KERNEL_ACCESS,
-		output oNEXT_BRANCH_PREDICT,
-		output [31:0] oNEXT_BRANCH_PREDICT_ADDR,
-		output [31:0] oNEXT_INST,
-		output [31:0] oNEXT_PC,
-		input iNEXT_LOCK
+		output wire oNEXT_INST_VALID,
+		output wire oNEXT_FAULT_PAGEFAULT,
+		output wire oNEXT_FAULT_PRIVILEGE_ERROR,
+		output wire oNEXT_FAULT_INVALID_INST,
+		output wire oNEXT_PAGING_ENA,
+		output wire oNEXT_KERNEL_ACCESS,
+		output wire oNEXT_BRANCH_PREDICT,
+		output wire [31:0] oNEXT_BRANCH_PREDICT_ADDR,
+		output wire [31:0] oNEXT_INST,
+		output wire [31:0] oNEXT_PC,
+		input wire iNEXT_LOCK
 	);
 	
 	//Fifo

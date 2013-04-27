@@ -1,4 +1,6 @@
-
+/*******************
+Current version is not use.
+*******************/
 `default_nettype none
 
 module core_if

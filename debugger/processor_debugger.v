@@ -1,20 +1,22 @@
+
 `default_nettype none
+
 module processor_debugger(
 		//Clock 
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//To Core
-		output oDEBUG_CMD_REQ,
-		input iDEBUG_CMD_BUSY,
-		output [3:0] oDEBUG_CMD_COMMAND,
-		output [7:0] oDEBUG_CMD_TARGET,
-		output [31:0] oDEBUG_CMD_DATA,
-		input iDEBUG_CMD_VALID,
-		input iDEBUG_CMD_ERROR,
-		input [31:0] iDEBUG_CMD_DATA,
+		output wire oDEBUG_CMD_REQ,
+		input wire iDEBUG_CMD_BUSY,
+		output wire [3:0] oDEBUG_CMD_COMMAND,
+		output wire [7:0] oDEBUG_CMD_TARGET,
+		output wire [31:0] oDEBUG_CMD_DATA,
+		input wire iDEBUG_CMD_VALID,
+		input wire iDEBUG_CMD_ERROR,
+		input wire [31:0] iDEBUG_CMD_DATA,
 		//To Uart
-		input iUART_RXD,
-		output oUART_TXD
+		input wire iUART_RXD,
+		output wire oUART_TXD
 	);
 
 	//Command

@@ -9,23 +9,22 @@ Branch Cache
 
 module branch_cache #(
 		parameter LRU_TIMER_N = 8
-	)
-	(
-		input iCLOCK,
-		input inRESET,
-		input iFLUSH,
+	)(
+		input wire iCLOCK,
+		input wire inRESET,
+		input wire iFLUSH,
 		//Search
-		input iSEARCH_STB,
-		input [31:0] iSEARCH_INST_ADDR,
-		output oSEARCH_VALID,
-		output oSEARCH_HIT,
-		output oSRARCH_PREDICT_BRANCH,	//1 : Branch is valid predict
-		output [31:0] oSEARCH_ADDR,
+		input wire iSEARCH_STB,
+		input wire [31:0] iSEARCH_INST_ADDR,
+		output wire oSEARCH_VALID,
+		output wire oSEARCH_HIT,
+		output wire oSRARCH_PREDICT_BRANCH,	//1 : Branch is valid predict
+		output wire [31:0] oSEARCH_ADDR,
 		//Jump
-		input iJUMP_STB,
-		input iJUMP_HIT,
-		input [31:0] iJUMP_ADDR,		
-		input [31:0] iJUMP_INST_ADDR	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
+		input wire iJUMP_STB,
+		input wire iJUMP_HIT,
+		input wire [31:0] iJUMP_ADDR,		
+		input wire [31:0] iJUMP_INST_ADDR	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
 	);
 
 
@@ -251,18 +250,5 @@ module branch_cache #(
 endmodule
 
 `default_nettype wire
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

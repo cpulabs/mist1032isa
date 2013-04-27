@@ -1,40 +1,35 @@
 `default_nettype none
-//`include "global.h"
 `include "processor.h"
-
-
-
-
 
 module core_interrupt_manager(
 		//System
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Free
-		input iFREE_IRQ_SETCONDITION,
+		input wire iFREE_IRQ_SETCONDITION,
 		//Interrupt Configlation Table
-		input iICT_VALID,
-		input [5:0] iICT_ENTRY,
-		input iICT_CONF_MASK,
-		input iICT_CONF_VALID,
-		input [1:0] iICT_CONF_LEVEL,
+		input wire iICT_VALID,
+		input wire [5:0] iICT_ENTRY,
+		input wire iICT_CONF_MASK,
+		input wire iICT_CONF_VALID,
+		input wire [1:0] iICT_CONF_LEVEL,
 		//Core Info
-		input [31:0] iSYSREGINFO_PSR,
+		input wire [31:0] iSYSREGINFO_PSR,
 		//External
-		input iEXT_ACTIVE,
-		input [5:0] iEXT_NUM,
-		output oEXT_ACK,
+		input wire iEXT_ACTIVE,
+		input wire [5:0] iEXT_NUM,
+		output wire oEXT_ACK,
 		//output				oEXT_BUSY,
 		//Core-ALU1
-		input iFAULT_ACTIVE,
-		input [6:0] iFAULT_NUM,	
-		input [31:0] iFAULT_FI0R,
+		input wire iFAULT_ACTIVE,
+		input wire [6:0] iFAULT_NUM,	
+		input wire [31:0] iFAULT_FI0R,
 		///To Exception Manager
-		input iEXCEPTION_LOCK,
-		output oEXCEPTION_ACTIVE,
-		output [6:0] oEXCEPTION_IRQ_NUM,
-		output [31:0] oEXCEPTION_IRQ_FI0R,
-		input iEXCEPTION_IRQ_ACK
+		input wire iEXCEPTION_LOCK,
+		output wire oEXCEPTION_ACTIVE,
+		output wire [6:0] oEXCEPTION_IRQ_NUM,
+		output wire [31:0] oEXCEPTION_IRQ_FI0R,
+		input wire iEXCEPTION_IRQ_ACK
 	);
 	
 	

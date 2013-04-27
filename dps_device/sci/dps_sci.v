@@ -2,24 +2,24 @@
 
 
 module dps_sci(
-		input iIF_CLOCK,
-		input iDPS_BASE_CLOCK,
+		input wire iIF_CLOCK,
+		input wire iDPS_BASE_CLOCK,
 		//Reset
-		input inRESET,
+		input wire inRESET,
 		//CPU Interface
-		input iREQ_VALID,
-		output oREQ_BUSY,		//Ignore
-		input iREQ_RW,
-		input [1:0] iREQ_ADDR,
-		input [31:0] iREQ_DATA,
-		output oREQ_VALID,
-		output [31:0] oREQ_DATA,
+		input wire iREQ_VALID,
+		output wire oREQ_BUSY,		//Ignore
+		input wire iREQ_RW,
+		input wire [1:0] iREQ_ADDR,
+		input wire [31:0] iREQ_DATA,
+		output wire oREQ_VALID,
+		output wire [31:0] oREQ_DATA,
 		//IRQ
-		output oIRQ_VALID,
-		input iIRQ_ACK,
+		output wire oIRQ_VALID,
+		input wire iIRQ_ACK,
 		//UART
-		output oUART_TXD,
-		input iUART_RXD
+		output wire oUART_TXD,
+		input wire iUART_RXD
 	);
 
 	localparam SCITX = 2'h0;

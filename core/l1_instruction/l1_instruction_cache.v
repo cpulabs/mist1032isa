@@ -5,43 +5,43 @@
 
 
 module l1_instruction_cache(
-		input iCLOCK,
-		input inRESET,
+		input wire iCLOCK,
+		input wire inRESET,
 		//Remove
-		input iREMOVE,
-		input iCACHE_FLASH,
+		input wire iREMOVE,
+		input wire iCACHE_FLASH,
 		/****************************************
 		Memory Port Memory
 		****************************************/
 		//Req
-		output oINST_REQ,
-		input iINST_LOCK,
-		output [1:0] oINST_MMUMOD,
-		output [31:0] oINST_ADDR,
+		output wire oINST_REQ,
+		input wire iINST_LOCK,
+		output wire [1:0] oINST_MMUMOD,
+		output wire [31:0] oINST_ADDR,
 		//Mem
-		input iINST_VALID,
-		output oINST_BUSY,	
-		input iINST_PAGEFAULT,
-		input [63:0] iINST_DATA,
-		input [27:0] iINST_MMU_FLAGS,	
+		input wire iINST_VALID,
+		output wire oINST_BUSY,	
+		input wire iINST_PAGEFAULT,
+		input wire [63:0] iINST_DATA,
+		input wire [27:0] iINST_MMU_FLAGS,	
 		/****************************************
 		Fetch Module
 		****************************************/
 		//From Fetch
-		input iNEXT_FETCH_REQ,
-		output oNEXT_FETCH_LOCK,
-		input [1:0] iNEXT_MMUMOD,
-		input [31:0] iNEXT_FETCH_ADDR,
+		input wire iNEXT_FETCH_REQ,
+		output wire oNEXT_FETCH_LOCK,
+		input wire [1:0] iNEXT_MMUMOD,
+		input wire [31:0] iNEXT_FETCH_ADDR,
 		//To Fetch
-		output oNEXT_0_INST_VALID,
-		output oNEXT_0_PAGEFAULT,		
-		output [13:0] oNEXT_0_MMU_FLAGS,
-		output [31:0] oNEXT_0_INST,
-		output oNEXT_1_INST_VALID,
-		output oNEXT_1_PAGEFAULT,	
-		output [13:0] oNEXT_1_MMU_FLAGS,
-		output [31:0] oNEXT_1_INST,
-		input iNEXT_LOCK
+		output wire oNEXT_0_INST_VALID,
+		output wire oNEXT_0_PAGEFAULT,		
+		output wire [13:0] oNEXT_0_MMU_FLAGS,
+		output wire [31:0] oNEXT_0_INST,
+		output wire oNEXT_1_INST_VALID,
+		output wire oNEXT_1_PAGEFAULT,	
+		output wire [13:0] oNEXT_1_MMU_FLAGS,
+		output wire [31:0] oNEXT_1_INST,
+		input wire iNEXT_LOCK
 	);
 	
 	wire request_lock = iINST_LOCK && (b_req_main_state != L_PARAM_IDLE);
