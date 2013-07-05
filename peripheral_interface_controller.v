@@ -222,7 +222,7 @@ module peripheral_interface_controller(
 	******************************************************************************************/
 	//Connect (This -> CPU)
 	assign oIO_BUSY = iGCI_BUSY || !b_iosize_gci_size_valid/*Initial END*/;
-	assign oIO_VALID = (b_iosize_state == 2'h3)? iGCI_REQ : 1'b0;
+	assign oIO_VALID = (b_iosize_state == 2'h3)? iGCI_REQ || iDPS_REQ : 1'b0;
 	assign oIO_DATA = iGCI_DATA;
 	
 	wire device_select = (b_cpu_addr >= 32'h00000200)? 1'b1 : 1'b0;

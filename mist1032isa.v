@@ -121,7 +121,62 @@ module mist1032isa(
 	wire dps2pic_irq_valid;
 	wire [5:0] dps2pic_irq_num;
 	wire pic2dps_irq_ack;
+	//Memory Port
+	wire processor2memory_req;
+	wire memory2processor_lock;
+	wire [1:0] processor2memory_order;
+	wire processor2memory_rw;
+	wire [31:0] processor2memory_addr;
+	wire [31:0] processor2memory_data;
+	wire memory2processor_req;
+	wire processor2memory_busy;
+	wire [63:0] memory2processor_data;
 	
+	
+
+	/********************************************************************************
+	Memory Mode
+	********************************************************************************/
+	//`ifdef MIST1032ISA_SIMULATION
+		
+		assign oMEMORY_REQ = 1'b0;
+		assign oMEMORY_ORDER = 2'h0;
+		assign oMEMORY_RW = 1'b0;
+		assign oMEMORY_ADDR = 32'h0;
+		assign oMEMORY_DATA = 32'h0;
+		assign oMEMORY_BUSY = 1'b0;
+		
+		sim_memory_model SIM_MEMORY_MODEL(
+			.iCLOCK(iBUS_CLOCK),
+			.inRESET(inRESET),
+			//Req
+			.iMEMORY_REQ(processor2memory_req),
+			.oMEMORY_LOCK(memory2processor_lock),
+			.iMEMORY_ORDER(processor2memory_order),				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+			.iMEMORY_RW(processor2memory_rw),						//1:Write | 0:Read
+			.iMEMORY_ADDR(processor2memory_addr),
+			//This -> Data RAM
+			.iMEMORY_DATA(processor2memory_data),
+			//Data RAM -> This
+			.oMEMORY_VALID(memory2processor_req),
+			.iMEMORY_LOCK(processor2memory_busy),
+			.oMEMORY_DATA(memory2processor_data)
+		);
+	
+	//`else
+	/*	//Processor -> Memory
+		assign oMEMORY_REQ = processor2memory_req;
+		assign oMEMORY_ORDER = processor2memory_order;
+		assign oMEMORY_RW = processor2memory_rw;
+		assign oMEMORY_ADDR = processor2memory_addr;
+		assign oMEMORY_DATA = processor2memory_data;
+		assign oMEMORY_BUSY = processor2memory_busy;
+		//Memory -> Processor
+		assign memory2processor_lock = iMEMORY_LOCK;
+		assign memory2processor_req = iMEMORY_VALID;
+		assign memory2processor_data = iMEMORY_DATA;
+	//`endif
+	*/
 			
 	/********************************************************************************
 	Processor Core
@@ -234,7 +289,7 @@ module mist1032isa(
 	);
 	
 	
-	wire mmu_lock = iMEMORY_LOCK;
+	wire mmu_lock = memory2processor_lock;
 	
 	wire debuger2processor_cmd_req;
 	wire processor2debuger_cmd_busy;
@@ -369,16 +424,16 @@ module mist1032isa(
 		To Memory
 		************************/
 		//This -> Memory
-		.oMEMORY_REQ(oMEMORY_REQ),
-		.iMEMORY_LOCK(iMEMORY_LOCK),
-		.oMEMORY_ORDER(oMEMORY_ORDER),
-		.oMEMORY_RW(oMEMORY_RW),
-		.oMEMORY_ADDR(oMEMORY_ADDR),
-		.oMEMORY_DATA(oMEMORY_DATA),
+		.oMEMORY_REQ(processor2memory_req),
+		.iMEMORY_LOCK(memory2processor_lock),
+		.oMEMORY_ORDER(processor2memory_order),
+		.oMEMORY_RW(processor2memory_rw),
+		.oMEMORY_ADDR(processor2memory_addr),
+		.oMEMORY_DATA(processor2memory_data),
 		//Memory -> This
-		.iMEMORY_REQ(iMEMORY_VALID),
-		.oMEMORY_LOCK(oMEMORY_BUSY),
-		.iMEMORY_DATA(iMEMORY_DATA)
+		.iMEMORY_REQ(memory2processor_req),
+		.oMEMORY_LOCK(processor2memory_busy),
+		.iMEMORY_DATA(memory2processor_data)
 	); 
 
 	/********************************************************************************
