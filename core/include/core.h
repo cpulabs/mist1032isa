@@ -21,9 +21,14 @@ Instruction Set
 `define		OC_DIV		10'h007
 `define		OC_MOD		10'h008
 `define		OC_NEG		10'h009
+`define		OC_IC		10'h00D
 `define		OC_ADDC		10'h00E
 `define		OC_INC		10'h010
 `define		OC_DEC		10'h011
+`define		OC_MAX		10'h013
+`define		OC_MIN		10'h014
+`define		OC_UMAX		10'h015
+`define		OC_UMIN		10'h016
 `define		OC_SEXT8	10'h01C
 `define		OC_SEXT16	10'h01D
 //Floating
@@ -172,6 +177,10 @@ Execution CMD Set
 `define		EXE_ADDER_COUT			5'h04
 `define		EXE_ADDER_SEXT8			5'h05
 `define		EXE_ADDER_SEXT16		5'h06
+`define		EXE_ADDER_MAX			5'h07
+`define		EXE_ADDER_MIN			5'h08
+`define		EXE_ADDER_UMAX			5'h09
+`define		EXE_ADDER_UMIN			5'h0a
 //Mul/Div Unit
 `define		EXE_MUL_BUFFER			5'h00
 `define		EXE_MUL_MULL			5'h01

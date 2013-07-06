@@ -83,6 +83,41 @@ module adder_n #(
 						func_pri_out = {1'b0, {16{func_data1[15]}}, func_data1[15:0]};
 						func_adder_execution = {5'h0, func_pri_out[31:0]};//{(func_pri_out[31:0] == {32{1'h0}}), func_pri_out[0], (func_pri_out[32] ^ func_pri_out[31]), func_pri_out[31], func_pri_out[32], func_pri_out[31:0]};
 					end
+				`EXE_ADDER_MAX :
+					if(func_data0[31] && func_data1[31])begin	
+						func_adder_execution = (!(func_data0[30:0] > func_data1[30:0]))? {5'h0, func_data0} : {5'h0, func_data0};
+					end
+					else if(!func_data0[31] && !func_data1[31])begin	
+						func_adder_execution = (func_data0[30:0] > func_data1[30:0])? {5'h0, func_data0} : {5'h0, func_data0};
+					end
+					else if(!func_data0[31] && func_data1[31])begin	
+						func_adder_execution = {5'h0, func_data0};
+					end
+					else begin	
+						func_adder_execution = {5'h0, func_data1};
+					end
+				`EXE_ADDER_MIN :
+					if(func_data0[31] && func_data1[31])begin	
+						func_adder_execution = (func_data0[30:0] > func_data1[30:0])? {5'h0, func_data0} : {5'h0, func_data0};
+					end
+					else if(!func_data0[31] && !func_data1[31])begin	
+						func_adder_execution = (!(func_data0[30:0] > func_data1[30:0]))? {5'h0, func_data0} : {5'h0, func_data0};
+					end
+					else if(!func_data0[31] && func_data1[31])begin	
+						func_adder_execution = {5'h0, func_data1};
+					end
+					else begin	
+						func_adder_execution = {5'h0, func_data0};
+					end
+				`EXE_ADDER_UMAX : 
+					begin	
+						func_adder_execution = (func_data0 > func_data1)? {5'h0, func_data0} : {5'h0, func_data1};
+					end
+				`EXE_ADDER_UMIN : 
+					begin	
+						func_adder_execution = (func_data0 < func_data1)? {5'h0, func_data0} : {5'h0, func_data1};
+					end
+					
 				default:
 					begin/*	
 						//$display("[ERROR] : adder_n.v func_addder_execution Error");

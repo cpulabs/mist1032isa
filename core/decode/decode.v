@@ -688,12 +688,12 @@ module decoder(
 						end
 					end
 				`OC_NEG :
-					begin									//O1
+					begin									//O2
 						f_decode	=	{
 							/* Decode Error */						1'b0,
 							/* Commit Wait Instruction */			1'b0,
 							/* Condition Code & AFE */				f_decode_inst[19:16],
-							/* Source0 */							f_decode_inst[9:5],
+							/* Source0 */							f_decode_inst[4:0],
 							/* Source1 */							{32{1'b0}},
 							/* Source0 Use Flags*/					1'b0,
 							/* Source1-Immediate */					1'b0,
@@ -712,6 +712,30 @@ module decoder(
 							/* Execute Module */					`EXE_SELECT_ADDER
 							};
 					end
+				`OC_IC :
+					begin
+						f_decode	=	{
+							/* Decode Error */						1'b0,
+							/* Commit Wait Instruction */			1'b0,
+							/* Condition Code & AFE */				f_decode_inst[19:16],
+							/* Source0 */							f_decode_inst[4:0],
+							/* Source1 */							32'h1,
+							/* Source0 Use Flags*/					1'b0,
+							/* Source1-Immediate */					1'b1,
+							/* Source0 Active */					1'b1,
+							/* Source1 Active */					1'b1,
+							/* Source0 System Register */			1'b0,
+							/* Source1 System Register */			1'b0,
+							/* Source0 System Register Rename */	1'b0,
+							/* Source1 System Register Rename */	1'b0,
+							/* Destination */						f_decode_inst[9:5],
+							/* Write Back Enable */					1'b1,
+							/* Make Flag Instruction */				1'b1,
+							/* Destination is System Register */	1'b0,
+							/* Destination Rename*/					1'b1,
+							/* Execute Module Command */			`EXE_ADDER_COUT,
+							/* Execute Module */					`EXE_SELECT_ADDER
+						};
 				`OC_ADDC :
 					begin	
 						if(!f_decode_inst[20])begin			//O2
@@ -813,6 +837,212 @@ module decoder(
 							/* Execute Module */					`EXE_SELECT_ADDER
 						};
 					end
+				`OC_MAX :
+					begin	
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_ADDER_MAX,
+								/* Execute Module */					`EXE_SELECT_ADDER
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{21{f_decode_inst[15]}}, f_decode_inst[15:10], f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_ADDER_MAX,
+								/* Execute Module */					`EXE_SELECT_ADDER
+							};
+						end
+					end
+				`OC_MIN :
+					begin	
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_ADDER_MIN,
+								/* Execute Module */					`EXE_SELECT_ADDER
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{21{f_decode_inst[15]}}, f_decode_inst[15:10], f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_ADDER_MIN,
+								/* Execute Module */					`EXE_SELECT_ADDER
+							};
+						end
+					end
+				`OC_UMAX :
+					begin	
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_ADDER_UMAX,
+								/* Execute Module */					`EXE_SELECT_ADDER
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{21{f_decode_inst[15]}}, f_decode_inst[15:10], f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_ADDER_UMAX,
+								/* Execute Module */					`EXE_SELECT_ADDER
+							};
+						end
+					end
+				`OC_UMIN :
+					begin	
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_ADDER_UMIN,
+								/* Execute Module */					`EXE_SELECT_ADDER
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{21{f_decode_inst[15]}}, f_decode_inst[15:10], f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_ADDER_UMIN,
+								/* Execute Module */					`EXE_SELECT_ADDER
+							};
+						end
+					end
+					
+					
 				`OC_SEXT8 :
 					begin		//O2	
 						f_decode	=	{
@@ -1203,12 +1433,12 @@ module decoder(
 						};
 					end
 				`OC_NOT :
-					begin									//O1
+					begin									//O2
 						f_decode	=	{
 							/* Decode Error */						1'b0,
 							/* Commit Wait Instruction */			1'b0,
 							/* Condition Code & AFE */				f_decode_inst[19:16],
-							/* Source0 */							f_decode_inst[9:5],
+							/* Source0 */							f_decode_inst[4:0],
 							/* Source1 */							{32{1'b0}},
 							/* Source0 Use Flags*/					1'b0,
 							/* Source1-Immediate */					1'b0,
@@ -1476,12 +1706,12 @@ module decoder(
 						};
 					end
 				`OC_REVB :
-					begin									//O1
+					begin									//O2
 						f_decode	=	{
 							/* Decode Error */						1'b0,
 							/* Commit Wait Instruction */			1'b0,
 							/* Condition Code & AFE */				f_decode_inst[19:16],
-							/* Source0 */							f_decode_inst[9:5],
+							/* Source0 */							f_decode_inst[4:0],
 							/* Source1 */							{32{1'b0}},
 							/* Source0 Use Flags*/					1'b0,
 							/* Source1-Immediate */					1'b0,
@@ -1501,12 +1731,12 @@ module decoder(
 						};
 					end
 				`OC_REV8 :
-					begin									//O1
+					begin									//O2
 						f_decode	=	{
 							/* Decode Error */						1'b0,
 							/* Commit Wait Instruction */			1'b0,
 							/* Condition Code & AFE */				f_decode_inst[19:16],
-							/* Source0 */							f_decode_inst[9:5],
+							/* Source0 */							f_decode_inst[4:0],
 							/* Source1 */							{32{1'b0}},
 							/* Source0 Use Flags*/					1'b0,
 							/* Source1-Immediate */					1'b0,
