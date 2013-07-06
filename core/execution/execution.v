@@ -36,12 +36,14 @@ module execution(
 		input wire [31:0] iPREVIOUS_SPR,
 		input wire [31:0] iPREVIOUS_SOURCE0,
 		input wire [31:0] iPREVIOUS_SOURCE1,
+		input wire [5:0] iPREVIOUS_ADV_DATA,	//++
 		input wire [4:0] iPREVIOUS_SOURCE0_POINTER,
 		input wire [4:0] iPREVIOUS_SOURCE1_POINTER,
 		input wire iPREVIOUS_SOURCE0_SYSREG,
 		input wire iPREVIOUS_SOURCE1_SYSREG,
 		input wire iPREVIOUS_SOURCE1_IMM,
 		input wire iPREVIOUS_SOURCE0_FLAGS,
+		input wire iPREVIOUS_ADV_ACTIVE,		//++
 		input wire iPREVIOUS_EX_SYS_REG,		
 		input wire iPREVIOUS_EX_SYS_LDST,		
 		input wire iPREVIOUS_EX_LOGIC,
@@ -670,6 +672,8 @@ module execution(
 		.iLOADSTORE_MODE(iPREVIOUS_EX_LDST),
 		.iSOURCE0(ex_module_source0),
 		.iSOURCE1(ex_module_source1),
+		.iADV_ACTIVE(iPREVIOUS_ADV_ACTIVE),
+		.iADV_DATA(iPREVIOUS_ADV_DATA),
 		.iSPR(ex_module_spr),
 		.iPC(iPREVIOUS_PC - 32'h4),
 		//Output - Writeback

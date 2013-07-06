@@ -172,6 +172,7 @@ module core_pipeline
 	wire decoder2dispatch_source1_active;
 	wire decoder2dispatch_source0_sysreg;
 	wire decoder2dispatch_source1_sysreg;
+	wire decoder2dispatch_adv_active;
 	wire decoder2dispatch_destination_sysreg;
 	wire decoder2dispatch_writeback;
 	wire decoder2dispatch_flags_writeback;
@@ -179,6 +180,7 @@ module core_pipeline
 	wire [3:0] decoder2dispatch_cc_afe;
 	wire [4:0] decoder2dispatch_source0;
 	wire [31:0] decoder2dispatch_source1;
+	wire [5:0] decoder2dispatch_adv_data;
 	wire decoder2dispatch_source0_flags;
 	wire decoder2dispatch_source1_imm;
 	wire [4:0] decoder2dispatch_destination;
@@ -214,12 +216,14 @@ module core_pipeline
 	wire [31:0] dispatch2execution_spr;
 	wire [31:0] dispatch2execution_source0;
 	wire [31:0] dispatch2execution_source1;
+	wire [5:0] dispatch2execution_adv_data;
 	wire [4:0] dispatch2execution_source0_pointer;
 	wire [4:0] dispatch2execution_source1_pointer;
 	wire dispatch2execution_source0_sysreg;
 	wire dispatch2execution_source1_sysreg;
 	wire dispatch2execution_source1_imm;
 	wire dispatch2execution_source0_flags;
+	wire dispatch2execution_adv_active;
 	wire [4:0] dispatch2execution_destination;
 	wire dispatch2execution_ex_sys_reg;
 	wire dispatch2execution_ex_sys_ldst;
@@ -644,6 +648,7 @@ module core_pipeline
 		.oNEXT_SOURCE1_SYSREG(decoder2dispatch_source1_sysreg),		
 		.oNEXT_SOURCE0_SYSREG_RENAME(),		
 		.oNEXT_SOURCE1_SYSREG_RENAME(),		
+		.oNEXT_ADV_ACTIVE(decoder2dispatch_adv_active),
 		.oNEXT_DESTINATION_SYSREG(decoder2dispatch_destination_sysreg),	
 		.oNEXT_DEST_RENAME(),		
 		.oNEXT_WRITEBACK(decoder2dispatch_writeback),
@@ -653,6 +658,7 @@ module core_pipeline
 		.oNEXT_CC_AFE(decoder2dispatch_cc_afe),
 		.oNEXT_SOURCE0(decoder2dispatch_source0),
 		.oNEXT_SOURCE1(decoder2dispatch_source1),
+		.oNEXT_ADV_DATA(decoder2dispatch_adv_data),
 		.oNEXT_SOURCE0_FLAGS(decoder2dispatch_source0_flags),
 		.oNEXT_SOURCE1_IMM(decoder2dispatch_source1_imm),
 		.oNEXT_DESTINATION(decoder2dispatch_destination),
@@ -713,7 +719,8 @@ module core_pipeline
 		.iPREVIOUS_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
 		.iPREVIOUS_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
 		.iPREVIOUS_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
-		.iPREVIOUS_SOURCE1_SYSREG(decoder2dispatch_source1_sysreg),		
+		.iPREVIOUS_SOURCE1_SYSREG(decoder2dispatch_source1_sysreg),	
+		.iPREVIOUS_ADV_ACTIVE(decoder2dispatch_adv_active),
 		.iPREVIOUS_DESTINATION_SYSREG(decoder2dispatch_destination_sysreg),
 		.iPREVIOUS_DESTINATION(decoder2dispatch_destination),			
 		.iPREVIOUS_WRITEBACK(decoder2dispatch_writeback),	
@@ -722,6 +729,7 @@ module core_pipeline
 		.iPREVIOUS_CC_AFE(decoder2dispatch_cc_afe),		
 		.iPREVIOUS_SOURCE0(decoder2dispatch_source0),
 		.iPREVIOUS_SOURCE1(decoder2dispatch_source1),
+		.iPREVIOUS_ADV_DATA(decoder2dispatch_adv_data),
 		.iPREVIOUS_SOURCE0_FLAGS(decoder2dispatch_source0_flags),
 		.iPREVIOUS_SOURCE1_IMM(decoder2dispatch_source1_imm),	
 		.iPREVIOUS_EX_SYS_REG(decoder2dispatch_ex_sys_reg),		
@@ -757,12 +765,14 @@ module core_pipeline
 		.oNEXT_SPR(dispatch2execution_spr),
 		.oNEXT_SOURCE0(dispatch2execution_source0),
 		.oNEXT_SOURCE1(dispatch2execution_source1),
+		.oNEXT_ADV_DATA(dispatch2execution_adv_data),
 		.oNEXT_SOURCE0_POINTER(dispatch2execution_source0_pointer),
 		.oNEXT_SOURCE1_POINTER(dispatch2execution_source1_pointer),
 		.oNEXT_SOURCE0_SYSREG(dispatch2execution_source0_sysreg),
 		.oNEXT_SOURCE1_SYSREG(dispatch2execution_source1_sysreg),
 		.oNEXT_SOURCE1_IMM(dispatch2execution_source1_imm),
 		.oNEXT_SOURCE0_FLAGS(dispatch2execution_source0_flags),
+		.oNEXT_ADV_ACTIVE(dispatch2execution_adv_active),
 		.oNEXT_EX_SYS_REG(dispatch2execution_ex_sys_reg),		
 		.oNEXT_EX_SYS_LDST(dispatch2execution_ex_sys_ldst),		
 		.oNEXT_EX_LOGIC(dispatch2execution_ex_logic),
@@ -857,12 +867,14 @@ module core_pipeline
 		.iPREVIOUS_SPR(dispatch2execution_spr),
 		.iPREVIOUS_SOURCE0(dispatch2execution_source0),
 		.iPREVIOUS_SOURCE1(dispatch2execution_source1),
+		.iPREVIOUS_ADV_DATA(dispatch2execution_adv_data),
 		.iPREVIOUS_SOURCE0_POINTER(dispatch2execution_source0_pointer),
 		.iPREVIOUS_SOURCE1_POINTER(dispatch2execution_source1_pointer),
 		.iPREVIOUS_SOURCE0_SYSREG(dispatch2execution_source0_sysreg),
 		.iPREVIOUS_SOURCE1_SYSREG(dispatch2execution_source1_sysreg),
 		.iPREVIOUS_SOURCE1_IMM(dispatch2execution_source1_imm),
 		.iPREVIOUS_SOURCE0_FLAGS(dispatch2execution_source0_flags),
+		.iPREVIOUS_ADV_ACTIVE(dispatch2execution_adv_active),
 		.iPREVIOUS_EX_SYS_REG(dispatch2execution_ex_sys_reg),		
 		.iPREVIOUS_EX_SYS_LDST(dispatch2execution_ex_sys_ldst),		
 		.iPREVIOUS_EX_LOGIC(dispatch2execution_ex_logic),

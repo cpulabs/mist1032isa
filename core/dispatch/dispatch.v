@@ -51,7 +51,8 @@ module dispatch
 		input wire iPREVIOUS_SOURCE0_ACTIVE,			
 		input wire iPREVIOUS_SOURCE1_ACTIVE,		
 		input wire iPREVIOUS_SOURCE0_SYSREG,		
-		input wire iPREVIOUS_SOURCE1_SYSREG,		
+		input wire iPREVIOUS_SOURCE1_SYSREG,
+		input wire iPREVIOUS_ADV_ACTIVE,		//++
 		input wire iPREVIOUS_DESTINATION_SYSREG,
 		input wire [4:0] iPREVIOUS_DESTINATION,			
 		input wire iPREVIOUS_WRITEBACK,	
@@ -60,6 +61,7 @@ module dispatch
 		input wire [3:0] iPREVIOUS_CC_AFE,
 		input wire [4:0] iPREVIOUS_SOURCE0,
 		input wire [31:0] iPREVIOUS_SOURCE1,
+		input wire [5:0] iPREVIOUS_ADV_DATA,	//++
 		input wire iPREVIOUS_SOURCE0_FLAGS,
 		input wire iPREVIOUS_SOURCE1_IMM,	
 		input wire iPREVIOUS_EX_SYS_REG,		
@@ -95,12 +97,14 @@ module dispatch
 		output wire [31:0] oNEXT_SPR,	
 		output wire [31:0] oNEXT_SOURCE0,
 		output wire [31:0] oNEXT_SOURCE1,	
+		output wire [5:0] oNEXT_ADV_DATA,		//++
 		output wire [4:0] oNEXT_SOURCE0_POINTER,
 		output wire [4:0] oNEXT_SOURCE1_POINTER,
 		output wire oNEXT_SOURCE0_SYSREG,
 		output wire oNEXT_SOURCE1_SYSREG,
 		output wire oNEXT_SOURCE1_IMM,
 		output wire oNEXT_SOURCE0_FLAGS,
+		output wire oNEXT_ADV_ACTIVE,		//++
 		output wire oNEXT_EX_SYS_REG,		
 		output wire oNEXT_EX_SYS_LDST,		
 		output wire oNEXT_EX_LOGIC,
@@ -456,12 +460,14 @@ module dispatch
 	reg [3:0] b_cc_afe;
 	reg [31:0] b_source0;
 	reg [31:0] b_source1;	
+	reg [5:0] b_adv_data;
 	reg [4:0] b_source0_pointer;
 	reg [4:0] b_source1_pointer;
 	reg b_source0_sysreg;
 	reg b_source1_sysreg;
 	reg b_source1_imm;
 	reg b_source0_flags;
+	reg b_adv_active;
 	reg b_ex_sys_reg;
 	reg b_ex_sys_ldst;
 	reg b_ex_logic;
@@ -493,12 +499,14 @@ module dispatch
 			b_cc_afe <= 4'h0;
 			b_source0 <= 32'h0;
 			b_source1 <= 32'h0;
+			b_adv_data <= 6'h0;
 			b_source0_pointer <= 5'h0;
 			b_source1_pointer <= 5'h0;
 			b_source0_sysreg <= 1'b0;
 			b_source1_sysreg <= 1'b0;
 			b_source1_imm <= 1'b0;
 			b_source0_flags <= 1'b0;
+			b_adv_active <= 1'b0;
 			b_ex_sys_reg <= 1'b0;
 			b_ex_sys_ldst <= 1'b0;
 			b_ex_logic <= 1'b0;
@@ -528,12 +536,14 @@ module dispatch
 			b_cc_afe <= 4'h0;
 			b_source0 <= 32'h0;
 			b_source1 <= 32'h0;
+			b_adv_data <= 6'h0;
 			b_source0_pointer <= 5'h0;
 			b_source1_pointer <= 5'h0;
 			b_source0_sysreg <= 1'b0;
 			b_source1_sysreg <= 1'b0;
 			b_source1_imm <= 1'b0;
 			b_source0_flags <= 1'b0;
+			b_adv_active <= 1'h0;
 			b_ex_sys_reg <= 1'b0;
 			b_ex_sys_ldst <= 1'b0;
 			b_ex_logic <= 1'b0;
@@ -574,12 +584,14 @@ module dispatch
 				else begin
 					b_source1 <= (iPREVIOUS_SOURCE1_IMM)? iPREVIOUS_SOURCE1 : ((sysreg_source1_valid && iPREVIOUS_SOURCE1_SYSREG)? sysreg_source1 : b_gr_register[iPREVIOUS_SOURCE1[4:0]]);
 				end
+				b_adv_data <= iPREVIOUS_ADV_DATA;
 				b_source0_pointer <= iPREVIOUS_SOURCE0;
 				b_source1_pointer <= iPREVIOUS_SOURCE1[4:0];
 				b_source0_sysreg <= iPREVIOUS_SOURCE0_SYSREG;
 				b_source1_sysreg <= iPREVIOUS_SOURCE1_SYSREG;
 				b_source1_imm <= iPREVIOUS_SOURCE1_IMM;
 				b_source0_flags <= iPREVIOUS_SOURCE0_FLAGS;
+				b_adv_active <= iPREVIOUS_ADV_ACTIVE;
 				b_ex_sys_reg <= iPREVIOUS_EX_SYS_REG;
 				b_ex_sys_ldst <= iPREVIOUS_EX_SYS_LDST;
 				b_ex_logic <= iPREVIOUS_EX_LOGIC;
@@ -985,6 +997,7 @@ module dispatch
 	assign oNEXT_SPR = w_sysreg_spr_info_data;
 	assign oNEXT_SOURCE0 = b_source0;
 	assign oNEXT_SOURCE1 = b_source1;
+	assign oNEXT_ADV_DATA = b_adv_data;
 	
 	assign oNEXT_SOURCE0_POINTER = b_source0_pointer;
 	assign oNEXT_SOURCE1_POINTER = b_source1_pointer;
@@ -993,6 +1006,7 @@ module dispatch
 	assign oNEXT_SOURCE1_IMM = b_source1_imm;
 	
 	assign oNEXT_SOURCE0_FLAGS = b_source0_flags;
+	assign oNEXT_ADV_ACTIVE = b_adv_active;
 	assign oNEXT_EX_SYS_REG = b_ex_sys_reg;
 	assign oNEXT_EX_SYS_LDST = b_ex_sys_ldst;
 	assign oNEXT_EX_LOGIC = b_ex_logic;

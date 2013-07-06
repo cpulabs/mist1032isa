@@ -9,6 +9,8 @@ module load_store(
 		input wire iLOADSTORE_MODE,		//0:SYS_LDST | 1:LDST
 		input wire [31:0] iSOURCE0,
 		input wire [31:0] iSOURCE1,
+		input wire iADV_ACTIVE,
+		input wire [31:0] iADV_DATA,
 		input wire [31:0] iSPR,
 		input wire [31:0] iPC,
 		//Output - Writeback
@@ -142,6 +144,78 @@ module load_store(
 						ldst_rw = 1'b0;
 						ldst_order = 2'h2;
 						ldst_load_mask = 2'h3;
+						ldst_load_shift = 2'h0;
+					end
+				`EXE_LDSW_LDD8:
+					begin
+						spr_valid = 1'b0;
+						spr = iSPR;	
+						data = 32'h0;
+						ldst_addr = iSOURCE1 + iADV_DATA;
+						ldst_data = iSOURCE0;
+						ldst_rw = 1'b0;
+						ldst_order = 2'h0;
+						ldst_load_mask = 2'h0;
+						ldst_load_shift = iSOURCE1[1:0];
+					end
+				`EXE_LDSW_LDD16:
+					begin
+						spr_valid = 1'b0;
+						spr = iSPR;		
+						data = 32'h0;
+						ldst_addr = iSOURCE1 + {iADV_DATA, 1'b0};
+						ldst_data = iSOURCE0;
+						ldst_rw = 1'b0;
+						ldst_order = 2'h1;
+						ldst_load_mask = 2'h1;
+						ldst_load_shift = iSOURCE1[1:0];
+					end
+				`EXE_LDSW_LDD32:
+					begin
+						spr_valid = 1'b0;
+						spr = iSPR;		
+						data = 32'h0;
+						ldst_addr = iSOURCE1 + {iADV_DATA, 2'b00};
+						ldst_data = iSOURCE0;
+						ldst_rw = 1'b0;
+						ldst_order = 2'h2;
+						ldst_load_mask = 2'h3;
+						ldst_load_shift = 2'h0;
+					end
+				`EXE_LDSW_STD8:
+					begin
+						spr_valid = 1'b0;
+						spr = iSPR;		
+						data = 32'h0;
+						ldst_addr = iSOURCE1 + iADV_DATA;
+						ldst_data = iSOURCE0;
+						ldst_rw = 1'b1;
+						ldst_order = 2'h0;
+						ldst_load_mask = 2'h0;
+						ldst_load_shift = 2'h0;
+					end
+				`EXE_LDSW_STD16:
+					begin
+						spr_valid = 1'b0;
+						spr = iSPR;		
+						data = 32'h0;
+						ldst_addr = iSOURCE1 + {iADV_DATA, 1'b0};
+						ldst_data = iSOURCE0;
+						ldst_rw = 1'b1;
+						ldst_order = 2'h1;
+						ldst_load_mask = 2'h0;
+						ldst_load_shift = 2'h0;
+					end
+				`EXE_LDSW_STD32:
+					begin
+						spr_valid = 1'b0;
+						spr = iSPR;		
+						data = 32'h0;
+						ldst_addr = iSOURCE1 + {iADV_DATA, 2'b00};
+						ldst_data = iSOURCE0;
+						ldst_rw = 1'b1;
+						ldst_order = 2'h2;
+						ldst_load_mask = 2'h0;
 						ldst_load_shift = 2'h0;
 					end
 				default:
