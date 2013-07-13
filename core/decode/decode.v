@@ -230,7 +230,7 @@ module decoder(
 	
 
 	
-	function [74:0]	f_decode;
+	function [81:0]	f_decode;
 		input	[31:0]			f_decode_inst;
 		begin
 			case(f_decode_inst[30 : 21])
@@ -759,6 +759,7 @@ module decoder(
 							/* Execute Module */					`EXE_SELECT_ADDER
 							};
 					end
+					
 				`OC_IC :
 					begin
 						f_decode	=	{
@@ -785,6 +786,7 @@ module decoder(
 							/* Execute Module Command */			`EXE_ADDER_COUT,
 							/* Execute Module */					`EXE_SELECT_ADDER
 						};
+					end
 				`OC_ADDC :
 					begin	
 						if(!f_decode_inst[20])begin			//O2

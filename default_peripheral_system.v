@@ -44,10 +44,9 @@ module default_peripheral_system(
 	/*********************************
 	Condition
 	*********************************/
-	wire utim64_condition;
-	wire sci_condition;
-	assign utim64_condition = !utim64_busy && !sci_busy && iDPS_REQ && (iDPS_ADDR <= 32'h74);
-	assign sci_condition = !utim64_busy && !sci_busy && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h108));
+	wire utim64_condition = !oDPS_BUSY && !utim64_busy && !sci_busy && iDPS_REQ && (iDPS_ADDR <= 32'h74);
+	wire sci_condition = !oDPS_BUSY && !utim64_busy && !sci_busy && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h104) || (iDPS_ADDR == 32'h108));
+	wire mimsr_condition = !oDPS_BUSY && !utim64_busy && !sci_busy && iDPS_REQ && (iDPS_ADDR == 32'h120);
 	
 	wire utim64_busy;
 	wire sci_busy;
@@ -63,13 +62,15 @@ module default_peripheral_system(
 	wire [31:0] utim64_r_data;
 	wire sci_r_valid;
 	wire [31:0] sci_r_data;
+	wire mimsr_r_valid;
+	wire [31:0] mimsr_r_data;
 	
 	reg b_stamp_state;
-	reg b_stamp;				//0:UTIM64 | 1:SCI
+	reg [1:0] b_stamp;				//0:UTIM64 | 1:SCI | 2:MIMSR
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_stamp_state <= MAIN_STT_IDLE;
-			b_stamp <= 1'b0;
+			b_stamp <= 2'h0;
 		end
 		else begin
 			case(b_stamp_state)
@@ -78,17 +79,21 @@ module default_peripheral_system(
 						if(!iDPS_RW)begin
 							if(utim64_condition)begin
 								b_stamp_state <= MAIN_STT_RD_WAIT;
-								b_stamp <= 1'b0;
+								b_stamp <= 2'h0;
 							end
 							else if(sci_condition)begin
 								b_stamp_state <= MAIN_STT_RD_WAIT;
-								b_stamp <= 1'b1;
+								b_stamp <= 2'h1;
+							end
+							else if(mimsr_condition)begin
+								b_stamp_state <= MAIN_STT_RD_WAIT;
+								b_stamp <= 2'h2;
 							end
 						end
 					end
 				MAIN_STT_RD_WAIT:
 					begin
-						if(utim64_r_valid || sci_r_valid)begin
+						if(utim64_r_valid || sci_r_valid || mimsr_r_valid)begin
 							b_stamp_state <= MAIN_STT_IDLE;
 						end
 					end
@@ -151,6 +156,17 @@ module default_peripheral_system(
 		.iIRQ_ACK(sci_ack)
 	);
 	
+	//MIMSR
+	dps_mimsr DPS_MIMSR(
+		.iCLOCK(iCLOCK),
+		//Reset
+		.inRESET(inRESET),
+		//CPU Interface
+		.iREQ_VALID(mimsr_condition),
+		.oREQ_VALID(mimsr_r_valid),
+		.oREQ_DATA(mimsr_r_data)
+	);
+	
 	/*********************************
 	IRQ Controlor
 	*********************************/
@@ -176,11 +192,14 @@ module default_peripheral_system(
 		.iIRQ_ACK(iDPS_IRQ_ACK)
 	);
 	
+	
+	
+	
 	assign oDPS_IRQ_NUM = 6'h36 + {5'h00, irq_bum_buffer};
 	
 	assign oDPS_BUSY = b_stamp_state || utim64_busy || sci_busy;
-	assign oDPS_VALID = (b_stamp)? sci_r_valid : utim64_r_valid;
-	assign oDPS_DATA = (b_stamp)? sci_r_data : utim64_r_data;
+	assign oDPS_VALID = sci_r_valid || utim64_r_valid || mimsr_r_valid;
+	assign oDPS_DATA = (b_stamp == 2'h0)? utim64_r_data : ((b_stamp == 2'h1)? sci_r_data : mimsr_r_data);
 	
 endmodule
 

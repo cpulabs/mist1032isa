@@ -221,7 +221,7 @@ module peripheral_interface_controller(
 	Assign
 	******************************************************************************************/
 	//Connect (This -> CPU)
-	assign oIO_BUSY = iGCI_BUSY || !b_iosize_gci_size_valid/*Initial END*/;
+	assign oIO_BUSY = iGCI_BUSY || iDPS_BUSY || !b_iosize_gci_size_valid/*Initial END*/;
 	assign oIO_VALID = (b_iosize_state == 2'h3)? iGCI_REQ || iDPS_REQ : 1'b0;
 	assign oIO_DATA = iGCI_DATA;
 	

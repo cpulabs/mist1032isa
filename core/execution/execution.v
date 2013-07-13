@@ -193,7 +193,7 @@ module execution(
 		end
 	end
 	
-	
+/*	
 	reg [31:0] ex_module_tmp_source0;
 	reg [31:0] ex_module_tmp_source1;
 	always @* begin
@@ -230,8 +230,46 @@ module execution(
 			ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
 		end
 	end
+*/
+
+	reg [31:0] ex_module_tmp_source0;
+	reg [31:0] ex_module_tmp_source1;
+	always @* begin
+		if(b_ex_history0_valid)begin
+			if(iPREVIOUS_SOURCE0_SYSREG)begin
+				if(b_ex_history0_destination_sysreg)begin
+					if(iPREVIOUS_SOURCE0_POINTER == `SYSREG_PCR && b_ex_history0_destination == `SYSREG_PCR)begin		//new
+						ex_module_tmp_source0 = b_ex_history0_pc;
+					end
+					else if(iPREVIOUS_SOURCE0_POINTER == `SYSREG_SPR && b_ex_history0_spr_writeback)begin
+						ex_module_tmp_source0 = b_ex_history0_spr;
+					end
+					else if(iPREVIOUS_SOURCE0_POINTER == b_ex_history0_destination && b_ex_history0_writeback)begin
+						ex_module_tmp_source0 = b_ex_history0_data;
+					end
+					else begin
+						ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
+					end
+				end
+				else begin
+					ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
+				end
+			end
+			else begin
+				if(iPREVIOUS_SOURCE0_POINTER == b_ex_history0_destination && !b_ex_history0_destination_sysreg && b_ex_history0_writeback)begin
+					ex_module_tmp_source0 = b_ex_history0_data;
+				end
+				else begin
+					ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
+				end
+			end
+		end
+		else begin
+			ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
+		end
+	end
 	
-	
+	/*
 	always @* begin
 		if(!iPREVIOUS_SOURCE1_IMM)begin
 			if(b_ex_history0_valid)begin
@@ -271,6 +309,47 @@ module execution(
 			ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
 		end
 	end
+	*/
+	always @* begin
+		if(!iPREVIOUS_SOURCE1_IMM)begin
+			if(b_ex_history0_valid)begin
+				if(iPREVIOUS_SOURCE1_SYSREG)begin
+					if(b_ex_history0_destination_sysreg)begin
+						if(iPREVIOUS_SOURCE1_POINTER == `SYSREG_PCR && b_ex_history0_destination == `SYSREG_PCR)begin //new
+							ex_module_tmp_source1 = b_ex_history0_pc;
+						end
+						else if(iPREVIOUS_SOURCE1_POINTER == `SYSREG_SPR && b_ex_history0_spr_writeback)begin
+							ex_module_tmp_source1 = b_ex_history0_spr;
+						end
+						else if(iPREVIOUS_SOURCE1_POINTER == b_ex_history0_destination && b_ex_history0_writeback)begin
+							ex_module_tmp_source1 = b_ex_history0_data;
+						end
+						else begin
+							ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
+						end
+					end
+					else begin
+						ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
+					end
+				end
+				else begin
+					if(iPREVIOUS_SOURCE1_POINTER == b_ex_history0_destination && !b_ex_history0_destination_sysreg && b_ex_history0_writeback)begin
+						ex_module_tmp_source1 = b_ex_history0_data;
+					end
+					else begin
+						ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
+					end
+				end
+			end
+			else begin
+				ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
+			end
+		end
+		else begin
+			ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
+		end
+	end
+	
 	
 	
 	reg [31:0] ex_module_source0;
@@ -1550,7 +1629,63 @@ module execution(
 		assert property(PRO_DATAPIPE_REQ_ACK);
 	`endif
 	
+	
+	/*************************************************
+	Verilog Assertion
+	*************************************************/
+	//`ifdef MIST1032ISA_VLG_ASSERTION
+	always@(posedge iCLOCK)begin
+
+		//Load
+		if(inRESET)begin
+			if(iDATAIO_REQ && ((|iDATAIO_DATA) === 1'bx || (|iDATAIO_DATA) === 1'bz))begin
+				$display("[Error] : Load/Store(Load) | PC:%x(Inst:%x), SP:%x, LoadAddr:%x, LoadData:%x", b_pc, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, iDATAIO_DATA);
+				$stop;
+			end
+		end
+		//Store
+		if(inRESET)begin
+			if(oDATAIO_REQ && oDATAIO_RW && ((|oDATAIO_DATA) === 1'bx || (|oDATAIO_DATA) === 1'bz))begin
+				$display("[Error] : Load/Store(Store) | PC:%x(Inst:%x), SP:%x, StoreAddr:%x, StoreData:%x", b_pc, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
+				$stop;
+			end
+		end
 		
+		
+		
+		//Load
+		if(inRESET)begin
+			if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
+				//$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, iDATAIO_DATA);
+				$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, iDATAIO_DATA);
+			end
+		end
+		//Store
+		if(inRESET)begin
+			if(oDATAIO_REQ && oDATAIO_RW)begin
+				//$display("%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
+				$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
+			end
+		end
+		
+		if(oNEXT_VALID && b_pc == 32'h2c4)begin
+			$display("%d, !!!!!!!!!!!%x", $time, oNEXT_DATA);
+		end
+		
+		if(oNEXT_VALID && b_pc == 32'h2c8)begin
+			$display("%d, !!!!!!!!!!!%x", $time, oNEXT_DATA);
+		end
+		
+/*
+--------------------------------
+[S], "PC", "spr", "addr", "data"
+[L], "PC", "spr", "addr", "data"
+--------------------------------
+*/
+		
+		
+	end
+	//`endif
 endmodule
 
 

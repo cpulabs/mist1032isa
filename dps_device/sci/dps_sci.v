@@ -87,6 +87,7 @@ module dps_sci(
 	end
 	
 	
+	
 	/**********************************
 	SCI Module
 	**********************************/
@@ -290,9 +291,31 @@ module dps_sci(
 	end
 	
 	
+	reg b_ack_buffer_ack;
+	reg [31:0] b_ack_buffer_data;
+	
+	//Request Ack
+	always@(posedge iIF_CLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_ack_buffer_ack <= 1'b0;
+		end
+		else begin
+			b_ack_buffer_ack <= (iREQ_VALID && !uart_mod_empty && (iREQ_ADDR == SCIRX) && !iREQ_RW) || iREQ_VALID && (iREQ_ADDR == SCICFG) && !iREQ_RW;
+		end
+	end
+	
+	always@(posedge iIF_CLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_ack_buffer_data <= 32'h0;
+		end
+		else begin
+			b_ack_buffer_data <= (iREQ_ADDR == SCICFG)? {18'h0, b_scicfg_rcrl, b_scicfg_tcrl, b_scicfg_rire, b_scicfg_tire, b_scicfg_bdr, b_scicfg_ren, b_scicfg_ten} : ((uart_mod_empty)? 32'h0 : 32'h80000000 | uart_mod_data);
+		end
+	end
+	
 	assign oREQ_BUSY = uart_mod_full;//1'b0;//!(iREQ_VALID && !uart_mod_full && (iREQ_ADDR == `SCITX) && iREQ_RW);
-	assign oREQ_VALID = iREQ_VALID && !uart_mod_empty && (iREQ_ADDR == SCIRX) && !iREQ_RW;
-	assign oREQ_DATA = (uart_mod_empty)? 32'h0 : 32'h80000000 | uart_mod_data;
+	assign oREQ_VALID = b_ack_buffer_ack;//(iREQ_VALID && !uart_mod_empty && (iREQ_ADDR == SCIRX) && !iREQ_RW) || iREQ_VALID && (iREQ_ADDR == SCICFG) && !iREQ_RW;
+	assign oREQ_DATA = b_ack_buffer_data;//(iREQ_ADDR == SCICFG)? {18'h0, b_scicfg_rcrl, b_scicfg_tcrl, b_scicfg_rire, b_scicfg_tire, b_scicfg_bdr, b_scicfg_ren, b_scicfg_ten} : ((uart_mod_empty)? 32'h0 : 32'h80000000 | uart_mod_data);
 	assign oIRQ_VALID = (b_irq_state == IRQ_STT_IRQ);
 	
 endmodule
