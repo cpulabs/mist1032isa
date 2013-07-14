@@ -1,4 +1,3 @@
-//DPS is 256Word Address 
 
 `default_nettype none	
 
@@ -39,34 +38,47 @@ module default_peripheral_system(
 		input wire iSCI_RXD
 	);
 	
-
-
 	/*********************************
-	Condition
-	*********************************/
-	wire utim64_condition = !oDPS_BUSY && !utim64_busy && !sci_busy && iDPS_REQ && (iDPS_ADDR <= 32'h74);
-	wire sci_condition = !oDPS_BUSY && !utim64_busy && !sci_busy && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h104) || (iDPS_ADDR == 32'h108));
-	wire mimsr_condition = !oDPS_BUSY && !utim64_busy && !sci_busy && iDPS_REQ && (iDPS_ADDR == 32'h120);
-	
-	wire utim64_busy;
-	wire sci_busy;
-	
-	
-	/*********************************
-	DPD Acess Stamp
+	State
 	*********************************/
 	localparam MAIN_STT_IDLE = 1'h0;
 	localparam MAIN_STT_RD_WAIT = 1'h1;
 	
+	/*********************************
+	Wire
+	*********************************/
+	//Busy
+	wire utim64_busy;
+	wire sci_busy;
+	//Module - > This Module
 	wire utim64_r_valid;
 	wire [31:0] utim64_r_data;
+	wire [4:0] utim64_mode = iDPS_ADDR[6:2];
+	wire utim64_irq;
+	wire utim64_ack;
+	wire [1:0] sci_addr = iDPS_ADDR[3:2];
+	wire sci_irq;
+	wire sci_ack;
 	wire sci_r_valid;
 	wire [31:0] sci_r_data;
 	wire mimsr_r_valid;
 	wire [31:0] mimsr_r_data;
-	
 	reg b_stamp_state;
 	reg [1:0] b_stamp;				//0:UTIM64 | 1:SCI | 2:MIMSR
+	//IRQ NUM Check
+	wire irq_bum_buffer;
+	
+	//Condition
+	wire dps_request_lock = !oDPS_BUSY && !utim64_busy && !sci_busy;
+	wire utim64_condition = !dps_request_lock && iDPS_REQ && (iDPS_ADDR <= 32'h74);
+	wire sci_condition = !dps_request_lock && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h104) || (iDPS_ADDR == 32'h108));
+	wire mimsr_condition = !dps_request_lock && iDPS_REQ && (iDPS_ADDR == 32'h120);
+	
+	
+	
+	/*********************************
+	Read Wait State
+	*********************************/
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_stamp_state <= MAIN_STT_IDLE;
@@ -95,22 +107,18 @@ module default_peripheral_system(
 					begin
 						if(utim64_r_valid || sci_r_valid || mimsr_r_valid)begin
 							b_stamp_state <= MAIN_STT_IDLE;
+							b_stamp <= 2'h0;
 						end
 					end
 			endcase
 		end
 	end
-	
+
 	
 	/*********************************
 	DPS Device
 	*********************************/
-	wire [4:0] utim64_mode;
-	assign utim64_mode = iDPS_ADDR[6:2];
-	wire utim64_irq;
-	wire utim64_ack;
-	
-	
+	//DPS-UTIM
 	dps_utim64 DPS_UTIM64(
 		//System
 		.iCLOCK(iCLOCK),				//Global Clock
@@ -130,11 +138,7 @@ module default_peripheral_system(
 		.iIRQ_ACK(utim64_ack)
 	);
 	
-	
-	wire [1:0] sci_addr;
-	assign sci_addr = iDPS_ADDR[3:2];
-	wire sci_irq;
-	wire sci_ack;
+	//DPS-SCI
 	dps_sci DPS_SCI(
 		.iIF_CLOCK(iCLOCK),
 		.iDPS_BASE_CLOCK(iDPS_BASE_CLOCK),
@@ -156,7 +160,7 @@ module default_peripheral_system(
 		.iIRQ_ACK(sci_ack)
 	);
 	
-	//MIMSR
+	//DPS-MIMSR
 	dps_mimsr DPS_MIMSR(
 		.iCLOCK(iCLOCK),
 		//Reset
@@ -170,7 +174,6 @@ module default_peripheral_system(
 	/*********************************
 	IRQ Controlor
 	*********************************/
-	wire irq_bum_buffer;
 	//IRQ Controlor
 	dps_irq IRQ_MNGR(
 		.iCLOCK(iCLOCK),
@@ -192,11 +195,7 @@ module default_peripheral_system(
 		.iIRQ_ACK(iDPS_IRQ_ACK)
 	);
 	
-	
-	
-	
 	assign oDPS_IRQ_NUM = 6'h36 + {5'h00, irq_bum_buffer};
-	
 	assign oDPS_BUSY = b_stamp_state || utim64_busy || sci_busy;
 	assign oDPS_VALID = sci_r_valid || utim64_r_valid || mimsr_r_valid;
 	assign oDPS_DATA = (b_stamp == 2'h0)? utim64_r_data : ((b_stamp == 2'h1)? sci_r_data : mimsr_r_data);
