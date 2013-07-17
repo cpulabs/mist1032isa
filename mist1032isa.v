@@ -61,7 +61,15 @@ module mist1032isa(
 		Debug
 		****************************************/
 		input wire iDEBUG_UART_RXD,
-		output wire oDEBUG_UART_TXD
+		output wire oDEBUG_UART_TXD,
+		input wire iDEBUG_PARA_REQ,
+		output wire oDEBUG_PARA_BUSY,
+		input wire [7:0] iDEBUG_PARA_CMD,
+		input wire [31:0] iDEBUG_PARA_DATA,
+		output wire oDEBUG_PARA_VALID,
+		input wire iDEBUG_PARA_BUSY,
+		output wire oDEBUG_PARA_ERROR,
+		output wire [31:0] oDEBUG_PARA_DATA
 	);
 			
 			
@@ -315,8 +323,16 @@ module mist1032isa(
 		.iDEBUG_CMD_ERROR(processor2debuger_cmd_error),
 		.iDEBUG_CMD_DATA(processor2debuger_cmd_data),
 		//To Uart
-		.iUART_RXD(iDEBUG_UART_RXD),
-		.oUART_TXD(oDEBUG_UART_TXD)
+		.iDEBUG_UART_RXD(iDEBUG_UART_RXD),
+		.oDEBUG_UART_TXD(oDEBUG_UART_TXD),
+		.iDEBUG_PARA_REQ(iDEBUG_PARA_REQ),
+		.oDEBUG_PARA_BUSY(oDEBUG_PARA_BUSY),
+		.iDEBUG_PARA_CMD(iDEBUG_PARA_CMD),
+		.iDEBUG_PARA_DATA(iDEBUG_PARA_DATA),
+		.oDEBUG_PARA_VALID(oDEBUG_PARA_VALID),
+		.iDEBUG_PARA_BUSY(iDEBUG_PARA_BUSY),
+		.oDEBUG_PARA_ERROR(oDEBUG_PARA_ERROR),
+		.oDEBUG_PARA_DATA(oDEBUG_PARA_DATA)
 	);
 	
 	

@@ -14,10 +14,17 @@ module processor_debugger(
 		input wire iDEBUG_CMD_ERROR,
 		input wire [31:0] iDEBUG_CMD_DATA,
 		//To Uart
-		input wire iUART_RXD,
-		output wire oUART_TXD
+		input wire iDEBUG_UART_RXD,
+		output wire oDEBUG_UART_TXD,
+		input wire iDEBUG_PARA_REQ,
+		output wire oDEBUG_PARA_BUSY,
+		input wire [7:0] iDEBUG_PARA_CMD,
+		input wire [31:0] iDEBUG_PARA_DATA,
+		output wire oDEBUG_PARA_VALID,
+		input wire iDEBUG_PARA_BUSY,
+		output wire oDEBUG_PARA_ERROR,
+		output wire [31:0] oDEBUG_PARA_DATA
 	);
-	
 
 	//Command
 	localparam CORE_DEBUG_CMD_READ_REG = 4'h0;
@@ -26,7 +33,6 @@ module processor_debugger(
 	localparam CORE_DEBUG_CMD_INTGO_CORE = 4'h9;
 	localparam CORE_DEBUG_CMD_SINGLESTEP_CORE = 4'hA;
 	localparam CORE_DEBUG_CMD_STOP_CORE = 4'hF;
-	
 	
 	//Register Target
 	localparam CORE_DEBUG_TARGET_GR0 = 8'd0;
@@ -85,173 +91,104 @@ module processor_debugger(
 	
 	//Uart Debuger Module
 	
-	//Uart Module
-	wire uartmod_txd_req;
-	wire uartmod_txd_busy;
-	wire [7:0] uartmod_txd_data;
-	wire uartmod2rdqueue_rxd_valid;
-	wire [7:0] uartmod2rdqueue_rxd_data;
-	//ED Queue
-	wire [7:0] rdqueue2commandcheck_data;
-	wire rdqueue2commandcheck_empty;
-	//Uart Format Module
-	wire uartformat_txd_req;
-	wire uartformat_busy;
-	wire [31:0] uartformat_txd_data;
+
 	
+
 	/****************************************************************
-	Uart
+	Interface Select
 	****************************************************************/
-	//Uart Module
-	//Baudrate (Clock / Baudrate = parameter) 9600bps = 13'h1458, 57600bps = 13'h364
-	processor_debugger_uart #(13'h364) UART_IF(	
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
-		//Request
-		.iTX_REQ(uartmod_txd_req),
-		.oTX_BUSY(uartmod_txd_busy),
-		.iTX_DATA(uartmod_txd_data),	
-		.oRX_VALID(uartmod2rdqueue_rxd_valid),
-		.oRX_DATA(uartmod2rdqueue_rxd_data),
-		//UART
-		.oUART_TXD(oUART_TXD),
-		.iUART_RXD(iUART_RXD)
-	);	
+	wire debug_
 	
-	//Rxd Queue
-	mist1032isa_sync_fifo #(8, 16, 4) INST_LOOPBUFFER(
-		.iCLOCK(iCLOCK), 
-		.inRESET(inRESET), 
-		.iREMOVE(1'b0), 
-		.oCOUNT(), 	
-		.iWR_EN(uartmod2rdqueue_rxd_valid), 
-		.iWR_DATA(uartmod2rdqueue_rxd_data), 
-		.oWR_FULL(),
-		.iRD_EN(!b_uart_cmd_request && !rdqueue2commandcheck_empty), 
-		.oRD_DATA(rdqueue2commandcheck_data), 
-		.oRD_EMPTY(rdqueue2commandcheck_empty)
-	);
 	
+
+	input wire iDEBUG_PARA_REQ,
+	output wire oDEBUG_PARA_BUSY,
+	input wire [7:0] iDEBUG_PARA_CMD,
+	input wire [31:0] iDEBUG_PARA_DATA,
+	output wire oDEBUG_PARA_VALID,
+	input wire iDEBUG_PARA_BUSY,
+	output wire oDEBUG_PARA_ERROR,
+	output wire [31:0] oDEBUG_PARA_DATA
+
 	
 	/****************************************************************
 	Uart Command Check
 	****************************************************************/
-	parameter L_PARAM_UART_CMDCODE_ID = 16'h4944;
-	parameter L_PARAM_UART_CMDCODE_AC = 16'h4143;
-	parameter L_PARAM_UART_CMDCODE_AR = 16'h4152;
-	parameter L_PARAM_UART_CMDCODE_RR = 16'h5252;
-	parameter L_PARAM_UART_CMDCODE_RW = 16'h5257;
-	parameter L_PARAM_UART_CMDCODE_SE = 16'h5345;
-	parameter L_PARAM_UART_CMDCODE_BE = 16'h4245;
-	parameter L_PARAM_UART_CMDCODE_SB = 16'h5342;
+	localparam L_PARAM_CMDCODE_ID = 8'h49;
+	localparam L_PARAM_CMDCODE_AC = 8'h41;
+	localparam L_PARAM_CMDCODE_NP = 8'h4e;
+	localparam L_PARAM_CMDCODE_RR = 8'h52;
+	localparam L_PARAM_CMDCODE_RW = 8'h57;
+	localparam L_PARAM_CMDCODE_SE = 8'h53;
+	localparam L_PARAM_CMDCODE_BE = 8'h42;
+	localparam L_PARAM_CMDCODE_SB = 8'h50;
 	
-	reg [3:0] b_uart_cmd_state;
-	reg [15:0] b_uart_cmd_cmd;
-	reg [2:0] b_uart_cmd_rd_counter;
-	reg [7:0] b_uart_cmd_select_reg;
-	reg [31:0] b_uart_cmd_data;
-	reg b_uart_cmd_request;
-	reg [3:0] b_uart_cmd_request_state;
 	
+	
+	reg [3:0] b_cmd_state;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_uart_cmd_state <= 4'h0;
-			b_uart_cmd_cmd <= 16'h0;
-			b_uart_cmd_rd_counter <= 3'h0;
-			b_uart_cmd_select_reg <= 8'h0;
-			b_uart_cmd_data <= 32'h0;
-			b_uart_cmd_request <= 1'b0;
-			b_uart_cmd_request_state <= L_PARAM_MAIN_STT_IDLE;
-		end
-		else begin
-			if(b_uart_cmd_request)begin
-				b_uart_cmd_request <= 1'b0;
-				b_uart_cmd_rd_counter <= 3'h0;
+			if(!inRESET)begin
+				b_cmd_state <= L_PARAM_MAIN_STT_IDLE;
 			end
 			else begin
-				if(!rdqueue2commandcheck_empty)begin
-					b_uart_cmd_cmd <= {b_uart_cmd_cmd[7:0], rdqueue2commandcheck_data};
-					b_uart_cmd_rd_counter <= b_uart_cmd_rd_counter + 3'b1
-					if(b_uart_cmd_rd_counter == 3'h1)begin
-						//Check Command
-						b_uart_cmd_request <= 1'b1;
-						case(b_uart_cmd_cmd)
-							L_PARAM_UART_CMDCODE_ID:
-								begin
-									if(b_main_state == L_PARAM_MAIN_STT_IDLE || b_main_state == L_PARAM_MAIN_STT_ACTIVE)begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_IDLE;
-									end
-									else begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ERROR;
-									end
-								end
-							L_PARAM_UART_CMDCODE_AC:
-								begin
-									if(b_main_state == L_PARAM_MAIN_STT_IDLE)begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ACTIVE;
-									end
-									else begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ERROR;
-									end
-								end
-							L_PARAM_UART_CMDCODE_AR:
-								begin
-									if(b_main_state == L_PARAM_MAIN_STT_ACTIVE)begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ALL_REGISTER_READ;
-									end
-									else begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ERROR;
-									end
-								end
-							L_PARAM_UART_CMDCODE_RR:
-								begin
-									b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ALL_REGISTER_READ;
-								end
-							L_PARAM_UART_CMDCODE_RW:
-								begin
-									b_uart_cmd_request_state <= L_PARAM_MAIN_STT_REGISTER_READ;
-								end
-							L_PARAM_UART_CMDCODE_SE:
-								begin
-									if(b_main_state == L_PARAM_MAIN_STT_ACTIVE)begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_STEP_EXECUTE;
-									end
-									else begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ERROR;
-									end
-								end
-							L_PARAM_UART_CMDCODE_BE:
-								begin
-									if(b_main_state == L_PARAM_MAIN_STT_ACTIVE)begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_BREAK_EXECUTE;
-									end
-									else begin
-										b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ERROR;
-									end
-								end
-							L_PARAM_UART_CMDCODE_SB:
-								begin
-									b_uart_cmd_request_state <= L_PARAM_MAIN_STT_BREAK_EXECUTE;
-								end
-							default:
-								begin
-									b_uart_cmd_request_state <= L_PARAM_MAIN_STT_ERROR;
-								end
-						endcase
-					end
-				end
+				case(b_cmd_state)
+					L_PARAM_MAIN_STT_IDLE:
+						begin
+							//
+						end
+					L_PARAM_MAIN_STT_ACTIVE:
+						begin
+							//
+						end
+					L_PARAM_MAIN_STT_NOP:
+						begin
+							//
+						end
+					L_PARAM_MAIN_STT_REGISTER_READ:
+						begin
+							//
+						end
+					L_PARAM_MAIN_STT_REGISTER_WRITE:
+						begin
+							//
+						end
+					L_PARAM_MAIN_STT_STEP_EXECUTE:
+						begin
+							//
+						end
+					L_PARAM_MAIN_STT_BREAK_EXECUTE:
+						begin
+							//
+						end
+					L_PARAM_MAIN_STT_SET_BREAK_POINT:
+						begin
+							//
+						end
+					L_PARAM_MAIN_STT_ERROR:
+						begin
+							//
+						end
+					default:
+						begin
+							//
+						end
+				endcase
 			end
 		end
-	end	localparam L_PARAM_MAIN_STT_IDLE = 4'h0;
+	end //CMD State
+
+	
+	localparam L_PARAM_MAIN_STT_IDLE = 4'h0;
 	localparam L_PARAM_MAIN_STT_ACTIVE = 4'h1;
-	localparam L_PARAM_MAIN_STT_ALL_REGISTER_READ = 4'h2;
+	localparam L_PARAM_MAIN_STT_NOP = 4'h2;
 	localparam L_PARAM_MAIN_STT_REGISTER_READ = 4'h3;
 	localparam L_PARAM_MAIN_STT_REGISTER_WRITE = 4'h4;
 	localparam L_PARAM_MAIN_STT_STEP_EXECUTE = 4'h5;
 	localparam L_PARAM_MAIN_STT_BREAK_EXECUTE = 4'h6;
 	localparam L_PARAM_MAIN_STT_SET_BREAK_POINT = 4'h7;
 	localparam L_PARAM_MAIN_STT_ERROR = 4'h8;
-	
+
 	
 	
 	processor_debugger_uart_transmit_format UART_FORMAT(
