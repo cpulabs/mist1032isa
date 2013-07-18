@@ -7,7 +7,7 @@
 	
 */
 
-`include "processor.h"
+//`include "processor.h"
 `default_nettype none
 
 
@@ -650,6 +650,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			for(i = 0; i < 16; i = i + 1)begin
+				/*
 				if(`PROCESSOR_DATA_RESET_EN)begin
 					tag0[i] <= tag0[i] & 24'h000000;		//Clear LRU_Status bit
 					tag1[i] <= tag1[i] & 24'h000000;		//Clear LRU_Status bit
@@ -662,11 +663,17 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 					tag2[i] <= tag2[i] & 24'h3FFFFF;		//Clear LRU_Status bit
 					tag3[i] <= tag3[i] & 24'h3FFFFF;		//Clear LRU_Status bit
 				end
+				*/
+				tag0[i] <= tag0[i] & 24'h000000;		//Clear LRU_Status bit
+				tag1[i] <= tag1[i] & 24'h000000;		//Clear LRU_Status bit
+				tag2[i] <= tag2[i] & 24'h000000;		//Clear LRU_Status bit
+				tag3[i] <= tag3[i] & 24'h000000;		//Clear LRU_Status bit
 			end
 			b_load_req_valid <= 1'b0;
 		end
 		else if(iREMOVE)begin
 			for(i = 0; i < 16; i = i + 1)begin
+				/*
 				if(`PROCESSOR_DATA_RESET_EN)begin
 					tag0[i] <= tag0[i] & 24'h000000;		//Clear LRU_Status bit
 					tag1[i] <= tag1[i] & 24'h000000;		//Clear LRU_Status bit
@@ -679,6 +686,11 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 					tag2[i] <= tag2[i] & 24'h3FFFFF;		//Clear LRU_Status bit
 					tag3[i] <= tag3[i] & 24'h3FFFFF;		//Clear LRU_Status bit
 				end
+				*/
+				tag0[i] <= tag0[i] & 24'h000000;		//Clear LRU_Status bit
+				tag1[i] <= tag1[i] & 24'h000000;		//Clear LRU_Status bit
+				tag2[i] <= tag2[i] & 24'h000000;		//Clear LRU_Status bit
+				tag3[i] <= tag3[i] & 24'h000000;		//Clear LRU_Status bit
 			end
 			b_load_req_valid <= 1'b0;
 		end

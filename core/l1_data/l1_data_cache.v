@@ -1,5 +1,5 @@
 
-`include "processor.h"
+//`include "processor.h"
 `default_nettype none
 
 
@@ -198,7 +198,7 @@ module l1_data_cache(
 				L_PARAM_MEMREQ:	//Request State
 					begin
 						//Cache ON
-						if(`DATA_L1_CACHE_ON)begin
+						`ifdef MIST1032ISA_DATA_L1_CACHE
 							if(iDATA_VALID && iDATA_PAGEFAULT)begin
 								//Pagefault
 								b_req_state <= 4'h0;
@@ -235,19 +235,18 @@ module l1_data_cache(
 									end
 								end
 							end
-						end
 						//Cache OFF
-						else begin
+						`else
 							if(!data_request_lock)begin
 								b_req_main_state <= L_PARAM_MEMGET;
 								b_req_state <= 4'h0;
 							end
-						end
+						`endif
 					end
 				L_PARAM_MEMGET:	//Get Wait State
 					begin
 						//Cache ON
-						if(`DATA_L1_CACHE_ON)begin
+						`ifdef MIST1032ISA_DATA_L1_CACHE
 							if(iDATA_VALID)begin
 								//Latch Data
 								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
@@ -282,9 +281,8 @@ module l1_data_cache(
 									b_get_state <= b_get_state + 4'h1;
 								end
 							end
-						end
+						`else
 						//Cache OFF
-						else begin
 							if(iDATA_VALID)begin
 								b_get_state <= 4'h0;
 								b_pagefault <= iDATA_PAGEFAULT;
@@ -298,7 +296,7 @@ module l1_data_cache(
 									b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[27:14];
 								end
 							end
-						end
+						`endif
 					end
 				L_PARAM_OUTDATA:
 					begin
@@ -348,88 +346,86 @@ module l1_data_cache(
 	wire [31:0] cache_result_data;
 	wire [13:0] cache_result_mmu_flags;
 
-	generate
-		if(`DATA_L1_CACHE_ON)begin
-			l1_data_cache_64entry_4way_line64b_bus_8b CACHE_MODULE(
-				/********************************
-				System
-				********************************/
-				.iCLOCK(iCLOCK),
-				.inRESET(inRESET),
-				//Remove
-				.iREMOVE(iCACHE_FLASH),
-				/********************************
-				Search
-				********************************/
-				//Search Request 
-				.iRD_REQ((b_req_main_state == L_PARAM_IDLE) && !data_request_lock && data_request && !iLDST_RW),
-				.oRD_BUSY(cache_req_busy),		
-				.iRD_ADDR({iLDST_ADDR[31:2], 2'h0}),		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-				//Search Output Result
-				.oRD_VALID(cache_result_valid),
-				.oRD_HIT(cache_result_hit),
-				.iRD_BUSY(b_req_main_state != L_PARAM_IDLE),	
-				.oRD_DATA(cache_result_data),
-				.oRD_MMU_FLAGS(cache_result_mmu_flags),	
-				/********************************
-				Upload
-				********************************/
-				.iUP_REQ((b_req_main_state == L_PARAM_WR_MEMREQ) && !data_request_lock),
-				.oUP_BUSY(),
-				.iUP_ORDER(b_req_order),
-				.iUP_ADDR(b_req_addr),				
-				.iUP_DATA(b_req_data),
-				/********************************
-				Write Request
-				********************************/
-				.iWR_REQ((b_req_main_state == L_PARAM_OUTDATA) && !b_pagefault),
-				.oWR_BUSY(),
-				.iWR_ADDR({b_req_addr[31:6], 6'h0}),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-				.iWR_DATA(b_cache_result_data),
-				.iWR_MMU_FLAGS(b_cache_result_mmu_flags)
-			);
-		end
-		else begin
-			l1_data_cache_64entry_4way_line64b_bus_8b_damy CACHE_MODULE_DAMY(
-				/********************************
-				System
-				********************************/
-				.iCLOCK(iCLOCK),
-				.inRESET(inRESET),
-				//Remove
-				.iREMOVE(iCACHE_FLASH),
-				/********************************
-				Search
-				********************************/
-				//Search Request 
-				.iRD_REQ((b_req_main_state == L_PARAM_IDLE) && !data_request_lock && data_request && !iLDST_RW),
-				.oRD_BUSY(cache_req_busy),		
-				.iRD_ADDR({iLDST_ADDR[31:3], 3'h0}),		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-				//Search Output Result
-				.oRD_VALID(cache_result_valid),
-				.oRD_HIT(cache_result_hit),
-				.iRD_BUSY(b_req_main_state != L_PARAM_IDLE),	
-				.oRD_DATA(cache_result_data),
-				.oRD_MMU_FLAGS(cache_result_mmu_flags),	
-				/********************************
-				Upload
-				********************************/
-				.iUP_REQ((b_req_main_state == L_PARAM_WR_MEMREQ) && !data_request_lock),
-				.oUP_BUSY(),
-				.iUP_ORDER(b_req_order),
-				.iUP_ADDR(b_req_addr),				
-				.iUP_DATA(b_req_data),
-				/********************************
-				Write Request
-				********************************/
-				.iWR_REQ(1'b0),
-				.oWR_BUSY(),
-				.iWR_ADDR(32'h0),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
-				.iWR_DATA({512{1'b0}}),
-				.iWR_MMU_FLAGS(256'h000000)
-			);
-		end
-	endgenerate
+	
+	`ifdef MIST1032ISA_DATA_L1_CACHE
+		l1_data_cache_64entry_4way_line64b_bus_8b CACHE_MODULE(
+			/********************************
+			System
+			********************************/
+			.iCLOCK(iCLOCK),
+			.inRESET(inRESET),
+			//Remove
+			.iREMOVE(iCACHE_FLASH),
+			/********************************
+			Search
+			********************************/
+			//Search Request 
+			.iRD_REQ((b_req_main_state == L_PARAM_IDLE) && !data_request_lock && data_request && !iLDST_RW),
+			.oRD_BUSY(cache_req_busy),		
+			.iRD_ADDR({iLDST_ADDR[31:2], 2'h0}),		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+			//Search Output Result
+			.oRD_VALID(cache_result_valid),
+			.oRD_HIT(cache_result_hit),
+			.iRD_BUSY(b_req_main_state != L_PARAM_IDLE),	
+			.oRD_DATA(cache_result_data),
+			.oRD_MMU_FLAGS(cache_result_mmu_flags),	
+			/********************************
+			Upload
+			********************************/
+			.iUP_REQ((b_req_main_state == L_PARAM_WR_MEMREQ) && !data_request_lock),
+			.oUP_BUSY(),
+			.iUP_ORDER(b_req_order),
+			.iUP_ADDR(b_req_addr),				
+			.iUP_DATA(b_req_data),
+			/********************************
+			Write Request
+			********************************/
+			.iWR_REQ((b_req_main_state == L_PARAM_OUTDATA) && !b_pagefault),
+			.oWR_BUSY(),
+			.iWR_ADDR({b_req_addr[31:6], 6'h0}),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+			.iWR_DATA(b_cache_result_data),
+			.iWR_MMU_FLAGS(b_cache_result_mmu_flags)
+		);
+	`else
+		l1_data_cache_64entry_4way_line64b_bus_8b_damy CACHE_MODULE_DAMY(
+			/********************************
+			System
+			********************************/
+			.iCLOCK(iCLOCK),
+			.inRESET(inRESET),
+			//Remove
+			.iREMOVE(iCACHE_FLASH),
+			/********************************
+			Search
+			********************************/
+			//Search Request 
+			.iRD_REQ((b_req_main_state == L_PARAM_IDLE) && !data_request_lock && data_request && !iLDST_RW),
+			.oRD_BUSY(cache_req_busy),		
+			.iRD_ADDR({iLDST_ADDR[31:3], 3'h0}),		//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+			//Search Output Result
+			.oRD_VALID(cache_result_valid),
+			.oRD_HIT(cache_result_hit),
+			.iRD_BUSY(b_req_main_state != L_PARAM_IDLE),	
+			.oRD_DATA(cache_result_data),
+			.oRD_MMU_FLAGS(cache_result_mmu_flags),	
+			/********************************
+			Upload
+			********************************/
+			.iUP_REQ((b_req_main_state == L_PARAM_WR_MEMREQ) && !data_request_lock),
+			.oUP_BUSY(),
+			.iUP_ORDER(b_req_order),
+			.iUP_ADDR(b_req_addr),				
+			.iUP_DATA(b_req_data),
+			/********************************
+			Write Request
+			********************************/
+			.iWR_REQ(1'b0),
+			.oWR_BUSY(),
+			.iWR_ADDR(32'h0),	//Tag:22bit | Index:4bit(4Way*16Entry) | LineSize:6bit(64B)
+			.iWR_DATA({512{1'b0}}),
+			.iWR_MMU_FLAGS(256'h000000)
+		);
+	`endif
 				
 
 	reg next_data_valid;
@@ -458,16 +454,15 @@ module l1_data_cache(
 	assign oDATA_TID = b_req_tid;
 	assign oDATA_MMUMOD = b_req_mmumod;
 	assign oDATA_PDT = b_req_pdt;
-	generate 
+
+		
+	`ifdef MIST1032ISA_DATA_L1_CACHE
 		//Cache ON
-		if(`DATA_L1_CACHE_ON)begin
-			assign oDATA_ADDR = (b_req_main_state == L_PARAM_WR_MEMREQ)? b_req_addr : {b_req_addr[31:6], b_req_state[2:0], 3'h0};
-		end
+		assign oDATA_ADDR = (b_req_main_state == L_PARAM_WR_MEMREQ)? b_req_addr : {b_req_addr[31:6], b_req_state[2:0], 3'h0};
+	`else
 		//Cache OFF
-		else begin
-			assign oDATA_ADDR = (b_req_main_state == L_PARAM_WR_MEMREQ)? b_req_addr : {b_req_addr[31:3], 1'b0, b_req_addr[1:0]};
-		end
-	endgenerate
+		assign oDATA_ADDR = (b_req_main_state == L_PARAM_WR_MEMREQ)? b_req_addr : {b_req_addr[31:3], 1'b0, b_req_addr[1:0]};
+	`endif
 	assign oDATA_DATA = b_req_data;
 	
 	assign oLDST_BUSY = data_request_lock || io_request_lock || cache_req_busy || (b_req_main_state != L_PARAM_IDLE) || (cache_result_valid && !cache_result_hit);

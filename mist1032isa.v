@@ -146,7 +146,7 @@ module mist1032isa(
 	Memory Mode
 	********************************************************************************/
 	//`ifdef MIST1032ISA_SIMULATION
-		/*
+		
 		assign oMEMORY_REQ = 1'b0;
 		assign oMEMORY_ORDER = 2'h0;
 		assign oMEMORY_RW = 1'b0;
@@ -170,8 +170,9 @@ module mist1032isa(
 			.iMEMORY_LOCK(processor2memory_busy),
 			.oMEMORY_DATA(memory2processor_data)
 		);
-	*/
+	
 	//`else
+	/*
 		//Processor -> Memory
 		assign oMEMORY_REQ = processor2memory_req;
 		assign oMEMORY_ORDER = processor2memory_order;
@@ -183,6 +184,7 @@ module mist1032isa(
 		assign memory2processor_lock = iMEMORY_LOCK;
 		assign memory2processor_req = iMEMORY_VALID;
 		assign memory2processor_data = iMEMORY_DATA;
+		*/
 	//`endif
 	
 			
@@ -309,7 +311,7 @@ module mist1032isa(
 	wire [31:0] processor2debuger_cmd_data;
 	
 	
-	processor_debugger DEBUGGER(
+	sdi_debugger SDI_DEBUGGER(
 		//Clock 
 		.iCLOCK(iCORE_CLOCK),
 		.inRESET(inRESET),

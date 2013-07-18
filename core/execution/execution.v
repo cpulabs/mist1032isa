@@ -1,6 +1,6 @@
 
 `default_nettype none
-`include "processor.h"
+//`include "processor.h"
 `include "core.h"
 `include "irq.h"
 
@@ -1148,7 +1148,7 @@ module execution(
 									end
 									else if(branch_jump_valid)begin
 										//Branch Predict Hardware Enable / Disable
-										if(`BRANCH_PREDICTOR)begin
+										`ifdef MIST1032ISA_BRANCH_PREDICT
 											//Hit Branch Predict
 											if(iPREVIOUS_BRANCH_PREDICT && iPREVIOUS_BRANCH_PREDICT_ADDR == branch_branch_addr)begin
 												b_writeback <= 1'b0;
@@ -1187,8 +1187,7 @@ module execution(
 												b_branch_predict_hit <= 1'b0;
 												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 											end
-										end
-										else begin
+										`else
 											b_valid <= 1'b0;
 											b_state <= L_PARAM_STT_BRANCH;
 											b_writeback <= 1'b0;
@@ -1206,7 +1205,7 @@ module execution(
 											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
 											b_branch_predict_hit <= 1'b0;
 											b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
-										end
+										`endif
 									end
 									//Other Branch
 									else if(branch_idts_valid || branch_ib_valid)begin
@@ -1231,7 +1230,7 @@ module execution(
 									//Non Branch(Compiler predict instruction)
 									else begin
 										//Branch Predict Enable
-										if(`BRANCH_PREDICTOR)begin
+										`ifdef MIST1032ISA_BRANCH_PREDICT
 											//Branch Predict Mis hit
 											if(branch_not_jump_valid && iPREVIOUS_BRANCH_PREDICT)begin
 												b_valid <= 1'b0;
@@ -1271,9 +1270,8 @@ module execution(
 												b_branch_predict_hit <= 1'b0;
 												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 											end
-										end
+										`else
 										//Predict Disable
-										else begin
 											//b_valid <= 1'b1;////////////////////////////////// koko kesiteita
 											b_writeback <= 1'b0;
 											b_destination_sysreg  <= 1'b0;
@@ -1290,7 +1288,7 @@ module execution(
 											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
 											b_branch_predict_hit <= 1'b0;
 											b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
-										end
+										`endif
 									end
 								end
 							end
@@ -1456,75 +1454,68 @@ module execution(
 	reg [1:0] b_debug_state;
 	reg b_debug_stop;
 	reg b_debug_cmd_ack;
-	//Debug Modulegenerate
-	generate
-		//Debug Module Enable
-		if(`PROCESSOR_USE_DEBUG_MODULE)begin
-			always@(posedge iCLOCK or negedge inRESET)begin
-				if(!inRESET)begin
-					b_debug_state <= L_PARAM_DEBUG_IDLE;
-					b_debug_stop <= 1'b0;
-					b_debug_cmd_ack <= 1'b0;
-				end
-				else begin
-					case(b_debug_state)
-						L_PARAM_DEBUG_IDLE:
-							begin
-								b_debug_cmd_ack <= 1'b0;
-								if(iDEBUG_CTRL_REQ && iDEBUG_CTRL_STOP)begin
-									b_debug_state <= L_PARAM_DEBUG_START_REQ;
-								end
-								else if(iDEBUG_CTRL_REQ && iDEBUG_CTRL_START)begin
-									b_debug_state <= L_PARAM_DEBUG_STOP_REQ;
-								end
+	
+	//Debug Module Enable
+	`ifdef MIST1032ISA_STANDARD_DEBUGGER
+		always@(posedge iCLOCK or negedge inRESET)begin
+			if(!inRESET)begin
+				b_debug_state <= L_PARAM_DEBUG_IDLE;
+				b_debug_stop <= 1'b0;
+				b_debug_cmd_ack <= 1'b0;
+			end
+			else begin
+				case(b_debug_state)
+					L_PARAM_DEBUG_IDLE:
+						begin
+							b_debug_cmd_ack <= 1'b0;
+							if(iDEBUG_CTRL_REQ && iDEBUG_CTRL_STOP)begin
+								b_debug_state <= L_PARAM_DEBUG_START_REQ;
 							end
-						L_PARAM_DEBUG_START_REQ:
-							begin
-								b_debug_stop <= 1'b0;
+							else if(iDEBUG_CTRL_REQ && iDEBUG_CTRL_START)begin
+								b_debug_state <= L_PARAM_DEBUG_STOP_REQ;
+							end
+						end
+					L_PARAM_DEBUG_START_REQ:
+						begin
+							b_debug_stop <= 1'b0;
+							b_debug_cmd_ack <= 1'b1;
+							b_debug_state <= L_PARAM_DEBUG_IDLE;
+						end
+					L_PARAM_DEBUG_STOP_REQ:
+						begin
+							if(!lock_condition)begin
+								b_debug_stop <= 1'b1;
 								b_debug_cmd_ack <= 1'b1;
 								b_debug_state <= L_PARAM_DEBUG_IDLE;
 							end
-						L_PARAM_DEBUG_STOP_REQ:
-							begin
-								if(!lock_condition)begin
-									b_debug_stop <= 1'b1;
-									b_debug_cmd_ack <= 1'b1;
-									b_debug_state <= L_PARAM_DEBUG_IDLE;
-								end
-							end
-					endcase
-				end
+						end
+				endcase
 			end
 		end
-		else begin
-			always@(posedge iCLOCK or negedge inRESET)begin
-				if(!inRESET)begin
-					b_debug_state <= L_PARAM_DEBUG_IDLE;
-					b_debug_stop <= 1'b0;
-					b_debug_cmd_ack <= 1'b0;
-				end
-				else begin
-					b_debug_state <= b_debug_state;
-					b_debug_stop <= b_debug_stop;
-					b_debug_cmd_ack <= b_debug_cmd_ack;
-				end
+	`else
+		always@(posedge iCLOCK or negedge inRESET)begin
+			if(!inRESET)begin
+				b_debug_state <= L_PARAM_DEBUG_IDLE;
+				b_debug_stop <= 1'b0;
+				b_debug_cmd_ack <= 1'b0;
+			end
+			else begin
+				b_debug_state <= b_debug_state;
+				b_debug_stop <= b_debug_stop;
+				b_debug_cmd_ack <= b_debug_cmd_ack;
 			end
 		end
-	endgenerate
+	`endif
 	
-	//Debug Modulegenerate
-	generate
-		//Debug Module Enable
-		if(`PROCESSOR_USE_DEBUG_MODULE)begin
-			assign oDEBUG_CTRL_ACK = b_debug_cmd_ack;
-			assign oDEBUG_REG_OUT_FLAGR = b_sysreg_flags;
-		end
-		//Disable
-		else begin
-			assign oDEBUG_CTRL_ACK = 32'h0;
-			assign oDEBUG_REG_OUT_FLAGR = 32'h0;
-		end
-	endgenerate
+	//Debug Module Enable
+	`ifdef MIST1032ISA_STANDARD_DEBUGGER
+		assign oDEBUG_CTRL_ACK = b_debug_cmd_ack;
+		assign oDEBUG_REG_OUT_FLAGR = b_sysreg_flags;
+	`else
+	//Disable
+		assign oDEBUG_CTRL_ACK = 32'h0;
+		assign oDEBUG_REG_OUT_FLAGR = 32'h0;
+	`endif
 	
 	
 	/*****************************************************

@@ -891,89 +891,86 @@ module dispatch
 	
 
 	
-	//Debug Modulegenerate
-	generate
-		//Debug Module Enable
-		if(`PROCESSOR_USE_DEBUG_MODULE)begin
-			assign oDEBUG_REG_OUT_GR0 = b_gr_register[0];
-			assign oDEBUG_REG_OUT_GR1 = b_gr_register[1];
-			assign oDEBUG_REG_OUT_GR2 = b_gr_register[2];
-			assign oDEBUG_REG_OUT_GR3 = b_gr_register[3];
-			assign oDEBUG_REG_OUT_GR4 = b_gr_register[4];
-			assign oDEBUG_REG_OUT_GR5 = b_gr_register[5];
-			assign oDEBUG_REG_OUT_GR6 = b_gr_register[6];
-			assign oDEBUG_REG_OUT_GR7 = b_gr_register[7];
-			assign oDEBUG_REG_OUT_GR8 = b_gr_register[8];
-			assign oDEBUG_REG_OUT_GR9 = b_gr_register[9];
-			assign oDEBUG_REG_OUT_GR10 = b_gr_register[10];
-			assign oDEBUG_REG_OUT_GR11 = b_gr_register[11];
-			assign oDEBUG_REG_OUT_GR12 = b_gr_register[12];
-			assign oDEBUG_REG_OUT_GR13 = b_gr_register[13];
-			assign oDEBUG_REG_OUT_GR14 = b_gr_register[14];
-			assign oDEBUG_REG_OUT_GR15 = b_gr_register[15];
-			assign oDEBUG_REG_OUT_GR16 = b_gr_register[16];
-			assign oDEBUG_REG_OUT_GR17 = b_gr_register[17];
-			assign oDEBUG_REG_OUT_GR18 = b_gr_register[18];
-			assign oDEBUG_REG_OUT_GR19 = b_gr_register[19];
-			assign oDEBUG_REG_OUT_GR20 = b_gr_register[20];
-			assign oDEBUG_REG_OUT_GR21 = b_gr_register[21];
-			assign oDEBUG_REG_OUT_GR22 = b_gr_register[22];
-			assign oDEBUG_REG_OUT_GR23 = b_gr_register[23];
-			assign oDEBUG_REG_OUT_GR24 = b_gr_register[24];
-			assign oDEBUG_REG_OUT_GR25 = b_gr_register[25];
-			assign oDEBUG_REG_OUT_GR26 = b_gr_register[26];
-			assign oDEBUG_REG_OUT_GR27 = b_gr_register[27];
-			assign oDEBUG_REG_OUT_GR28 = b_gr_register[28];
-			assign oDEBUG_REG_OUT_GR29 = b_gr_register[29];
-			assign oDEBUG_REG_OUT_GR30 = b_gr_register[30];
-			assign oDEBUG_REG_OUT_GR31 = b_gr_register[31];
-			assign oDEBUG_REG_OUT_SPR = w_sysreg_spr_info_data;
-			assign oDEBUG_REG_OUT_PCR = w_sysreg_pcr_info_data;
-			assign oDEBUG_REG_OUT_PPCR = w_sysreg_ppcr_info_data;
-			assign oDEBUG_REG_OUT_PSR = w_sysreg_psr_info_data;
-			assign oDEBUG_REG_OUT_PPSR = w_sysreg_ppsr_info_data;
-		end
-		//Disable
-		else begin
-			assign oDEBUG_REG_OUT_GR0 = 32'h0;
-			assign oDEBUG_REG_OUT_GR1 = 32'h0;
-			assign oDEBUG_REG_OUT_GR2 = 32'h0;
-			assign oDEBUG_REG_OUT_GR3 = 32'h0;
-			assign oDEBUG_REG_OUT_GR4 = 32'h0;
-			assign oDEBUG_REG_OUT_GR5 = 32'h0;
-			assign oDEBUG_REG_OUT_GR6 = 32'h0;
-			assign oDEBUG_REG_OUT_GR7 = 32'h0;
-			assign oDEBUG_REG_OUT_GR8 = 32'h0;
-			assign oDEBUG_REG_OUT_GR9 = 32'h0;
-			assign oDEBUG_REG_OUT_GR10 = 32'h0;
-			assign oDEBUG_REG_OUT_GR11 = 32'h0;
-			assign oDEBUG_REG_OUT_GR12 = 32'h0;
-			assign oDEBUG_REG_OUT_GR13 = 32'h0;
-			assign oDEBUG_REG_OUT_GR14 = 32'h0;
-			assign oDEBUG_REG_OUT_GR15 = 32'h0;
-			assign oDEBUG_REG_OUT_GR16 = 32'h0;
-			assign oDEBUG_REG_OUT_GR17 = 32'h0;
-			assign oDEBUG_REG_OUT_GR18 = 32'h0;
-			assign oDEBUG_REG_OUT_GR19 = 32'h0;
-			assign oDEBUG_REG_OUT_GR20 = 32'h0;
-			assign oDEBUG_REG_OUT_GR21 = 32'h0;
-			assign oDEBUG_REG_OUT_GR22 = 32'h0;
-			assign oDEBUG_REG_OUT_GR23 = 32'h0;
-			assign oDEBUG_REG_OUT_GR24 = 32'h0;
-			assign oDEBUG_REG_OUT_GR25 = 32'h0;
-			assign oDEBUG_REG_OUT_GR26 = 32'h0;
-			assign oDEBUG_REG_OUT_GR27 = 32'h0;
-			assign oDEBUG_REG_OUT_GR28 = 32'h0;
-			assign oDEBUG_REG_OUT_GR29 = 32'h0;
-			assign oDEBUG_REG_OUT_GR30 = 32'h0;
-			assign oDEBUG_REG_OUT_GR31 = 32'h0;
-			assign oDEBUG_REG_OUT_SPR = 32'h0;
-			assign oDEBUG_REG_OUT_PCR = 32'h0;
-			assign oDEBUG_REG_OUT_PPCR = 32'h0;
-			assign oDEBUG_REG_OUT_PSR = 32'h0;
-			assign oDEBUG_REG_OUT_PPSR = 32'h0;
-		end
-	endgenerate
+
+	//Debug Module Enable
+	`ifdef MIST1032ISA_STANDARD_DEBUGGER
+		assign oDEBUG_REG_OUT_GR0 = b_gr_register[0];
+		assign oDEBUG_REG_OUT_GR1 = b_gr_register[1];
+		assign oDEBUG_REG_OUT_GR2 = b_gr_register[2];
+		assign oDEBUG_REG_OUT_GR3 = b_gr_register[3];
+		assign oDEBUG_REG_OUT_GR4 = b_gr_register[4];
+		assign oDEBUG_REG_OUT_GR5 = b_gr_register[5];
+		assign oDEBUG_REG_OUT_GR6 = b_gr_register[6];
+		assign oDEBUG_REG_OUT_GR7 = b_gr_register[7];
+		assign oDEBUG_REG_OUT_GR8 = b_gr_register[8];
+		assign oDEBUG_REG_OUT_GR9 = b_gr_register[9];
+		assign oDEBUG_REG_OUT_GR10 = b_gr_register[10];
+		assign oDEBUG_REG_OUT_GR11 = b_gr_register[11];
+		assign oDEBUG_REG_OUT_GR12 = b_gr_register[12];
+		assign oDEBUG_REG_OUT_GR13 = b_gr_register[13];
+		assign oDEBUG_REG_OUT_GR14 = b_gr_register[14];
+		assign oDEBUG_REG_OUT_GR15 = b_gr_register[15];
+		assign oDEBUG_REG_OUT_GR16 = b_gr_register[16];
+		assign oDEBUG_REG_OUT_GR17 = b_gr_register[17];
+		assign oDEBUG_REG_OUT_GR18 = b_gr_register[18];
+		assign oDEBUG_REG_OUT_GR19 = b_gr_register[19];
+		assign oDEBUG_REG_OUT_GR20 = b_gr_register[20];
+		assign oDEBUG_REG_OUT_GR21 = b_gr_register[21];
+		assign oDEBUG_REG_OUT_GR22 = b_gr_register[22];
+		assign oDEBUG_REG_OUT_GR23 = b_gr_register[23];
+		assign oDEBUG_REG_OUT_GR24 = b_gr_register[24];
+		assign oDEBUG_REG_OUT_GR25 = b_gr_register[25];
+		assign oDEBUG_REG_OUT_GR26 = b_gr_register[26];
+		assign oDEBUG_REG_OUT_GR27 = b_gr_register[27];
+		assign oDEBUG_REG_OUT_GR28 = b_gr_register[28];
+		assign oDEBUG_REG_OUT_GR29 = b_gr_register[29];
+		assign oDEBUG_REG_OUT_GR30 = b_gr_register[30];
+		assign oDEBUG_REG_OUT_GR31 = b_gr_register[31];
+		assign oDEBUG_REG_OUT_SPR = w_sysreg_spr_info_data;
+		assign oDEBUG_REG_OUT_PCR = w_sysreg_pcr_info_data;
+		assign oDEBUG_REG_OUT_PPCR = w_sysreg_ppcr_info_data;
+		assign oDEBUG_REG_OUT_PSR = w_sysreg_psr_info_data;
+		assign oDEBUG_REG_OUT_PPSR = w_sysreg_ppsr_info_data;
+	`else
+	//Disable
+		assign oDEBUG_REG_OUT_GR0 = 32'h0;
+		assign oDEBUG_REG_OUT_GR1 = 32'h0;
+		assign oDEBUG_REG_OUT_GR2 = 32'h0;
+		assign oDEBUG_REG_OUT_GR3 = 32'h0;
+		assign oDEBUG_REG_OUT_GR4 = 32'h0;
+		assign oDEBUG_REG_OUT_GR5 = 32'h0;
+		assign oDEBUG_REG_OUT_GR6 = 32'h0;
+		assign oDEBUG_REG_OUT_GR7 = 32'h0;
+		assign oDEBUG_REG_OUT_GR8 = 32'h0;
+		assign oDEBUG_REG_OUT_GR9 = 32'h0;
+		assign oDEBUG_REG_OUT_GR10 = 32'h0;
+		assign oDEBUG_REG_OUT_GR11 = 32'h0;
+		assign oDEBUG_REG_OUT_GR12 = 32'h0;
+		assign oDEBUG_REG_OUT_GR13 = 32'h0;
+		assign oDEBUG_REG_OUT_GR14 = 32'h0;
+		assign oDEBUG_REG_OUT_GR15 = 32'h0;
+		assign oDEBUG_REG_OUT_GR16 = 32'h0;
+		assign oDEBUG_REG_OUT_GR17 = 32'h0;
+		assign oDEBUG_REG_OUT_GR18 = 32'h0;
+		assign oDEBUG_REG_OUT_GR19 = 32'h0;
+		assign oDEBUG_REG_OUT_GR20 = 32'h0;
+		assign oDEBUG_REG_OUT_GR21 = 32'h0;
+		assign oDEBUG_REG_OUT_GR22 = 32'h0;
+		assign oDEBUG_REG_OUT_GR23 = 32'h0;
+		assign oDEBUG_REG_OUT_GR24 = 32'h0;
+		assign oDEBUG_REG_OUT_GR25 = 32'h0;
+		assign oDEBUG_REG_OUT_GR26 = 32'h0;
+		assign oDEBUG_REG_OUT_GR27 = 32'h0;
+		assign oDEBUG_REG_OUT_GR28 = 32'h0;
+		assign oDEBUG_REG_OUT_GR29 = 32'h0;
+		assign oDEBUG_REG_OUT_GR30 = 32'h0;
+		assign oDEBUG_REG_OUT_GR31 = 32'h0;
+		assign oDEBUG_REG_OUT_SPR = 32'h0;
+		assign oDEBUG_REG_OUT_PCR = 32'h0;
+		assign oDEBUG_REG_OUT_PPCR = 32'h0;
+		assign oDEBUG_REG_OUT_PSR = 32'h0;
+		assign oDEBUG_REG_OUT_PPSR = 32'h0;
+	`endif
 	
 	
 	//Assign

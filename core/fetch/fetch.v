@@ -95,14 +95,12 @@ module fetch(
 	wire branch_predictor_predict_branch;
 	wire [31:0] branch_predictor_addr;
 	wire branch_predictor_flush;
-	generate
-		if(`BRANCH_PREDICTOR)begin
-			assign branch_predictor_flush = !iNEXT_LOCK && branch_predictor_valid && branch_predictor_predict_branch;		//Test
-		end
-		else begin
-			assign branch_predictor_flush = 1'b0;
-		end
-	endgenerate
+	
+	`ifdef MIST1032ISA_BRANCH_PREDICT
+		assign branch_predictor_flush = !iNEXT_LOCK && branch_predictor_valid && branch_predictor_predict_branch;		//Test
+	`else
+		assign branch_predictor_flush = 1'b0;
+	`endif
 	
 	branch_predictor BRANCH_PREDICTOR(
 		.iCLOCK(iCLOCK),
@@ -246,16 +244,15 @@ module fetch(
 	assign oNEXT_MMU_FLAGS = b_next_mmu_flags;
 	assign oNEXT_PAGING_ENA = b_next_paging_ena;
 	assign oNEXT_KERNEL_ACCESS = b_next_kernel_access;
-	generate
-		if(`BRANCH_PREDICTOR)begin
-			assign oNEXT_BRANCH_PREDICT = branch_predictor_valid && branch_predictor_predict_branch;
-			assign oNEXT_BRANCH_PREDICT_ADDR = branch_predictor_addr;
-		end
-		else begin
-			assign oNEXT_BRANCH_PREDICT = 1'b0;
-			assign oNEXT_BRANCH_PREDICT_ADDR = 32'h0;
-		end
-	endgenerate
+	
+	`ifdef MIST1032ISA_BRANCH_PREDICT
+		assign oNEXT_BRANCH_PREDICT = branch_predictor_valid && branch_predictor_predict_branch;
+		assign oNEXT_BRANCH_PREDICT_ADDR = branch_predictor_addr;
+	`else
+		assign oNEXT_BRANCH_PREDICT = 1'b0;
+		assign oNEXT_BRANCH_PREDICT_ADDR = 32'h0;
+	`endif
+	
 	assign oNEXT_PC = b_pc_out;
 
 	
