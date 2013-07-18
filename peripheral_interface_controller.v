@@ -70,7 +70,7 @@ module peripheral_interface_controller(
 	Assign
 	******************************************************************************************/
 	//GCI SIze
-	wire [32:0] gci_use_size;
+	//wire [32:0] gci_use_size;
 	//IRQ Controll
 	reg b_irq_state;
 	reg b_irq_gci_ack_mask;
@@ -89,9 +89,10 @@ module peripheral_interface_controller(
 	/******************************************************************************************
 	IOSR
 	******************************************************************************************/
-	assign gci_use_size = 33'h100000000 - b_iosize_gci_size;
+	//assign gci_use_size = 33'h100000000 - b_iosize_gci_size;
 	assign oSYSINFO_IOSR_VALID = b_iosize_gci_size_valid;
-	assign oSYSINFO_IOSR = (b_iosize_gci_size_valid)? gci_use_size[31:0] + 32'h00000200 : 32'h00000000;
+	//assign oSYSINFO_IOSR = (b_iosize_gci_size_valid)? gci_use_size[31:0] + 32'h00000200 : 32'h00000000;
+	assign oSYSINFO_IOSR = ~(b_iosize_gci_size[31:0] + 32'h00000200) + 32'h1;//(b_iosize_gci_size_valid)? 33'h100000000 - (b_iosize_gci_size[31:0] + 32'h00000200) : 32'h00000000;
 	
 	
 	/******************************************************************************************

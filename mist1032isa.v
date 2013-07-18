@@ -3,6 +3,7 @@ MIST1032ISA Processor
 ****************************************/
 `default_nettype none	
 `include "processor.h"
+//`include "sim_global.h"
 
 module mist1032isa(
 		/****************************************
@@ -145,7 +146,7 @@ module mist1032isa(
 	/********************************************************************************
 	Memory Mode
 	********************************************************************************/
-	//`ifdef MIST1032ISA_SIMULATION
+	`ifdef MIST1032ISA_FIRST_SIM
 		
 		assign oMEMORY_REQ = 1'b0;
 		assign oMEMORY_ORDER = 2'h0;
@@ -170,9 +171,7 @@ module mist1032isa(
 			.iMEMORY_LOCK(processor2memory_busy),
 			.oMEMORY_DATA(memory2processor_data)
 		);
-	
-	//`else
-	/*
+	`else
 		//Processor -> Memory
 		assign oMEMORY_REQ = processor2memory_req;
 		assign oMEMORY_ORDER = processor2memory_order;
@@ -184,8 +183,7 @@ module mist1032isa(
 		assign memory2processor_lock = iMEMORY_LOCK;
 		assign memory2processor_req = iMEMORY_VALID;
 		assign memory2processor_data = iMEMORY_DATA;
-		*/
-	//`endif
+	`endif
 	
 			
 	/********************************************************************************

@@ -69,7 +69,7 @@ module default_peripheral_system(
 	wire irq_bum_buffer;
 	
 	//Condition
-	wire dps_request_lock = !oDPS_BUSY && !utim64_busy && !sci_busy;
+	wire dps_request_lock = oDPS_BUSY || utim64_busy || sci_busy;
 	wire utim64_condition = !dps_request_lock && iDPS_REQ && (iDPS_ADDR <= 32'h74);
 	wire sci_condition = !dps_request_lock && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h104) || (iDPS_ADDR == 32'h108));
 	wire mimsr_condition = !dps_request_lock && iDPS_REQ && (iDPS_ADDR == 32'h120);

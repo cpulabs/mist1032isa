@@ -1627,9 +1627,10 @@ module execution(
 	//`ifdef MIST1032ISA_VLG_ASSERTION
 	always@(posedge iCLOCK)begin
 
+	/*
 		//Load
 		if(inRESET)begin
-			if(iDATAIO_REQ && ((|iDATAIO_DATA) === 1'bx || (|iDATAIO_DATA) === 1'bz))begin
+			if(iDATAIO_REQ && ((|iDATAIO_DATA) === 1'bx || (|iDATAIO_DATA) === 1'bz) && b_state == L_PARAM_STT_LOAD)begin
 				$display("[Error] : Load/Store(Load) | PC:%x(Inst:%x), SP:%x, LoadAddr:%x, LoadData:%x", b_pc, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, iDATAIO_DATA);
 				$stop;
 			end
@@ -1641,7 +1642,7 @@ module execution(
 				$stop;
 			end
 		end
-		
+	*/
 		
 		
 		//Load
