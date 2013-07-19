@@ -1,6 +1,7 @@
 
 `include "core.h"
 `include "processor.h"
+`include "common.h"
 `default_nettype none
 
 

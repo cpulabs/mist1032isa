@@ -9,6 +9,7 @@
 `default_nettype none
 `include "core.h"
 `include "processor.h"
+`include "common.h"
 
 module fetch(
 		//System

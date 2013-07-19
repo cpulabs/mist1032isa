@@ -2,7 +2,6 @@
 MIST1032 - Core
 ****************************************/
 `default_nettype none
-//`include "global.h"
 
 
 

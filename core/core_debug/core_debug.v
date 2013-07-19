@@ -1,5 +1,7 @@
 //`include "processor.h"
+`include "common.h"
 `default_nettype none
+
 
 module core_debug(
 		input wire iCLOCK,

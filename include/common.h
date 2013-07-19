@@ -1,0 +1,19 @@
+
+
+
+`ifdef MIST1032ISA_SYNTH
+	//Synthesize Mode
+	`define MIST1032ISA_INST_L1_CACHE
+	`define MIST1032ISA_DATA_L1_CACHE
+	//`define MIST1032ISA_BRANCH_PREDICT
+	`define MIST1032ISA_STANDARD_DEBUGGER
+
+
+`else
+	//Simulation Mode
+	`define MIST1032ISA_STANDARD_DEBUGGER
+	`define MIST1032ISA_FIRST_SIM
+
+`endif
+
+

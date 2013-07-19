@@ -1,6 +1,7 @@
 	
 `default_nettype none
 `include "core.h"
+`include "common.h"
 
 module instruction_buffer(
 		input wire iCLOCK,

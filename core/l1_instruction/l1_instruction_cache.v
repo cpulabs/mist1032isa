@@ -1,7 +1,7 @@
 
 //`include "processor.h"
 `default_nettype none
-
+`include "common.h"
 
 
 module l1_instruction_cache(

@@ -251,6 +251,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	Byte Enable		: YES(64bit)
 	Read==Write		: Dont care
 	---------------------------------------*/
+	/*
 	`ifdef MIST1032ISA_SIMULATION
 		damy_memory_16entry_512bit MEMORY_DAMY_BLOCK0(
 			.iCLOCK(iCLOCK),
@@ -296,7 +297,8 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.iRD_ADDR(read_pointer),
 			.oRD_DATA(memory_way3_out_data)
 		);
-	`else
+		*/
+	//`else
 		cache_ram_16entry_512bit MEMORY_BLOCK0(
 			.clock(iCLOCK),
 			.data(memory_write_data),				//512bit
@@ -336,7 +338,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.wren(memory_write_way3_condition),
 			.q(memory_way3_out_data)				//512bit
 		);
-	`endif
+	//`endif
 	
 	/*--------------------------------------- 
 	Altera Quartus II MegaWizard
@@ -351,7 +353,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	Byte Enable		: YES(8bit)
 	Read==Write		: Dont care
 	---------------------------------------*/
-	`ifdef MIST1032ISA_SIMULATION
+	/*`ifdef MIST1032ISA_SIMULATION
 		damy_memory_16entry_256bit MEMORY_MMUFLAG_DAMY_BLOCK0(
 			.iCLOCK(iCLOCK),
 			.iBYTE_ENA(memory_mmuflag_write_byte_enable),
@@ -397,7 +399,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.oRD_DATA(memory_mmuflag_way3_out_data)
 		);
 		
-	`else
+	`else*/
 		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK0(
 			.clock(iCLOCK),
 			.byteena_a(memory_mmuflag_write_byte_enable),
@@ -437,7 +439,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.wren(memory_mmuflag_write_way3_condition),
 			.q(memory_mmuflag_way3_out_data)		//256bit
 		);
-	`endif
+	//`endif
 
 	/********************************************
 	Function
