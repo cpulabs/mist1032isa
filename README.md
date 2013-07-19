@@ -10,7 +10,7 @@ In order execution core for MIST32 arcitecture.
 
 License
 ---
-BSD 3-Clause License
+BSD 2-Clause License
 
 See ./LICENSE
 
