@@ -17,14 +17,19 @@ See ./LICENSE
 Include
 ---
   ./include/processor.h				:	Processor Infomation
+  
   ./include/irq.h						:	Interrupt Infomation
+  
   ./core/include/core.h				:	Instruction and Internal format
 
 Macro Option(Synth/Sim)
 ---
   MIST1032ISA_INST_L1_CACHE			:	1-Level Instruction Cache Enable 
+  
   MIST1032ISA_DATA_L1_CACHE			:	1-Level Data Cache Enable
+  
   MIST1032ISA_BRANCH_PREDICT		:	Branch Predictor Enable
+  
   MIST1032ISA_STANDARD_DEBUGGER		:	SDI Enable
 
 
@@ -35,4 +40,5 @@ Macro Option(Synth-Only)
 Macro Option(Sim-only)
 ---
   MIST1032ISA_SVA_ASSERTION			:	Simulation Only, System Verilog Assertion Enable
+  
   MIST1032ISA_FIRST_SIM				:	Simulation Only, Use Function ROM. First Simulate.
