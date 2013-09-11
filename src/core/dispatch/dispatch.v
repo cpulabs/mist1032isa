@@ -53,7 +53,7 @@ module dispatch
 		input wire iPREVIOUS_SOURCE1_ACTIVE,		
 		input wire iPREVIOUS_SOURCE0_SYSREG,		
 		input wire iPREVIOUS_SOURCE1_SYSREG,
-		input wire iPREVIOUS_ADV_ACTIVE,		//++
+		input wire iPREVIOUS_ADV_ACTIVE,
 		input wire iPREVIOUS_DESTINATION_SYSREG,
 		input wire [4:0] iPREVIOUS_DESTINATION,			
 		input wire iPREVIOUS_WRITEBACK,	
@@ -62,7 +62,7 @@ module dispatch
 		input wire [3:0] iPREVIOUS_CC_AFE,
 		input wire [4:0] iPREVIOUS_SOURCE0,
 		input wire [31:0] iPREVIOUS_SOURCE1,
-		input wire [5:0] iPREVIOUS_ADV_DATA,	//++
+		input wire [5:0] iPREVIOUS_ADV_DATA,	
 		input wire iPREVIOUS_SOURCE0_FLAGS,
 		input wire iPREVIOUS_SOURCE1_IMM,	
 		input wire iPREVIOUS_EX_SYS_REG,		

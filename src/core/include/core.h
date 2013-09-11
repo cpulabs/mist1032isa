@@ -417,8 +417,10 @@ CC
 /******************************
 Execution AFE(After Execution Enhancing)
 ******************************/
-
-
+//Load Store AFE
+`define		AFE_LDST_NONE		4'h0	//AFE None
+`define		AFE_LDST_SEXT8_32	4'h1	//AFE 8bit->32bit Signe Extension
+`define		AFE_LDST_SEXT16_32	4'h2	//AFE 16bit->32bit Signe Extension
 
 
 

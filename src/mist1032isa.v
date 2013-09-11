@@ -3,7 +3,6 @@ MIST1032ISA Processor
 ****************************************/
 `default_nettype none	
 `include "processor.h"
-//`include "sim_global.h"
 `include "common.h"
 
 module mist1032isa(
