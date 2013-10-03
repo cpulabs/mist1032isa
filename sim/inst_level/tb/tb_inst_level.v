@@ -3,10 +3,12 @@
 `timescale 1ns/1ns
 
 module tb_mist1032isa_normal_test;
-	localparam PL_CORE_CYCLE = 20;
-	localparam PL_BUS_CYCLE = 20;
+	localparam PL_CORE_CYCLE = 20;		//It's necessary "Core Clock == Bus Clock". This restriction is removed near future.
+	localparam PL_BUS_CYCLE = 20;		//
 	localparam PL_DPS_CYCLE = 18;
 	localparam PL_RESET_TIME = 20;
+
+	localparam PL_GCI_SIZE = 32'h0001_0000;
 
 	/****************************************
 	System
@@ -25,16 +27,16 @@ module tb_mist1032isa_normal_test;
 	****************************************/
 	//Req
 	wire oMEMORY_REQ;
-	reg iMEMORY_LOCK;
+	wire  iMEMORY_LOCK;
 	wire [1:0] oMEMORY_ORDER;				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 	wire oMEMORY_RW;						//1:Write | 0:Read
 	wire [31:0] oMEMORY_ADDR;
 	//This -> Data RAM
 	wire [31:0] oMEMORY_DATA;
 	//Data RAM -> This
-	reg iMEMORY_VALID;
+	wire iMEMORY_VALID;
 	wire oMEMORY_BUSY;
-	reg [63:0] iMEMORY_DATA;	
+	wire [63:0] iMEMORY_DATA;	
 	/****************************************
 	GCI BUS
 	****************************************/
@@ -79,13 +81,13 @@ module tb_mist1032isa_normal_test;
 	/******************************************************
 	Target
 	******************************************************/
-	module mist1032isa(
+	mist1032isa TARGET(
 		/****************************************
 		System
 		****************************************/
 		.iCORE_CLOCK(iCORE_CLOCK),
 		.iBUS_CLOCK(iBUS_CLOCK),
-		.iDPS_CLOCK(iDSP_CLOCK),
+		.iDPS_CLOCK(iDPS_CLOCK),
 		.inRESET(inRESET),
 		/****************************************
 		SCI
@@ -168,6 +170,7 @@ module tb_mist1032isa_normal_test;
 	State
 	******************************************************/
 	initial begin
+		$display("Check Start");
 		//Initial
 		iCORE_CLOCK = 1'b0;
 		iBUS_CLOCK = 1'b0;
@@ -188,6 +191,20 @@ module tb_mist1032isa_normal_test;
 		//Reset After
 		#(PL_RESET_TIME);
 		inRESET = 1'b1;
+
+		//GCI Init
+		#(PL_BUS_CYCLE*32);
+		while(oGCI_BUSY) #(PL_BUS_CYCLE);
+		iGCI_REQ = 1'b1;
+		iGCI_DATA = PL_GCI_SIZE;
+		#(PL_BUS_CYCLE);
+		iGCI_REQ = 1'b0;
+		iGCI_DATA = 32'h0;
+
+
+		#15000000 begin
+			$stop;
+		end
 	end
 
 
@@ -197,7 +214,7 @@ module tb_mist1032isa_normal_test;
 	******************************************************/
 	sim_memory_model MEMORY_MODEL(
 		.iCLOCK(iCORE_CLOCK),
-		.inRESET(inRESER),
+		.inRESET(inRESET),
 		//Req
 		.iMEMORY_REQ(oMEMORY_REQ),
 		.oMEMORY_LOCK(iMEMORY_LOCK),
@@ -208,7 +225,7 @@ module tb_mist1032isa_normal_test;
 		.iMEMORY_DATA(oMEMORY_DATA),
 		//Data RAM -> This
 		.oMEMORY_VALID(iMEMORY_VALID),
-		.iMEMORY_LOCK(oMEMORY_LOCK),
+		.iMEMORY_LOCK(oMEMORY_BUSY),
 		.oMEMORY_DATA(iMEMORY_DATA)
 	);
 
@@ -218,13 +235,14 @@ module tb_mist1032isa_normal_test;
 	reg assert_check_flag;
 	reg [31:0] assert_wrong_number;
 
-	always@(posedge iCORE_CLOCK or negedge inRESET)begin
+		always@(posedge iCORE_CLOCK)begin
 		if(inRESET && oMEMORY_REQ && !iMEMORY_LOCK && oMEMORY_ORDER == 2'h2 && oMEMORY_RW)begin
 			//Finish Check
-			if(oMEMORY_ADDR == 32'h00001004)begin
+			if(oMEMORY_ADDR == 32'h0002_0004)begin
 				if(!assert_check_flag)begin
 					$display("[SIM-ERR]Wrong Data.");
-					$display("[SIM-OK]Simulation Finished.");
+					$display("[SIM-ERR]Index:%d, Expect:%x, Result:%x", assert_wrong_number, assert_expect, assert_result);
+					$display("[SIM-ERR]Simulation Finished.");
 					$stop;
 				end
 				else begin
@@ -232,17 +250,28 @@ module tb_mist1032isa_normal_test;
 					$stop;
 				end
 			end
-			else if(oMEMORY_ADDR == 32'h00001000)begin
+			//Check Flag
+			else if(oMEMORY_ADDR == 32'h0002_0000)begin
 				assert_check_flag = oMEMORY_DATA[0];
 			end
-			else if(oMEMORY_ADDR == 32'h0000100c)begin
+			//Error Number
+			else if(oMEMORY_ADDR == 32'h0002_000c)begin
 				assert_wrong_number = oMEMORY_DATA;
 			end
+			//Error Result
+			else if(oMEMORY_ADDR == 32'h0002_0010)begin
+				assert_result = oMEMORY_DATA;
+			end
+			//Error Expect
+			else if(oMEMORY_ADDR == 32'h0002_0014)begin
+				assert_expect = oMEMORY_DATA;
+			end
+			
 		end
 	end
+	
 
+endmodule
 
-
-
-`default_nettype wire 
+`default_nettype wire
 

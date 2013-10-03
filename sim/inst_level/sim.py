@@ -3,11 +3,32 @@ import sys;
 import glob;
 import datetime;
 import locale;
-import shutil:
+import shutil;
 import os;
+import os.path;
+import binascii;
 
 error_cnt = 0;
 check_list = [];
+
+
+def bin2hex(bin_prog):
+        hex_prog = "";
+
+        #for i in range(int(len(bin_prog))):
+        for i in range(int(len(bin_prog)/8)):
+                hex_prog = hex_prog + (binascii.b2a_hex(bin_prog[(i*8)+4]));
+                hex_prog = hex_prog + (binascii.b2a_hex(bin_prog[(i*8)+5]));
+                hex_prog = hex_prog + (binascii.b2a_hex(bin_prog[(i*8)+6]));
+                hex_prog = hex_prog + (binascii.b2a_hex(bin_prog[(i*8)+7]));
+                hex_prog = hex_prog + (binascii.b2a_hex(bin_prog[(i*8)+0]));
+                hex_prog = hex_prog + (binascii.b2a_hex(bin_prog[(i*8)+1]));
+                hex_prog = hex_prog + (binascii.b2a_hex(bin_prog[(i*8)+2]));
+                hex_prog = hex_prog + (binascii.b2a_hex(bin_prog[(i*8)+3]));
+                hex_prog = hex_prog + "\n";
+
+        return hex_prog;
+
 
 def error_check(line_text):
 	global error_cnt;
@@ -19,12 +40,12 @@ def error_check(line_text):
 
                         
 def check_listup(f_dir):
-        cnt = 0;
-        instlist = glob.glob(f_dir + "*.bin");
-        for fname in instlist:
-                fname = fname.replace(f_dir, "");
-                fname = fname.replace(".bin", "");
-                check_list.append(fname);
+        global check_list;
+
+        for line in glob.glob(f_dir + '*.bin'):
+        	line = line.replace(f_dir, "");
+        	line = line.replace(".bin", "");
+        	check_list.append(line);
 
 
 def sim_start(sourcelist):
@@ -47,16 +68,28 @@ def sim_start(sourcelist):
                 fh = open(sourcelist, 'r');
                 for codelist in fh:
                         newtext = newtext + codelist + "\n";
-                newtext = newtext + "asim -coverage TOP_MODULE\n";
-                newtext = newtext + "coverage save sim/" + line + ".ucdb\n";
-                newtext = newtext + "run -all";
+                newtext = newtext + "asim -coverage tb_mist1032isa_normal_test\n";
+                newtext = newtext + "run -all\n";
+                newtext = newtext + "coverage report -html sim/" + line + ".html\n";
                 
                 fh = open("sim_run.tcl", "w");
                 fh.write(newtext);
                 fh.close();  
 
+                #Binary 2 Hex
+                fr = open("./bin/" + line + ".bin", "rb");
+                read_data = fr.read();
+                result_hex = bin2hex(read_data);
+                fw = open("inst_level_test_tmp.hex", 'w');
+                fw.write(result_hex);
+                fr.close();
+                fw.close();
+
+
+
                 #Copy Binary File
-                shutil.copyfile("./bin/" + line + ".hex", "./inst_level_test_tmp.hex");
+                #print("test1" + line);
+                #shutil.copyfile("./bin/" + line + ".hex", "./inst_level_test_tmp.hex");
 
                 #Start Sim
                 subprocess.call("vsimsa -do sim_run.tcl", shell=True);
@@ -65,6 +98,8 @@ def sim_start(sourcelist):
                 date = datetime.datetime.today();
                 print("-[" + str(cnt) + "]Finish : [" + line + "] : " + date.strftime("%Y-%m-%d %H:%M:%S"));
                 cnt = cnt + 1;
+
+                sys.exit();
 	
                 #Tempfile Remove
                 os.remove("sim_run.tcl");
@@ -96,6 +131,7 @@ if __name__ == "__main__":
 	#if(error_cnt == 0):
 	check_listup(sys.argv[3]);
         if(len(check_list) != 0):
-                sim_start(sys.argv[2]);
-
-        print("Simulation Finished");
+        	sim_start(sys.argv[2]);
+        	print("Simulation Finished");
+        else:
+        	print("Simulation Error.\nNot found binary file.");

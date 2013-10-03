@@ -1,0 +1,531 @@
+timestamp=1380538201932
+
+[$root]
+A/$root=22|""|0|1*36878766
+BinW64/$root=3*17883512
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[adder_n]
+A/adder_n=22|./../../../src/core/execution/adder.v|12|1*36606189
+BinW64/adder_n=3*17738739
+R=./../../../src/core/execution/adder.v|12
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[branch]
+A/branch=22|./../../../src/core/execution/branch.v|5|1*36609997
+BinW64/branch=3*17744712
+R=./../../../src/core/execution/branch.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[branch_cache]
+A/branch_cache=22|./../../../src/core/branch_predictor/branch_cache.v|10|1*36482082
+BinW64/branch_cache=3*17664256
+R=./../../../src/core/branch_predictor/branch_cache.v|10
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[branch_predictor]
+A/branch_predictor=22|./../../../src/core/branch_predictor/branch_predictor.v|4|1*36492904
+BinW64/branch_predictor=3*17672964
+R=./../../../src/core/branch_predictor/branch_predictor.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[comparator_counter]
+A/comparator_counter=22|./../../../src/dps_device/utim64/comparator_counter.v|3|1*36243471
+BinW64/comparator_counter=3*17566709
+R=./../../../src/dps_device/utim64/comparator_counter.v|3
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[core]
+A/core=22|./../../../src/core/core.v|8|1*36367155
+BinW64/core=3*17655601
+R=./../../../src/core/core.v|8
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[core_debug]
+A/core_debug=22|./../../../src/core/core_debug/core_debug.v|6|1*36497655
+BinW64/core_debug=3*17674193
+R=./../../../src/core/core_debug/core_debug.v|6
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[core_if]
+A/core_if=22|./../../../src/core/core_if.v|6|1*36448331
+BinW64/core_if=3*17657491
+R=./../../../src/core/core_if.v|6
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[core_interrupt_manager]
+A/core_interrupt_manager=22|./../../../src/core/pipeline_control/core_interrupt_manager.v|4|1*36879268
+BinW64/core_interrupt_manager=3*17883679
+R=./../../../src/core/pipeline_control/core_interrupt_manager.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[core_paging_support]
+A/core_paging_support=22|./../../../src/core/pipeline_control/core_paging_support.v|4|1*36886042
+BinW64/core_paging_support=3*17889031
+R=./../../../src/core/pipeline_control/core_paging_support.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[core_pipeline]
+A/core_pipeline=22|./../../../src/core/core_pipeline.v|8|1*36381569
+BinW64/core_pipeline=3*17656578
+R=./../../../src/core/core_pipeline.v|8
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[decoder]
+A/decoder=22|./../../../src/core/decode/decode.v|8|1*36521469
+BinW64/decoder=3*17685379
+R=./../../../src/core/decode/decode.v|8
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[default_peripheral_system]
+A/default_peripheral_system=22|./../../../src/dps_main/default_peripheral_system.v|5|1*36275422
+BinW64/default_peripheral_system=3*17583880
+R=./../../../src/dps_main/default_peripheral_system.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[dispatch]
+A/dispatch=22|./../../../src/core/dispatch/dispatch.v|8|1*36540617
+BinW64/dispatch=3*17718492
+R=./../../../src/core/dispatch/dispatch.v|8
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[div_pipelined_latch]
+A/div_pipelined_latch=22|./../../../src/core/execution/divider/div_pipelined_latch.v|4|1*36704806
+BinW64/div_pipelined_latch=3*17805575
+R=./../../../src/core/execution/divider/div_pipelined_latch.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[dps_irq]
+A/dps_irq=22|./../../../src/dps_main/dps_irq.v|6|1*36284562
+BinW64/dps_irq=3*17587595
+R=./../../../src/dps_main/dps_irq.v|6
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[dps_mimsr]
+A/dps_mimsr=22|./../../../src/dps_device/mimsr/dps_mimsr.v|9|1*36224257
+BinW64/dps_mimsr=3*17557679
+R=./../../../src/dps_device/mimsr/dps_mimsr.v|9
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[dps_sci]
+A/dps_sci=22|./../../../src/dps_device/sci/dps_sci.v|4|1*36226908
+BinW64/dps_sci=3*17558729
+R=./../../../src/dps_device/sci/dps_sci.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[dps_uart]
+A/dps_uart=22|./../../../src/dps_device/sci/dps_uart.v|24|1*36235627
+BinW64/dps_uart=3*17564778
+R=./../../../src/dps_device/sci/dps_uart.v|24
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[dps_utim64]
+A/dps_utim64=22|./../../../src/dps_device/utim64/dps_utim64.v|6|1*36246828
+BinW64/dps_utim64=3*17569749
+R=./../../../src/dps_device/utim64/dps_utim64.v|6
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[ex_forwarding]
+A/ex_forwarding=22|./../../../src/core/execution/ex_forwarding.v|5|1*36667121
+BinW64/ex_forwarding=3*17774773
+R=./../../../src/core/execution/ex_forwarding.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[ex_forwarding_register]
+A/ex_forwarding_register=22|./../../../src/core/execution/ex_forwarding_register.v|4|1*36662249
+BinW64/ex_forwarding_register=3*17772772
+R=./../../../src/core/execution/ex_forwarding_register.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[exception_manager]
+A/exception_manager=22|./../../../src/core/pipeline_control/exception_manager.v|8|1*36887280
+BinW64/exception_manager=3*17889637
+R=./../../../src/core/pipeline_control/exception_manager.v|8
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[execution]
+A/execution=22|./../../../src/core/execution/execution.v|9|1*36614729
+BinW64/execution=3*17748366
+R=./../../../src/core/execution/execution.v|9
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[fetch]
+A/fetch=22|./../../../src/core/fetch/fetch.v|14|1*36747381
+BinW64/fetch=3*17812080
+R=./../../../src/core/fetch/fetch.v|14
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[fetch_________]
+A/fetch_________=22|./../../../src/core/fetch/fetch.v|265|1*36760166
+BinW64/fetch_________=3*17816714
+R=./../../../src/core/fetch/fetch.v|265
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[frcr_timer]
+A/frcr_timer=22|./../../../src/core/dispatch/frcr_timer.v|5|1*36603905
+BinW64/frcr_timer=3*17737578
+R=./../../../src/core/dispatch/frcr_timer.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[instruction_buffer]
+A/instruction_buffer=22|./../../../src/core/instruction_buffer/instruction_buffer.v|6|1*36772954
+BinW64/instruction_buffer=3*17821148
+R=./../../../src/core/instruction_buffer/instruction_buffer.v|6
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[l1_cache_64entry_4way_line64b_bus_8b]
+A/l1_cache_64entry_4way_line64b_bus_8b=22|./../../../src/core/l1_instruction/l1_cache_64entry_4way_line64b.v|79|1*36836389
+BinW64/l1_cache_64entry_4way_line64b_bus_8b=3*17856338
+R=./../../../src/core/l1_instruction/l1_cache_64entry_4way_line64b.v|79
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[l1_cache_64entry_4way_line64b_bus_8b_damy]
+A/l1_cache_64entry_4way_line64b_bus_8b_damy=22|./../../../src/core/l1_instruction/l1_cache_64entry_4way_line64b.v|13|1*36831999
+BinW64/l1_cache_64entry_4way_line64b_bus_8b_damy=3*17855227
+R=./../../../src/core/l1_instruction/l1_cache_64entry_4way_line64b.v|13
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[l1_data_cache]
+A/l1_data_cache=22|./../../../src/core/l1_data/l1_data_cache.v|6|1*36781504
+BinW64/l1_data_cache=3*17823846
+R=./../../../src/core/l1_data/l1_data_cache.v|6
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[l1_data_cache_64entry_4way_line64b_bus_8b]
+A/l1_data_cache_64entry_4way_line64b_bus_8b=22|./../../../src/core/l1_data/l1_data_cache_64entry_4way_line64b.v|82|1*36806332
+BinW64/l1_data_cache_64entry_4way_line64b_bus_8b=3*17836639
+R=./../../../src/core/l1_data/l1_data_cache_64entry_4way_line64b.v|82
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[l1_data_cache_64entry_4way_line64b_bus_8b_damy]
+A/l1_data_cache_64entry_4way_line64b_bus_8b_damy=22|./../../../src/core/l1_data/l1_data_cache_64entry_4way_line64b.v|17|1*36802006
+BinW64/l1_data_cache_64entry_4way_line64b_bus_8b_damy=3*17835514
+R=./../../../src/core/l1_data/l1_data_cache_64entry_4way_line64b.v|17
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[l1_data_cache_counter]
+A/l1_data_cache_counter=22|./../../../src/core/l1_data/l1_data_cache_hit_counter.v|3|1*36798636
+BinW64/l1_data_cache_counter=3*17832126
+R=./../../../src/core/l1_data/l1_data_cache_hit_counter.v|3
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[l1_instruction_cache]
+A/l1_instruction_cache=22|./../../../src/core/l1_instruction/l1_instruction_cache.v|7|1*36860929
+BinW64/l1_instruction_cache=3*17874317
+R=./../../../src/core/l1_instruction/l1_instruction_cache.v|7
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[l1_instruction_cache_counter]
+A/l1_instruction_cache_counter=22|./../../../src/core/l1_instruction/l1_instruction_cache_hit_counter.v|3|1*36875340
+BinW64/l1_instruction_cache_counter=3*17880127
+R=./../../../src/core/l1_instruction/l1_instruction_cache_hit_counter.v|3
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[load_store]
+A/load_store=22|./../../../src/core/execution/load_store.v|6|1*36689466
+BinW64/load_store=3*17794198
+R=./../../../src/core/execution/load_store.v|6
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[logic_n]
+A/logic_n=22|./../../../src/core/execution/logic.v|11|1*36674771
+BinW64/logic_n=3*17778220
+R=./../../../src/core/execution/logic.v|11
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[losd_store_pipe_arbiter]
+A/losd_store_pipe_arbiter=22|./../../../src/core/losd_store_pipe_arbiter.v|3|1*36474221
+BinW64/losd_store_pipe_arbiter=3*17661147
+R=./../../../src/core/losd_store_pipe_arbiter.v|3
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[main_counter]
+A/main_counter=22|./../../../src/dps_device/utim64/main_counter.v|5|1*36272323
+BinW64/main_counter=3*17582184
+R=./../../../src/dps_device/utim64/main_counter.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[memory_pipe_arbiter]
+A/memory_pipe_arbiter=22|./../../../src/memory_pipe_arbiter.v|4|1*36111257
+BinW64/memory_pipe_arbiter=3*17517014
+R=./../../../src/memory_pipe_arbiter.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa]
+A/mist1032isa=22|./../../../src/mist1032isa.v|8|1*36126598
+BinW64/mist1032isa=3*17522066
+R=./../../../src/mist1032isa.v|8
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_arbiter_matching_queue]
+A/mist1032isa_arbiter_matching_queue=22|./../../../src/lib/mist1032isa_arbiter_matching_queue.v|5|1*36289874
+BinW64/mist1032isa_arbiter_matching_queue=3*17591384
+R=./../../../src/lib/mist1032isa_arbiter_matching_queue.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_async_fifo]
+A/mist1032isa_async_fifo=22|./../../../src/lib/mist1032isa_async_fifo.v|27|1*36294384
+BinW64/mist1032isa_async_fifo=3*17597772
+R=./../../../src/lib/mist1032isa_async_fifo.v|27
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_async_fifo_double_flipflop]
+A/mist1032isa_async_fifo_double_flipflop=22|./../../../src/lib/mist1032isa_async_fifo_double_flipflop.v|5|1*36301924
+BinW64/mist1032isa_async_fifo_double_flipflop=3*17605812
+R=./../../../src/lib/mist1032isa_async_fifo_double_flipflop.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_sync_fifo]
+A/mist1032isa_sync_fifo=22|./../../../src/lib/mist1032isa_sync_fifo.v|25|1*36303990
+BinW64/mist1032isa_sync_fifo=3*17607597
+R=./../../../src/lib/mist1032isa_sync_fifo.v|25
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_uart_receiver]
+A/mist1032isa_uart_receiver=22|./../../../src/lib/mist1032isa_uart_receiver.v|30|1*36307812
+BinW64/mist1032isa_uart_receiver=3*17613586
+R=./../../../src/lib/mist1032isa_uart_receiver.v|30
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_uart_receiver_async2sync]
+A/mist1032isa_uart_receiver_async2sync=22|./../../../src/lib/mist1032isa_uart_receiver_async2sync.v|4|1*36316440
+BinW64/mist1032isa_uart_receiver_async2sync=3*17619968
+R=./../../../src/lib/mist1032isa_uart_receiver_async2sync.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_uart_receiver_double_flipflop]
+A/mist1032isa_uart_receiver_double_flipflop=22|./../../../src/lib/mist1032isa_uart_receiver_double_flipflop.v|4|1*36314357
+BinW64/mist1032isa_uart_receiver_double_flipflop=3*17618180
+R=./../../../src/lib/mist1032isa_uart_receiver_double_flipflop.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_uart_transmitter]
+A/mist1032isa_uart_transmitter=22|./../../../src/lib/mist1032isa_uart_transmitter.v|29|1*36318394
+BinW64/mist1032isa_uart_transmitter=3*17621705
+R=./../../../src/lib/mist1032isa_uart_transmitter.v|29
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_uart_transmitter_async2sync]
+A/mist1032isa_uart_transmitter_async2sync=22|./../../../src/lib/mist1032isa_uart_transmitter_async2sync.v|4|1*36326736
+BinW64/mist1032isa_uart_transmitter_async2sync=3*17628338
+R=./../../../src/lib/mist1032isa_uart_transmitter_async2sync.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mist1032isa_uart_transmitter_double_flipflop]
+A/mist1032isa_uart_transmitter_double_flipflop=22|./../../../src/lib/mist1032isa_uart_transmitter_double_flipflop.v|4|1*36324635
+BinW64/mist1032isa_uart_transmitter_double_flipflop=3*17626547
+R=./../../../src/lib/mist1032isa_uart_transmitter_double_flipflop.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mmu]
+A/mmu=22|./../../../src/mmu/mmu.v|11|1*36329210
+BinW64/mmu=3*17630245
+R=./../../../src/mmu/mmu.v|11
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mmu_if]
+A/mmu_if=22|./../../../src/mmu/mmu_if.v|5|1*36353710
+BinW64/mmu_if=3*17651220
+R=./../../../src/mmu/mmu_if.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[mul_booth32]
+A/mul_booth32=22|./../../../src/core/execution/mul_booth32.v|14|1*36694655
+BinW64/mul_booth32=3*17799324
+R=./../../../src/core/execution/mul_booth32.v|14
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[peripheral_interface_controller]
+A/peripheral_interface_controller=22|./../../../src/peripheral_interface_controller.v|4|1*36153448
+BinW64/peripheral_interface_controller=3*17524043
+R=./../../../src/peripheral_interface_controller.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[pipelined_div_radix2]
+A/pipelined_div_radix2=22|./../../../src/core/execution/divider/pipelined_div_radix2.v|12|1*36709724
+BinW64/pipelined_div_radix2=3*17808333
+R=./../../../src/core/execution/divider/pipelined_div_radix2.v|12
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[processor_debugger]
+A/processor_debugger=22|./../../../src/debugger/processor_debugger.v|4|1*36163692
+BinW64/processor_debugger=3*17530635
+R=./../../../src/debugger/processor_debugger.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[processor_debugger_uart]
+A/processor_debugger_uart=22|./../../../src/debugger/processor_debugger_uart.v|4|1*36182076
+BinW64/processor_debugger_uart=3*17536314
+R=./../../../src/debugger/processor_debugger_uart.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[processor_debugger_uart_transmit_format]
+A/processor_debugger_uart_transmit_format=22|./../../../src/debugger/processor_debugger_uart_transmit_format.v|5|1*36187304
+BinW64/processor_debugger_uart_transmit_format=3*17541343
+R=./../../../src/debugger/processor_debugger_uart_transmit_format.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[radix2_linediv]
+A/radix2_linediv=22|./../../../src/core/execution/divider/radix2_linediv.v|4|1*36743432
+BinW64/radix2_linediv=3*17810259
+R=./../../../src/core/execution/divider/radix2_linediv.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[sdi_debugger]
+A/sdi_debugger=22|./../../../src/debugger/sdi_debugger.v|3|1*36194473
+BinW64/sdi_debugger=3*17547442
+R=./../../../src/debugger/sdi_debugger.v|3
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[sdi_interface_control]
+A/sdi_interface_control=22|./../../../src/debugger/sdi_interfacese_control.v|8|1*36217539
+BinW64/sdi_interface_control=3*17555642
+R=./../../../src/debugger/sdi_interfacese_control.v|8
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[shift_n]
+A/shift_n=22|./../../../src/core/execution/shift.v|13|1*36678856
+BinW64/shift_n=3*17784034
+R=./../../../src/core/execution/shift.v|13
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[sim_memory_model]
+A/sim_memory_model=22|./../tb/sim_memory_model.v|4|1*36093589
+BinW64/sim_memory_model=3*17508749
+R=./../tb/sim_memory_model.v|4
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[sys_reg]
+A/sys_reg=22|./../../../src/core/execution/sys_reg.v|8|1*36672996
+BinW64/sys_reg=3*17776873
+R=./../../../src/core/execution/sys_reg.v|8
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[system_register]
+A/system_register=22|./../../../src/core/dispatch/system_register.v|5|1*36602099
+BinW64/system_register=3*17736701
+R=./../../../src/core/dispatch/system_register.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[tb_mist1032isa_normal_test]
+A/tb_mist1032isa_normal_test=22|./../tb/tb_inst_level.v|5|1*36101671
+BinW64/tb_mist1032isa_normal_test=3*17513756
+R=./../tb/tb_inst_level.v|5
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[tlb]
+A/tlb=22|./../../../src/mmu/tlb.v|16|1*36341795
+BinW64/tlb=3*17639503
+R=./../../../src/mmu/tlb.v|16
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[utim64]
+A/utim64=22|./../../../src/dps_device/utim64/utim64.v|43|1*36253860
+BinW64/utim64=3*17577533
+R=./../../../src/dps_device/utim64/utim64.v|43
+Version=2013.02.81 (Windows64)|00000045789cd3cd5128cf2fca56d04d494a57d0cecc4b4ec92cd2d6d3d307a2e2a2647da0404e694a2a1699e4fca254983400ff95168f
+
+[~A]
+../../src/core/branch_predictor/branch_cache.v_branch_predictor.v=0*12608964*12611710
+../../src/core/core.v_core_if.v_core_pipeline.v_losd_store_pipe_arbiter.v=0*12589336*12604955
+../../src/core/core_debug/core_debug.v=0*12619088*12622015
+../../src/core/decode/decode.v=0*12626629*12636300
+../../src/core/dispatch/dispatch.v_frcr_timer.v_system_register.v=0*12649358*12657416
+../../src/core/execution/adder.v_afe_load_store.v_branch.v_execution.v_ex_forwarding.v_ex_forwarding_register.v_load_store.v_logic.v_mul_booth32.v_shift.v_sys_reg.v=0*12674028*12691402
+../../src/core/execution/divider/div_pipelined_latch.v_pipelined_div_radix2.v_radix2_linediv.v=0*12696136*12701247
+../../src/core/fetch/fetch.v=0*12707407*12710596
+../../src/core/instruction_buffer/instruction_buffer.v=0*12714097*12715808
+../../src/core/l1_data/l1_data_cache.v_l1_data_cache_64entry_4way_line64b.v_l1_data_cache_hit_counter.v=0*12724829*12733789
+../../src/core/l1_instruction/l1_cache_64entry_4way_line64b.v_l1_instruction_cache.v_l1_instruction_cache_hit_counter.v=0*12742169*12750697
+../../src/core/pipeline_control/core_interrupt_manager.v_core_paging_support.v_exception_manager.v=0*12758695*12765906
+../../src/debugger/processor_debugger.v_processor_debugger_uart.v_processor_debugger_uart_transmit_format.v_sdi_debugger.v_sdi_interfacese_control.v=0*12517560*12525029
+../../src/dps_device/mimsr/dps_mimsr.v=0*12526743*12527333
+../../src/dps_device/sci/dps_sci.v_dps_uart.v=0*12530657*12534103
+../../src/dps_device/utim64/comparator_counter.v_dps_utim64.v_main_counter.v_utim64.v=0*12538363*12542873
+../../src/dps_main/default_peripheral_system.v_dps_irq.v=0*12546603*12549276
+../../src/lib/mist1032isa_arbiter_matching_queue.v_mist1032isa_async_fifo.v_mist1032isa_async_fifo_double_flipflop.v_mist1032isa_sync_fifo.v_mist1032isa_uart_receiver.v_mist1032isa_uart_receiver_async2sync.v_mist1032isa_uart_receiver_double_flipflop.v_mist1032isa_uart_transmitter.v_mist1032isa_uart_transmitter_async2sync.v_mist1032isa_uart_transmitter_double_flipflop.v=0*12556559*12561691
+../../src/memory_pipe_arbiter.v_mist1032isa.v_peripheral_interface_controller.v=0*12496066*12504186
+../../src/mmu/mmu.v_mmu_if.v_tlb.v=0*12568752*12576123
+./tb/sim_memory_model.v_tb_inst_level.v=0*12484444*12487868
+LastVerilogToplevel=l1_cache_64entry_4way_line64b_bus_8b
+ModifyID=40922
+Version=73
+
+[~MFT]
+0=7791|0work.mgf|12765906|6404612
+1=8084|1work.mgf|36887280|36103287
+3=8084|3work.mgf|17889637|17511922
+
+[~U]
+$root=12|0*12751329|
+adder_n=12|0*12658672|
+branch=12|0*12659474|
+branch_cache=12|0*12606155|
+branch_predictor=12|0*12608186||0x10
+comparator_counter=12|0*12535371|
+core=12|0*12577252|
+core_debug=12|0*12612886|
+core_if=12|0*12583951||0x10
+core_interrupt_manager=12|0*12752071|
+core_paging_support=12|0*12753317|
+core_pipeline=12|0*12580494|
+decoder=12|0*12623132|
+default_peripheral_system=12|0*12544197|
+dispatch=12|0*12637441|
+div_pipelined_latch=12|0*12692869|
+dps_irq=12|0*12545591|
+dps_mimsr=12|0*12526432||0x10
+dps_sci=12|0*12528578||0x10
+dps_uart=12|0*12529555|
+dps_utim64=12|0*12536099||0x10
+ex_forwarding=12|0*12668663|
+ex_forwarding_register=12|0*12667587|
+exception_manager=12|0*12753603|
+execution=12|0*12660600|
+fetch=12|0*12702580|
+fetch_________=12|0*12705019||0x10
+frcr_timer=12|0*12649045|
+instruction_buffer=12|0*12711799|
+l1_cache_64entry_4way_line64b_bus_8b=12|0*12736253||0x10
+l1_cache_64entry_4way_line64b_bus_8b_damy=12|0*12735163|
+l1_data_cache=12|0*12717069|
+l1_data_cache_64entry_4way_line64b_bus_8b=12|0*12720909||0x10
+l1_data_cache_64entry_4way_line64b_bus_8b_damy=12|0*12719804|
+l1_data_cache_counter=12|0*12719451|
+l1_instruction_cache=12|0*12740001|
+l1_instruction_cache_counter=12|0*12741795|
+load_store=12|0*12672159|
+logic_n=12|0*12670712|
+losd_store_pipe_arbiter=12|0*12587367|
+main_counter=12|0*12537852|
+memory_pipe_arbiter=12|0*12489098|
+mist1032isa=12|0*12491439|
+mist1032isa_arbiter_matching_queue=12|0*12550587|
+mist1032isa_async_fifo=12|0*12551203|
+mist1032isa_async_fifo_double_flipflop=12|0*12552219|
+mist1032isa_sync_fifo=12|0*12552596|
+mist1032isa_uart_receiver=12|0*12553193|
+mist1032isa_uart_receiver_async2sync=12|0*12554448|
+mist1032isa_uart_receiver_double_flipflop=12|0*12554062|
+mist1032isa_uart_transmitter=12|0*12554811|
+mist1032isa_uart_transmitter_async2sync=12|0*12556187|
+mist1032isa_uart_transmitter_double_flipflop=12|0*12555792|
+mmu=12|0*12563413|
+mmu_if=12|0*12566977|
+mul_booth32=12|0*12673046||0x10
+peripheral_interface_controller=12|0*12494074|
+pipelined_div_radix2=12|0*12693852|
+processor_debugger=12|0*12505488||0x10
+processor_debugger_uart=12|0*12509387|
+processor_debugger_uart_transmit_format=12|0*12510166|
+radix2_linediv=12|0*12695476|
+sdi_debugger=12|0*12511271|
+sdi_interface_control=12|0*12516291|
+shift_n=12|0*12671350|
+sim_memory_model=12|0*12482711|
+sys_reg=12|0*12670450|
+system_register=12|0*12648689|
+tb_mist1032isa_normal_test=12|0*12484048||0x10
+tlb=12|0*12565291|
+utim64=12|0*12537045|
+

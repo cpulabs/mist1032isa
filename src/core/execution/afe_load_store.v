@@ -1,6 +1,8 @@
 
+/*
 `include "core.h"
 `default_nettype none
+
 
 module afe(
 		//AFE-Conrtol
@@ -26,8 +28,12 @@ module afe(
 	endfunction
 	
 	
-	assign oDATA = (iAFE_ENA)? func_afe(iAFE_CODE, iDATA) : iDATA;
+	assign oDATA = 32'h0;//(iAFE_ENA)? func_afe(iAFE_CODE, iDATA) : iDATA;
 	
 endmodule
 
+
+
 `default_nettype wire 
+*/
+

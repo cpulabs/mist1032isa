@@ -10,7 +10,7 @@ def save_file(save_addr, save_text):
 
 #args[1]=CodeListFileAddr, #args[2]=SaveFileAddr	
 if __name__ == "__main__":	
-        newtext = "transcript file codec_heck.log\n";
+        newtext = "transcript file code_check.log\n";
 
 	if(len(sys.argv) != 3):
 		print("Error : Command missing");

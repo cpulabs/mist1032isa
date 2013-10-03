@@ -465,7 +465,7 @@ module l1_data_cache(
 	`endif
 	assign oDATA_DATA = b_req_data;
 	
-	assign oLDST_BUSY = data_request_lock || io_request_lock || cache_req_busy || (b_req_main_state != L_PARAM_IDLE) || (cache_result_valid && !cache_result_hit);
+	assign oLDST_BUSY = !b_io_startaddr_valid || data_request_lock || io_request_lock || cache_req_busy || (b_req_main_state != L_PARAM_IDLE) || (cache_result_valid && !cache_result_hit);
 	
 	//IO
 	assign oIO_REQ = io_request;

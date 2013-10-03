@@ -1,9 +1,11 @@
-transcript file sim/cmp.result
+transcript file sim/add.result
 
 
 alib work
 
 set work work
+
+alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ./tb/*.v
 
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/*.v
 
@@ -47,6 +49,6 @@ alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ..
 
 
 
-asim -coverage TOP_MODULE
-coverage save sim/cmp.ucdb
+asim -coverage tb_mist1032isa_normal_test
 run -all
+coverage report -html sim/add.html

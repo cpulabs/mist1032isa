@@ -84,27 +84,19 @@ module sim_memory_model(
 	endfunction
 	
 	//Memory
-	reg [63:0] b_mem_data[0:(134217728/8)-1];
+	//reg [63:0] b_mem_data[0:(134217728/8)-1];
+	reg [63:0] b_mem_data[0:(536870912/8)-1];
 	
 	
 	initial begin
 		#0 begin
 			if(P_MEM_INIT_LOAD)begin
-				$readmemh("../inst_level_test_tmp.hex", b_mem_data);
+				//$readmemh("../inst_level_test_tmp.hex", b_mem_data);
+				$readmemh("inst_level_test_tmp.hex", b_mem_data);
 			end
 		end
 	end
 	
-	wire [63:0] test_test_test = {
-		func_data_mask(
-			iMEMORY_ADDR[2],
-			func_byte_addressing_controllor(
-				iMEMORY_ORDER,
-				iMEMORY_ADDR[1:0]
-			), 
-			iMEMORY_DATA, 
-			b_mem_data[iMEMORY_ADDR[25:3]])
-	};
 	
 	//Memory Write Block
 	always@(posedge iCLOCK )begin
@@ -140,15 +132,10 @@ module sim_memory_model(
 		.oRD_EMPTY(fifo_read_empty)
 	);
 	
-	assign oMEMORY_VALID = !iMEMORY_LOCK  && !fifo_read_empty;
-	
+	assign oMEMORY_VALID = !iMEMORY_LOCK  && !fifo_read_empty;	
 	assign oMEMORY_LOCK = fifo_write_full;
 	
-	
 endmodule
-
-
-	
 
 
 `default_nettype wire

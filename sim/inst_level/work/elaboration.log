@@ -1,0 +1,82 @@
+Riviera-PRO 2013.02.81.4877(Windows64) 2013-09-30 11:50:02
+
+Elaboration top modules:
+Verilog Module                tb_mist1032isa_normal_test
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Verilog Module                                 | Library | Info | Compiler Version       | Compilation Options
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+tb_mist1032isa_normal_test                     | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa                                    | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+sim_memory_model                               | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+core                                           | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+sdi_debugger                                   | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+memory_pipe_arbiter                            | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mmu_if                                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+peripheral_interface_controller                | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+default_peripheral_system                      | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_sync_fifo                          | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+core_pipeline                                  | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+core_interrupt_manager                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+exception_manager                              | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+core_paging_support                            | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+l1_instruction_cache                           | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+fetch                                          | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+instruction_buffer                             | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+decoder                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+dispatch                                       | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+execution                                      | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+losd_store_pipe_arbiter                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+l1_data_cache                                  | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+core_debug                                     | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_arbiter_matching_queue             | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+l1_instruction_cache_counter                   | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+l1_cache_64entry_4way_line64b_bus_8b_damy      | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+branch_predictor                               | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+branch_cache                                   | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+system_register                                | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+frcr_timer                                     | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+ex_forwarding_register                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+ex_forwarding                                  | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+sys_reg                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+logic_n                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+shift_n                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+adder_n                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+pipelined_div_radix2                           | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+load_store                                     | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+branch                                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+radix2_linediv                                 | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+div_pipelined_latch                            | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+l1_data_cache_counter                          | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+l1_data_cache_64entry_4way_line64b_bus_8b_damy | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+sdi_interface_control                          | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mmu                                            | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+tlb                                            | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+dps_utim64                                     | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+dps_sci                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+dps_mimsr                                      | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+dps_irq                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+utim64                                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_async_fifo                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+main_counter                                   | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+comparator_counter                             | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_async_fifo_double_flipflop         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+dps_uart                                       | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_uart_transmitter                   | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_uart_receiver                      | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_uart_transmitter_double_flipflop   | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_uart_transmitter_async2sync        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_uart_receiver_double_flipflop      | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+mist1032isa_uart_receiver_async2sync           | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Library                                        | Comment
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+work                                           | None
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Simulation Options: asim -coverage tb_mist1032isa_normal_test
+

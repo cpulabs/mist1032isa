@@ -1,7 +1,8 @@
-transcript file codec_heck.log
+transcript file code_check.log
 
 alib work
 set work work
+alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ./tb/*.v
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/*.v
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/debugger/*.v
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_device/mimsr/*.v
