@@ -21,6 +21,8 @@ Instruction Set
 `define		OC_DIV		10'h007
 `define		OC_MOD		10'h008
 `define		OC_NEG		10'h009
+`define		OC_UMULL	10'h00A
+`define		OC_UMULH	10'h00B
 `define		OC_IC		10'h00D
 `define		OC_ADDC		10'h00E
 `define		OC_INC		10'h010
@@ -82,9 +84,9 @@ Instruction Set
 `define		OC_BR		10'h0A1
 `define		OC_B		10'h0A2	
 `define		OC_IB		10'h0A3
-//`define		OC_BURN		10'h0B0		
-//`define		OC_BRN		10'h0B1
-//`define		OC_BN		10'h0B2		
+`define		OC_BURN		10'h0B0		
+`define		OC_BRN		10'h0B1
+`define		OC_BN		10'h0B2		
 //System Register Read
 `define		OC_SRSPR		10'h0C0
 `define		OC_SRPDTR		10'h0C1
@@ -105,7 +107,7 @@ Instruction Set
 `define		OC_SRFRCR		10'h0D4
 `define		OC_SRFRCLR		10'h0D5
 `define		OC_SRFRCHR		10'h0D6
-`define OC_PFLAGR 10'h0d7
+`define 	OC_SRPFLAGR		10'h0d7
 //System Register Write
 `define 	OC_SRSPW		10'h0E0
 `define		OC_SRPDTW		10'h0E1
@@ -122,6 +124,7 @@ Instruction Set
 `define		OC_SRFRCW		10'h0F4
 `define		OC_SRFCLW		10'h0F5
 `define		OC_SRFCHW		10'h0F6
+`define		OC_SRSPWADD		10'h0ff
 //Other
 `define		OC_NOP			10'h100
 `define		OC_HALT			10'h101
@@ -191,6 +194,8 @@ Execution CMD Set
 `define		EXE_MUL_BUFFER			5'h00
 `define		EXE_MUL_MULL			5'h01
 `define		EXE_MUL_MULH			5'h02
+`define		EXE_MUL_UMULL			5'h03
+`define		EXE_MUL_UMULH			5'h04
 //DIV
 `define		EXE_DIV_BUFFER			5'h00
 `define		EXE_DIV_DIV				5'h01
@@ -224,7 +229,8 @@ Execution CMD Set
 `define		EXE_BRANCH_HALT			5'h06
 //Load / Store System Register
 `define		EXE_SYS_LDST_READ_SPR	5'h00
-`define		EXE_SYS_LDST_WRITE_SPR	5'h01	
+`define		EXE_SYS_LDST_WRITE_SPR	5'h01
+`define		EXE_SYS_LDST_ADD_SPR	5'h02	
 //System Register Unit
 `define		EXE_SYS_REG_BUFFER0			5'h00
 `define		EXE_SYS_REG_BUFFER1			5'h01

@@ -84,8 +84,8 @@ module sim_memory_model(
 	endfunction
 	
 	//Memory
-	//reg [63:0] b_mem_data[0:(134217728/8)-1];
-	reg [63:0] b_mem_data[0:(536870912/8)-1];
+	reg [63:0] b_mem_data[0:(134217728/8)-1];
+	//reg [63:0] b_mem_data[0:(536870912/8)-1];
 	
 	
 	initial begin

@@ -14601,1549 +14601,1550 @@
     e3e4:	20 70 03 e2 	movepc	rret,8
     e3e8:	14 30 c7 0a 	br	10 <compare>,#al
     e3ec:	00 10 00 41 	add	r2,1
-    e3f0:	0d 46 91 00 	wl16	r8,0x3480
-    e3f4:	0d 60 01 03 	wh16	r8,0x3
-    e3f8:	10 40 01 08 	ld32	r8,r8
-    e3fc:	0d 46 dd 28 	wl16	r9,0x36e8
-    e400:	0d 60 01 23 	wh16	r9,0x3
-    e404:	10 40 01 29 	ld32	r9,r9
-    e408:	00 10 01 00 	add	r8,0
-    e40c:	20 70 03 e2 	movepc	rret,8
-    e410:	14 30 c7 00 	br	10 <compare>,#al
-    e414:	00 10 00 41 	add	r2,1
-    e418:	0d 46 91 04 	wl16	r8,0x3484
-    e41c:	0d 60 01 03 	wh16	r8,0x3
-    e420:	10 40 01 08 	ld32	r8,r8
-    e424:	0d 46 dd 2c 	wl16	r9,0x36ec
-    e428:	0d 60 01 23 	wh16	r9,0x3
-    e42c:	10 40 01 29 	ld32	r9,r9
-    e430:	00 10 01 01 	add	r8,1
-    e434:	20 70 03 e2 	movepc	rret,8
-    e438:	14 30 c6 f6 	br	10 <compare>,#al
-    e43c:	00 10 00 41 	add	r2,1
-    e440:	0d 46 91 08 	wl16	r8,0x3488
-    e444:	0d 60 01 03 	wh16	r8,0x3
-    e448:	10 40 01 08 	ld32	r8,r8
-    e44c:	0d 46 dd 30 	wl16	r9,0x36f0
-    e450:	0d 60 01 23 	wh16	r9,0x3
-    e454:	10 40 01 29 	ld32	r9,r9
-    e458:	00 10 01 02 	add	r8,2
-    e45c:	20 70 03 e2 	movepc	rret,8
-    e460:	14 30 c6 ec 	br	10 <compare>,#al
-    e464:	00 10 00 41 	add	r2,1
-    e468:	0d 46 91 0c 	wl16	r8,0x348c
-    e46c:	0d 60 01 03 	wh16	r8,0x3
-    e470:	10 40 01 08 	ld32	r8,r8
-    e474:	0d 46 dd 34 	wl16	r9,0x36f4
-    e478:	0d 60 01 23 	wh16	r9,0x3
-    e47c:	10 40 01 29 	ld32	r9,r9
-    e480:	00 10 01 04 	add	r8,4
-    e484:	20 70 03 e2 	movepc	rret,8
-    e488:	14 30 c6 e2 	br	10 <compare>,#al
-    e48c:	00 10 00 41 	add	r2,1
-    e490:	0d 46 91 10 	wl16	r8,0x3490
-    e494:	0d 60 01 03 	wh16	r8,0x3
-    e498:	10 40 01 08 	ld32	r8,r8
-    e49c:	0d 46 dd 38 	wl16	r9,0x36f8
-    e4a0:	0d 60 01 23 	wh16	r9,0x3
-    e4a4:	10 40 01 29 	ld32	r9,r9
-    e4a8:	00 10 01 08 	add	r8,8
-    e4ac:	20 70 03 e2 	movepc	rret,8
-    e4b0:	14 30 c6 d8 	br	10 <compare>,#al
-    e4b4:	00 10 00 41 	add	r2,1
-    e4b8:	0d 46 91 14 	wl16	r8,0x3494
-    e4bc:	0d 60 01 03 	wh16	r8,0x3
-    e4c0:	10 40 01 08 	ld32	r8,r8
-    e4c4:	0d 46 dd 3c 	wl16	r9,0x36fc
-    e4c8:	0d 60 01 23 	wh16	r9,0x3
-    e4cc:	10 40 01 29 	ld32	r9,r9
-    e4d0:	00 10 01 10 	add	r8,16
-    e4d4:	20 70 03 e2 	movepc	rret,8
-    e4d8:	14 30 c6 ce 	br	10 <compare>,#al
-    e4dc:	00 10 00 41 	add	r2,1
-    e4e0:	0d 46 91 18 	wl16	r8,0x3498
-    e4e4:	0d 60 01 03 	wh16	r8,0x3
-    e4e8:	10 40 01 08 	ld32	r8,r8
-    e4ec:	0d 46 e1 20 	wl16	r9,0x3700
-    e4f0:	0d 60 01 23 	wh16	r9,0x3
-    e4f4:	10 40 01 29 	ld32	r9,r9
-    e4f8:	00 10 05 00 	add	r8,32
-    e4fc:	20 70 03 e2 	movepc	rret,8
-    e500:	14 30 c6 c4 	br	10 <compare>,#al
-    e504:	00 10 00 41 	add	r2,1
-    e508:	0d 46 91 1c 	wl16	r8,0x349c
-    e50c:	0d 60 01 03 	wh16	r8,0x3
-    e510:	10 40 01 08 	ld32	r8,r8
-    e514:	0d 46 e1 24 	wl16	r9,0x3704
-    e518:	0d 60 01 23 	wh16	r9,0x3
-    e51c:	10 40 01 29 	ld32	r9,r9
-    e520:	00 10 09 00 	add	r8,64
-    e524:	20 70 03 e2 	movepc	rret,8
-    e528:	14 30 c6 ba 	br	10 <compare>,#al
-    e52c:	00 10 00 41 	add	r2,1
-    e530:	0d 46 95 00 	wl16	r8,0x34a0
-    e534:	0d 60 01 03 	wh16	r8,0x3
-    e538:	10 40 01 08 	ld32	r8,r8
-    e53c:	0d 46 e1 28 	wl16	r9,0x3708
-    e540:	0d 60 01 23 	wh16	r9,0x3
-    e544:	10 40 01 29 	ld32	r9,r9
-    e548:	00 10 11 00 	add	r8,128
-    e54c:	20 70 03 e2 	movepc	rret,8
-    e550:	14 30 c6 b0 	br	10 <compare>,#al
-    e554:	00 10 00 41 	add	r2,1
-    e558:	0d 46 95 04 	wl16	r8,0x34a4
-    e55c:	0d 60 01 03 	wh16	r8,0x3
-    e560:	10 40 01 08 	ld32	r8,r8
-    e564:	0d 46 e1 2c 	wl16	r9,0x370c
-    e568:	0d 60 01 23 	wh16	r9,0x3
-    e56c:	10 40 01 29 	ld32	r9,r9
-    e570:	00 10 21 00 	add	r8,256
-    e574:	20 70 03 e2 	movepc	rret,8
-    e578:	14 30 c6 a6 	br	10 <compare>,#al
-    e57c:	00 10 00 41 	add	r2,1
-    e580:	0d 46 95 08 	wl16	r8,0x34a8
-    e584:	0d 60 01 03 	wh16	r8,0x3
-    e588:	10 40 01 08 	ld32	r8,r8
-    e58c:	0d 46 e1 30 	wl16	r9,0x3710
-    e590:	0d 60 01 23 	wh16	r9,0x3
-    e594:	10 40 01 29 	ld32	r9,r9
-    e598:	00 10 41 00 	add	r8,512
-    e59c:	20 70 03 e2 	movepc	rret,8
-    e5a0:	14 30 c6 9c 	br	10 <compare>,#al
-    e5a4:	00 10 00 41 	add	r2,1
-    e5a8:	0d 46 95 0c 	wl16	r8,0x34ac
-    e5ac:	0d 60 01 03 	wh16	r8,0x3
-    e5b0:	10 40 01 08 	ld32	r8,r8
-    e5b4:	0d 46 e1 34 	wl16	r9,0x3714
-    e5b8:	0d 60 01 23 	wh16	r9,0x3
-    e5bc:	10 40 01 29 	ld32	r9,r9
-    e5c0:	00 10 81 00 	add	r8,-1024
-    e5c4:	20 70 03 e2 	movepc	rret,8
-    e5c8:	14 30 c6 92 	br	10 <compare>,#al
-    e5cc:	00 10 00 41 	add	r2,1
-    e5d0:	0d 46 95 10 	wl16	r8,0x34b0
-    e5d4:	0d 60 01 03 	wh16	r8,0x3
-    e5d8:	10 40 01 08 	ld32	r8,r8
-    e5dc:	0d 46 e1 38 	wl16	r9,0x3718
-    e5e0:	0d 60 01 23 	wh16	r9,0x3
-    e5e4:	10 40 01 29 	ld32	r9,r9
-    e5e8:	00 10 01 00 	add	r8,0
-    e5ec:	20 70 03 e2 	movepc	rret,8
-    e5f0:	14 30 c6 88 	br	10 <compare>,#al
-    e5f4:	00 10 00 41 	add	r2,1
-    e5f8:	0d 46 95 14 	wl16	r8,0x34b4
-    e5fc:	0d 60 01 03 	wh16	r8,0x3
-    e600:	10 40 01 08 	ld32	r8,r8
-    e604:	0d 46 e1 3c 	wl16	r9,0x371c
-    e608:	0d 60 01 23 	wh16	r9,0x3
-    e60c:	10 40 01 29 	ld32	r9,r9
-    e610:	00 10 01 01 	add	r8,1
-    e614:	20 70 03 e2 	movepc	rret,8
-    e618:	14 30 c6 7e 	br	10 <compare>,#al
-    e61c:	00 10 00 41 	add	r2,1
-    e620:	0d 46 95 18 	wl16	r8,0x34b8
-    e624:	0d 60 01 03 	wh16	r8,0x3
-    e628:	10 40 01 08 	ld32	r8,r8
-    e62c:	0d 46 e5 20 	wl16	r9,0x3720
-    e630:	0d 60 01 23 	wh16	r9,0x3
-    e634:	10 40 01 29 	ld32	r9,r9
-    e638:	00 10 01 02 	add	r8,2
-    e63c:	20 70 03 e2 	movepc	rret,8
-    e640:	14 30 c6 74 	br	10 <compare>,#al
-    e644:	00 10 00 41 	add	r2,1
-    e648:	0d 46 95 1c 	wl16	r8,0x34bc
-    e64c:	0d 60 01 03 	wh16	r8,0x3
-    e650:	10 40 01 08 	ld32	r8,r8
-    e654:	0d 46 e5 24 	wl16	r9,0x3724
-    e658:	0d 60 01 23 	wh16	r9,0x3
-    e65c:	10 40 01 29 	ld32	r9,r9
-    e660:	00 10 01 04 	add	r8,4
-    e664:	20 70 03 e2 	movepc	rret,8
-    e668:	14 30 c6 6a 	br	10 <compare>,#al
-    e66c:	00 10 00 41 	add	r2,1
-    e670:	0d 46 99 00 	wl16	r8,0x34c0
-    e674:	0d 60 01 03 	wh16	r8,0x3
-    e678:	10 40 01 08 	ld32	r8,r8
-    e67c:	0d 46 e5 28 	wl16	r9,0x3728
-    e680:	0d 60 01 23 	wh16	r9,0x3
-    e684:	10 40 01 29 	ld32	r9,r9
-    e688:	00 10 01 08 	add	r8,8
-    e68c:	20 70 03 e2 	movepc	rret,8
-    e690:	14 30 c6 60 	br	10 <compare>,#al
-    e694:	00 10 00 41 	add	r2,1
-    e698:	0d 46 99 04 	wl16	r8,0x34c4
-    e69c:	0d 60 01 03 	wh16	r8,0x3
-    e6a0:	10 40 01 08 	ld32	r8,r8
-    e6a4:	0d 46 e5 2c 	wl16	r9,0x372c
-    e6a8:	0d 60 01 23 	wh16	r9,0x3
-    e6ac:	10 40 01 29 	ld32	r9,r9
-    e6b0:	00 10 01 10 	add	r8,16
-    e6b4:	20 70 03 e2 	movepc	rret,8
-    e6b8:	14 30 c6 56 	br	10 <compare>,#al
-    e6bc:	00 10 00 41 	add	r2,1
-    e6c0:	0d 46 99 08 	wl16	r8,0x34c8
-    e6c4:	0d 60 01 03 	wh16	r8,0x3
-    e6c8:	10 40 01 08 	ld32	r8,r8
-    e6cc:	0d 46 e5 30 	wl16	r9,0x3730
-    e6d0:	0d 60 01 23 	wh16	r9,0x3
-    e6d4:	10 40 01 29 	ld32	r9,r9
-    e6d8:	00 10 05 00 	add	r8,32
-    e6dc:	20 70 03 e2 	movepc	rret,8
-    e6e0:	14 30 c6 4c 	br	10 <compare>,#al
-    e6e4:	00 10 00 41 	add	r2,1
-    e6e8:	0d 46 99 0c 	wl16	r8,0x34cc
-    e6ec:	0d 60 01 03 	wh16	r8,0x3
-    e6f0:	10 40 01 08 	ld32	r8,r8
-    e6f4:	0d 46 e5 34 	wl16	r9,0x3734
-    e6f8:	0d 60 01 23 	wh16	r9,0x3
-    e6fc:	10 40 01 29 	ld32	r9,r9
-    e700:	00 10 09 00 	add	r8,64
-    e704:	20 70 03 e2 	movepc	rret,8
-    e708:	14 30 c6 42 	br	10 <compare>,#al
-    e70c:	00 10 00 41 	add	r2,1
-    e710:	0d 46 99 10 	wl16	r8,0x34d0
-    e714:	0d 60 01 03 	wh16	r8,0x3
-    e718:	10 40 01 08 	ld32	r8,r8
-    e71c:	0d 46 e5 38 	wl16	r9,0x3738
-    e720:	0d 60 01 23 	wh16	r9,0x3
-    e724:	10 40 01 29 	ld32	r9,r9
-    e728:	00 10 11 00 	add	r8,128
-    e72c:	20 70 03 e2 	movepc	rret,8
-    e730:	14 30 c6 38 	br	10 <compare>,#al
-    e734:	00 10 00 41 	add	r2,1
-    e738:	0d 46 99 14 	wl16	r8,0x34d4
-    e73c:	0d 60 01 03 	wh16	r8,0x3
-    e740:	10 40 01 08 	ld32	r8,r8
-    e744:	0d 46 e5 3c 	wl16	r9,0x373c
-    e748:	0d 60 01 23 	wh16	r9,0x3
-    e74c:	10 40 01 29 	ld32	r9,r9
-    e750:	00 10 21 00 	add	r8,256
-    e754:	20 70 03 e2 	movepc	rret,8
-    e758:	14 30 c6 2e 	br	10 <compare>,#al
-    e75c:	00 10 00 41 	add	r2,1
-    e760:	0d 46 99 18 	wl16	r8,0x34d8
-    e764:	0d 60 01 03 	wh16	r8,0x3
-    e768:	10 40 01 08 	ld32	r8,r8
-    e76c:	0d 46 e9 20 	wl16	r9,0x3740
-    e770:	0d 60 01 23 	wh16	r9,0x3
-    e774:	10 40 01 29 	ld32	r9,r9
-    e778:	00 10 41 00 	add	r8,512
-    e77c:	20 70 03 e2 	movepc	rret,8
-    e780:	14 30 c6 24 	br	10 <compare>,#al
-    e784:	00 10 00 41 	add	r2,1
-    e788:	0d 46 99 1c 	wl16	r8,0x34dc
-    e78c:	0d 60 01 03 	wh16	r8,0x3
-    e790:	10 40 01 08 	ld32	r8,r8
-    e794:	0d 46 e9 24 	wl16	r9,0x3744
-    e798:	0d 60 01 23 	wh16	r9,0x3
-    e79c:	10 40 01 29 	ld32	r9,r9
-    e7a0:	00 10 81 00 	add	r8,-1024
-    e7a4:	20 70 03 e2 	movepc	rret,8
-    e7a8:	14 30 c6 1a 	br	10 <compare>,#al
-    e7ac:	00 10 00 41 	add	r2,1
-    e7b0:	0d 46 9d 00 	wl16	r8,0x34e0
-    e7b4:	0d 60 01 03 	wh16	r8,0x3
-    e7b8:	10 40 01 08 	ld32	r8,r8
-    e7bc:	0d 46 e9 28 	wl16	r9,0x3748
-    e7c0:	0d 60 01 23 	wh16	r9,0x3
-    e7c4:	10 40 01 29 	ld32	r9,r9
-    e7c8:	00 10 01 00 	add	r8,0
-    e7cc:	20 70 03 e2 	movepc	rret,8
-    e7d0:	14 30 c6 10 	br	10 <compare>,#al
-    e7d4:	00 10 00 41 	add	r2,1
-    e7d8:	0d 46 9d 04 	wl16	r8,0x34e4
-    e7dc:	0d 60 01 03 	wh16	r8,0x3
-    e7e0:	10 40 01 08 	ld32	r8,r8
-    e7e4:	0d 46 e9 2c 	wl16	r9,0x374c
-    e7e8:	0d 60 01 23 	wh16	r9,0x3
-    e7ec:	10 40 01 29 	ld32	r9,r9
-    e7f0:	00 10 01 01 	add	r8,1
-    e7f4:	20 70 03 e2 	movepc	rret,8
-    e7f8:	14 30 c6 06 	br	10 <compare>,#al
-    e7fc:	00 10 00 41 	add	r2,1
-    e800:	0d 46 9d 08 	wl16	r8,0x34e8
-    e804:	0d 60 01 03 	wh16	r8,0x3
-    e808:	10 40 01 08 	ld32	r8,r8
-    e80c:	0d 46 e9 30 	wl16	r9,0x3750
-    e810:	0d 60 01 23 	wh16	r9,0x3
-    e814:	10 40 01 29 	ld32	r9,r9
-    e818:	00 10 01 02 	add	r8,2
-    e81c:	20 70 03 e2 	movepc	rret,8
-    e820:	14 30 c5 fc 	br	10 <compare>,#al
-    e824:	00 10 00 41 	add	r2,1
-    e828:	0d 46 9d 0c 	wl16	r8,0x34ec
-    e82c:	0d 60 01 03 	wh16	r8,0x3
-    e830:	10 40 01 08 	ld32	r8,r8
-    e834:	0d 46 e9 34 	wl16	r9,0x3754
-    e838:	0d 60 01 23 	wh16	r9,0x3
-    e83c:	10 40 01 29 	ld32	r9,r9
-    e840:	00 10 01 04 	add	r8,4
-    e844:	20 70 03 e2 	movepc	rret,8
-    e848:	14 30 c5 f2 	br	10 <compare>,#al
-    e84c:	00 10 00 41 	add	r2,1
-    e850:	0d 46 9d 10 	wl16	r8,0x34f0
-    e854:	0d 60 01 03 	wh16	r8,0x3
-    e858:	10 40 01 08 	ld32	r8,r8
-    e85c:	0d 46 e9 38 	wl16	r9,0x3758
-    e860:	0d 60 01 23 	wh16	r9,0x3
-    e864:	10 40 01 29 	ld32	r9,r9
-    e868:	00 10 01 08 	add	r8,8
-    e86c:	20 70 03 e2 	movepc	rret,8
-    e870:	14 30 c5 e8 	br	10 <compare>,#al
-    e874:	00 10 00 41 	add	r2,1
-    e878:	0d 46 9d 14 	wl16	r8,0x34f4
-    e87c:	0d 60 01 03 	wh16	r8,0x3
-    e880:	10 40 01 08 	ld32	r8,r8
-    e884:	0d 46 e9 3c 	wl16	r9,0x375c
-    e888:	0d 60 01 23 	wh16	r9,0x3
-    e88c:	10 40 01 29 	ld32	r9,r9
-    e890:	00 10 01 10 	add	r8,16
-    e894:	20 70 03 e2 	movepc	rret,8
-    e898:	14 30 c5 de 	br	10 <compare>,#al
-    e89c:	00 10 00 41 	add	r2,1
-    e8a0:	0d 46 9d 18 	wl16	r8,0x34f8
-    e8a4:	0d 60 01 03 	wh16	r8,0x3
-    e8a8:	10 40 01 08 	ld32	r8,r8
-    e8ac:	0d 46 ed 20 	wl16	r9,0x3760
-    e8b0:	0d 60 01 23 	wh16	r9,0x3
-    e8b4:	10 40 01 29 	ld32	r9,r9
-    e8b8:	00 10 05 00 	add	r8,32
-    e8bc:	20 70 03 e2 	movepc	rret,8
-    e8c0:	14 30 c5 d4 	br	10 <compare>,#al
-    e8c4:	00 10 00 41 	add	r2,1
-    e8c8:	0d 46 9d 1c 	wl16	r8,0x34fc
-    e8cc:	0d 60 01 03 	wh16	r8,0x3
-    e8d0:	10 40 01 08 	ld32	r8,r8
-    e8d4:	0d 46 ed 24 	wl16	r9,0x3764
-    e8d8:	0d 60 01 23 	wh16	r9,0x3
-    e8dc:	10 40 01 29 	ld32	r9,r9
-    e8e0:	00 10 09 00 	add	r8,64
-    e8e4:	20 70 03 e2 	movepc	rret,8
-    e8e8:	14 30 c5 ca 	br	10 <compare>,#al
-    e8ec:	00 10 00 41 	add	r2,1
-    e8f0:	0d 46 a1 00 	wl16	r8,0x3500
-    e8f4:	0d 60 01 03 	wh16	r8,0x3
-    e8f8:	10 40 01 08 	ld32	r8,r8
-    e8fc:	0d 46 ed 28 	wl16	r9,0x3768
-    e900:	0d 60 01 23 	wh16	r9,0x3
-    e904:	10 40 01 29 	ld32	r9,r9
-    e908:	00 10 11 00 	add	r8,128
-    e90c:	20 70 03 e2 	movepc	rret,8
-    e910:	14 30 c5 c0 	br	10 <compare>,#al
-    e914:	00 10 00 41 	add	r2,1
-    e918:	0d 46 a1 04 	wl16	r8,0x3504
-    e91c:	0d 60 01 03 	wh16	r8,0x3
-    e920:	10 40 01 08 	ld32	r8,r8
-    e924:	0d 46 ed 2c 	wl16	r9,0x376c
-    e928:	0d 60 01 23 	wh16	r9,0x3
-    e92c:	10 40 01 29 	ld32	r9,r9
-    e930:	00 10 21 00 	add	r8,256
-    e934:	20 70 03 e2 	movepc	rret,8
-    e938:	14 30 c5 b6 	br	10 <compare>,#al
-    e93c:	00 10 00 41 	add	r2,1
-    e940:	0d 46 a1 08 	wl16	r8,0x3508
-    e944:	0d 60 01 03 	wh16	r8,0x3
-    e948:	10 40 01 08 	ld32	r8,r8
-    e94c:	0d 46 ed 30 	wl16	r9,0x3770
-    e950:	0d 60 01 23 	wh16	r9,0x3
-    e954:	10 40 01 29 	ld32	r9,r9
-    e958:	00 10 41 00 	add	r8,512
-    e95c:	20 70 03 e2 	movepc	rret,8
-    e960:	14 30 c5 ac 	br	10 <compare>,#al
-    e964:	00 10 00 41 	add	r2,1
-    e968:	0d 46 a1 0c 	wl16	r8,0x350c
-    e96c:	0d 60 01 03 	wh16	r8,0x3
-    e970:	10 40 01 08 	ld32	r8,r8
-    e974:	0d 46 ed 34 	wl16	r9,0x3774
-    e978:	0d 60 01 23 	wh16	r9,0x3
-    e97c:	10 40 01 29 	ld32	r9,r9
-    e980:	00 10 81 00 	add	r8,-1024
-    e984:	20 70 03 e2 	movepc	rret,8
-    e988:	14 30 c5 a2 	br	10 <compare>,#al
-    e98c:	00 10 00 41 	add	r2,1
-    e990:	0d 46 a1 10 	wl16	r8,0x3510
-    e994:	0d 60 01 03 	wh16	r8,0x3
-    e998:	10 40 01 08 	ld32	r8,r8
-    e99c:	0d 46 ed 38 	wl16	r9,0x3778
-    e9a0:	0d 60 01 23 	wh16	r9,0x3
-    e9a4:	10 40 01 29 	ld32	r9,r9
-    e9a8:	00 10 01 00 	add	r8,0
-    e9ac:	20 70 03 e2 	movepc	rret,8
-    e9b0:	14 30 c5 98 	br	10 <compare>,#al
-    e9b4:	00 10 00 41 	add	r2,1
-    e9b8:	0d 46 a1 14 	wl16	r8,0x3514
-    e9bc:	0d 60 01 03 	wh16	r8,0x3
-    e9c0:	10 40 01 08 	ld32	r8,r8
-    e9c4:	0d 46 ed 3c 	wl16	r9,0x377c
-    e9c8:	0d 60 01 23 	wh16	r9,0x3
-    e9cc:	10 40 01 29 	ld32	r9,r9
-    e9d0:	00 10 01 01 	add	r8,1
-    e9d4:	20 70 03 e2 	movepc	rret,8
-    e9d8:	14 30 c5 8e 	br	10 <compare>,#al
-    e9dc:	00 10 00 41 	add	r2,1
-    e9e0:	0d 46 a1 18 	wl16	r8,0x3518
-    e9e4:	0d 60 01 03 	wh16	r8,0x3
-    e9e8:	10 40 01 08 	ld32	r8,r8
-    e9ec:	0d 46 f1 20 	wl16	r9,0x3780
-    e9f0:	0d 60 01 23 	wh16	r9,0x3
-    e9f4:	10 40 01 29 	ld32	r9,r9
-    e9f8:	00 10 01 02 	add	r8,2
-    e9fc:	20 70 03 e2 	movepc	rret,8
-    ea00:	14 30 c5 84 	br	10 <compare>,#al
-    ea04:	00 10 00 41 	add	r2,1
-    ea08:	0d 46 a1 1c 	wl16	r8,0x351c
-    ea0c:	0d 60 01 03 	wh16	r8,0x3
-    ea10:	10 40 01 08 	ld32	r8,r8
-    ea14:	0d 46 f1 24 	wl16	r9,0x3784
-    ea18:	0d 60 01 23 	wh16	r9,0x3
-    ea1c:	10 40 01 29 	ld32	r9,r9
-    ea20:	00 10 01 04 	add	r8,4
-    ea24:	20 70 03 e2 	movepc	rret,8
-    ea28:	14 30 c5 7a 	br	10 <compare>,#al
-    ea2c:	00 10 00 41 	add	r2,1
-    ea30:	0d 46 a5 00 	wl16	r8,0x3520
-    ea34:	0d 60 01 03 	wh16	r8,0x3
-    ea38:	10 40 01 08 	ld32	r8,r8
-    ea3c:	0d 46 f1 28 	wl16	r9,0x3788
-    ea40:	0d 60 01 23 	wh16	r9,0x3
-    ea44:	10 40 01 29 	ld32	r9,r9
-    ea48:	00 10 01 08 	add	r8,8
-    ea4c:	20 70 03 e2 	movepc	rret,8
-    ea50:	14 30 c5 70 	br	10 <compare>,#al
-    ea54:	00 10 00 41 	add	r2,1
-    ea58:	0d 46 a5 04 	wl16	r8,0x3524
-    ea5c:	0d 60 01 03 	wh16	r8,0x3
-    ea60:	10 40 01 08 	ld32	r8,r8
-    ea64:	0d 46 f1 2c 	wl16	r9,0x378c
-    ea68:	0d 60 01 23 	wh16	r9,0x3
-    ea6c:	10 40 01 29 	ld32	r9,r9
-    ea70:	00 10 01 10 	add	r8,16
-    ea74:	20 70 03 e2 	movepc	rret,8
-    ea78:	14 30 c5 66 	br	10 <compare>,#al
-    ea7c:	00 10 00 41 	add	r2,1
-    ea80:	0d 46 a5 08 	wl16	r8,0x3528
-    ea84:	0d 60 01 03 	wh16	r8,0x3
-    ea88:	10 40 01 08 	ld32	r8,r8
-    ea8c:	0d 46 f1 30 	wl16	r9,0x3790
-    ea90:	0d 60 01 23 	wh16	r9,0x3
-    ea94:	10 40 01 29 	ld32	r9,r9
-    ea98:	00 10 05 00 	add	r8,32
-    ea9c:	20 70 03 e2 	movepc	rret,8
-    eaa0:	14 30 c5 5c 	br	10 <compare>,#al
-    eaa4:	00 10 00 41 	add	r2,1
-    eaa8:	0d 46 a5 0c 	wl16	r8,0x352c
-    eaac:	0d 60 01 03 	wh16	r8,0x3
-    eab0:	10 40 01 08 	ld32	r8,r8
-    eab4:	0d 46 f1 34 	wl16	r9,0x3794
-    eab8:	0d 60 01 23 	wh16	r9,0x3
-    eabc:	10 40 01 29 	ld32	r9,r9
-    eac0:	00 10 09 00 	add	r8,64
-    eac4:	20 70 03 e2 	movepc	rret,8
-    eac8:	14 30 c5 52 	br	10 <compare>,#al
-    eacc:	00 10 00 41 	add	r2,1
-    ead0:	0d 46 a5 10 	wl16	r8,0x3530
-    ead4:	0d 60 01 03 	wh16	r8,0x3
-    ead8:	10 40 01 08 	ld32	r8,r8
-    eadc:	0d 46 f1 38 	wl16	r9,0x3798
-    eae0:	0d 60 01 23 	wh16	r9,0x3
-    eae4:	10 40 01 29 	ld32	r9,r9
-    eae8:	00 10 11 00 	add	r8,128
-    eaec:	20 70 03 e2 	movepc	rret,8
-    eaf0:	14 30 c5 48 	br	10 <compare>,#al
-    eaf4:	00 10 00 41 	add	r2,1
-    eaf8:	0d 46 a5 14 	wl16	r8,0x3534
-    eafc:	0d 60 01 03 	wh16	r8,0x3
-    eb00:	10 40 01 08 	ld32	r8,r8
-    eb04:	0d 46 f1 3c 	wl16	r9,0x379c
-    eb08:	0d 60 01 23 	wh16	r9,0x3
-    eb0c:	10 40 01 29 	ld32	r9,r9
-    eb10:	00 10 21 00 	add	r8,256
-    eb14:	20 70 03 e2 	movepc	rret,8
-    eb18:	14 30 c5 3e 	br	10 <compare>,#al
-    eb1c:	00 10 00 41 	add	r2,1
-    eb20:	0d 46 a5 18 	wl16	r8,0x3538
-    eb24:	0d 60 01 03 	wh16	r8,0x3
-    eb28:	10 40 01 08 	ld32	r8,r8
-    eb2c:	0d 46 f5 20 	wl16	r9,0x37a0
-    eb30:	0d 60 01 23 	wh16	r9,0x3
-    eb34:	10 40 01 29 	ld32	r9,r9
-    eb38:	00 10 41 00 	add	r8,512
-    eb3c:	20 70 03 e2 	movepc	rret,8
-    eb40:	14 30 c5 34 	br	10 <compare>,#al
-    eb44:	00 10 00 41 	add	r2,1
-    eb48:	0d 46 a5 1c 	wl16	r8,0x353c
-    eb4c:	0d 60 01 03 	wh16	r8,0x3
-    eb50:	10 40 01 08 	ld32	r8,r8
-    eb54:	0d 46 f5 24 	wl16	r9,0x37a4
-    eb58:	0d 60 01 23 	wh16	r9,0x3
-    eb5c:	10 40 01 29 	ld32	r9,r9
-    eb60:	00 10 81 00 	add	r8,-1024
-    eb64:	20 70 03 e2 	movepc	rret,8
-    eb68:	14 30 c5 2a 	br	10 <compare>,#al
-    eb6c:	00 10 00 41 	add	r2,1
-    eb70:	0d 46 a9 00 	wl16	r8,0x3540
-    eb74:	0d 60 01 03 	wh16	r8,0x3
-    eb78:	10 40 01 08 	ld32	r8,r8
-    eb7c:	0d 46 f5 28 	wl16	r9,0x37a8
-    eb80:	0d 60 01 23 	wh16	r9,0x3
-    eb84:	10 40 01 29 	ld32	r9,r9
-    eb88:	00 10 01 00 	add	r8,0
-    eb8c:	20 70 03 e2 	movepc	rret,8
-    eb90:	14 30 c5 20 	br	10 <compare>,#al
-    eb94:	00 10 00 41 	add	r2,1
-    eb98:	0d 46 a9 04 	wl16	r8,0x3544
-    eb9c:	0d 60 01 03 	wh16	r8,0x3
-    eba0:	10 40 01 08 	ld32	r8,r8
-    eba4:	0d 46 f5 2c 	wl16	r9,0x37ac
-    eba8:	0d 60 01 23 	wh16	r9,0x3
-    ebac:	10 40 01 29 	ld32	r9,r9
-    ebb0:	00 10 01 01 	add	r8,1
-    ebb4:	20 70 03 e2 	movepc	rret,8
-    ebb8:	14 30 c5 16 	br	10 <compare>,#al
-    ebbc:	00 10 00 41 	add	r2,1
-    ebc0:	0d 46 a9 08 	wl16	r8,0x3548
-    ebc4:	0d 60 01 03 	wh16	r8,0x3
-    ebc8:	10 40 01 08 	ld32	r8,r8
-    ebcc:	0d 46 f5 30 	wl16	r9,0x37b0
-    ebd0:	0d 60 01 23 	wh16	r9,0x3
-    ebd4:	10 40 01 29 	ld32	r9,r9
-    ebd8:	00 10 01 02 	add	r8,2
-    ebdc:	20 70 03 e2 	movepc	rret,8
-    ebe0:	14 30 c5 0c 	br	10 <compare>,#al
-    ebe4:	00 10 00 41 	add	r2,1
-    ebe8:	0d 46 a9 0c 	wl16	r8,0x354c
-    ebec:	0d 60 01 03 	wh16	r8,0x3
-    ebf0:	10 40 01 08 	ld32	r8,r8
-    ebf4:	0d 46 f5 34 	wl16	r9,0x37b4
-    ebf8:	0d 60 01 23 	wh16	r9,0x3
-    ebfc:	10 40 01 29 	ld32	r9,r9
-    ec00:	00 10 01 04 	add	r8,4
-    ec04:	20 70 03 e2 	movepc	rret,8
-    ec08:	14 30 c5 02 	br	10 <compare>,#al
-    ec0c:	00 10 00 41 	add	r2,1
-    ec10:	0d 46 a9 10 	wl16	r8,0x3550
-    ec14:	0d 60 01 03 	wh16	r8,0x3
-    ec18:	10 40 01 08 	ld32	r8,r8
-    ec1c:	0d 46 f5 38 	wl16	r9,0x37b8
-    ec20:	0d 60 01 23 	wh16	r9,0x3
-    ec24:	10 40 01 29 	ld32	r9,r9
-    ec28:	00 10 01 08 	add	r8,8
-    ec2c:	20 70 03 e2 	movepc	rret,8
-    ec30:	14 30 c4 f8 	br	10 <compare>,#al
-    ec34:	00 10 00 41 	add	r2,1
-    ec38:	0d 46 a9 14 	wl16	r8,0x3554
-    ec3c:	0d 60 01 03 	wh16	r8,0x3
-    ec40:	10 40 01 08 	ld32	r8,r8
-    ec44:	0d 46 f5 3c 	wl16	r9,0x37bc
-    ec48:	0d 60 01 23 	wh16	r9,0x3
-    ec4c:	10 40 01 29 	ld32	r9,r9
-    ec50:	00 10 01 10 	add	r8,16
-    ec54:	20 70 03 e2 	movepc	rret,8
-    ec58:	14 30 c4 ee 	br	10 <compare>,#al
-    ec5c:	00 10 00 41 	add	r2,1
-    ec60:	0d 46 a9 18 	wl16	r8,0x3558
-    ec64:	0d 60 01 03 	wh16	r8,0x3
-    ec68:	10 40 01 08 	ld32	r8,r8
-    ec6c:	0d 46 f9 20 	wl16	r9,0x37c0
-    ec70:	0d 60 01 23 	wh16	r9,0x3
-    ec74:	10 40 01 29 	ld32	r9,r9
-    ec78:	00 10 05 00 	add	r8,32
-    ec7c:	20 70 03 e2 	movepc	rret,8
-    ec80:	14 30 c4 e4 	br	10 <compare>,#al
-    ec84:	00 10 00 41 	add	r2,1
-    ec88:	0d 46 a9 1c 	wl16	r8,0x355c
-    ec8c:	0d 60 01 03 	wh16	r8,0x3
-    ec90:	10 40 01 08 	ld32	r8,r8
-    ec94:	0d 46 f9 24 	wl16	r9,0x37c4
-    ec98:	0d 60 01 23 	wh16	r9,0x3
-    ec9c:	10 40 01 29 	ld32	r9,r9
-    eca0:	00 10 09 00 	add	r8,64
-    eca4:	20 70 03 e2 	movepc	rret,8
-    eca8:	14 30 c4 da 	br	10 <compare>,#al
-    ecac:	00 10 00 41 	add	r2,1
-    ecb0:	0d 46 ad 00 	wl16	r8,0x3560
-    ecb4:	0d 60 01 03 	wh16	r8,0x3
-    ecb8:	10 40 01 08 	ld32	r8,r8
-    ecbc:	0d 46 f9 28 	wl16	r9,0x37c8
-    ecc0:	0d 60 01 23 	wh16	r9,0x3
-    ecc4:	10 40 01 29 	ld32	r9,r9
-    ecc8:	00 10 11 00 	add	r8,128
-    eccc:	20 70 03 e2 	movepc	rret,8
-    ecd0:	14 30 c4 d0 	br	10 <compare>,#al
-    ecd4:	00 10 00 41 	add	r2,1
-    ecd8:	0d 46 ad 04 	wl16	r8,0x3564
-    ecdc:	0d 60 01 03 	wh16	r8,0x3
-    ece0:	10 40 01 08 	ld32	r8,r8
-    ece4:	0d 46 f9 2c 	wl16	r9,0x37cc
-    ece8:	0d 60 01 23 	wh16	r9,0x3
-    ecec:	10 40 01 29 	ld32	r9,r9
-    ecf0:	00 10 21 00 	add	r8,256
-    ecf4:	20 70 03 e2 	movepc	rret,8
-    ecf8:	14 30 c4 c6 	br	10 <compare>,#al
-    ecfc:	00 10 00 41 	add	r2,1
-    ed00:	0d 46 ad 08 	wl16	r8,0x3568
-    ed04:	0d 60 01 03 	wh16	r8,0x3
-    ed08:	10 40 01 08 	ld32	r8,r8
-    ed0c:	0d 46 f9 30 	wl16	r9,0x37d0
-    ed10:	0d 60 01 23 	wh16	r9,0x3
-    ed14:	10 40 01 29 	ld32	r9,r9
-    ed18:	00 10 41 00 	add	r8,512
-    ed1c:	20 70 03 e2 	movepc	rret,8
-    ed20:	14 30 c4 bc 	br	10 <compare>,#al
-    ed24:	00 10 00 41 	add	r2,1
-    ed28:	0d 46 ad 0c 	wl16	r8,0x356c
-    ed2c:	0d 60 01 03 	wh16	r8,0x3
-    ed30:	10 40 01 08 	ld32	r8,r8
-    ed34:	0d 46 f9 34 	wl16	r9,0x37d4
-    ed38:	0d 60 01 23 	wh16	r9,0x3
-    ed3c:	10 40 01 29 	ld32	r9,r9
-    ed40:	00 10 81 00 	add	r8,-1024
-    ed44:	20 70 03 e2 	movepc	rret,8
-    ed48:	14 30 c4 b2 	br	10 <compare>,#al
-    ed4c:	00 10 00 41 	add	r2,1
-    ed50:	0d 46 ad 10 	wl16	r8,0x3570
-    ed54:	0d 60 01 03 	wh16	r8,0x3
-    ed58:	10 40 01 08 	ld32	r8,r8
-    ed5c:	0d 46 f9 38 	wl16	r9,0x37d8
-    ed60:	0d 60 01 23 	wh16	r9,0x3
-    ed64:	10 40 01 29 	ld32	r9,r9
-    ed68:	00 10 01 00 	add	r8,0
-    ed6c:	20 70 03 e2 	movepc	rret,8
-    ed70:	14 30 c4 a8 	br	10 <compare>,#al
-    ed74:	00 10 00 41 	add	r2,1
-    ed78:	0d 46 ad 14 	wl16	r8,0x3574
-    ed7c:	0d 60 01 03 	wh16	r8,0x3
-    ed80:	10 40 01 08 	ld32	r8,r8
-    ed84:	0d 46 f9 3c 	wl16	r9,0x37dc
-    ed88:	0d 60 01 23 	wh16	r9,0x3
-    ed8c:	10 40 01 29 	ld32	r9,r9
-    ed90:	00 10 01 01 	add	r8,1
-    ed94:	20 70 03 e2 	movepc	rret,8
-    ed98:	14 30 c4 9e 	br	10 <compare>,#al
-    ed9c:	00 10 00 41 	add	r2,1
-    eda0:	0d 46 ad 18 	wl16	r8,0x3578
-    eda4:	0d 60 01 03 	wh16	r8,0x3
-    eda8:	10 40 01 08 	ld32	r8,r8
-    edac:	0d 46 fd 20 	wl16	r9,0x37e0
-    edb0:	0d 60 01 23 	wh16	r9,0x3
-    edb4:	10 40 01 29 	ld32	r9,r9
-    edb8:	00 10 01 02 	add	r8,2
-    edbc:	20 70 03 e2 	movepc	rret,8
-    edc0:	14 30 c4 94 	br	10 <compare>,#al
-    edc4:	00 10 00 41 	add	r2,1
-    edc8:	0d 46 ad 1c 	wl16	r8,0x357c
-    edcc:	0d 60 01 03 	wh16	r8,0x3
-    edd0:	10 40 01 08 	ld32	r8,r8
-    edd4:	0d 46 fd 24 	wl16	r9,0x37e4
-    edd8:	0d 60 01 23 	wh16	r9,0x3
-    eddc:	10 40 01 29 	ld32	r9,r9
-    ede0:	00 10 01 04 	add	r8,4
-    ede4:	20 70 03 e2 	movepc	rret,8
-    ede8:	14 30 c4 8a 	br	10 <compare>,#al
-    edec:	00 10 00 41 	add	r2,1
-    edf0:	0d 46 b1 00 	wl16	r8,0x3580
-    edf4:	0d 60 01 03 	wh16	r8,0x3
-    edf8:	10 40 01 08 	ld32	r8,r8
-    edfc:	0d 46 fd 28 	wl16	r9,0x37e8
-    ee00:	0d 60 01 23 	wh16	r9,0x3
-    ee04:	10 40 01 29 	ld32	r9,r9
-    ee08:	00 10 01 08 	add	r8,8
-    ee0c:	20 70 03 e2 	movepc	rret,8
-    ee10:	14 30 c4 80 	br	10 <compare>,#al
-    ee14:	00 10 00 41 	add	r2,1
-    ee18:	0d 46 b1 04 	wl16	r8,0x3584
-    ee1c:	0d 60 01 03 	wh16	r8,0x3
-    ee20:	10 40 01 08 	ld32	r8,r8
-    ee24:	0d 46 fd 2c 	wl16	r9,0x37ec
-    ee28:	0d 60 01 23 	wh16	r9,0x3
-    ee2c:	10 40 01 29 	ld32	r9,r9
-    ee30:	00 10 01 10 	add	r8,16
-    ee34:	20 70 03 e2 	movepc	rret,8
-    ee38:	14 30 c4 76 	br	10 <compare>,#al
-    ee3c:	00 10 00 41 	add	r2,1
-    ee40:	0d 46 b1 08 	wl16	r8,0x3588
-    ee44:	0d 60 01 03 	wh16	r8,0x3
-    ee48:	10 40 01 08 	ld32	r8,r8
-    ee4c:	0d 46 fd 30 	wl16	r9,0x37f0
-    ee50:	0d 60 01 23 	wh16	r9,0x3
-    ee54:	10 40 01 29 	ld32	r9,r9
-    ee58:	00 10 05 00 	add	r8,32
-    ee5c:	20 70 03 e2 	movepc	rret,8
-    ee60:	14 30 c4 6c 	br	10 <compare>,#al
-    ee64:	00 10 00 41 	add	r2,1
-    ee68:	0d 46 b1 0c 	wl16	r8,0x358c
-    ee6c:	0d 60 01 03 	wh16	r8,0x3
-    ee70:	10 40 01 08 	ld32	r8,r8
-    ee74:	0d 46 fd 34 	wl16	r9,0x37f4
-    ee78:	0d 60 01 23 	wh16	r9,0x3
-    ee7c:	10 40 01 29 	ld32	r9,r9
-    ee80:	00 10 09 00 	add	r8,64
-    ee84:	20 70 03 e2 	movepc	rret,8
-    ee88:	14 30 c4 62 	br	10 <compare>,#al
-    ee8c:	00 10 00 41 	add	r2,1
-    ee90:	0d 46 b1 10 	wl16	r8,0x3590
-    ee94:	0d 60 01 03 	wh16	r8,0x3
-    ee98:	10 40 01 08 	ld32	r8,r8
-    ee9c:	0d 46 fd 38 	wl16	r9,0x37f8
-    eea0:	0d 60 01 23 	wh16	r9,0x3
-    eea4:	10 40 01 29 	ld32	r9,r9
-    eea8:	00 10 11 00 	add	r8,128
-    eeac:	20 70 03 e2 	movepc	rret,8
-    eeb0:	14 30 c4 58 	br	10 <compare>,#al
-    eeb4:	00 10 00 41 	add	r2,1
-    eeb8:	0d 46 b1 14 	wl16	r8,0x3594
-    eebc:	0d 60 01 03 	wh16	r8,0x3
-    eec0:	10 40 01 08 	ld32	r8,r8
-    eec4:	0d 46 fd 3c 	wl16	r9,0x37fc
-    eec8:	0d 60 01 23 	wh16	r9,0x3
-    eecc:	10 40 01 29 	ld32	r9,r9
-    eed0:	00 10 21 00 	add	r8,256
-    eed4:	20 70 03 e2 	movepc	rret,8
-    eed8:	14 30 c4 4e 	br	10 <compare>,#al
-    eedc:	00 10 00 41 	add	r2,1
-    eee0:	0d 46 b1 18 	wl16	r8,0x3598
-    eee4:	0d 60 01 03 	wh16	r8,0x3
-    eee8:	10 40 01 08 	ld32	r8,r8
-    eeec:	0d 47 01 20 	wl16	r9,0x3800
-    eef0:	0d 60 01 23 	wh16	r9,0x3
-    eef4:	10 40 01 29 	ld32	r9,r9
-    eef8:	00 10 41 00 	add	r8,512
-    eefc:	20 70 03 e2 	movepc	rret,8
-    ef00:	14 30 c4 44 	br	10 <compare>,#al
-    ef04:	00 10 00 41 	add	r2,1
-    ef08:	0d 46 b1 1c 	wl16	r8,0x359c
-    ef0c:	0d 60 01 03 	wh16	r8,0x3
-    ef10:	10 40 01 08 	ld32	r8,r8
-    ef14:	0d 47 01 24 	wl16	r9,0x3804
-    ef18:	0d 60 01 23 	wh16	r9,0x3
-    ef1c:	10 40 01 29 	ld32	r9,r9
-    ef20:	00 10 81 00 	add	r8,-1024
-    ef24:	20 70 03 e2 	movepc	rret,8
-    ef28:	14 30 c4 3a 	br	10 <compare>,#al
-    ef2c:	00 10 00 41 	add	r2,1
-    ef30:	0d 46 b5 00 	wl16	r8,0x35a0
-    ef34:	0d 60 01 03 	wh16	r8,0x3
-    ef38:	10 40 01 08 	ld32	r8,r8
-    ef3c:	0d 47 01 28 	wl16	r9,0x3808
-    ef40:	0d 60 01 23 	wh16	r9,0x3
-    ef44:	10 40 01 29 	ld32	r9,r9
-    ef48:	00 10 01 00 	add	r8,0
-    ef4c:	20 70 03 e2 	movepc	rret,8
-    ef50:	14 30 c4 30 	br	10 <compare>,#al
-    ef54:	00 10 00 41 	add	r2,1
-    ef58:	0d 46 b5 04 	wl16	r8,0x35a4
-    ef5c:	0d 60 01 03 	wh16	r8,0x3
-    ef60:	10 40 01 08 	ld32	r8,r8
-    ef64:	0d 47 01 2c 	wl16	r9,0x380c
-    ef68:	0d 60 01 23 	wh16	r9,0x3
-    ef6c:	10 40 01 29 	ld32	r9,r9
-    ef70:	00 10 01 01 	add	r8,1
-    ef74:	20 70 03 e2 	movepc	rret,8
-    ef78:	14 30 c4 26 	br	10 <compare>,#al
-    ef7c:	00 10 00 41 	add	r2,1
-    ef80:	0d 46 b5 08 	wl16	r8,0x35a8
-    ef84:	0d 60 01 03 	wh16	r8,0x3
-    ef88:	10 40 01 08 	ld32	r8,r8
-    ef8c:	0d 47 01 30 	wl16	r9,0x3810
-    ef90:	0d 60 01 23 	wh16	r9,0x3
-    ef94:	10 40 01 29 	ld32	r9,r9
-    ef98:	00 10 01 02 	add	r8,2
-    ef9c:	20 70 03 e2 	movepc	rret,8
-    efa0:	14 30 c4 1c 	br	10 <compare>,#al
-    efa4:	00 10 00 41 	add	r2,1
-    efa8:	0d 46 b5 0c 	wl16	r8,0x35ac
-    efac:	0d 60 01 03 	wh16	r8,0x3
-    efb0:	10 40 01 08 	ld32	r8,r8
-    efb4:	0d 47 01 34 	wl16	r9,0x3814
-    efb8:	0d 60 01 23 	wh16	r9,0x3
-    efbc:	10 40 01 29 	ld32	r9,r9
-    efc0:	00 10 01 04 	add	r8,4
-    efc4:	20 70 03 e2 	movepc	rret,8
-    efc8:	14 30 c4 12 	br	10 <compare>,#al
-    efcc:	00 10 00 41 	add	r2,1
-    efd0:	0d 46 b5 10 	wl16	r8,0x35b0
-    efd4:	0d 60 01 03 	wh16	r8,0x3
-    efd8:	10 40 01 08 	ld32	r8,r8
-    efdc:	0d 47 01 38 	wl16	r9,0x3818
-    efe0:	0d 60 01 23 	wh16	r9,0x3
-    efe4:	10 40 01 29 	ld32	r9,r9
-    efe8:	00 10 01 08 	add	r8,8
-    efec:	20 70 03 e2 	movepc	rret,8
-    eff0:	14 30 c4 08 	br	10 <compare>,#al
-    eff4:	00 10 00 41 	add	r2,1
-    eff8:	0d 46 b5 14 	wl16	r8,0x35b4
-    effc:	0d 60 01 03 	wh16	r8,0x3
-    f000:	10 40 01 08 	ld32	r8,r8
-    f004:	0d 47 01 3c 	wl16	r9,0x381c
-    f008:	0d 60 01 23 	wh16	r9,0x3
-    f00c:	10 40 01 29 	ld32	r9,r9
-    f010:	00 10 01 10 	add	r8,16
-    f014:	20 70 03 e2 	movepc	rret,8
-    f018:	14 30 c3 fe 	br	10 <compare>,#al
-    f01c:	00 10 00 41 	add	r2,1
-    f020:	0d 46 b5 18 	wl16	r8,0x35b8
-    f024:	0d 60 01 03 	wh16	r8,0x3
-    f028:	10 40 01 08 	ld32	r8,r8
-    f02c:	0d 47 05 20 	wl16	r9,0x3820
-    f030:	0d 60 01 23 	wh16	r9,0x3
-    f034:	10 40 01 29 	ld32	r9,r9
-    f038:	00 10 05 00 	add	r8,32
-    f03c:	20 70 03 e2 	movepc	rret,8
-    f040:	14 30 c3 f4 	br	10 <compare>,#al
-    f044:	00 10 00 41 	add	r2,1
-    f048:	0d 46 b5 1c 	wl16	r8,0x35bc
-    f04c:	0d 60 01 03 	wh16	r8,0x3
-    f050:	10 40 01 08 	ld32	r8,r8
-    f054:	0d 47 05 24 	wl16	r9,0x3824
-    f058:	0d 60 01 23 	wh16	r9,0x3
-    f05c:	10 40 01 29 	ld32	r9,r9
-    f060:	00 10 09 00 	add	r8,64
-    f064:	20 70 03 e2 	movepc	rret,8
-    f068:	14 30 c3 ea 	br	10 <compare>,#al
-    f06c:	00 10 00 41 	add	r2,1
-    f070:	0d 46 b9 00 	wl16	r8,0x35c0
-    f074:	0d 60 01 03 	wh16	r8,0x3
-    f078:	10 40 01 08 	ld32	r8,r8
-    f07c:	0d 47 05 28 	wl16	r9,0x3828
-    f080:	0d 60 01 23 	wh16	r9,0x3
-    f084:	10 40 01 29 	ld32	r9,r9
-    f088:	00 10 11 00 	add	r8,128
-    f08c:	20 70 03 e2 	movepc	rret,8
-    f090:	14 30 c3 e0 	br	10 <compare>,#al
-    f094:	00 10 00 41 	add	r2,1
-    f098:	0d 46 b9 04 	wl16	r8,0x35c4
-    f09c:	0d 60 01 03 	wh16	r8,0x3
-    f0a0:	10 40 01 08 	ld32	r8,r8
-    f0a4:	0d 47 05 2c 	wl16	r9,0x382c
-    f0a8:	0d 60 01 23 	wh16	r9,0x3
-    f0ac:	10 40 01 29 	ld32	r9,r9
-    f0b0:	00 10 21 00 	add	r8,256
-    f0b4:	20 70 03 e2 	movepc	rret,8
-    f0b8:	14 30 c3 d6 	br	10 <compare>,#al
-    f0bc:	00 10 00 41 	add	r2,1
-    f0c0:	0d 46 b9 08 	wl16	r8,0x35c8
-    f0c4:	0d 60 01 03 	wh16	r8,0x3
-    f0c8:	10 40 01 08 	ld32	r8,r8
-    f0cc:	0d 47 05 30 	wl16	r9,0x3830
-    f0d0:	0d 60 01 23 	wh16	r9,0x3
-    f0d4:	10 40 01 29 	ld32	r9,r9
-    f0d8:	00 10 41 00 	add	r8,512
-    f0dc:	20 70 03 e2 	movepc	rret,8
-    f0e0:	14 30 c3 cc 	br	10 <compare>,#al
-    f0e4:	00 10 00 41 	add	r2,1
-    f0e8:	0d 46 b9 0c 	wl16	r8,0x35cc
-    f0ec:	0d 60 01 03 	wh16	r8,0x3
-    f0f0:	10 40 01 08 	ld32	r8,r8
-    f0f4:	0d 47 05 34 	wl16	r9,0x3834
-    f0f8:	0d 60 01 23 	wh16	r9,0x3
-    f0fc:	10 40 01 29 	ld32	r9,r9
-    f100:	00 10 81 00 	add	r8,-1024
-    f104:	20 70 03 e2 	movepc	rret,8
-    f108:	14 30 c3 c2 	br	10 <compare>,#al
-    f10c:	00 10 00 41 	add	r2,1
-    f110:	0d 46 b9 10 	wl16	r8,0x35d0
-    f114:	0d 60 01 03 	wh16	r8,0x3
-    f118:	10 40 01 08 	ld32	r8,r8
-    f11c:	0d 47 05 38 	wl16	r9,0x3838
-    f120:	0d 60 01 23 	wh16	r9,0x3
-    f124:	10 40 01 29 	ld32	r9,r9
-    f128:	00 10 01 00 	add	r8,0
-    f12c:	20 70 03 e2 	movepc	rret,8
-    f130:	14 30 c3 b8 	br	10 <compare>,#al
-    f134:	00 10 00 41 	add	r2,1
-    f138:	0d 46 b9 14 	wl16	r8,0x35d4
-    f13c:	0d 60 01 03 	wh16	r8,0x3
-    f140:	10 40 01 08 	ld32	r8,r8
-    f144:	0d 47 05 3c 	wl16	r9,0x383c
-    f148:	0d 60 01 23 	wh16	r9,0x3
-    f14c:	10 40 01 29 	ld32	r9,r9
-    f150:	00 10 01 01 	add	r8,1
-    f154:	20 70 03 e2 	movepc	rret,8
-    f158:	14 30 c3 ae 	br	10 <compare>,#al
-    f15c:	00 10 00 41 	add	r2,1
-    f160:	0d 46 b9 18 	wl16	r8,0x35d8
-    f164:	0d 60 01 03 	wh16	r8,0x3
-    f168:	10 40 01 08 	ld32	r8,r8
-    f16c:	0d 47 09 20 	wl16	r9,0x3840
-    f170:	0d 60 01 23 	wh16	r9,0x3
-    f174:	10 40 01 29 	ld32	r9,r9
-    f178:	00 10 01 02 	add	r8,2
-    f17c:	20 70 03 e2 	movepc	rret,8
-    f180:	14 30 c3 a4 	br	10 <compare>,#al
-    f184:	00 10 00 41 	add	r2,1
-    f188:	0d 46 b9 1c 	wl16	r8,0x35dc
-    f18c:	0d 60 01 03 	wh16	r8,0x3
-    f190:	10 40 01 08 	ld32	r8,r8
-    f194:	0d 47 09 24 	wl16	r9,0x3844
-    f198:	0d 60 01 23 	wh16	r9,0x3
-    f19c:	10 40 01 29 	ld32	r9,r9
-    f1a0:	00 10 01 04 	add	r8,4
-    f1a4:	20 70 03 e2 	movepc	rret,8
-    f1a8:	14 30 c3 9a 	br	10 <compare>,#al
-    f1ac:	00 10 00 41 	add	r2,1
-    f1b0:	0d 46 bd 00 	wl16	r8,0x35e0
-    f1b4:	0d 60 01 03 	wh16	r8,0x3
-    f1b8:	10 40 01 08 	ld32	r8,r8
-    f1bc:	0d 47 09 28 	wl16	r9,0x3848
-    f1c0:	0d 60 01 23 	wh16	r9,0x3
-    f1c4:	10 40 01 29 	ld32	r9,r9
-    f1c8:	00 10 01 08 	add	r8,8
-    f1cc:	20 70 03 e2 	movepc	rret,8
-    f1d0:	14 30 c3 90 	br	10 <compare>,#al
-    f1d4:	00 10 00 41 	add	r2,1
-    f1d8:	0d 46 bd 04 	wl16	r8,0x35e4
-    f1dc:	0d 60 01 03 	wh16	r8,0x3
-    f1e0:	10 40 01 08 	ld32	r8,r8
-    f1e4:	0d 47 09 2c 	wl16	r9,0x384c
-    f1e8:	0d 60 01 23 	wh16	r9,0x3
-    f1ec:	10 40 01 29 	ld32	r9,r9
-    f1f0:	00 10 01 10 	add	r8,16
-    f1f4:	20 70 03 e2 	movepc	rret,8
-    f1f8:	14 30 c3 86 	br	10 <compare>,#al
-    f1fc:	00 10 00 41 	add	r2,1
-    f200:	0d 46 bd 08 	wl16	r8,0x35e8
-    f204:	0d 60 01 03 	wh16	r8,0x3
-    f208:	10 40 01 08 	ld32	r8,r8
-    f20c:	0d 47 09 30 	wl16	r9,0x3850
-    f210:	0d 60 01 23 	wh16	r9,0x3
-    f214:	10 40 01 29 	ld32	r9,r9
-    f218:	00 10 05 00 	add	r8,32
-    f21c:	20 70 03 e2 	movepc	rret,8
-    f220:	14 30 c3 7c 	br	10 <compare>,#al
-    f224:	00 10 00 41 	add	r2,1
-    f228:	0d 46 bd 0c 	wl16	r8,0x35ec
-    f22c:	0d 60 01 03 	wh16	r8,0x3
-    f230:	10 40 01 08 	ld32	r8,r8
-    f234:	0d 47 09 34 	wl16	r9,0x3854
-    f238:	0d 60 01 23 	wh16	r9,0x3
-    f23c:	10 40 01 29 	ld32	r9,r9
-    f240:	00 10 09 00 	add	r8,64
-    f244:	20 70 03 e2 	movepc	rret,8
-    f248:	14 30 c3 72 	br	10 <compare>,#al
-    f24c:	00 10 00 41 	add	r2,1
-    f250:	0d 46 bd 10 	wl16	r8,0x35f0
-    f254:	0d 60 01 03 	wh16	r8,0x3
-    f258:	10 40 01 08 	ld32	r8,r8
-    f25c:	0d 47 09 38 	wl16	r9,0x3858
-    f260:	0d 60 01 23 	wh16	r9,0x3
-    f264:	10 40 01 29 	ld32	r9,r9
-    f268:	00 10 11 00 	add	r8,128
-    f26c:	20 70 03 e2 	movepc	rret,8
-    f270:	14 30 c3 68 	br	10 <compare>,#al
-    f274:	00 10 00 41 	add	r2,1
-    f278:	0d 46 bd 14 	wl16	r8,0x35f4
-    f27c:	0d 60 01 03 	wh16	r8,0x3
-    f280:	10 40 01 08 	ld32	r8,r8
-    f284:	0d 47 09 3c 	wl16	r9,0x385c
-    f288:	0d 60 01 23 	wh16	r9,0x3
-    f28c:	10 40 01 29 	ld32	r9,r9
-    f290:	00 10 21 00 	add	r8,256
-    f294:	20 70 03 e2 	movepc	rret,8
-    f298:	14 30 c3 5e 	br	10 <compare>,#al
-    f29c:	00 10 00 41 	add	r2,1
-    f2a0:	0d 46 bd 18 	wl16	r8,0x35f8
-    f2a4:	0d 60 01 03 	wh16	r8,0x3
-    f2a8:	10 40 01 08 	ld32	r8,r8
-    f2ac:	0d 47 0d 20 	wl16	r9,0x3860
-    f2b0:	0d 60 01 23 	wh16	r9,0x3
-    f2b4:	10 40 01 29 	ld32	r9,r9
-    f2b8:	00 10 41 00 	add	r8,512
-    f2bc:	20 70 03 e2 	movepc	rret,8
-    f2c0:	14 30 c3 54 	br	10 <compare>,#al
-    f2c4:	00 10 00 41 	add	r2,1
-    f2c8:	0d 46 bd 1c 	wl16	r8,0x35fc
-    f2cc:	0d 60 01 03 	wh16	r8,0x3
-    f2d0:	10 40 01 08 	ld32	r8,r8
-    f2d4:	0d 47 0d 24 	wl16	r9,0x3864
-    f2d8:	0d 60 01 23 	wh16	r9,0x3
-    f2dc:	10 40 01 29 	ld32	r9,r9
-    f2e0:	00 10 81 00 	add	r8,-1024
-    f2e4:	20 70 03 e2 	movepc	rret,8
-    f2e8:	14 30 c3 4a 	br	10 <compare>,#al
-    f2ec:	00 10 00 41 	add	r2,1
-    f2f0:	0d 46 c1 00 	wl16	r8,0x3600
-    f2f4:	0d 60 01 03 	wh16	r8,0x3
-    f2f8:	10 40 01 08 	ld32	r8,r8
-    f2fc:	0d 47 0d 28 	wl16	r9,0x3868
-    f300:	0d 60 01 23 	wh16	r9,0x3
-    f304:	10 40 01 29 	ld32	r9,r9
-    f308:	00 10 01 00 	add	r8,0
-    f30c:	20 70 03 e2 	movepc	rret,8
-    f310:	14 30 c3 40 	br	10 <compare>,#al
-    f314:	00 10 00 41 	add	r2,1
-    f318:	0d 46 c1 04 	wl16	r8,0x3604
-    f31c:	0d 60 01 03 	wh16	r8,0x3
-    f320:	10 40 01 08 	ld32	r8,r8
-    f324:	0d 47 0d 2c 	wl16	r9,0x386c
-    f328:	0d 60 01 23 	wh16	r9,0x3
-    f32c:	10 40 01 29 	ld32	r9,r9
-    f330:	00 10 01 01 	add	r8,1
-    f334:	20 70 03 e2 	movepc	rret,8
-    f338:	14 30 c3 36 	br	10 <compare>,#al
-    f33c:	00 10 00 41 	add	r2,1
-    f340:	0d 46 c1 08 	wl16	r8,0x3608
-    f344:	0d 60 01 03 	wh16	r8,0x3
-    f348:	10 40 01 08 	ld32	r8,r8
-    f34c:	0d 47 0d 30 	wl16	r9,0x3870
-    f350:	0d 60 01 23 	wh16	r9,0x3
-    f354:	10 40 01 29 	ld32	r9,r9
-    f358:	00 10 01 02 	add	r8,2
-    f35c:	20 70 03 e2 	movepc	rret,8
-    f360:	14 30 c3 2c 	br	10 <compare>,#al
-    f364:	00 10 00 41 	add	r2,1
-    f368:	0d 46 c1 0c 	wl16	r8,0x360c
-    f36c:	0d 60 01 03 	wh16	r8,0x3
-    f370:	10 40 01 08 	ld32	r8,r8
-    f374:	0d 47 0d 34 	wl16	r9,0x3874
-    f378:	0d 60 01 23 	wh16	r9,0x3
-    f37c:	10 40 01 29 	ld32	r9,r9
-    f380:	00 10 01 04 	add	r8,4
-    f384:	20 70 03 e2 	movepc	rret,8
-    f388:	14 30 c3 22 	br	10 <compare>,#al
-    f38c:	00 10 00 41 	add	r2,1
-    f390:	0d 46 c1 10 	wl16	r8,0x3610
-    f394:	0d 60 01 03 	wh16	r8,0x3
-    f398:	10 40 01 08 	ld32	r8,r8
-    f39c:	0d 47 0d 38 	wl16	r9,0x3878
-    f3a0:	0d 60 01 23 	wh16	r9,0x3
-    f3a4:	10 40 01 29 	ld32	r9,r9
-    f3a8:	00 10 01 08 	add	r8,8
-    f3ac:	20 70 03 e2 	movepc	rret,8
-    f3b0:	14 30 c3 18 	br	10 <compare>,#al
-    f3b4:	00 10 00 41 	add	r2,1
-    f3b8:	0d 46 c1 14 	wl16	r8,0x3614
-    f3bc:	0d 60 01 03 	wh16	r8,0x3
-    f3c0:	10 40 01 08 	ld32	r8,r8
-    f3c4:	0d 47 0d 3c 	wl16	r9,0x387c
-    f3c8:	0d 60 01 23 	wh16	r9,0x3
-    f3cc:	10 40 01 29 	ld32	r9,r9
-    f3d0:	00 10 01 10 	add	r8,16
-    f3d4:	20 70 03 e2 	movepc	rret,8
-    f3d8:	14 30 c3 0e 	br	10 <compare>,#al
-    f3dc:	00 10 00 41 	add	r2,1
-    f3e0:	0d 46 c1 18 	wl16	r8,0x3618
-    f3e4:	0d 60 01 03 	wh16	r8,0x3
-    f3e8:	10 40 01 08 	ld32	r8,r8
-    f3ec:	0d 47 11 20 	wl16	r9,0x3880
-    f3f0:	0d 60 01 23 	wh16	r9,0x3
-    f3f4:	10 40 01 29 	ld32	r9,r9
-    f3f8:	00 10 05 00 	add	r8,32
-    f3fc:	20 70 03 e2 	movepc	rret,8
-    f400:	14 30 c3 04 	br	10 <compare>,#al
-    f404:	00 10 00 41 	add	r2,1
-    f408:	0d 46 c1 1c 	wl16	r8,0x361c
-    f40c:	0d 60 01 03 	wh16	r8,0x3
-    f410:	10 40 01 08 	ld32	r8,r8
-    f414:	0d 47 11 24 	wl16	r9,0x3884
-    f418:	0d 60 01 23 	wh16	r9,0x3
-    f41c:	10 40 01 29 	ld32	r9,r9
-    f420:	00 10 09 00 	add	r8,64
-    f424:	20 70 03 e2 	movepc	rret,8
-    f428:	14 30 c2 fa 	br	10 <compare>,#al
-    f42c:	00 10 00 41 	add	r2,1
-    f430:	0d 46 c5 00 	wl16	r8,0x3620
-    f434:	0d 60 01 03 	wh16	r8,0x3
-    f438:	10 40 01 08 	ld32	r8,r8
-    f43c:	0d 47 11 28 	wl16	r9,0x3888
-    f440:	0d 60 01 23 	wh16	r9,0x3
-    f444:	10 40 01 29 	ld32	r9,r9
-    f448:	00 10 11 00 	add	r8,128
-    f44c:	20 70 03 e2 	movepc	rret,8
-    f450:	14 30 c2 f0 	br	10 <compare>,#al
-    f454:	00 10 00 41 	add	r2,1
-    f458:	0d 46 c5 04 	wl16	r8,0x3624
-    f45c:	0d 60 01 03 	wh16	r8,0x3
-    f460:	10 40 01 08 	ld32	r8,r8
-    f464:	0d 47 11 2c 	wl16	r9,0x388c
-    f468:	0d 60 01 23 	wh16	r9,0x3
-    f46c:	10 40 01 29 	ld32	r9,r9
-    f470:	00 10 21 00 	add	r8,256
-    f474:	20 70 03 e2 	movepc	rret,8
-    f478:	14 30 c2 e6 	br	10 <compare>,#al
-    f47c:	00 10 00 41 	add	r2,1
-    f480:	0d 46 c5 08 	wl16	r8,0x3628
-    f484:	0d 60 01 03 	wh16	r8,0x3
-    f488:	10 40 01 08 	ld32	r8,r8
-    f48c:	0d 47 11 30 	wl16	r9,0x3890
-    f490:	0d 60 01 23 	wh16	r9,0x3
-    f494:	10 40 01 29 	ld32	r9,r9
-    f498:	00 10 41 00 	add	r8,512
-    f49c:	20 70 03 e2 	movepc	rret,8
-    f4a0:	14 30 c2 dc 	br	10 <compare>,#al
-    f4a4:	00 10 00 41 	add	r2,1
-    f4a8:	0d 46 c5 0c 	wl16	r8,0x362c
-    f4ac:	0d 60 01 03 	wh16	r8,0x3
-    f4b0:	10 40 01 08 	ld32	r8,r8
-    f4b4:	0d 47 11 34 	wl16	r9,0x3894
-    f4b8:	0d 60 01 23 	wh16	r9,0x3
-    f4bc:	10 40 01 29 	ld32	r9,r9
-    f4c0:	00 10 81 00 	add	r8,-1024
-    f4c4:	20 70 03 e2 	movepc	rret,8
-    f4c8:	14 30 c2 d2 	br	10 <compare>,#al
-    f4cc:	00 10 00 41 	add	r2,1
-    f4d0:	0d 46 c5 10 	wl16	r8,0x3630
-    f4d4:	0d 60 01 03 	wh16	r8,0x3
-    f4d8:	10 40 01 08 	ld32	r8,r8
-    f4dc:	0d 47 11 38 	wl16	r9,0x3898
-    f4e0:	0d 60 01 23 	wh16	r9,0x3
-    f4e4:	10 40 01 29 	ld32	r9,r9
-    f4e8:	00 10 01 00 	add	r8,0
-    f4ec:	20 70 03 e2 	movepc	rret,8
-    f4f0:	14 30 c2 c8 	br	10 <compare>,#al
-    f4f4:	00 10 00 41 	add	r2,1
-    f4f8:	0d 46 c5 14 	wl16	r8,0x3634
-    f4fc:	0d 60 01 03 	wh16	r8,0x3
-    f500:	10 40 01 08 	ld32	r8,r8
-    f504:	0d 47 11 3c 	wl16	r9,0x389c
-    f508:	0d 60 01 23 	wh16	r9,0x3
-    f50c:	10 40 01 29 	ld32	r9,r9
-    f510:	00 10 01 01 	add	r8,1
-    f514:	20 70 03 e2 	movepc	rret,8
-    f518:	14 30 c2 be 	br	10 <compare>,#al
-    f51c:	00 10 00 41 	add	r2,1
-    f520:	0d 46 c5 18 	wl16	r8,0x3638
-    f524:	0d 60 01 03 	wh16	r8,0x3
-    f528:	10 40 01 08 	ld32	r8,r8
-    f52c:	0d 47 15 20 	wl16	r9,0x38a0
-    f530:	0d 60 01 23 	wh16	r9,0x3
-    f534:	10 40 01 29 	ld32	r9,r9
-    f538:	00 10 01 02 	add	r8,2
-    f53c:	20 70 03 e2 	movepc	rret,8
-    f540:	14 30 c2 b4 	br	10 <compare>,#al
-    f544:	00 10 00 41 	add	r2,1
-    f548:	0d 46 c5 1c 	wl16	r8,0x363c
-    f54c:	0d 60 01 03 	wh16	r8,0x3
-    f550:	10 40 01 08 	ld32	r8,r8
-    f554:	0d 47 15 24 	wl16	r9,0x38a4
-    f558:	0d 60 01 23 	wh16	r9,0x3
-    f55c:	10 40 01 29 	ld32	r9,r9
-    f560:	00 10 01 04 	add	r8,4
-    f564:	20 70 03 e2 	movepc	rret,8
-    f568:	14 30 c2 aa 	br	10 <compare>,#al
-    f56c:	00 10 00 41 	add	r2,1
-    f570:	0d 46 c9 00 	wl16	r8,0x3640
-    f574:	0d 60 01 03 	wh16	r8,0x3
-    f578:	10 40 01 08 	ld32	r8,r8
-    f57c:	0d 47 15 28 	wl16	r9,0x38a8
-    f580:	0d 60 01 23 	wh16	r9,0x3
-    f584:	10 40 01 29 	ld32	r9,r9
-    f588:	00 10 01 08 	add	r8,8
-    f58c:	20 70 03 e2 	movepc	rret,8
-    f590:	14 30 c2 a0 	br	10 <compare>,#al
-    f594:	00 10 00 41 	add	r2,1
-    f598:	0d 46 c9 04 	wl16	r8,0x3644
-    f59c:	0d 60 01 03 	wh16	r8,0x3
-    f5a0:	10 40 01 08 	ld32	r8,r8
-    f5a4:	0d 47 15 2c 	wl16	r9,0x38ac
-    f5a8:	0d 60 01 23 	wh16	r9,0x3
-    f5ac:	10 40 01 29 	ld32	r9,r9
-    f5b0:	00 10 01 10 	add	r8,16
-    f5b4:	20 70 03 e2 	movepc	rret,8
-    f5b8:	14 30 c2 96 	br	10 <compare>,#al
-    f5bc:	00 10 00 41 	add	r2,1
-    f5c0:	0d 46 c9 08 	wl16	r8,0x3648
-    f5c4:	0d 60 01 03 	wh16	r8,0x3
-    f5c8:	10 40 01 08 	ld32	r8,r8
-    f5cc:	0d 47 15 30 	wl16	r9,0x38b0
-    f5d0:	0d 60 01 23 	wh16	r9,0x3
-    f5d4:	10 40 01 29 	ld32	r9,r9
-    f5d8:	00 10 05 00 	add	r8,32
-    f5dc:	20 70 03 e2 	movepc	rret,8
-    f5e0:	14 30 c2 8c 	br	10 <compare>,#al
-    f5e4:	00 10 00 41 	add	r2,1
-    f5e8:	0d 46 c9 0c 	wl16	r8,0x364c
-    f5ec:	0d 60 01 03 	wh16	r8,0x3
-    f5f0:	10 40 01 08 	ld32	r8,r8
-    f5f4:	0d 47 15 34 	wl16	r9,0x38b4
-    f5f8:	0d 60 01 23 	wh16	r9,0x3
-    f5fc:	10 40 01 29 	ld32	r9,r9
-    f600:	00 10 09 00 	add	r8,64
-    f604:	20 70 03 e2 	movepc	rret,8
-    f608:	14 30 c2 82 	br	10 <compare>,#al
-    f60c:	00 10 00 41 	add	r2,1
-    f610:	0d 46 c9 10 	wl16	r8,0x3650
-    f614:	0d 60 01 03 	wh16	r8,0x3
-    f618:	10 40 01 08 	ld32	r8,r8
-    f61c:	0d 47 15 38 	wl16	r9,0x38b8
-    f620:	0d 60 01 23 	wh16	r9,0x3
-    f624:	10 40 01 29 	ld32	r9,r9
-    f628:	00 10 11 00 	add	r8,128
-    f62c:	20 70 03 e2 	movepc	rret,8
-    f630:	14 30 c2 78 	br	10 <compare>,#al
-    f634:	00 10 00 41 	add	r2,1
-    f638:	0d 46 c9 14 	wl16	r8,0x3654
-    f63c:	0d 60 01 03 	wh16	r8,0x3
-    f640:	10 40 01 08 	ld32	r8,r8
-    f644:	0d 47 15 3c 	wl16	r9,0x38bc
-    f648:	0d 60 01 23 	wh16	r9,0x3
-    f64c:	10 40 01 29 	ld32	r9,r9
-    f650:	00 10 21 00 	add	r8,256
-    f654:	20 70 03 e2 	movepc	rret,8
-    f658:	14 30 c2 6e 	br	10 <compare>,#al
-    f65c:	00 10 00 41 	add	r2,1
-    f660:	0d 46 c9 18 	wl16	r8,0x3658
-    f664:	0d 60 01 03 	wh16	r8,0x3
-    f668:	10 40 01 08 	ld32	r8,r8
-    f66c:	0d 47 19 20 	wl16	r9,0x38c0
-    f670:	0d 60 01 23 	wh16	r9,0x3
-    f674:	10 40 01 29 	ld32	r9,r9
-    f678:	00 10 41 00 	add	r8,512
-    f67c:	20 70 03 e2 	movepc	rret,8
-    f680:	14 30 c2 64 	br	10 <compare>,#al
-    f684:	00 10 00 41 	add	r2,1
-    f688:	0d 46 c9 1c 	wl16	r8,0x365c
-    f68c:	0d 60 01 03 	wh16	r8,0x3
-    f690:	10 40 01 08 	ld32	r8,r8
-    f694:	0d 47 19 24 	wl16	r9,0x38c4
-    f698:	0d 60 01 23 	wh16	r9,0x3
-    f69c:	10 40 01 29 	ld32	r9,r9
-    f6a0:	00 10 81 00 	add	r8,-1024
-    f6a4:	20 70 03 e2 	movepc	rret,8
-    f6a8:	14 30 c2 5a 	br	10 <compare>,#al
-    f6ac:	00 10 00 41 	add	r2,1
-    f6b0:	0d 46 cd 00 	wl16	r8,0x3660
-    f6b4:	0d 60 01 03 	wh16	r8,0x3
-    f6b8:	10 40 01 08 	ld32	r8,r8
-    f6bc:	0d 47 19 28 	wl16	r9,0x38c8
-    f6c0:	0d 60 01 23 	wh16	r9,0x3
-    f6c4:	10 40 01 29 	ld32	r9,r9
-    f6c8:	00 10 01 00 	add	r8,0
-    f6cc:	20 70 03 e2 	movepc	rret,8
-    f6d0:	14 30 c2 50 	br	10 <compare>,#al
-    f6d4:	00 10 00 41 	add	r2,1
-    f6d8:	0d 46 cd 04 	wl16	r8,0x3664
-    f6dc:	0d 60 01 03 	wh16	r8,0x3
-    f6e0:	10 40 01 08 	ld32	r8,r8
-    f6e4:	0d 47 19 2c 	wl16	r9,0x38cc
-    f6e8:	0d 60 01 23 	wh16	r9,0x3
-    f6ec:	10 40 01 29 	ld32	r9,r9
-    f6f0:	00 10 01 01 	add	r8,1
-    f6f4:	20 70 03 e2 	movepc	rret,8
-    f6f8:	14 30 c2 46 	br	10 <compare>,#al
-    f6fc:	00 10 00 41 	add	r2,1
-    f700:	0d 46 cd 08 	wl16	r8,0x3668
-    f704:	0d 60 01 03 	wh16	r8,0x3
-    f708:	10 40 01 08 	ld32	r8,r8
-    f70c:	0d 47 19 30 	wl16	r9,0x38d0
-    f710:	0d 60 01 23 	wh16	r9,0x3
-    f714:	10 40 01 29 	ld32	r9,r9
-    f718:	00 10 01 02 	add	r8,2
-    f71c:	20 70 03 e2 	movepc	rret,8
-    f720:	14 30 c2 3c 	br	10 <compare>,#al
-    f724:	00 10 00 41 	add	r2,1
-    f728:	0d 46 cd 0c 	wl16	r8,0x366c
-    f72c:	0d 60 01 03 	wh16	r8,0x3
-    f730:	10 40 01 08 	ld32	r8,r8
-    f734:	0d 47 19 34 	wl16	r9,0x38d4
-    f738:	0d 60 01 23 	wh16	r9,0x3
-    f73c:	10 40 01 29 	ld32	r9,r9
-    f740:	00 10 01 04 	add	r8,4
-    f744:	20 70 03 e2 	movepc	rret,8
-    f748:	14 30 c2 32 	br	10 <compare>,#al
-    f74c:	00 10 00 41 	add	r2,1
-    f750:	0d 46 cd 10 	wl16	r8,0x3670
-    f754:	0d 60 01 03 	wh16	r8,0x3
-    f758:	10 40 01 08 	ld32	r8,r8
-    f75c:	0d 47 19 38 	wl16	r9,0x38d8
-    f760:	0d 60 01 23 	wh16	r9,0x3
-    f764:	10 40 01 29 	ld32	r9,r9
-    f768:	00 10 01 08 	add	r8,8
-    f76c:	20 70 03 e2 	movepc	rret,8
-    f770:	14 30 c2 28 	br	10 <compare>,#al
-    f774:	00 10 00 41 	add	r2,1
-    f778:	0d 46 cd 14 	wl16	r8,0x3674
-    f77c:	0d 60 01 03 	wh16	r8,0x3
-    f780:	10 40 01 08 	ld32	r8,r8
-    f784:	0d 47 19 3c 	wl16	r9,0x38dc
-    f788:	0d 60 01 23 	wh16	r9,0x3
-    f78c:	10 40 01 29 	ld32	r9,r9
-    f790:	00 10 01 10 	add	r8,16
-    f794:	20 70 03 e2 	movepc	rret,8
-    f798:	14 30 c2 1e 	br	10 <compare>,#al
-    f79c:	00 10 00 41 	add	r2,1
-    f7a0:	0d 46 cd 18 	wl16	r8,0x3678
-    f7a4:	0d 60 01 03 	wh16	r8,0x3
-    f7a8:	10 40 01 08 	ld32	r8,r8
-    f7ac:	0d 47 1d 20 	wl16	r9,0x38e0
-    f7b0:	0d 60 01 23 	wh16	r9,0x3
-    f7b4:	10 40 01 29 	ld32	r9,r9
-    f7b8:	00 10 05 00 	add	r8,32
-    f7bc:	20 70 03 e2 	movepc	rret,8
-    f7c0:	14 30 c2 14 	br	10 <compare>,#al
-    f7c4:	00 10 00 41 	add	r2,1
-    f7c8:	0d 46 cd 1c 	wl16	r8,0x367c
-    f7cc:	0d 60 01 03 	wh16	r8,0x3
-    f7d0:	10 40 01 08 	ld32	r8,r8
-    f7d4:	0d 47 1d 24 	wl16	r9,0x38e4
-    f7d8:	0d 60 01 23 	wh16	r9,0x3
-    f7dc:	10 40 01 29 	ld32	r9,r9
-    f7e0:	00 10 09 00 	add	r8,64
-    f7e4:	20 70 03 e2 	movepc	rret,8
-    f7e8:	14 30 c2 0a 	br	10 <compare>,#al
-    f7ec:	00 10 00 41 	add	r2,1
-    f7f0:	0d 46 d1 00 	wl16	r8,0x3680
-    f7f4:	0d 60 01 03 	wh16	r8,0x3
-    f7f8:	10 40 01 08 	ld32	r8,r8
-    f7fc:	0d 47 1d 28 	wl16	r9,0x38e8
-    f800:	0d 60 01 23 	wh16	r9,0x3
-    f804:	10 40 01 29 	ld32	r9,r9
-    f808:	00 10 11 00 	add	r8,128
-    f80c:	20 70 03 e2 	movepc	rret,8
-    f810:	14 30 c2 00 	br	10 <compare>,#al
-    f814:	00 10 00 41 	add	r2,1
-    f818:	0d 46 d1 04 	wl16	r8,0x3684
-    f81c:	0d 60 01 03 	wh16	r8,0x3
-    f820:	10 40 01 08 	ld32	r8,r8
-    f824:	0d 47 1d 2c 	wl16	r9,0x38ec
-    f828:	0d 60 01 23 	wh16	r9,0x3
-    f82c:	10 40 01 29 	ld32	r9,r9
-    f830:	00 10 21 00 	add	r8,256
-    f834:	20 70 03 e2 	movepc	rret,8
-    f838:	14 30 c1 f6 	br	10 <compare>,#al
-    f83c:	00 10 00 41 	add	r2,1
-    f840:	0d 46 d1 08 	wl16	r8,0x3688
-    f844:	0d 60 01 03 	wh16	r8,0x3
-    f848:	10 40 01 08 	ld32	r8,r8
-    f84c:	0d 47 1d 30 	wl16	r9,0x38f0
-    f850:	0d 60 01 23 	wh16	r9,0x3
-    f854:	10 40 01 29 	ld32	r9,r9
-    f858:	00 10 41 00 	add	r8,512
-    f85c:	20 70 03 e2 	movepc	rret,8
-    f860:	14 30 c1 ec 	br	10 <compare>,#al
-    f864:	00 10 00 41 	add	r2,1
-    f868:	0d 46 d1 0c 	wl16	r8,0x368c
-    f86c:	0d 60 01 03 	wh16	r8,0x3
-    f870:	10 40 01 08 	ld32	r8,r8
-    f874:	0d 47 1d 34 	wl16	r9,0x38f4
-    f878:	0d 60 01 23 	wh16	r9,0x3
-    f87c:	10 40 01 29 	ld32	r9,r9
-    f880:	00 10 81 00 	add	r8,-1024
-    f884:	20 70 03 e2 	movepc	rret,8
-    f888:	14 30 c1 e2 	br	10 <compare>,#al
-    f88c:	00 10 00 41 	add	r2,1
-    f890:	0d 46 d1 10 	wl16	r8,0x3690
-    f894:	0d 60 01 03 	wh16	r8,0x3
-    f898:	10 40 01 08 	ld32	r8,r8
-    f89c:	0d 47 1d 38 	wl16	r9,0x38f8
-    f8a0:	0d 60 01 23 	wh16	r9,0x3
-    f8a4:	10 40 01 29 	ld32	r9,r9
-    f8a8:	00 10 01 00 	add	r8,0
-    f8ac:	20 70 03 e2 	movepc	rret,8
-    f8b0:	14 30 c1 d8 	br	10 <compare>,#al
-    f8b4:	00 10 00 41 	add	r2,1
-    f8b8:	0d 46 d1 14 	wl16	r8,0x3694
-    f8bc:	0d 60 01 03 	wh16	r8,0x3
-    f8c0:	10 40 01 08 	ld32	r8,r8
-    f8c4:	0d 47 1d 3c 	wl16	r9,0x38fc
-    f8c8:	0d 60 01 23 	wh16	r9,0x3
-    f8cc:	10 40 01 29 	ld32	r9,r9
-    f8d0:	00 10 01 01 	add	r8,1
-    f8d4:	20 70 03 e2 	movepc	rret,8
-    f8d8:	14 30 c1 ce 	br	10 <compare>,#al
-    f8dc:	00 10 00 41 	add	r2,1
-    f8e0:	0d 46 d1 18 	wl16	r8,0x3698
-    f8e4:	0d 60 01 03 	wh16	r8,0x3
-    f8e8:	10 40 01 08 	ld32	r8,r8
-    f8ec:	0d 47 21 20 	wl16	r9,0x3900
-    f8f0:	0d 60 01 23 	wh16	r9,0x3
-    f8f4:	10 40 01 29 	ld32	r9,r9
-    f8f8:	00 10 01 02 	add	r8,2
-    f8fc:	20 70 03 e2 	movepc	rret,8
-    f900:	14 30 c1 c4 	br	10 <compare>,#al
-    f904:	00 10 00 41 	add	r2,1
-    f908:	0d 46 d1 1c 	wl16	r8,0x369c
-    f90c:	0d 60 01 03 	wh16	r8,0x3
-    f910:	10 40 01 08 	ld32	r8,r8
-    f914:	0d 47 21 24 	wl16	r9,0x3904
-    f918:	0d 60 01 23 	wh16	r9,0x3
-    f91c:	10 40 01 29 	ld32	r9,r9
-    f920:	00 10 01 04 	add	r8,4
-    f924:	20 70 03 e2 	movepc	rret,8
-    f928:	14 30 c1 ba 	br	10 <compare>,#al
-    f92c:	00 10 00 41 	add	r2,1
-    f930:	0d 46 d5 00 	wl16	r8,0x36a0
-    f934:	0d 60 01 03 	wh16	r8,0x3
-    f938:	10 40 01 08 	ld32	r8,r8
-    f93c:	0d 47 21 28 	wl16	r9,0x3908
-    f940:	0d 60 01 23 	wh16	r9,0x3
-    f944:	10 40 01 29 	ld32	r9,r9
-    f948:	00 10 01 08 	add	r8,8
-    f94c:	20 70 03 e2 	movepc	rret,8
-    f950:	14 30 c1 b0 	br	10 <compare>,#al
-    f954:	00 10 00 41 	add	r2,1
-    f958:	0d 46 d5 04 	wl16	r8,0x36a4
-    f95c:	0d 60 01 03 	wh16	r8,0x3
-    f960:	10 40 01 08 	ld32	r8,r8
-    f964:	0d 47 21 2c 	wl16	r9,0x390c
-    f968:	0d 60 01 23 	wh16	r9,0x3
-    f96c:	10 40 01 29 	ld32	r9,r9
-    f970:	00 10 01 10 	add	r8,16
-    f974:	20 70 03 e2 	movepc	rret,8
-    f978:	14 30 c1 a6 	br	10 <compare>,#al
-    f97c:	00 10 00 41 	add	r2,1
-    f980:	0d 46 d5 08 	wl16	r8,0x36a8
-    f984:	0d 60 01 03 	wh16	r8,0x3
-    f988:	10 40 01 08 	ld32	r8,r8
-    f98c:	0d 47 21 30 	wl16	r9,0x3910
-    f990:	0d 60 01 23 	wh16	r9,0x3
-    f994:	10 40 01 29 	ld32	r9,r9
-    f998:	00 10 05 00 	add	r8,32
-    f99c:	20 70 03 e2 	movepc	rret,8
-    f9a0:	14 30 c1 9c 	br	10 <compare>,#al
-    f9a4:	00 10 00 41 	add	r2,1
-    f9a8:	0d 46 d5 0c 	wl16	r8,0x36ac
-    f9ac:	0d 60 01 03 	wh16	r8,0x3
-    f9b0:	10 40 01 08 	ld32	r8,r8
-    f9b4:	0d 47 21 34 	wl16	r9,0x3914
-    f9b8:	0d 60 01 23 	wh16	r9,0x3
-    f9bc:	10 40 01 29 	ld32	r9,r9
-    f9c0:	00 10 09 00 	add	r8,64
-    f9c4:	20 70 03 e2 	movepc	rret,8
-    f9c8:	14 30 c1 92 	br	10 <compare>,#al
-    f9cc:	00 10 00 41 	add	r2,1
-    f9d0:	0d 46 d5 10 	wl16	r8,0x36b0
-    f9d4:	0d 60 01 03 	wh16	r8,0x3
-    f9d8:	10 40 01 08 	ld32	r8,r8
-    f9dc:	0d 47 21 38 	wl16	r9,0x3918
-    f9e0:	0d 60 01 23 	wh16	r9,0x3
-    f9e4:	10 40 01 29 	ld32	r9,r9
-    f9e8:	00 10 11 00 	add	r8,128
-    f9ec:	20 70 03 e2 	movepc	rret,8
-    f9f0:	14 30 c1 88 	br	10 <compare>,#al
-    f9f4:	00 10 00 41 	add	r2,1
-    f9f8:	0d 46 d5 14 	wl16	r8,0x36b4
-    f9fc:	0d 60 01 03 	wh16	r8,0x3
-    fa00:	10 40 01 08 	ld32	r8,r8
-    fa04:	0d 47 21 3c 	wl16	r9,0x391c
-    fa08:	0d 60 01 23 	wh16	r9,0x3
-    fa0c:	10 40 01 29 	ld32	r9,r9
-    fa10:	00 10 21 00 	add	r8,256
-    fa14:	20 70 03 e2 	movepc	rret,8
-    fa18:	14 30 c1 7e 	br	10 <compare>,#al
-    fa1c:	00 10 00 41 	add	r2,1
-    fa20:	0d 46 d5 18 	wl16	r8,0x36b8
-    fa24:	0d 60 01 03 	wh16	r8,0x3
-    fa28:	10 40 01 08 	ld32	r8,r8
-    fa2c:	0d 47 25 20 	wl16	r9,0x3920
-    fa30:	0d 60 01 23 	wh16	r9,0x3
-    fa34:	10 40 01 29 	ld32	r9,r9
-    fa38:	00 10 41 00 	add	r8,512
-    fa3c:	20 70 03 e2 	movepc	rret,8
-    fa40:	14 30 c1 74 	br	10 <compare>,#al
-    fa44:	00 10 00 41 	add	r2,1
-    fa48:	0d 46 d5 1c 	wl16	r8,0x36bc
-    fa4c:	0d 60 01 03 	wh16	r8,0x3
-    fa50:	10 40 01 08 	ld32	r8,r8
-    fa54:	0d 47 25 24 	wl16	r9,0x3924
-    fa58:	0d 60 01 23 	wh16	r9,0x3
-    fa5c:	10 40 01 29 	ld32	r9,r9
-    fa60:	00 10 81 00 	add	r8,-1024
-    fa64:	20 70 03 e2 	movepc	rret,8
-    fa68:	14 30 c1 6a 	br	10 <compare>,#al
-    fa6c:	00 10 00 41 	add	r2,1
-    fa70:	0d 46 d9 00 	wl16	r8,0x36c0
-    fa74:	0d 60 01 03 	wh16	r8,0x3
-    fa78:	10 40 01 08 	ld32	r8,r8
-    fa7c:	0d 47 25 28 	wl16	r9,0x3928
-    fa80:	0d 60 01 23 	wh16	r9,0x3
-    fa84:	10 40 01 29 	ld32	r9,r9
-    fa88:	00 10 01 03 	add	r8,3
-    fa8c:	20 70 03 e2 	movepc	rret,8
-    fa90:	14 30 c1 60 	br	10 <compare>,#al
-    fa94:	00 10 00 41 	add	r2,1
-    fa98:	0d 46 d9 04 	wl16	r8,0x36c4
-    fa9c:	0d 60 01 03 	wh16	r8,0x3
-    faa0:	10 40 01 08 	ld32	r8,r8
-    faa4:	0d 47 25 2c 	wl16	r9,0x392c
-    faa8:	0d 60 01 23 	wh16	r9,0x3
-    faac:	10 40 01 29 	ld32	r9,r9
-    fab0:	00 10 01 07 	add	r8,7
-    fab4:	20 70 03 e2 	movepc	rret,8
-    fab8:	14 30 c1 56 	br	10 <compare>,#al
-    fabc:	00 10 00 41 	add	r2,1
-    fac0:	0d 46 d9 08 	wl16	r8,0x36c8
-    fac4:	0d 60 01 03 	wh16	r8,0x3
-    fac8:	10 40 01 08 	ld32	r8,r8
-    facc:	0d 47 25 30 	wl16	r9,0x3930
-    fad0:	0d 60 01 23 	wh16	r9,0x3
-    fad4:	10 40 01 29 	ld32	r9,r9
-    fad8:	00 10 01 0f 	add	r8,15
-    fadc:	20 70 03 e2 	movepc	rret,8
-    fae0:	14 30 c1 4c 	br	10 <compare>,#al
-    fae4:	00 10 00 41 	add	r2,1
-    fae8:	0d 46 d9 0c 	wl16	r8,0x36cc
-    faec:	0d 60 01 03 	wh16	r8,0x3
-    faf0:	10 40 01 08 	ld32	r8,r8
-    faf4:	0d 47 25 34 	wl16	r9,0x3934
-    faf8:	0d 60 01 23 	wh16	r9,0x3
-    fafc:	10 40 01 29 	ld32	r9,r9
-    fb00:	00 10 01 1f 	add	r8,31
-    fb04:	20 70 03 e2 	movepc	rret,8
-    fb08:	14 30 c1 42 	br	10 <compare>,#al
-    fb0c:	00 10 00 41 	add	r2,1
-    fb10:	0d 46 d9 10 	wl16	r8,0x36d0
-    fb14:	0d 60 01 03 	wh16	r8,0x3
-    fb18:	10 40 01 08 	ld32	r8,r8
-    fb1c:	0d 47 25 38 	wl16	r9,0x3938
-    fb20:	0d 60 01 23 	wh16	r9,0x3
-    fb24:	10 40 01 29 	ld32	r9,r9
-    fb28:	00 10 05 1f 	add	r8,63
-    fb2c:	20 70 03 e2 	movepc	rret,8
-    fb30:	14 30 c1 38 	br	10 <compare>,#al
-    fb34:	00 10 00 41 	add	r2,1
-    fb38:	0d 46 d9 14 	wl16	r8,0x36d4
-    fb3c:	0d 60 01 03 	wh16	r8,0x3
-    fb40:	10 40 01 08 	ld32	r8,r8
-    fb44:	0d 47 25 3c 	wl16	r9,0x393c
-    fb48:	0d 60 01 23 	wh16	r9,0x3
-    fb4c:	10 40 01 29 	ld32	r9,r9
-    fb50:	00 10 0d 1f 	add	r8,127
-    fb54:	20 70 03 e2 	movepc	rret,8
-    fb58:	14 30 c1 2e 	br	10 <compare>,#al
-    fb5c:	00 10 00 41 	add	r2,1
-    fb60:	0d 46 d9 18 	wl16	r8,0x36d8
-    fb64:	0d 60 01 03 	wh16	r8,0x3
-    fb68:	10 40 01 08 	ld32	r8,r8
-    fb6c:	0d 47 29 20 	wl16	r9,0x3940
-    fb70:	0d 60 01 23 	wh16	r9,0x3
-    fb74:	10 40 01 29 	ld32	r9,r9
-    fb78:	00 10 1d 1f 	add	r8,255
-    fb7c:	20 70 03 e2 	movepc	rret,8
-    fb80:	14 30 c1 24 	br	10 <compare>,#al
-    fb84:	00 10 00 41 	add	r2,1
-    fb88:	0d 46 d9 1c 	wl16	r8,0x36dc
-    fb8c:	0d 60 01 03 	wh16	r8,0x3
-    fb90:	10 40 01 08 	ld32	r8,r8
-    fb94:	0d 47 29 24 	wl16	r9,0x3944
-    fb98:	0d 60 01 23 	wh16	r9,0x3
-    fb9c:	10 40 01 29 	ld32	r9,r9
-    fba0:	00 10 3d 1f 	add	r8,511
-    fba4:	20 70 03 e2 	movepc	rret,8
-    fba8:	14 30 c1 1a 	br	10 <compare>,#al
-    fbac:	00 10 00 41 	add	r2,1
-    fbb0:	0d 46 dd 00 	wl16	r8,0x36e0
-    fbb4:	0d 60 01 03 	wh16	r8,0x3
-    fbb8:	10 40 01 08 	ld32	r8,r8
-    fbbc:	0d 47 29 28 	wl16	r9,0x3948
-    fbc0:	0d 60 01 23 	wh16	r9,0x3
-    fbc4:	10 40 01 29 	ld32	r9,r9
-    fbc8:	00 10 7d 1f 	add	r8,1023
-    fbcc:	20 70 03 e2 	movepc	rret,8
-    fbd0:	14 30 c1 10 	br	10 <compare>,#al
-    fbd4:	00 10 00 41 	add	r2,1
-    fbd8:	0d 46 dd 04 	wl16	r8,0x36e4
-    fbdc:	0d 60 01 03 	wh16	r8,0x3
-    fbe0:	10 40 01 08 	ld32	r8,r8
-    fbe4:	0d 47 29 2c 	wl16	r9,0x394c
-    fbe8:	0d 60 01 23 	wh16	r9,0x3
-    fbec:	10 40 01 29 	ld32	r9,r9
-    fbf0:	00 10 fd 1f 	add	r8,-1
-    fbf4:	20 70 03 e2 	movepc	rret,8
-    fbf8:	14 30 c1 06 	br	10 <compare>,#al
-    fbfc:	00 10 00 41 	add	r2,1
-    fc00:	14 30 c1 16 	br	58 <finish>,#al
+    e3f0:	0c 40 00 42 	xor	r2,r2
+    e3f4:	0d 46 91 00 	wl16	r8,0x3480
+    e3f8:	0d 60 01 03 	wh16	r8,0x3
+    e3fc:	10 40 01 08 	ld32	r8,r8
+    e400:	0d 46 dd 28 	wl16	r9,0x36e8
+    e404:	0d 60 01 23 	wh16	r9,0x3
+    e408:	10 40 01 29 	ld32	r9,r9
+    e40c:	00 10 01 00 	add	r8,0
+    e410:	20 70 03 e2 	movepc	rret,8
+    e414:	14 30 c6 ff 	br	10 <compare>,#al
+    e418:	00 10 00 41 	add	r2,1
+    e41c:	0d 46 91 04 	wl16	r8,0x3484
+    e420:	0d 60 01 03 	wh16	r8,0x3
+    e424:	10 40 01 08 	ld32	r8,r8
+    e428:	0d 46 dd 2c 	wl16	r9,0x36ec
+    e42c:	0d 60 01 23 	wh16	r9,0x3
+    e430:	10 40 01 29 	ld32	r9,r9
+    e434:	00 10 01 01 	add	r8,1
+    e438:	20 70 03 e2 	movepc	rret,8
+    e43c:	14 30 c6 f5 	br	10 <compare>,#al
+    e440:	00 10 00 41 	add	r2,1
+    e444:	0d 46 91 08 	wl16	r8,0x3488
+    e448:	0d 60 01 03 	wh16	r8,0x3
+    e44c:	10 40 01 08 	ld32	r8,r8
+    e450:	0d 46 dd 30 	wl16	r9,0x36f0
+    e454:	0d 60 01 23 	wh16	r9,0x3
+    e458:	10 40 01 29 	ld32	r9,r9
+    e45c:	00 10 01 02 	add	r8,2
+    e460:	20 70 03 e2 	movepc	rret,8
+    e464:	14 30 c6 eb 	br	10 <compare>,#al
+    e468:	00 10 00 41 	add	r2,1
+    e46c:	0d 46 91 0c 	wl16	r8,0x348c
+    e470:	0d 60 01 03 	wh16	r8,0x3
+    e474:	10 40 01 08 	ld32	r8,r8
+    e478:	0d 46 dd 34 	wl16	r9,0x36f4
+    e47c:	0d 60 01 23 	wh16	r9,0x3
+    e480:	10 40 01 29 	ld32	r9,r9
+    e484:	00 10 01 04 	add	r8,4
+    e488:	20 70 03 e2 	movepc	rret,8
+    e48c:	14 30 c6 e1 	br	10 <compare>,#al
+    e490:	00 10 00 41 	add	r2,1
+    e494:	0d 46 91 10 	wl16	r8,0x3490
+    e498:	0d 60 01 03 	wh16	r8,0x3
+    e49c:	10 40 01 08 	ld32	r8,r8
+    e4a0:	0d 46 dd 38 	wl16	r9,0x36f8
+    e4a4:	0d 60 01 23 	wh16	r9,0x3
+    e4a8:	10 40 01 29 	ld32	r9,r9
+    e4ac:	00 10 01 08 	add	r8,8
+    e4b0:	20 70 03 e2 	movepc	rret,8
+    e4b4:	14 30 c6 d7 	br	10 <compare>,#al
+    e4b8:	00 10 00 41 	add	r2,1
+    e4bc:	0d 46 91 14 	wl16	r8,0x3494
+    e4c0:	0d 60 01 03 	wh16	r8,0x3
+    e4c4:	10 40 01 08 	ld32	r8,r8
+    e4c8:	0d 46 dd 3c 	wl16	r9,0x36fc
+    e4cc:	0d 60 01 23 	wh16	r9,0x3
+    e4d0:	10 40 01 29 	ld32	r9,r9
+    e4d4:	00 10 01 10 	add	r8,16
+    e4d8:	20 70 03 e2 	movepc	rret,8
+    e4dc:	14 30 c6 cd 	br	10 <compare>,#al
+    e4e0:	00 10 00 41 	add	r2,1
+    e4e4:	0d 46 91 18 	wl16	r8,0x3498
+    e4e8:	0d 60 01 03 	wh16	r8,0x3
+    e4ec:	10 40 01 08 	ld32	r8,r8
+    e4f0:	0d 46 e1 20 	wl16	r9,0x3700
+    e4f4:	0d 60 01 23 	wh16	r9,0x3
+    e4f8:	10 40 01 29 	ld32	r9,r9
+    e4fc:	00 10 05 00 	add	r8,32
+    e500:	20 70 03 e2 	movepc	rret,8
+    e504:	14 30 c6 c3 	br	10 <compare>,#al
+    e508:	00 10 00 41 	add	r2,1
+    e50c:	0d 46 91 1c 	wl16	r8,0x349c
+    e510:	0d 60 01 03 	wh16	r8,0x3
+    e514:	10 40 01 08 	ld32	r8,r8
+    e518:	0d 46 e1 24 	wl16	r9,0x3704
+    e51c:	0d 60 01 23 	wh16	r9,0x3
+    e520:	10 40 01 29 	ld32	r9,r9
+    e524:	00 10 09 00 	add	r8,64
+    e528:	20 70 03 e2 	movepc	rret,8
+    e52c:	14 30 c6 b9 	br	10 <compare>,#al
+    e530:	00 10 00 41 	add	r2,1
+    e534:	0d 46 95 00 	wl16	r8,0x34a0
+    e538:	0d 60 01 03 	wh16	r8,0x3
+    e53c:	10 40 01 08 	ld32	r8,r8
+    e540:	0d 46 e1 28 	wl16	r9,0x3708
+    e544:	0d 60 01 23 	wh16	r9,0x3
+    e548:	10 40 01 29 	ld32	r9,r9
+    e54c:	00 10 11 00 	add	r8,128
+    e550:	20 70 03 e2 	movepc	rret,8
+    e554:	14 30 c6 af 	br	10 <compare>,#al
+    e558:	00 10 00 41 	add	r2,1
+    e55c:	0d 46 95 04 	wl16	r8,0x34a4
+    e560:	0d 60 01 03 	wh16	r8,0x3
+    e564:	10 40 01 08 	ld32	r8,r8
+    e568:	0d 46 e1 2c 	wl16	r9,0x370c
+    e56c:	0d 60 01 23 	wh16	r9,0x3
+    e570:	10 40 01 29 	ld32	r9,r9
+    e574:	00 10 21 00 	add	r8,256
+    e578:	20 70 03 e2 	movepc	rret,8
+    e57c:	14 30 c6 a5 	br	10 <compare>,#al
+    e580:	00 10 00 41 	add	r2,1
+    e584:	0d 46 95 08 	wl16	r8,0x34a8
+    e588:	0d 60 01 03 	wh16	r8,0x3
+    e58c:	10 40 01 08 	ld32	r8,r8
+    e590:	0d 46 e1 30 	wl16	r9,0x3710
+    e594:	0d 60 01 23 	wh16	r9,0x3
+    e598:	10 40 01 29 	ld32	r9,r9
+    e59c:	00 10 41 00 	add	r8,512
+    e5a0:	20 70 03 e2 	movepc	rret,8
+    e5a4:	14 30 c6 9b 	br	10 <compare>,#al
+    e5a8:	00 10 00 41 	add	r2,1
+    e5ac:	0d 46 95 0c 	wl16	r8,0x34ac
+    e5b0:	0d 60 01 03 	wh16	r8,0x3
+    e5b4:	10 40 01 08 	ld32	r8,r8
+    e5b8:	0d 46 e1 34 	wl16	r9,0x3714
+    e5bc:	0d 60 01 23 	wh16	r9,0x3
+    e5c0:	10 40 01 29 	ld32	r9,r9
+    e5c4:	00 10 81 00 	add	r8,-1024
+    e5c8:	20 70 03 e2 	movepc	rret,8
+    e5cc:	14 30 c6 91 	br	10 <compare>,#al
+    e5d0:	00 10 00 41 	add	r2,1
+    e5d4:	0d 46 95 10 	wl16	r8,0x34b0
+    e5d8:	0d 60 01 03 	wh16	r8,0x3
+    e5dc:	10 40 01 08 	ld32	r8,r8
+    e5e0:	0d 46 e1 38 	wl16	r9,0x3718
+    e5e4:	0d 60 01 23 	wh16	r9,0x3
+    e5e8:	10 40 01 29 	ld32	r9,r9
+    e5ec:	00 10 01 00 	add	r8,0
+    e5f0:	20 70 03 e2 	movepc	rret,8
+    e5f4:	14 30 c6 87 	br	10 <compare>,#al
+    e5f8:	00 10 00 41 	add	r2,1
+    e5fc:	0d 46 95 14 	wl16	r8,0x34b4
+    e600:	0d 60 01 03 	wh16	r8,0x3
+    e604:	10 40 01 08 	ld32	r8,r8
+    e608:	0d 46 e1 3c 	wl16	r9,0x371c
+    e60c:	0d 60 01 23 	wh16	r9,0x3
+    e610:	10 40 01 29 	ld32	r9,r9
+    e614:	00 10 01 01 	add	r8,1
+    e618:	20 70 03 e2 	movepc	rret,8
+    e61c:	14 30 c6 7d 	br	10 <compare>,#al
+    e620:	00 10 00 41 	add	r2,1
+    e624:	0d 46 95 18 	wl16	r8,0x34b8
+    e628:	0d 60 01 03 	wh16	r8,0x3
+    e62c:	10 40 01 08 	ld32	r8,r8
+    e630:	0d 46 e5 20 	wl16	r9,0x3720
+    e634:	0d 60 01 23 	wh16	r9,0x3
+    e638:	10 40 01 29 	ld32	r9,r9
+    e63c:	00 10 01 02 	add	r8,2
+    e640:	20 70 03 e2 	movepc	rret,8
+    e644:	14 30 c6 73 	br	10 <compare>,#al
+    e648:	00 10 00 41 	add	r2,1
+    e64c:	0d 46 95 1c 	wl16	r8,0x34bc
+    e650:	0d 60 01 03 	wh16	r8,0x3
+    e654:	10 40 01 08 	ld32	r8,r8
+    e658:	0d 46 e5 24 	wl16	r9,0x3724
+    e65c:	0d 60 01 23 	wh16	r9,0x3
+    e660:	10 40 01 29 	ld32	r9,r9
+    e664:	00 10 01 04 	add	r8,4
+    e668:	20 70 03 e2 	movepc	rret,8
+    e66c:	14 30 c6 69 	br	10 <compare>,#al
+    e670:	00 10 00 41 	add	r2,1
+    e674:	0d 46 99 00 	wl16	r8,0x34c0
+    e678:	0d 60 01 03 	wh16	r8,0x3
+    e67c:	10 40 01 08 	ld32	r8,r8
+    e680:	0d 46 e5 28 	wl16	r9,0x3728
+    e684:	0d 60 01 23 	wh16	r9,0x3
+    e688:	10 40 01 29 	ld32	r9,r9
+    e68c:	00 10 01 08 	add	r8,8
+    e690:	20 70 03 e2 	movepc	rret,8
+    e694:	14 30 c6 5f 	br	10 <compare>,#al
+    e698:	00 10 00 41 	add	r2,1
+    e69c:	0d 46 99 04 	wl16	r8,0x34c4
+    e6a0:	0d 60 01 03 	wh16	r8,0x3
+    e6a4:	10 40 01 08 	ld32	r8,r8
+    e6a8:	0d 46 e5 2c 	wl16	r9,0x372c
+    e6ac:	0d 60 01 23 	wh16	r9,0x3
+    e6b0:	10 40 01 29 	ld32	r9,r9
+    e6b4:	00 10 01 10 	add	r8,16
+    e6b8:	20 70 03 e2 	movepc	rret,8
+    e6bc:	14 30 c6 55 	br	10 <compare>,#al
+    e6c0:	00 10 00 41 	add	r2,1
+    e6c4:	0d 46 99 08 	wl16	r8,0x34c8
+    e6c8:	0d 60 01 03 	wh16	r8,0x3
+    e6cc:	10 40 01 08 	ld32	r8,r8
+    e6d0:	0d 46 e5 30 	wl16	r9,0x3730
+    e6d4:	0d 60 01 23 	wh16	r9,0x3
+    e6d8:	10 40 01 29 	ld32	r9,r9
+    e6dc:	00 10 05 00 	add	r8,32
+    e6e0:	20 70 03 e2 	movepc	rret,8
+    e6e4:	14 30 c6 4b 	br	10 <compare>,#al
+    e6e8:	00 10 00 41 	add	r2,1
+    e6ec:	0d 46 99 0c 	wl16	r8,0x34cc
+    e6f0:	0d 60 01 03 	wh16	r8,0x3
+    e6f4:	10 40 01 08 	ld32	r8,r8
+    e6f8:	0d 46 e5 34 	wl16	r9,0x3734
+    e6fc:	0d 60 01 23 	wh16	r9,0x3
+    e700:	10 40 01 29 	ld32	r9,r9
+    e704:	00 10 09 00 	add	r8,64
+    e708:	20 70 03 e2 	movepc	rret,8
+    e70c:	14 30 c6 41 	br	10 <compare>,#al
+    e710:	00 10 00 41 	add	r2,1
+    e714:	0d 46 99 10 	wl16	r8,0x34d0
+    e718:	0d 60 01 03 	wh16	r8,0x3
+    e71c:	10 40 01 08 	ld32	r8,r8
+    e720:	0d 46 e5 38 	wl16	r9,0x3738
+    e724:	0d 60 01 23 	wh16	r9,0x3
+    e728:	10 40 01 29 	ld32	r9,r9
+    e72c:	00 10 11 00 	add	r8,128
+    e730:	20 70 03 e2 	movepc	rret,8
+    e734:	14 30 c6 37 	br	10 <compare>,#al
+    e738:	00 10 00 41 	add	r2,1
+    e73c:	0d 46 99 14 	wl16	r8,0x34d4
+    e740:	0d 60 01 03 	wh16	r8,0x3
+    e744:	10 40 01 08 	ld32	r8,r8
+    e748:	0d 46 e5 3c 	wl16	r9,0x373c
+    e74c:	0d 60 01 23 	wh16	r9,0x3
+    e750:	10 40 01 29 	ld32	r9,r9
+    e754:	00 10 21 00 	add	r8,256
+    e758:	20 70 03 e2 	movepc	rret,8
+    e75c:	14 30 c6 2d 	br	10 <compare>,#al
+    e760:	00 10 00 41 	add	r2,1
+    e764:	0d 46 99 18 	wl16	r8,0x34d8
+    e768:	0d 60 01 03 	wh16	r8,0x3
+    e76c:	10 40 01 08 	ld32	r8,r8
+    e770:	0d 46 e9 20 	wl16	r9,0x3740
+    e774:	0d 60 01 23 	wh16	r9,0x3
+    e778:	10 40 01 29 	ld32	r9,r9
+    e77c:	00 10 41 00 	add	r8,512
+    e780:	20 70 03 e2 	movepc	rret,8
+    e784:	14 30 c6 23 	br	10 <compare>,#al
+    e788:	00 10 00 41 	add	r2,1
+    e78c:	0d 46 99 1c 	wl16	r8,0x34dc
+    e790:	0d 60 01 03 	wh16	r8,0x3
+    e794:	10 40 01 08 	ld32	r8,r8
+    e798:	0d 46 e9 24 	wl16	r9,0x3744
+    e79c:	0d 60 01 23 	wh16	r9,0x3
+    e7a0:	10 40 01 29 	ld32	r9,r9
+    e7a4:	00 10 81 00 	add	r8,-1024
+    e7a8:	20 70 03 e2 	movepc	rret,8
+    e7ac:	14 30 c6 19 	br	10 <compare>,#al
+    e7b0:	00 10 00 41 	add	r2,1
+    e7b4:	0d 46 9d 00 	wl16	r8,0x34e0
+    e7b8:	0d 60 01 03 	wh16	r8,0x3
+    e7bc:	10 40 01 08 	ld32	r8,r8
+    e7c0:	0d 46 e9 28 	wl16	r9,0x3748
+    e7c4:	0d 60 01 23 	wh16	r9,0x3
+    e7c8:	10 40 01 29 	ld32	r9,r9
+    e7cc:	00 10 01 00 	add	r8,0
+    e7d0:	20 70 03 e2 	movepc	rret,8
+    e7d4:	14 30 c6 0f 	br	10 <compare>,#al
+    e7d8:	00 10 00 41 	add	r2,1
+    e7dc:	0d 46 9d 04 	wl16	r8,0x34e4
+    e7e0:	0d 60 01 03 	wh16	r8,0x3
+    e7e4:	10 40 01 08 	ld32	r8,r8
+    e7e8:	0d 46 e9 2c 	wl16	r9,0x374c
+    e7ec:	0d 60 01 23 	wh16	r9,0x3
+    e7f0:	10 40 01 29 	ld32	r9,r9
+    e7f4:	00 10 01 01 	add	r8,1
+    e7f8:	20 70 03 e2 	movepc	rret,8
+    e7fc:	14 30 c6 05 	br	10 <compare>,#al
+    e800:	00 10 00 41 	add	r2,1
+    e804:	0d 46 9d 08 	wl16	r8,0x34e8
+    e808:	0d 60 01 03 	wh16	r8,0x3
+    e80c:	10 40 01 08 	ld32	r8,r8
+    e810:	0d 46 e9 30 	wl16	r9,0x3750
+    e814:	0d 60 01 23 	wh16	r9,0x3
+    e818:	10 40 01 29 	ld32	r9,r9
+    e81c:	00 10 01 02 	add	r8,2
+    e820:	20 70 03 e2 	movepc	rret,8
+    e824:	14 30 c5 fb 	br	10 <compare>,#al
+    e828:	00 10 00 41 	add	r2,1
+    e82c:	0d 46 9d 0c 	wl16	r8,0x34ec
+    e830:	0d 60 01 03 	wh16	r8,0x3
+    e834:	10 40 01 08 	ld32	r8,r8
+    e838:	0d 46 e9 34 	wl16	r9,0x3754
+    e83c:	0d 60 01 23 	wh16	r9,0x3
+    e840:	10 40 01 29 	ld32	r9,r9
+    e844:	00 10 01 04 	add	r8,4
+    e848:	20 70 03 e2 	movepc	rret,8
+    e84c:	14 30 c5 f1 	br	10 <compare>,#al
+    e850:	00 10 00 41 	add	r2,1
+    e854:	0d 46 9d 10 	wl16	r8,0x34f0
+    e858:	0d 60 01 03 	wh16	r8,0x3
+    e85c:	10 40 01 08 	ld32	r8,r8
+    e860:	0d 46 e9 38 	wl16	r9,0x3758
+    e864:	0d 60 01 23 	wh16	r9,0x3
+    e868:	10 40 01 29 	ld32	r9,r9
+    e86c:	00 10 01 08 	add	r8,8
+    e870:	20 70 03 e2 	movepc	rret,8
+    e874:	14 30 c5 e7 	br	10 <compare>,#al
+    e878:	00 10 00 41 	add	r2,1
+    e87c:	0d 46 9d 14 	wl16	r8,0x34f4
+    e880:	0d 60 01 03 	wh16	r8,0x3
+    e884:	10 40 01 08 	ld32	r8,r8
+    e888:	0d 46 e9 3c 	wl16	r9,0x375c
+    e88c:	0d 60 01 23 	wh16	r9,0x3
+    e890:	10 40 01 29 	ld32	r9,r9
+    e894:	00 10 01 10 	add	r8,16
+    e898:	20 70 03 e2 	movepc	rret,8
+    e89c:	14 30 c5 dd 	br	10 <compare>,#al
+    e8a0:	00 10 00 41 	add	r2,1
+    e8a4:	0d 46 9d 18 	wl16	r8,0x34f8
+    e8a8:	0d 60 01 03 	wh16	r8,0x3
+    e8ac:	10 40 01 08 	ld32	r8,r8
+    e8b0:	0d 46 ed 20 	wl16	r9,0x3760
+    e8b4:	0d 60 01 23 	wh16	r9,0x3
+    e8b8:	10 40 01 29 	ld32	r9,r9
+    e8bc:	00 10 05 00 	add	r8,32
+    e8c0:	20 70 03 e2 	movepc	rret,8
+    e8c4:	14 30 c5 d3 	br	10 <compare>,#al
+    e8c8:	00 10 00 41 	add	r2,1
+    e8cc:	0d 46 9d 1c 	wl16	r8,0x34fc
+    e8d0:	0d 60 01 03 	wh16	r8,0x3
+    e8d4:	10 40 01 08 	ld32	r8,r8
+    e8d8:	0d 46 ed 24 	wl16	r9,0x3764
+    e8dc:	0d 60 01 23 	wh16	r9,0x3
+    e8e0:	10 40 01 29 	ld32	r9,r9
+    e8e4:	00 10 09 00 	add	r8,64
+    e8e8:	20 70 03 e2 	movepc	rret,8
+    e8ec:	14 30 c5 c9 	br	10 <compare>,#al
+    e8f0:	00 10 00 41 	add	r2,1
+    e8f4:	0d 46 a1 00 	wl16	r8,0x3500
+    e8f8:	0d 60 01 03 	wh16	r8,0x3
+    e8fc:	10 40 01 08 	ld32	r8,r8
+    e900:	0d 46 ed 28 	wl16	r9,0x3768
+    e904:	0d 60 01 23 	wh16	r9,0x3
+    e908:	10 40 01 29 	ld32	r9,r9
+    e90c:	00 10 11 00 	add	r8,128
+    e910:	20 70 03 e2 	movepc	rret,8
+    e914:	14 30 c5 bf 	br	10 <compare>,#al
+    e918:	00 10 00 41 	add	r2,1
+    e91c:	0d 46 a1 04 	wl16	r8,0x3504
+    e920:	0d 60 01 03 	wh16	r8,0x3
+    e924:	10 40 01 08 	ld32	r8,r8
+    e928:	0d 46 ed 2c 	wl16	r9,0x376c
+    e92c:	0d 60 01 23 	wh16	r9,0x3
+    e930:	10 40 01 29 	ld32	r9,r9
+    e934:	00 10 21 00 	add	r8,256
+    e938:	20 70 03 e2 	movepc	rret,8
+    e93c:	14 30 c5 b5 	br	10 <compare>,#al
+    e940:	00 10 00 41 	add	r2,1
+    e944:	0d 46 a1 08 	wl16	r8,0x3508
+    e948:	0d 60 01 03 	wh16	r8,0x3
+    e94c:	10 40 01 08 	ld32	r8,r8
+    e950:	0d 46 ed 30 	wl16	r9,0x3770
+    e954:	0d 60 01 23 	wh16	r9,0x3
+    e958:	10 40 01 29 	ld32	r9,r9
+    e95c:	00 10 41 00 	add	r8,512
+    e960:	20 70 03 e2 	movepc	rret,8
+    e964:	14 30 c5 ab 	br	10 <compare>,#al
+    e968:	00 10 00 41 	add	r2,1
+    e96c:	0d 46 a1 0c 	wl16	r8,0x350c
+    e970:	0d 60 01 03 	wh16	r8,0x3
+    e974:	10 40 01 08 	ld32	r8,r8
+    e978:	0d 46 ed 34 	wl16	r9,0x3774
+    e97c:	0d 60 01 23 	wh16	r9,0x3
+    e980:	10 40 01 29 	ld32	r9,r9
+    e984:	00 10 81 00 	add	r8,-1024
+    e988:	20 70 03 e2 	movepc	rret,8
+    e98c:	14 30 c5 a1 	br	10 <compare>,#al
+    e990:	00 10 00 41 	add	r2,1
+    e994:	0d 46 a1 10 	wl16	r8,0x3510
+    e998:	0d 60 01 03 	wh16	r8,0x3
+    e99c:	10 40 01 08 	ld32	r8,r8
+    e9a0:	0d 46 ed 38 	wl16	r9,0x3778
+    e9a4:	0d 60 01 23 	wh16	r9,0x3
+    e9a8:	10 40 01 29 	ld32	r9,r9
+    e9ac:	00 10 01 00 	add	r8,0
+    e9b0:	20 70 03 e2 	movepc	rret,8
+    e9b4:	14 30 c5 97 	br	10 <compare>,#al
+    e9b8:	00 10 00 41 	add	r2,1
+    e9bc:	0d 46 a1 14 	wl16	r8,0x3514
+    e9c0:	0d 60 01 03 	wh16	r8,0x3
+    e9c4:	10 40 01 08 	ld32	r8,r8
+    e9c8:	0d 46 ed 3c 	wl16	r9,0x377c
+    e9cc:	0d 60 01 23 	wh16	r9,0x3
+    e9d0:	10 40 01 29 	ld32	r9,r9
+    e9d4:	00 10 01 01 	add	r8,1
+    e9d8:	20 70 03 e2 	movepc	rret,8
+    e9dc:	14 30 c5 8d 	br	10 <compare>,#al
+    e9e0:	00 10 00 41 	add	r2,1
+    e9e4:	0d 46 a1 18 	wl16	r8,0x3518
+    e9e8:	0d 60 01 03 	wh16	r8,0x3
+    e9ec:	10 40 01 08 	ld32	r8,r8
+    e9f0:	0d 46 f1 20 	wl16	r9,0x3780
+    e9f4:	0d 60 01 23 	wh16	r9,0x3
+    e9f8:	10 40 01 29 	ld32	r9,r9
+    e9fc:	00 10 01 02 	add	r8,2
+    ea00:	20 70 03 e2 	movepc	rret,8
+    ea04:	14 30 c5 83 	br	10 <compare>,#al
+    ea08:	00 10 00 41 	add	r2,1
+    ea0c:	0d 46 a1 1c 	wl16	r8,0x351c
+    ea10:	0d 60 01 03 	wh16	r8,0x3
+    ea14:	10 40 01 08 	ld32	r8,r8
+    ea18:	0d 46 f1 24 	wl16	r9,0x3784
+    ea1c:	0d 60 01 23 	wh16	r9,0x3
+    ea20:	10 40 01 29 	ld32	r9,r9
+    ea24:	00 10 01 04 	add	r8,4
+    ea28:	20 70 03 e2 	movepc	rret,8
+    ea2c:	14 30 c5 79 	br	10 <compare>,#al
+    ea30:	00 10 00 41 	add	r2,1
+    ea34:	0d 46 a5 00 	wl16	r8,0x3520
+    ea38:	0d 60 01 03 	wh16	r8,0x3
+    ea3c:	10 40 01 08 	ld32	r8,r8
+    ea40:	0d 46 f1 28 	wl16	r9,0x3788
+    ea44:	0d 60 01 23 	wh16	r9,0x3
+    ea48:	10 40 01 29 	ld32	r9,r9
+    ea4c:	00 10 01 08 	add	r8,8
+    ea50:	20 70 03 e2 	movepc	rret,8
+    ea54:	14 30 c5 6f 	br	10 <compare>,#al
+    ea58:	00 10 00 41 	add	r2,1
+    ea5c:	0d 46 a5 04 	wl16	r8,0x3524
+    ea60:	0d 60 01 03 	wh16	r8,0x3
+    ea64:	10 40 01 08 	ld32	r8,r8
+    ea68:	0d 46 f1 2c 	wl16	r9,0x378c
+    ea6c:	0d 60 01 23 	wh16	r9,0x3
+    ea70:	10 40 01 29 	ld32	r9,r9
+    ea74:	00 10 01 10 	add	r8,16
+    ea78:	20 70 03 e2 	movepc	rret,8
+    ea7c:	14 30 c5 65 	br	10 <compare>,#al
+    ea80:	00 10 00 41 	add	r2,1
+    ea84:	0d 46 a5 08 	wl16	r8,0x3528
+    ea88:	0d 60 01 03 	wh16	r8,0x3
+    ea8c:	10 40 01 08 	ld32	r8,r8
+    ea90:	0d 46 f1 30 	wl16	r9,0x3790
+    ea94:	0d 60 01 23 	wh16	r9,0x3
+    ea98:	10 40 01 29 	ld32	r9,r9
+    ea9c:	00 10 05 00 	add	r8,32
+    eaa0:	20 70 03 e2 	movepc	rret,8
+    eaa4:	14 30 c5 5b 	br	10 <compare>,#al
+    eaa8:	00 10 00 41 	add	r2,1
+    eaac:	0d 46 a5 0c 	wl16	r8,0x352c
+    eab0:	0d 60 01 03 	wh16	r8,0x3
+    eab4:	10 40 01 08 	ld32	r8,r8
+    eab8:	0d 46 f1 34 	wl16	r9,0x3794
+    eabc:	0d 60 01 23 	wh16	r9,0x3
+    eac0:	10 40 01 29 	ld32	r9,r9
+    eac4:	00 10 09 00 	add	r8,64
+    eac8:	20 70 03 e2 	movepc	rret,8
+    eacc:	14 30 c5 51 	br	10 <compare>,#al
+    ead0:	00 10 00 41 	add	r2,1
+    ead4:	0d 46 a5 10 	wl16	r8,0x3530
+    ead8:	0d 60 01 03 	wh16	r8,0x3
+    eadc:	10 40 01 08 	ld32	r8,r8
+    eae0:	0d 46 f1 38 	wl16	r9,0x3798
+    eae4:	0d 60 01 23 	wh16	r9,0x3
+    eae8:	10 40 01 29 	ld32	r9,r9
+    eaec:	00 10 11 00 	add	r8,128
+    eaf0:	20 70 03 e2 	movepc	rret,8
+    eaf4:	14 30 c5 47 	br	10 <compare>,#al
+    eaf8:	00 10 00 41 	add	r2,1
+    eafc:	0d 46 a5 14 	wl16	r8,0x3534
+    eb00:	0d 60 01 03 	wh16	r8,0x3
+    eb04:	10 40 01 08 	ld32	r8,r8
+    eb08:	0d 46 f1 3c 	wl16	r9,0x379c
+    eb0c:	0d 60 01 23 	wh16	r9,0x3
+    eb10:	10 40 01 29 	ld32	r9,r9
+    eb14:	00 10 21 00 	add	r8,256
+    eb18:	20 70 03 e2 	movepc	rret,8
+    eb1c:	14 30 c5 3d 	br	10 <compare>,#al
+    eb20:	00 10 00 41 	add	r2,1
+    eb24:	0d 46 a5 18 	wl16	r8,0x3538
+    eb28:	0d 60 01 03 	wh16	r8,0x3
+    eb2c:	10 40 01 08 	ld32	r8,r8
+    eb30:	0d 46 f5 20 	wl16	r9,0x37a0
+    eb34:	0d 60 01 23 	wh16	r9,0x3
+    eb38:	10 40 01 29 	ld32	r9,r9
+    eb3c:	00 10 41 00 	add	r8,512
+    eb40:	20 70 03 e2 	movepc	rret,8
+    eb44:	14 30 c5 33 	br	10 <compare>,#al
+    eb48:	00 10 00 41 	add	r2,1
+    eb4c:	0d 46 a5 1c 	wl16	r8,0x353c
+    eb50:	0d 60 01 03 	wh16	r8,0x3
+    eb54:	10 40 01 08 	ld32	r8,r8
+    eb58:	0d 46 f5 24 	wl16	r9,0x37a4
+    eb5c:	0d 60 01 23 	wh16	r9,0x3
+    eb60:	10 40 01 29 	ld32	r9,r9
+    eb64:	00 10 81 00 	add	r8,-1024
+    eb68:	20 70 03 e2 	movepc	rret,8
+    eb6c:	14 30 c5 29 	br	10 <compare>,#al
+    eb70:	00 10 00 41 	add	r2,1
+    eb74:	0d 46 a9 00 	wl16	r8,0x3540
+    eb78:	0d 60 01 03 	wh16	r8,0x3
+    eb7c:	10 40 01 08 	ld32	r8,r8
+    eb80:	0d 46 f5 28 	wl16	r9,0x37a8
+    eb84:	0d 60 01 23 	wh16	r9,0x3
+    eb88:	10 40 01 29 	ld32	r9,r9
+    eb8c:	00 10 01 00 	add	r8,0
+    eb90:	20 70 03 e2 	movepc	rret,8
+    eb94:	14 30 c5 1f 	br	10 <compare>,#al
+    eb98:	00 10 00 41 	add	r2,1
+    eb9c:	0d 46 a9 04 	wl16	r8,0x3544
+    eba0:	0d 60 01 03 	wh16	r8,0x3
+    eba4:	10 40 01 08 	ld32	r8,r8
+    eba8:	0d 46 f5 2c 	wl16	r9,0x37ac
+    ebac:	0d 60 01 23 	wh16	r9,0x3
+    ebb0:	10 40 01 29 	ld32	r9,r9
+    ebb4:	00 10 01 01 	add	r8,1
+    ebb8:	20 70 03 e2 	movepc	rret,8
+    ebbc:	14 30 c5 15 	br	10 <compare>,#al
+    ebc0:	00 10 00 41 	add	r2,1
+    ebc4:	0d 46 a9 08 	wl16	r8,0x3548
+    ebc8:	0d 60 01 03 	wh16	r8,0x3
+    ebcc:	10 40 01 08 	ld32	r8,r8
+    ebd0:	0d 46 f5 30 	wl16	r9,0x37b0
+    ebd4:	0d 60 01 23 	wh16	r9,0x3
+    ebd8:	10 40 01 29 	ld32	r9,r9
+    ebdc:	00 10 01 02 	add	r8,2
+    ebe0:	20 70 03 e2 	movepc	rret,8
+    ebe4:	14 30 c5 0b 	br	10 <compare>,#al
+    ebe8:	00 10 00 41 	add	r2,1
+    ebec:	0d 46 a9 0c 	wl16	r8,0x354c
+    ebf0:	0d 60 01 03 	wh16	r8,0x3
+    ebf4:	10 40 01 08 	ld32	r8,r8
+    ebf8:	0d 46 f5 34 	wl16	r9,0x37b4
+    ebfc:	0d 60 01 23 	wh16	r9,0x3
+    ec00:	10 40 01 29 	ld32	r9,r9
+    ec04:	00 10 01 04 	add	r8,4
+    ec08:	20 70 03 e2 	movepc	rret,8
+    ec0c:	14 30 c5 01 	br	10 <compare>,#al
+    ec10:	00 10 00 41 	add	r2,1
+    ec14:	0d 46 a9 10 	wl16	r8,0x3550
+    ec18:	0d 60 01 03 	wh16	r8,0x3
+    ec1c:	10 40 01 08 	ld32	r8,r8
+    ec20:	0d 46 f5 38 	wl16	r9,0x37b8
+    ec24:	0d 60 01 23 	wh16	r9,0x3
+    ec28:	10 40 01 29 	ld32	r9,r9
+    ec2c:	00 10 01 08 	add	r8,8
+    ec30:	20 70 03 e2 	movepc	rret,8
+    ec34:	14 30 c4 f7 	br	10 <compare>,#al
+    ec38:	00 10 00 41 	add	r2,1
+    ec3c:	0d 46 a9 14 	wl16	r8,0x3554
+    ec40:	0d 60 01 03 	wh16	r8,0x3
+    ec44:	10 40 01 08 	ld32	r8,r8
+    ec48:	0d 46 f5 3c 	wl16	r9,0x37bc
+    ec4c:	0d 60 01 23 	wh16	r9,0x3
+    ec50:	10 40 01 29 	ld32	r9,r9
+    ec54:	00 10 01 10 	add	r8,16
+    ec58:	20 70 03 e2 	movepc	rret,8
+    ec5c:	14 30 c4 ed 	br	10 <compare>,#al
+    ec60:	00 10 00 41 	add	r2,1
+    ec64:	0d 46 a9 18 	wl16	r8,0x3558
+    ec68:	0d 60 01 03 	wh16	r8,0x3
+    ec6c:	10 40 01 08 	ld32	r8,r8
+    ec70:	0d 46 f9 20 	wl16	r9,0x37c0
+    ec74:	0d 60 01 23 	wh16	r9,0x3
+    ec78:	10 40 01 29 	ld32	r9,r9
+    ec7c:	00 10 05 00 	add	r8,32
+    ec80:	20 70 03 e2 	movepc	rret,8
+    ec84:	14 30 c4 e3 	br	10 <compare>,#al
+    ec88:	00 10 00 41 	add	r2,1
+    ec8c:	0d 46 a9 1c 	wl16	r8,0x355c
+    ec90:	0d 60 01 03 	wh16	r8,0x3
+    ec94:	10 40 01 08 	ld32	r8,r8
+    ec98:	0d 46 f9 24 	wl16	r9,0x37c4
+    ec9c:	0d 60 01 23 	wh16	r9,0x3
+    eca0:	10 40 01 29 	ld32	r9,r9
+    eca4:	00 10 09 00 	add	r8,64
+    eca8:	20 70 03 e2 	movepc	rret,8
+    ecac:	14 30 c4 d9 	br	10 <compare>,#al
+    ecb0:	00 10 00 41 	add	r2,1
+    ecb4:	0d 46 ad 00 	wl16	r8,0x3560
+    ecb8:	0d 60 01 03 	wh16	r8,0x3
+    ecbc:	10 40 01 08 	ld32	r8,r8
+    ecc0:	0d 46 f9 28 	wl16	r9,0x37c8
+    ecc4:	0d 60 01 23 	wh16	r9,0x3
+    ecc8:	10 40 01 29 	ld32	r9,r9
+    eccc:	00 10 11 00 	add	r8,128
+    ecd0:	20 70 03 e2 	movepc	rret,8
+    ecd4:	14 30 c4 cf 	br	10 <compare>,#al
+    ecd8:	00 10 00 41 	add	r2,1
+    ecdc:	0d 46 ad 04 	wl16	r8,0x3564
+    ece0:	0d 60 01 03 	wh16	r8,0x3
+    ece4:	10 40 01 08 	ld32	r8,r8
+    ece8:	0d 46 f9 2c 	wl16	r9,0x37cc
+    ecec:	0d 60 01 23 	wh16	r9,0x3
+    ecf0:	10 40 01 29 	ld32	r9,r9
+    ecf4:	00 10 21 00 	add	r8,256
+    ecf8:	20 70 03 e2 	movepc	rret,8
+    ecfc:	14 30 c4 c5 	br	10 <compare>,#al
+    ed00:	00 10 00 41 	add	r2,1
+    ed04:	0d 46 ad 08 	wl16	r8,0x3568
+    ed08:	0d 60 01 03 	wh16	r8,0x3
+    ed0c:	10 40 01 08 	ld32	r8,r8
+    ed10:	0d 46 f9 30 	wl16	r9,0x37d0
+    ed14:	0d 60 01 23 	wh16	r9,0x3
+    ed18:	10 40 01 29 	ld32	r9,r9
+    ed1c:	00 10 41 00 	add	r8,512
+    ed20:	20 70 03 e2 	movepc	rret,8
+    ed24:	14 30 c4 bb 	br	10 <compare>,#al
+    ed28:	00 10 00 41 	add	r2,1
+    ed2c:	0d 46 ad 0c 	wl16	r8,0x356c
+    ed30:	0d 60 01 03 	wh16	r8,0x3
+    ed34:	10 40 01 08 	ld32	r8,r8
+    ed38:	0d 46 f9 34 	wl16	r9,0x37d4
+    ed3c:	0d 60 01 23 	wh16	r9,0x3
+    ed40:	10 40 01 29 	ld32	r9,r9
+    ed44:	00 10 81 00 	add	r8,-1024
+    ed48:	20 70 03 e2 	movepc	rret,8
+    ed4c:	14 30 c4 b1 	br	10 <compare>,#al
+    ed50:	00 10 00 41 	add	r2,1
+    ed54:	0d 46 ad 10 	wl16	r8,0x3570
+    ed58:	0d 60 01 03 	wh16	r8,0x3
+    ed5c:	10 40 01 08 	ld32	r8,r8
+    ed60:	0d 46 f9 38 	wl16	r9,0x37d8
+    ed64:	0d 60 01 23 	wh16	r9,0x3
+    ed68:	10 40 01 29 	ld32	r9,r9
+    ed6c:	00 10 01 00 	add	r8,0
+    ed70:	20 70 03 e2 	movepc	rret,8
+    ed74:	14 30 c4 a7 	br	10 <compare>,#al
+    ed78:	00 10 00 41 	add	r2,1
+    ed7c:	0d 46 ad 14 	wl16	r8,0x3574
+    ed80:	0d 60 01 03 	wh16	r8,0x3
+    ed84:	10 40 01 08 	ld32	r8,r8
+    ed88:	0d 46 f9 3c 	wl16	r9,0x37dc
+    ed8c:	0d 60 01 23 	wh16	r9,0x3
+    ed90:	10 40 01 29 	ld32	r9,r9
+    ed94:	00 10 01 01 	add	r8,1
+    ed98:	20 70 03 e2 	movepc	rret,8
+    ed9c:	14 30 c4 9d 	br	10 <compare>,#al
+    eda0:	00 10 00 41 	add	r2,1
+    eda4:	0d 46 ad 18 	wl16	r8,0x3578
+    eda8:	0d 60 01 03 	wh16	r8,0x3
+    edac:	10 40 01 08 	ld32	r8,r8
+    edb0:	0d 46 fd 20 	wl16	r9,0x37e0
+    edb4:	0d 60 01 23 	wh16	r9,0x3
+    edb8:	10 40 01 29 	ld32	r9,r9
+    edbc:	00 10 01 02 	add	r8,2
+    edc0:	20 70 03 e2 	movepc	rret,8
+    edc4:	14 30 c4 93 	br	10 <compare>,#al
+    edc8:	00 10 00 41 	add	r2,1
+    edcc:	0d 46 ad 1c 	wl16	r8,0x357c
+    edd0:	0d 60 01 03 	wh16	r8,0x3
+    edd4:	10 40 01 08 	ld32	r8,r8
+    edd8:	0d 46 fd 24 	wl16	r9,0x37e4
+    eddc:	0d 60 01 23 	wh16	r9,0x3
+    ede0:	10 40 01 29 	ld32	r9,r9
+    ede4:	00 10 01 04 	add	r8,4
+    ede8:	20 70 03 e2 	movepc	rret,8
+    edec:	14 30 c4 89 	br	10 <compare>,#al
+    edf0:	00 10 00 41 	add	r2,1
+    edf4:	0d 46 b1 00 	wl16	r8,0x3580
+    edf8:	0d 60 01 03 	wh16	r8,0x3
+    edfc:	10 40 01 08 	ld32	r8,r8
+    ee00:	0d 46 fd 28 	wl16	r9,0x37e8
+    ee04:	0d 60 01 23 	wh16	r9,0x3
+    ee08:	10 40 01 29 	ld32	r9,r9
+    ee0c:	00 10 01 08 	add	r8,8
+    ee10:	20 70 03 e2 	movepc	rret,8
+    ee14:	14 30 c4 7f 	br	10 <compare>,#al
+    ee18:	00 10 00 41 	add	r2,1
+    ee1c:	0d 46 b1 04 	wl16	r8,0x3584
+    ee20:	0d 60 01 03 	wh16	r8,0x3
+    ee24:	10 40 01 08 	ld32	r8,r8
+    ee28:	0d 46 fd 2c 	wl16	r9,0x37ec
+    ee2c:	0d 60 01 23 	wh16	r9,0x3
+    ee30:	10 40 01 29 	ld32	r9,r9
+    ee34:	00 10 01 10 	add	r8,16
+    ee38:	20 70 03 e2 	movepc	rret,8
+    ee3c:	14 30 c4 75 	br	10 <compare>,#al
+    ee40:	00 10 00 41 	add	r2,1
+    ee44:	0d 46 b1 08 	wl16	r8,0x3588
+    ee48:	0d 60 01 03 	wh16	r8,0x3
+    ee4c:	10 40 01 08 	ld32	r8,r8
+    ee50:	0d 46 fd 30 	wl16	r9,0x37f0
+    ee54:	0d 60 01 23 	wh16	r9,0x3
+    ee58:	10 40 01 29 	ld32	r9,r9
+    ee5c:	00 10 05 00 	add	r8,32
+    ee60:	20 70 03 e2 	movepc	rret,8
+    ee64:	14 30 c4 6b 	br	10 <compare>,#al
+    ee68:	00 10 00 41 	add	r2,1
+    ee6c:	0d 46 b1 0c 	wl16	r8,0x358c
+    ee70:	0d 60 01 03 	wh16	r8,0x3
+    ee74:	10 40 01 08 	ld32	r8,r8
+    ee78:	0d 46 fd 34 	wl16	r9,0x37f4
+    ee7c:	0d 60 01 23 	wh16	r9,0x3
+    ee80:	10 40 01 29 	ld32	r9,r9
+    ee84:	00 10 09 00 	add	r8,64
+    ee88:	20 70 03 e2 	movepc	rret,8
+    ee8c:	14 30 c4 61 	br	10 <compare>,#al
+    ee90:	00 10 00 41 	add	r2,1
+    ee94:	0d 46 b1 10 	wl16	r8,0x3590
+    ee98:	0d 60 01 03 	wh16	r8,0x3
+    ee9c:	10 40 01 08 	ld32	r8,r8
+    eea0:	0d 46 fd 38 	wl16	r9,0x37f8
+    eea4:	0d 60 01 23 	wh16	r9,0x3
+    eea8:	10 40 01 29 	ld32	r9,r9
+    eeac:	00 10 11 00 	add	r8,128
+    eeb0:	20 70 03 e2 	movepc	rret,8
+    eeb4:	14 30 c4 57 	br	10 <compare>,#al
+    eeb8:	00 10 00 41 	add	r2,1
+    eebc:	0d 46 b1 14 	wl16	r8,0x3594
+    eec0:	0d 60 01 03 	wh16	r8,0x3
+    eec4:	10 40 01 08 	ld32	r8,r8
+    eec8:	0d 46 fd 3c 	wl16	r9,0x37fc
+    eecc:	0d 60 01 23 	wh16	r9,0x3
+    eed0:	10 40 01 29 	ld32	r9,r9
+    eed4:	00 10 21 00 	add	r8,256
+    eed8:	20 70 03 e2 	movepc	rret,8
+    eedc:	14 30 c4 4d 	br	10 <compare>,#al
+    eee0:	00 10 00 41 	add	r2,1
+    eee4:	0d 46 b1 18 	wl16	r8,0x3598
+    eee8:	0d 60 01 03 	wh16	r8,0x3
+    eeec:	10 40 01 08 	ld32	r8,r8
+    eef0:	0d 47 01 20 	wl16	r9,0x3800
+    eef4:	0d 60 01 23 	wh16	r9,0x3
+    eef8:	10 40 01 29 	ld32	r9,r9
+    eefc:	00 10 41 00 	add	r8,512
+    ef00:	20 70 03 e2 	movepc	rret,8
+    ef04:	14 30 c4 43 	br	10 <compare>,#al
+    ef08:	00 10 00 41 	add	r2,1
+    ef0c:	0d 46 b1 1c 	wl16	r8,0x359c
+    ef10:	0d 60 01 03 	wh16	r8,0x3
+    ef14:	10 40 01 08 	ld32	r8,r8
+    ef18:	0d 47 01 24 	wl16	r9,0x3804
+    ef1c:	0d 60 01 23 	wh16	r9,0x3
+    ef20:	10 40 01 29 	ld32	r9,r9
+    ef24:	00 10 81 00 	add	r8,-1024
+    ef28:	20 70 03 e2 	movepc	rret,8
+    ef2c:	14 30 c4 39 	br	10 <compare>,#al
+    ef30:	00 10 00 41 	add	r2,1
+    ef34:	0d 46 b5 00 	wl16	r8,0x35a0
+    ef38:	0d 60 01 03 	wh16	r8,0x3
+    ef3c:	10 40 01 08 	ld32	r8,r8
+    ef40:	0d 47 01 28 	wl16	r9,0x3808
+    ef44:	0d 60 01 23 	wh16	r9,0x3
+    ef48:	10 40 01 29 	ld32	r9,r9
+    ef4c:	00 10 01 00 	add	r8,0
+    ef50:	20 70 03 e2 	movepc	rret,8
+    ef54:	14 30 c4 2f 	br	10 <compare>,#al
+    ef58:	00 10 00 41 	add	r2,1
+    ef5c:	0d 46 b5 04 	wl16	r8,0x35a4
+    ef60:	0d 60 01 03 	wh16	r8,0x3
+    ef64:	10 40 01 08 	ld32	r8,r8
+    ef68:	0d 47 01 2c 	wl16	r9,0x380c
+    ef6c:	0d 60 01 23 	wh16	r9,0x3
+    ef70:	10 40 01 29 	ld32	r9,r9
+    ef74:	00 10 01 01 	add	r8,1
+    ef78:	20 70 03 e2 	movepc	rret,8
+    ef7c:	14 30 c4 25 	br	10 <compare>,#al
+    ef80:	00 10 00 41 	add	r2,1
+    ef84:	0d 46 b5 08 	wl16	r8,0x35a8
+    ef88:	0d 60 01 03 	wh16	r8,0x3
+    ef8c:	10 40 01 08 	ld32	r8,r8
+    ef90:	0d 47 01 30 	wl16	r9,0x3810
+    ef94:	0d 60 01 23 	wh16	r9,0x3
+    ef98:	10 40 01 29 	ld32	r9,r9
+    ef9c:	00 10 01 02 	add	r8,2
+    efa0:	20 70 03 e2 	movepc	rret,8
+    efa4:	14 30 c4 1b 	br	10 <compare>,#al
+    efa8:	00 10 00 41 	add	r2,1
+    efac:	0d 46 b5 0c 	wl16	r8,0x35ac
+    efb0:	0d 60 01 03 	wh16	r8,0x3
+    efb4:	10 40 01 08 	ld32	r8,r8
+    efb8:	0d 47 01 34 	wl16	r9,0x3814
+    efbc:	0d 60 01 23 	wh16	r9,0x3
+    efc0:	10 40 01 29 	ld32	r9,r9
+    efc4:	00 10 01 04 	add	r8,4
+    efc8:	20 70 03 e2 	movepc	rret,8
+    efcc:	14 30 c4 11 	br	10 <compare>,#al
+    efd0:	00 10 00 41 	add	r2,1
+    efd4:	0d 46 b5 10 	wl16	r8,0x35b0
+    efd8:	0d 60 01 03 	wh16	r8,0x3
+    efdc:	10 40 01 08 	ld32	r8,r8
+    efe0:	0d 47 01 38 	wl16	r9,0x3818
+    efe4:	0d 60 01 23 	wh16	r9,0x3
+    efe8:	10 40 01 29 	ld32	r9,r9
+    efec:	00 10 01 08 	add	r8,8
+    eff0:	20 70 03 e2 	movepc	rret,8
+    eff4:	14 30 c4 07 	br	10 <compare>,#al
+    eff8:	00 10 00 41 	add	r2,1
+    effc:	0d 46 b5 14 	wl16	r8,0x35b4
+    f000:	0d 60 01 03 	wh16	r8,0x3
+    f004:	10 40 01 08 	ld32	r8,r8
+    f008:	0d 47 01 3c 	wl16	r9,0x381c
+    f00c:	0d 60 01 23 	wh16	r9,0x3
+    f010:	10 40 01 29 	ld32	r9,r9
+    f014:	00 10 01 10 	add	r8,16
+    f018:	20 70 03 e2 	movepc	rret,8
+    f01c:	14 30 c3 fd 	br	10 <compare>,#al
+    f020:	00 10 00 41 	add	r2,1
+    f024:	0d 46 b5 18 	wl16	r8,0x35b8
+    f028:	0d 60 01 03 	wh16	r8,0x3
+    f02c:	10 40 01 08 	ld32	r8,r8
+    f030:	0d 47 05 20 	wl16	r9,0x3820
+    f034:	0d 60 01 23 	wh16	r9,0x3
+    f038:	10 40 01 29 	ld32	r9,r9
+    f03c:	00 10 05 00 	add	r8,32
+    f040:	20 70 03 e2 	movepc	rret,8
+    f044:	14 30 c3 f3 	br	10 <compare>,#al
+    f048:	00 10 00 41 	add	r2,1
+    f04c:	0d 46 b5 1c 	wl16	r8,0x35bc
+    f050:	0d 60 01 03 	wh16	r8,0x3
+    f054:	10 40 01 08 	ld32	r8,r8
+    f058:	0d 47 05 24 	wl16	r9,0x3824
+    f05c:	0d 60 01 23 	wh16	r9,0x3
+    f060:	10 40 01 29 	ld32	r9,r9
+    f064:	00 10 09 00 	add	r8,64
+    f068:	20 70 03 e2 	movepc	rret,8
+    f06c:	14 30 c3 e9 	br	10 <compare>,#al
+    f070:	00 10 00 41 	add	r2,1
+    f074:	0d 46 b9 00 	wl16	r8,0x35c0
+    f078:	0d 60 01 03 	wh16	r8,0x3
+    f07c:	10 40 01 08 	ld32	r8,r8
+    f080:	0d 47 05 28 	wl16	r9,0x3828
+    f084:	0d 60 01 23 	wh16	r9,0x3
+    f088:	10 40 01 29 	ld32	r9,r9
+    f08c:	00 10 11 00 	add	r8,128
+    f090:	20 70 03 e2 	movepc	rret,8
+    f094:	14 30 c3 df 	br	10 <compare>,#al
+    f098:	00 10 00 41 	add	r2,1
+    f09c:	0d 46 b9 04 	wl16	r8,0x35c4
+    f0a0:	0d 60 01 03 	wh16	r8,0x3
+    f0a4:	10 40 01 08 	ld32	r8,r8
+    f0a8:	0d 47 05 2c 	wl16	r9,0x382c
+    f0ac:	0d 60 01 23 	wh16	r9,0x3
+    f0b0:	10 40 01 29 	ld32	r9,r9
+    f0b4:	00 10 21 00 	add	r8,256
+    f0b8:	20 70 03 e2 	movepc	rret,8
+    f0bc:	14 30 c3 d5 	br	10 <compare>,#al
+    f0c0:	00 10 00 41 	add	r2,1
+    f0c4:	0d 46 b9 08 	wl16	r8,0x35c8
+    f0c8:	0d 60 01 03 	wh16	r8,0x3
+    f0cc:	10 40 01 08 	ld32	r8,r8
+    f0d0:	0d 47 05 30 	wl16	r9,0x3830
+    f0d4:	0d 60 01 23 	wh16	r9,0x3
+    f0d8:	10 40 01 29 	ld32	r9,r9
+    f0dc:	00 10 41 00 	add	r8,512
+    f0e0:	20 70 03 e2 	movepc	rret,8
+    f0e4:	14 30 c3 cb 	br	10 <compare>,#al
+    f0e8:	00 10 00 41 	add	r2,1
+    f0ec:	0d 46 b9 0c 	wl16	r8,0x35cc
+    f0f0:	0d 60 01 03 	wh16	r8,0x3
+    f0f4:	10 40 01 08 	ld32	r8,r8
+    f0f8:	0d 47 05 34 	wl16	r9,0x3834
+    f0fc:	0d 60 01 23 	wh16	r9,0x3
+    f100:	10 40 01 29 	ld32	r9,r9
+    f104:	00 10 81 00 	add	r8,-1024
+    f108:	20 70 03 e2 	movepc	rret,8
+    f10c:	14 30 c3 c1 	br	10 <compare>,#al
+    f110:	00 10 00 41 	add	r2,1
+    f114:	0d 46 b9 10 	wl16	r8,0x35d0
+    f118:	0d 60 01 03 	wh16	r8,0x3
+    f11c:	10 40 01 08 	ld32	r8,r8
+    f120:	0d 47 05 38 	wl16	r9,0x3838
+    f124:	0d 60 01 23 	wh16	r9,0x3
+    f128:	10 40 01 29 	ld32	r9,r9
+    f12c:	00 10 01 00 	add	r8,0
+    f130:	20 70 03 e2 	movepc	rret,8
+    f134:	14 30 c3 b7 	br	10 <compare>,#al
+    f138:	00 10 00 41 	add	r2,1
+    f13c:	0d 46 b9 14 	wl16	r8,0x35d4
+    f140:	0d 60 01 03 	wh16	r8,0x3
+    f144:	10 40 01 08 	ld32	r8,r8
+    f148:	0d 47 05 3c 	wl16	r9,0x383c
+    f14c:	0d 60 01 23 	wh16	r9,0x3
+    f150:	10 40 01 29 	ld32	r9,r9
+    f154:	00 10 01 01 	add	r8,1
+    f158:	20 70 03 e2 	movepc	rret,8
+    f15c:	14 30 c3 ad 	br	10 <compare>,#al
+    f160:	00 10 00 41 	add	r2,1
+    f164:	0d 46 b9 18 	wl16	r8,0x35d8
+    f168:	0d 60 01 03 	wh16	r8,0x3
+    f16c:	10 40 01 08 	ld32	r8,r8
+    f170:	0d 47 09 20 	wl16	r9,0x3840
+    f174:	0d 60 01 23 	wh16	r9,0x3
+    f178:	10 40 01 29 	ld32	r9,r9
+    f17c:	00 10 01 02 	add	r8,2
+    f180:	20 70 03 e2 	movepc	rret,8
+    f184:	14 30 c3 a3 	br	10 <compare>,#al
+    f188:	00 10 00 41 	add	r2,1
+    f18c:	0d 46 b9 1c 	wl16	r8,0x35dc
+    f190:	0d 60 01 03 	wh16	r8,0x3
+    f194:	10 40 01 08 	ld32	r8,r8
+    f198:	0d 47 09 24 	wl16	r9,0x3844
+    f19c:	0d 60 01 23 	wh16	r9,0x3
+    f1a0:	10 40 01 29 	ld32	r9,r9
+    f1a4:	00 10 01 04 	add	r8,4
+    f1a8:	20 70 03 e2 	movepc	rret,8
+    f1ac:	14 30 c3 99 	br	10 <compare>,#al
+    f1b0:	00 10 00 41 	add	r2,1
+    f1b4:	0d 46 bd 00 	wl16	r8,0x35e0
+    f1b8:	0d 60 01 03 	wh16	r8,0x3
+    f1bc:	10 40 01 08 	ld32	r8,r8
+    f1c0:	0d 47 09 28 	wl16	r9,0x3848
+    f1c4:	0d 60 01 23 	wh16	r9,0x3
+    f1c8:	10 40 01 29 	ld32	r9,r9
+    f1cc:	00 10 01 08 	add	r8,8
+    f1d0:	20 70 03 e2 	movepc	rret,8
+    f1d4:	14 30 c3 8f 	br	10 <compare>,#al
+    f1d8:	00 10 00 41 	add	r2,1
+    f1dc:	0d 46 bd 04 	wl16	r8,0x35e4
+    f1e0:	0d 60 01 03 	wh16	r8,0x3
+    f1e4:	10 40 01 08 	ld32	r8,r8
+    f1e8:	0d 47 09 2c 	wl16	r9,0x384c
+    f1ec:	0d 60 01 23 	wh16	r9,0x3
+    f1f0:	10 40 01 29 	ld32	r9,r9
+    f1f4:	00 10 01 10 	add	r8,16
+    f1f8:	20 70 03 e2 	movepc	rret,8
+    f1fc:	14 30 c3 85 	br	10 <compare>,#al
+    f200:	00 10 00 41 	add	r2,1
+    f204:	0d 46 bd 08 	wl16	r8,0x35e8
+    f208:	0d 60 01 03 	wh16	r8,0x3
+    f20c:	10 40 01 08 	ld32	r8,r8
+    f210:	0d 47 09 30 	wl16	r9,0x3850
+    f214:	0d 60 01 23 	wh16	r9,0x3
+    f218:	10 40 01 29 	ld32	r9,r9
+    f21c:	00 10 05 00 	add	r8,32
+    f220:	20 70 03 e2 	movepc	rret,8
+    f224:	14 30 c3 7b 	br	10 <compare>,#al
+    f228:	00 10 00 41 	add	r2,1
+    f22c:	0d 46 bd 0c 	wl16	r8,0x35ec
+    f230:	0d 60 01 03 	wh16	r8,0x3
+    f234:	10 40 01 08 	ld32	r8,r8
+    f238:	0d 47 09 34 	wl16	r9,0x3854
+    f23c:	0d 60 01 23 	wh16	r9,0x3
+    f240:	10 40 01 29 	ld32	r9,r9
+    f244:	00 10 09 00 	add	r8,64
+    f248:	20 70 03 e2 	movepc	rret,8
+    f24c:	14 30 c3 71 	br	10 <compare>,#al
+    f250:	00 10 00 41 	add	r2,1
+    f254:	0d 46 bd 10 	wl16	r8,0x35f0
+    f258:	0d 60 01 03 	wh16	r8,0x3
+    f25c:	10 40 01 08 	ld32	r8,r8
+    f260:	0d 47 09 38 	wl16	r9,0x3858
+    f264:	0d 60 01 23 	wh16	r9,0x3
+    f268:	10 40 01 29 	ld32	r9,r9
+    f26c:	00 10 11 00 	add	r8,128
+    f270:	20 70 03 e2 	movepc	rret,8
+    f274:	14 30 c3 67 	br	10 <compare>,#al
+    f278:	00 10 00 41 	add	r2,1
+    f27c:	0d 46 bd 14 	wl16	r8,0x35f4
+    f280:	0d 60 01 03 	wh16	r8,0x3
+    f284:	10 40 01 08 	ld32	r8,r8
+    f288:	0d 47 09 3c 	wl16	r9,0x385c
+    f28c:	0d 60 01 23 	wh16	r9,0x3
+    f290:	10 40 01 29 	ld32	r9,r9
+    f294:	00 10 21 00 	add	r8,256
+    f298:	20 70 03 e2 	movepc	rret,8
+    f29c:	14 30 c3 5d 	br	10 <compare>,#al
+    f2a0:	00 10 00 41 	add	r2,1
+    f2a4:	0d 46 bd 18 	wl16	r8,0x35f8
+    f2a8:	0d 60 01 03 	wh16	r8,0x3
+    f2ac:	10 40 01 08 	ld32	r8,r8
+    f2b0:	0d 47 0d 20 	wl16	r9,0x3860
+    f2b4:	0d 60 01 23 	wh16	r9,0x3
+    f2b8:	10 40 01 29 	ld32	r9,r9
+    f2bc:	00 10 41 00 	add	r8,512
+    f2c0:	20 70 03 e2 	movepc	rret,8
+    f2c4:	14 30 c3 53 	br	10 <compare>,#al
+    f2c8:	00 10 00 41 	add	r2,1
+    f2cc:	0d 46 bd 1c 	wl16	r8,0x35fc
+    f2d0:	0d 60 01 03 	wh16	r8,0x3
+    f2d4:	10 40 01 08 	ld32	r8,r8
+    f2d8:	0d 47 0d 24 	wl16	r9,0x3864
+    f2dc:	0d 60 01 23 	wh16	r9,0x3
+    f2e0:	10 40 01 29 	ld32	r9,r9
+    f2e4:	00 10 81 00 	add	r8,-1024
+    f2e8:	20 70 03 e2 	movepc	rret,8
+    f2ec:	14 30 c3 49 	br	10 <compare>,#al
+    f2f0:	00 10 00 41 	add	r2,1
+    f2f4:	0d 46 c1 00 	wl16	r8,0x3600
+    f2f8:	0d 60 01 03 	wh16	r8,0x3
+    f2fc:	10 40 01 08 	ld32	r8,r8
+    f300:	0d 47 0d 28 	wl16	r9,0x3868
+    f304:	0d 60 01 23 	wh16	r9,0x3
+    f308:	10 40 01 29 	ld32	r9,r9
+    f30c:	00 10 01 00 	add	r8,0
+    f310:	20 70 03 e2 	movepc	rret,8
+    f314:	14 30 c3 3f 	br	10 <compare>,#al
+    f318:	00 10 00 41 	add	r2,1
+    f31c:	0d 46 c1 04 	wl16	r8,0x3604
+    f320:	0d 60 01 03 	wh16	r8,0x3
+    f324:	10 40 01 08 	ld32	r8,r8
+    f328:	0d 47 0d 2c 	wl16	r9,0x386c
+    f32c:	0d 60 01 23 	wh16	r9,0x3
+    f330:	10 40 01 29 	ld32	r9,r9
+    f334:	00 10 01 01 	add	r8,1
+    f338:	20 70 03 e2 	movepc	rret,8
+    f33c:	14 30 c3 35 	br	10 <compare>,#al
+    f340:	00 10 00 41 	add	r2,1
+    f344:	0d 46 c1 08 	wl16	r8,0x3608
+    f348:	0d 60 01 03 	wh16	r8,0x3
+    f34c:	10 40 01 08 	ld32	r8,r8
+    f350:	0d 47 0d 30 	wl16	r9,0x3870
+    f354:	0d 60 01 23 	wh16	r9,0x3
+    f358:	10 40 01 29 	ld32	r9,r9
+    f35c:	00 10 01 02 	add	r8,2
+    f360:	20 70 03 e2 	movepc	rret,8
+    f364:	14 30 c3 2b 	br	10 <compare>,#al
+    f368:	00 10 00 41 	add	r2,1
+    f36c:	0d 46 c1 0c 	wl16	r8,0x360c
+    f370:	0d 60 01 03 	wh16	r8,0x3
+    f374:	10 40 01 08 	ld32	r8,r8
+    f378:	0d 47 0d 34 	wl16	r9,0x3874
+    f37c:	0d 60 01 23 	wh16	r9,0x3
+    f380:	10 40 01 29 	ld32	r9,r9
+    f384:	00 10 01 04 	add	r8,4
+    f388:	20 70 03 e2 	movepc	rret,8
+    f38c:	14 30 c3 21 	br	10 <compare>,#al
+    f390:	00 10 00 41 	add	r2,1
+    f394:	0d 46 c1 10 	wl16	r8,0x3610
+    f398:	0d 60 01 03 	wh16	r8,0x3
+    f39c:	10 40 01 08 	ld32	r8,r8
+    f3a0:	0d 47 0d 38 	wl16	r9,0x3878
+    f3a4:	0d 60 01 23 	wh16	r9,0x3
+    f3a8:	10 40 01 29 	ld32	r9,r9
+    f3ac:	00 10 01 08 	add	r8,8
+    f3b0:	20 70 03 e2 	movepc	rret,8
+    f3b4:	14 30 c3 17 	br	10 <compare>,#al
+    f3b8:	00 10 00 41 	add	r2,1
+    f3bc:	0d 46 c1 14 	wl16	r8,0x3614
+    f3c0:	0d 60 01 03 	wh16	r8,0x3
+    f3c4:	10 40 01 08 	ld32	r8,r8
+    f3c8:	0d 47 0d 3c 	wl16	r9,0x387c
+    f3cc:	0d 60 01 23 	wh16	r9,0x3
+    f3d0:	10 40 01 29 	ld32	r9,r9
+    f3d4:	00 10 01 10 	add	r8,16
+    f3d8:	20 70 03 e2 	movepc	rret,8
+    f3dc:	14 30 c3 0d 	br	10 <compare>,#al
+    f3e0:	00 10 00 41 	add	r2,1
+    f3e4:	0d 46 c1 18 	wl16	r8,0x3618
+    f3e8:	0d 60 01 03 	wh16	r8,0x3
+    f3ec:	10 40 01 08 	ld32	r8,r8
+    f3f0:	0d 47 11 20 	wl16	r9,0x3880
+    f3f4:	0d 60 01 23 	wh16	r9,0x3
+    f3f8:	10 40 01 29 	ld32	r9,r9
+    f3fc:	00 10 05 00 	add	r8,32
+    f400:	20 70 03 e2 	movepc	rret,8
+    f404:	14 30 c3 03 	br	10 <compare>,#al
+    f408:	00 10 00 41 	add	r2,1
+    f40c:	0d 46 c1 1c 	wl16	r8,0x361c
+    f410:	0d 60 01 03 	wh16	r8,0x3
+    f414:	10 40 01 08 	ld32	r8,r8
+    f418:	0d 47 11 24 	wl16	r9,0x3884
+    f41c:	0d 60 01 23 	wh16	r9,0x3
+    f420:	10 40 01 29 	ld32	r9,r9
+    f424:	00 10 09 00 	add	r8,64
+    f428:	20 70 03 e2 	movepc	rret,8
+    f42c:	14 30 c2 f9 	br	10 <compare>,#al
+    f430:	00 10 00 41 	add	r2,1
+    f434:	0d 46 c5 00 	wl16	r8,0x3620
+    f438:	0d 60 01 03 	wh16	r8,0x3
+    f43c:	10 40 01 08 	ld32	r8,r8
+    f440:	0d 47 11 28 	wl16	r9,0x3888
+    f444:	0d 60 01 23 	wh16	r9,0x3
+    f448:	10 40 01 29 	ld32	r9,r9
+    f44c:	00 10 11 00 	add	r8,128
+    f450:	20 70 03 e2 	movepc	rret,8
+    f454:	14 30 c2 ef 	br	10 <compare>,#al
+    f458:	00 10 00 41 	add	r2,1
+    f45c:	0d 46 c5 04 	wl16	r8,0x3624
+    f460:	0d 60 01 03 	wh16	r8,0x3
+    f464:	10 40 01 08 	ld32	r8,r8
+    f468:	0d 47 11 2c 	wl16	r9,0x388c
+    f46c:	0d 60 01 23 	wh16	r9,0x3
+    f470:	10 40 01 29 	ld32	r9,r9
+    f474:	00 10 21 00 	add	r8,256
+    f478:	20 70 03 e2 	movepc	rret,8
+    f47c:	14 30 c2 e5 	br	10 <compare>,#al
+    f480:	00 10 00 41 	add	r2,1
+    f484:	0d 46 c5 08 	wl16	r8,0x3628
+    f488:	0d 60 01 03 	wh16	r8,0x3
+    f48c:	10 40 01 08 	ld32	r8,r8
+    f490:	0d 47 11 30 	wl16	r9,0x3890
+    f494:	0d 60 01 23 	wh16	r9,0x3
+    f498:	10 40 01 29 	ld32	r9,r9
+    f49c:	00 10 41 00 	add	r8,512
+    f4a0:	20 70 03 e2 	movepc	rret,8
+    f4a4:	14 30 c2 db 	br	10 <compare>,#al
+    f4a8:	00 10 00 41 	add	r2,1
+    f4ac:	0d 46 c5 0c 	wl16	r8,0x362c
+    f4b0:	0d 60 01 03 	wh16	r8,0x3
+    f4b4:	10 40 01 08 	ld32	r8,r8
+    f4b8:	0d 47 11 34 	wl16	r9,0x3894
+    f4bc:	0d 60 01 23 	wh16	r9,0x3
+    f4c0:	10 40 01 29 	ld32	r9,r9
+    f4c4:	00 10 81 00 	add	r8,-1024
+    f4c8:	20 70 03 e2 	movepc	rret,8
+    f4cc:	14 30 c2 d1 	br	10 <compare>,#al
+    f4d0:	00 10 00 41 	add	r2,1
+    f4d4:	0d 46 c5 10 	wl16	r8,0x3630
+    f4d8:	0d 60 01 03 	wh16	r8,0x3
+    f4dc:	10 40 01 08 	ld32	r8,r8
+    f4e0:	0d 47 11 38 	wl16	r9,0x3898
+    f4e4:	0d 60 01 23 	wh16	r9,0x3
+    f4e8:	10 40 01 29 	ld32	r9,r9
+    f4ec:	00 10 01 00 	add	r8,0
+    f4f0:	20 70 03 e2 	movepc	rret,8
+    f4f4:	14 30 c2 c7 	br	10 <compare>,#al
+    f4f8:	00 10 00 41 	add	r2,1
+    f4fc:	0d 46 c5 14 	wl16	r8,0x3634
+    f500:	0d 60 01 03 	wh16	r8,0x3
+    f504:	10 40 01 08 	ld32	r8,r8
+    f508:	0d 47 11 3c 	wl16	r9,0x389c
+    f50c:	0d 60 01 23 	wh16	r9,0x3
+    f510:	10 40 01 29 	ld32	r9,r9
+    f514:	00 10 01 01 	add	r8,1
+    f518:	20 70 03 e2 	movepc	rret,8
+    f51c:	14 30 c2 bd 	br	10 <compare>,#al
+    f520:	00 10 00 41 	add	r2,1
+    f524:	0d 46 c5 18 	wl16	r8,0x3638
+    f528:	0d 60 01 03 	wh16	r8,0x3
+    f52c:	10 40 01 08 	ld32	r8,r8
+    f530:	0d 47 15 20 	wl16	r9,0x38a0
+    f534:	0d 60 01 23 	wh16	r9,0x3
+    f538:	10 40 01 29 	ld32	r9,r9
+    f53c:	00 10 01 02 	add	r8,2
+    f540:	20 70 03 e2 	movepc	rret,8
+    f544:	14 30 c2 b3 	br	10 <compare>,#al
+    f548:	00 10 00 41 	add	r2,1
+    f54c:	0d 46 c5 1c 	wl16	r8,0x363c
+    f550:	0d 60 01 03 	wh16	r8,0x3
+    f554:	10 40 01 08 	ld32	r8,r8
+    f558:	0d 47 15 24 	wl16	r9,0x38a4
+    f55c:	0d 60 01 23 	wh16	r9,0x3
+    f560:	10 40 01 29 	ld32	r9,r9
+    f564:	00 10 01 04 	add	r8,4
+    f568:	20 70 03 e2 	movepc	rret,8
+    f56c:	14 30 c2 a9 	br	10 <compare>,#al
+    f570:	00 10 00 41 	add	r2,1
+    f574:	0d 46 c9 00 	wl16	r8,0x3640
+    f578:	0d 60 01 03 	wh16	r8,0x3
+    f57c:	10 40 01 08 	ld32	r8,r8
+    f580:	0d 47 15 28 	wl16	r9,0x38a8
+    f584:	0d 60 01 23 	wh16	r9,0x3
+    f588:	10 40 01 29 	ld32	r9,r9
+    f58c:	00 10 01 08 	add	r8,8
+    f590:	20 70 03 e2 	movepc	rret,8
+    f594:	14 30 c2 9f 	br	10 <compare>,#al
+    f598:	00 10 00 41 	add	r2,1
+    f59c:	0d 46 c9 04 	wl16	r8,0x3644
+    f5a0:	0d 60 01 03 	wh16	r8,0x3
+    f5a4:	10 40 01 08 	ld32	r8,r8
+    f5a8:	0d 47 15 2c 	wl16	r9,0x38ac
+    f5ac:	0d 60 01 23 	wh16	r9,0x3
+    f5b0:	10 40 01 29 	ld32	r9,r9
+    f5b4:	00 10 01 10 	add	r8,16
+    f5b8:	20 70 03 e2 	movepc	rret,8
+    f5bc:	14 30 c2 95 	br	10 <compare>,#al
+    f5c0:	00 10 00 41 	add	r2,1
+    f5c4:	0d 46 c9 08 	wl16	r8,0x3648
+    f5c8:	0d 60 01 03 	wh16	r8,0x3
+    f5cc:	10 40 01 08 	ld32	r8,r8
+    f5d0:	0d 47 15 30 	wl16	r9,0x38b0
+    f5d4:	0d 60 01 23 	wh16	r9,0x3
+    f5d8:	10 40 01 29 	ld32	r9,r9
+    f5dc:	00 10 05 00 	add	r8,32
+    f5e0:	20 70 03 e2 	movepc	rret,8
+    f5e4:	14 30 c2 8b 	br	10 <compare>,#al
+    f5e8:	00 10 00 41 	add	r2,1
+    f5ec:	0d 46 c9 0c 	wl16	r8,0x364c
+    f5f0:	0d 60 01 03 	wh16	r8,0x3
+    f5f4:	10 40 01 08 	ld32	r8,r8
+    f5f8:	0d 47 15 34 	wl16	r9,0x38b4
+    f5fc:	0d 60 01 23 	wh16	r9,0x3
+    f600:	10 40 01 29 	ld32	r9,r9
+    f604:	00 10 09 00 	add	r8,64
+    f608:	20 70 03 e2 	movepc	rret,8
+    f60c:	14 30 c2 81 	br	10 <compare>,#al
+    f610:	00 10 00 41 	add	r2,1
+    f614:	0d 46 c9 10 	wl16	r8,0x3650
+    f618:	0d 60 01 03 	wh16	r8,0x3
+    f61c:	10 40 01 08 	ld32	r8,r8
+    f620:	0d 47 15 38 	wl16	r9,0x38b8
+    f624:	0d 60 01 23 	wh16	r9,0x3
+    f628:	10 40 01 29 	ld32	r9,r9
+    f62c:	00 10 11 00 	add	r8,128
+    f630:	20 70 03 e2 	movepc	rret,8
+    f634:	14 30 c2 77 	br	10 <compare>,#al
+    f638:	00 10 00 41 	add	r2,1
+    f63c:	0d 46 c9 14 	wl16	r8,0x3654
+    f640:	0d 60 01 03 	wh16	r8,0x3
+    f644:	10 40 01 08 	ld32	r8,r8
+    f648:	0d 47 15 3c 	wl16	r9,0x38bc
+    f64c:	0d 60 01 23 	wh16	r9,0x3
+    f650:	10 40 01 29 	ld32	r9,r9
+    f654:	00 10 21 00 	add	r8,256
+    f658:	20 70 03 e2 	movepc	rret,8
+    f65c:	14 30 c2 6d 	br	10 <compare>,#al
+    f660:	00 10 00 41 	add	r2,1
+    f664:	0d 46 c9 18 	wl16	r8,0x3658
+    f668:	0d 60 01 03 	wh16	r8,0x3
+    f66c:	10 40 01 08 	ld32	r8,r8
+    f670:	0d 47 19 20 	wl16	r9,0x38c0
+    f674:	0d 60 01 23 	wh16	r9,0x3
+    f678:	10 40 01 29 	ld32	r9,r9
+    f67c:	00 10 41 00 	add	r8,512
+    f680:	20 70 03 e2 	movepc	rret,8
+    f684:	14 30 c2 63 	br	10 <compare>,#al
+    f688:	00 10 00 41 	add	r2,1
+    f68c:	0d 46 c9 1c 	wl16	r8,0x365c
+    f690:	0d 60 01 03 	wh16	r8,0x3
+    f694:	10 40 01 08 	ld32	r8,r8
+    f698:	0d 47 19 24 	wl16	r9,0x38c4
+    f69c:	0d 60 01 23 	wh16	r9,0x3
+    f6a0:	10 40 01 29 	ld32	r9,r9
+    f6a4:	00 10 81 00 	add	r8,-1024
+    f6a8:	20 70 03 e2 	movepc	rret,8
+    f6ac:	14 30 c2 59 	br	10 <compare>,#al
+    f6b0:	00 10 00 41 	add	r2,1
+    f6b4:	0d 46 cd 00 	wl16	r8,0x3660
+    f6b8:	0d 60 01 03 	wh16	r8,0x3
+    f6bc:	10 40 01 08 	ld32	r8,r8
+    f6c0:	0d 47 19 28 	wl16	r9,0x38c8
+    f6c4:	0d 60 01 23 	wh16	r9,0x3
+    f6c8:	10 40 01 29 	ld32	r9,r9
+    f6cc:	00 10 01 00 	add	r8,0
+    f6d0:	20 70 03 e2 	movepc	rret,8
+    f6d4:	14 30 c2 4f 	br	10 <compare>,#al
+    f6d8:	00 10 00 41 	add	r2,1
+    f6dc:	0d 46 cd 04 	wl16	r8,0x3664
+    f6e0:	0d 60 01 03 	wh16	r8,0x3
+    f6e4:	10 40 01 08 	ld32	r8,r8
+    f6e8:	0d 47 19 2c 	wl16	r9,0x38cc
+    f6ec:	0d 60 01 23 	wh16	r9,0x3
+    f6f0:	10 40 01 29 	ld32	r9,r9
+    f6f4:	00 10 01 01 	add	r8,1
+    f6f8:	20 70 03 e2 	movepc	rret,8
+    f6fc:	14 30 c2 45 	br	10 <compare>,#al
+    f700:	00 10 00 41 	add	r2,1
+    f704:	0d 46 cd 08 	wl16	r8,0x3668
+    f708:	0d 60 01 03 	wh16	r8,0x3
+    f70c:	10 40 01 08 	ld32	r8,r8
+    f710:	0d 47 19 30 	wl16	r9,0x38d0
+    f714:	0d 60 01 23 	wh16	r9,0x3
+    f718:	10 40 01 29 	ld32	r9,r9
+    f71c:	00 10 01 02 	add	r8,2
+    f720:	20 70 03 e2 	movepc	rret,8
+    f724:	14 30 c2 3b 	br	10 <compare>,#al
+    f728:	00 10 00 41 	add	r2,1
+    f72c:	0d 46 cd 0c 	wl16	r8,0x366c
+    f730:	0d 60 01 03 	wh16	r8,0x3
+    f734:	10 40 01 08 	ld32	r8,r8
+    f738:	0d 47 19 34 	wl16	r9,0x38d4
+    f73c:	0d 60 01 23 	wh16	r9,0x3
+    f740:	10 40 01 29 	ld32	r9,r9
+    f744:	00 10 01 04 	add	r8,4
+    f748:	20 70 03 e2 	movepc	rret,8
+    f74c:	14 30 c2 31 	br	10 <compare>,#al
+    f750:	00 10 00 41 	add	r2,1
+    f754:	0d 46 cd 10 	wl16	r8,0x3670
+    f758:	0d 60 01 03 	wh16	r8,0x3
+    f75c:	10 40 01 08 	ld32	r8,r8
+    f760:	0d 47 19 38 	wl16	r9,0x38d8
+    f764:	0d 60 01 23 	wh16	r9,0x3
+    f768:	10 40 01 29 	ld32	r9,r9
+    f76c:	00 10 01 08 	add	r8,8
+    f770:	20 70 03 e2 	movepc	rret,8
+    f774:	14 30 c2 27 	br	10 <compare>,#al
+    f778:	00 10 00 41 	add	r2,1
+    f77c:	0d 46 cd 14 	wl16	r8,0x3674
+    f780:	0d 60 01 03 	wh16	r8,0x3
+    f784:	10 40 01 08 	ld32	r8,r8
+    f788:	0d 47 19 3c 	wl16	r9,0x38dc
+    f78c:	0d 60 01 23 	wh16	r9,0x3
+    f790:	10 40 01 29 	ld32	r9,r9
+    f794:	00 10 01 10 	add	r8,16
+    f798:	20 70 03 e2 	movepc	rret,8
+    f79c:	14 30 c2 1d 	br	10 <compare>,#al
+    f7a0:	00 10 00 41 	add	r2,1
+    f7a4:	0d 46 cd 18 	wl16	r8,0x3678
+    f7a8:	0d 60 01 03 	wh16	r8,0x3
+    f7ac:	10 40 01 08 	ld32	r8,r8
+    f7b0:	0d 47 1d 20 	wl16	r9,0x38e0
+    f7b4:	0d 60 01 23 	wh16	r9,0x3
+    f7b8:	10 40 01 29 	ld32	r9,r9
+    f7bc:	00 10 05 00 	add	r8,32
+    f7c0:	20 70 03 e2 	movepc	rret,8
+    f7c4:	14 30 c2 13 	br	10 <compare>,#al
+    f7c8:	00 10 00 41 	add	r2,1
+    f7cc:	0d 46 cd 1c 	wl16	r8,0x367c
+    f7d0:	0d 60 01 03 	wh16	r8,0x3
+    f7d4:	10 40 01 08 	ld32	r8,r8
+    f7d8:	0d 47 1d 24 	wl16	r9,0x38e4
+    f7dc:	0d 60 01 23 	wh16	r9,0x3
+    f7e0:	10 40 01 29 	ld32	r9,r9
+    f7e4:	00 10 09 00 	add	r8,64
+    f7e8:	20 70 03 e2 	movepc	rret,8
+    f7ec:	14 30 c2 09 	br	10 <compare>,#al
+    f7f0:	00 10 00 41 	add	r2,1
+    f7f4:	0d 46 d1 00 	wl16	r8,0x3680
+    f7f8:	0d 60 01 03 	wh16	r8,0x3
+    f7fc:	10 40 01 08 	ld32	r8,r8
+    f800:	0d 47 1d 28 	wl16	r9,0x38e8
+    f804:	0d 60 01 23 	wh16	r9,0x3
+    f808:	10 40 01 29 	ld32	r9,r9
+    f80c:	00 10 11 00 	add	r8,128
+    f810:	20 70 03 e2 	movepc	rret,8
+    f814:	14 30 c1 ff 	br	10 <compare>,#al
+    f818:	00 10 00 41 	add	r2,1
+    f81c:	0d 46 d1 04 	wl16	r8,0x3684
+    f820:	0d 60 01 03 	wh16	r8,0x3
+    f824:	10 40 01 08 	ld32	r8,r8
+    f828:	0d 47 1d 2c 	wl16	r9,0x38ec
+    f82c:	0d 60 01 23 	wh16	r9,0x3
+    f830:	10 40 01 29 	ld32	r9,r9
+    f834:	00 10 21 00 	add	r8,256
+    f838:	20 70 03 e2 	movepc	rret,8
+    f83c:	14 30 c1 f5 	br	10 <compare>,#al
+    f840:	00 10 00 41 	add	r2,1
+    f844:	0d 46 d1 08 	wl16	r8,0x3688
+    f848:	0d 60 01 03 	wh16	r8,0x3
+    f84c:	10 40 01 08 	ld32	r8,r8
+    f850:	0d 47 1d 30 	wl16	r9,0x38f0
+    f854:	0d 60 01 23 	wh16	r9,0x3
+    f858:	10 40 01 29 	ld32	r9,r9
+    f85c:	00 10 41 00 	add	r8,512
+    f860:	20 70 03 e2 	movepc	rret,8
+    f864:	14 30 c1 eb 	br	10 <compare>,#al
+    f868:	00 10 00 41 	add	r2,1
+    f86c:	0d 46 d1 0c 	wl16	r8,0x368c
+    f870:	0d 60 01 03 	wh16	r8,0x3
+    f874:	10 40 01 08 	ld32	r8,r8
+    f878:	0d 47 1d 34 	wl16	r9,0x38f4
+    f87c:	0d 60 01 23 	wh16	r9,0x3
+    f880:	10 40 01 29 	ld32	r9,r9
+    f884:	00 10 81 00 	add	r8,-1024
+    f888:	20 70 03 e2 	movepc	rret,8
+    f88c:	14 30 c1 e1 	br	10 <compare>,#al
+    f890:	00 10 00 41 	add	r2,1
+    f894:	0d 46 d1 10 	wl16	r8,0x3690
+    f898:	0d 60 01 03 	wh16	r8,0x3
+    f89c:	10 40 01 08 	ld32	r8,r8
+    f8a0:	0d 47 1d 38 	wl16	r9,0x38f8
+    f8a4:	0d 60 01 23 	wh16	r9,0x3
+    f8a8:	10 40 01 29 	ld32	r9,r9
+    f8ac:	00 10 01 00 	add	r8,0
+    f8b0:	20 70 03 e2 	movepc	rret,8
+    f8b4:	14 30 c1 d7 	br	10 <compare>,#al
+    f8b8:	00 10 00 41 	add	r2,1
+    f8bc:	0d 46 d1 14 	wl16	r8,0x3694
+    f8c0:	0d 60 01 03 	wh16	r8,0x3
+    f8c4:	10 40 01 08 	ld32	r8,r8
+    f8c8:	0d 47 1d 3c 	wl16	r9,0x38fc
+    f8cc:	0d 60 01 23 	wh16	r9,0x3
+    f8d0:	10 40 01 29 	ld32	r9,r9
+    f8d4:	00 10 01 01 	add	r8,1
+    f8d8:	20 70 03 e2 	movepc	rret,8
+    f8dc:	14 30 c1 cd 	br	10 <compare>,#al
+    f8e0:	00 10 00 41 	add	r2,1
+    f8e4:	0d 46 d1 18 	wl16	r8,0x3698
+    f8e8:	0d 60 01 03 	wh16	r8,0x3
+    f8ec:	10 40 01 08 	ld32	r8,r8
+    f8f0:	0d 47 21 20 	wl16	r9,0x3900
+    f8f4:	0d 60 01 23 	wh16	r9,0x3
+    f8f8:	10 40 01 29 	ld32	r9,r9
+    f8fc:	00 10 01 02 	add	r8,2
+    f900:	20 70 03 e2 	movepc	rret,8
+    f904:	14 30 c1 c3 	br	10 <compare>,#al
+    f908:	00 10 00 41 	add	r2,1
+    f90c:	0d 46 d1 1c 	wl16	r8,0x369c
+    f910:	0d 60 01 03 	wh16	r8,0x3
+    f914:	10 40 01 08 	ld32	r8,r8
+    f918:	0d 47 21 24 	wl16	r9,0x3904
+    f91c:	0d 60 01 23 	wh16	r9,0x3
+    f920:	10 40 01 29 	ld32	r9,r9
+    f924:	00 10 01 04 	add	r8,4
+    f928:	20 70 03 e2 	movepc	rret,8
+    f92c:	14 30 c1 b9 	br	10 <compare>,#al
+    f930:	00 10 00 41 	add	r2,1
+    f934:	0d 46 d5 00 	wl16	r8,0x36a0
+    f938:	0d 60 01 03 	wh16	r8,0x3
+    f93c:	10 40 01 08 	ld32	r8,r8
+    f940:	0d 47 21 28 	wl16	r9,0x3908
+    f944:	0d 60 01 23 	wh16	r9,0x3
+    f948:	10 40 01 29 	ld32	r9,r9
+    f94c:	00 10 01 08 	add	r8,8
+    f950:	20 70 03 e2 	movepc	rret,8
+    f954:	14 30 c1 af 	br	10 <compare>,#al
+    f958:	00 10 00 41 	add	r2,1
+    f95c:	0d 46 d5 04 	wl16	r8,0x36a4
+    f960:	0d 60 01 03 	wh16	r8,0x3
+    f964:	10 40 01 08 	ld32	r8,r8
+    f968:	0d 47 21 2c 	wl16	r9,0x390c
+    f96c:	0d 60 01 23 	wh16	r9,0x3
+    f970:	10 40 01 29 	ld32	r9,r9
+    f974:	00 10 01 10 	add	r8,16
+    f978:	20 70 03 e2 	movepc	rret,8
+    f97c:	14 30 c1 a5 	br	10 <compare>,#al
+    f980:	00 10 00 41 	add	r2,1
+    f984:	0d 46 d5 08 	wl16	r8,0x36a8
+    f988:	0d 60 01 03 	wh16	r8,0x3
+    f98c:	10 40 01 08 	ld32	r8,r8
+    f990:	0d 47 21 30 	wl16	r9,0x3910
+    f994:	0d 60 01 23 	wh16	r9,0x3
+    f998:	10 40 01 29 	ld32	r9,r9
+    f99c:	00 10 05 00 	add	r8,32
+    f9a0:	20 70 03 e2 	movepc	rret,8
+    f9a4:	14 30 c1 9b 	br	10 <compare>,#al
+    f9a8:	00 10 00 41 	add	r2,1
+    f9ac:	0d 46 d5 0c 	wl16	r8,0x36ac
+    f9b0:	0d 60 01 03 	wh16	r8,0x3
+    f9b4:	10 40 01 08 	ld32	r8,r8
+    f9b8:	0d 47 21 34 	wl16	r9,0x3914
+    f9bc:	0d 60 01 23 	wh16	r9,0x3
+    f9c0:	10 40 01 29 	ld32	r9,r9
+    f9c4:	00 10 09 00 	add	r8,64
+    f9c8:	20 70 03 e2 	movepc	rret,8
+    f9cc:	14 30 c1 91 	br	10 <compare>,#al
+    f9d0:	00 10 00 41 	add	r2,1
+    f9d4:	0d 46 d5 10 	wl16	r8,0x36b0
+    f9d8:	0d 60 01 03 	wh16	r8,0x3
+    f9dc:	10 40 01 08 	ld32	r8,r8
+    f9e0:	0d 47 21 38 	wl16	r9,0x3918
+    f9e4:	0d 60 01 23 	wh16	r9,0x3
+    f9e8:	10 40 01 29 	ld32	r9,r9
+    f9ec:	00 10 11 00 	add	r8,128
+    f9f0:	20 70 03 e2 	movepc	rret,8
+    f9f4:	14 30 c1 87 	br	10 <compare>,#al
+    f9f8:	00 10 00 41 	add	r2,1
+    f9fc:	0d 46 d5 14 	wl16	r8,0x36b4
+    fa00:	0d 60 01 03 	wh16	r8,0x3
+    fa04:	10 40 01 08 	ld32	r8,r8
+    fa08:	0d 47 21 3c 	wl16	r9,0x391c
+    fa0c:	0d 60 01 23 	wh16	r9,0x3
+    fa10:	10 40 01 29 	ld32	r9,r9
+    fa14:	00 10 21 00 	add	r8,256
+    fa18:	20 70 03 e2 	movepc	rret,8
+    fa1c:	14 30 c1 7d 	br	10 <compare>,#al
+    fa20:	00 10 00 41 	add	r2,1
+    fa24:	0d 46 d5 18 	wl16	r8,0x36b8
+    fa28:	0d 60 01 03 	wh16	r8,0x3
+    fa2c:	10 40 01 08 	ld32	r8,r8
+    fa30:	0d 47 25 20 	wl16	r9,0x3920
+    fa34:	0d 60 01 23 	wh16	r9,0x3
+    fa38:	10 40 01 29 	ld32	r9,r9
+    fa3c:	00 10 41 00 	add	r8,512
+    fa40:	20 70 03 e2 	movepc	rret,8
+    fa44:	14 30 c1 73 	br	10 <compare>,#al
+    fa48:	00 10 00 41 	add	r2,1
+    fa4c:	0d 46 d5 1c 	wl16	r8,0x36bc
+    fa50:	0d 60 01 03 	wh16	r8,0x3
+    fa54:	10 40 01 08 	ld32	r8,r8
+    fa58:	0d 47 25 24 	wl16	r9,0x3924
+    fa5c:	0d 60 01 23 	wh16	r9,0x3
+    fa60:	10 40 01 29 	ld32	r9,r9
+    fa64:	00 10 81 00 	add	r8,-1024
+    fa68:	20 70 03 e2 	movepc	rret,8
+    fa6c:	14 30 c1 69 	br	10 <compare>,#al
+    fa70:	00 10 00 41 	add	r2,1
+    fa74:	0d 46 d9 00 	wl16	r8,0x36c0
+    fa78:	0d 60 01 03 	wh16	r8,0x3
+    fa7c:	10 40 01 08 	ld32	r8,r8
+    fa80:	0d 47 25 28 	wl16	r9,0x3928
+    fa84:	0d 60 01 23 	wh16	r9,0x3
+    fa88:	10 40 01 29 	ld32	r9,r9
+    fa8c:	00 10 01 03 	add	r8,3
+    fa90:	20 70 03 e2 	movepc	rret,8
+    fa94:	14 30 c1 5f 	br	10 <compare>,#al
+    fa98:	00 10 00 41 	add	r2,1
+    fa9c:	0d 46 d9 04 	wl16	r8,0x36c4
+    faa0:	0d 60 01 03 	wh16	r8,0x3
+    faa4:	10 40 01 08 	ld32	r8,r8
+    faa8:	0d 47 25 2c 	wl16	r9,0x392c
+    faac:	0d 60 01 23 	wh16	r9,0x3
+    fab0:	10 40 01 29 	ld32	r9,r9
+    fab4:	00 10 01 07 	add	r8,7
+    fab8:	20 70 03 e2 	movepc	rret,8
+    fabc:	14 30 c1 55 	br	10 <compare>,#al
+    fac0:	00 10 00 41 	add	r2,1
+    fac4:	0d 46 d9 08 	wl16	r8,0x36c8
+    fac8:	0d 60 01 03 	wh16	r8,0x3
+    facc:	10 40 01 08 	ld32	r8,r8
+    fad0:	0d 47 25 30 	wl16	r9,0x3930
+    fad4:	0d 60 01 23 	wh16	r9,0x3
+    fad8:	10 40 01 29 	ld32	r9,r9
+    fadc:	00 10 01 0f 	add	r8,15
+    fae0:	20 70 03 e2 	movepc	rret,8
+    fae4:	14 30 c1 4b 	br	10 <compare>,#al
+    fae8:	00 10 00 41 	add	r2,1
+    faec:	0d 46 d9 0c 	wl16	r8,0x36cc
+    faf0:	0d 60 01 03 	wh16	r8,0x3
+    faf4:	10 40 01 08 	ld32	r8,r8
+    faf8:	0d 47 25 34 	wl16	r9,0x3934
+    fafc:	0d 60 01 23 	wh16	r9,0x3
+    fb00:	10 40 01 29 	ld32	r9,r9
+    fb04:	00 10 01 1f 	add	r8,31
+    fb08:	20 70 03 e2 	movepc	rret,8
+    fb0c:	14 30 c1 41 	br	10 <compare>,#al
+    fb10:	00 10 00 41 	add	r2,1
+    fb14:	0d 46 d9 10 	wl16	r8,0x36d0
+    fb18:	0d 60 01 03 	wh16	r8,0x3
+    fb1c:	10 40 01 08 	ld32	r8,r8
+    fb20:	0d 47 25 38 	wl16	r9,0x3938
+    fb24:	0d 60 01 23 	wh16	r9,0x3
+    fb28:	10 40 01 29 	ld32	r9,r9
+    fb2c:	00 10 05 1f 	add	r8,63
+    fb30:	20 70 03 e2 	movepc	rret,8
+    fb34:	14 30 c1 37 	br	10 <compare>,#al
+    fb38:	00 10 00 41 	add	r2,1
+    fb3c:	0d 46 d9 14 	wl16	r8,0x36d4
+    fb40:	0d 60 01 03 	wh16	r8,0x3
+    fb44:	10 40 01 08 	ld32	r8,r8
+    fb48:	0d 47 25 3c 	wl16	r9,0x393c
+    fb4c:	0d 60 01 23 	wh16	r9,0x3
+    fb50:	10 40 01 29 	ld32	r9,r9
+    fb54:	00 10 0d 1f 	add	r8,127
+    fb58:	20 70 03 e2 	movepc	rret,8
+    fb5c:	14 30 c1 2d 	br	10 <compare>,#al
+    fb60:	00 10 00 41 	add	r2,1
+    fb64:	0d 46 d9 18 	wl16	r8,0x36d8
+    fb68:	0d 60 01 03 	wh16	r8,0x3
+    fb6c:	10 40 01 08 	ld32	r8,r8
+    fb70:	0d 47 29 20 	wl16	r9,0x3940
+    fb74:	0d 60 01 23 	wh16	r9,0x3
+    fb78:	10 40 01 29 	ld32	r9,r9
+    fb7c:	00 10 1d 1f 	add	r8,255
+    fb80:	20 70 03 e2 	movepc	rret,8
+    fb84:	14 30 c1 23 	br	10 <compare>,#al
+    fb88:	00 10 00 41 	add	r2,1
+    fb8c:	0d 46 d9 1c 	wl16	r8,0x36dc
+    fb90:	0d 60 01 03 	wh16	r8,0x3
+    fb94:	10 40 01 08 	ld32	r8,r8
+    fb98:	0d 47 29 24 	wl16	r9,0x3944
+    fb9c:	0d 60 01 23 	wh16	r9,0x3
+    fba0:	10 40 01 29 	ld32	r9,r9
+    fba4:	00 10 3d 1f 	add	r8,511
+    fba8:	20 70 03 e2 	movepc	rret,8
+    fbac:	14 30 c1 19 	br	10 <compare>,#al
+    fbb0:	00 10 00 41 	add	r2,1
+    fbb4:	0d 46 dd 00 	wl16	r8,0x36e0
+    fbb8:	0d 60 01 03 	wh16	r8,0x3
+    fbbc:	10 40 01 08 	ld32	r8,r8
+    fbc0:	0d 47 29 28 	wl16	r9,0x3948
+    fbc4:	0d 60 01 23 	wh16	r9,0x3
+    fbc8:	10 40 01 29 	ld32	r9,r9
+    fbcc:	00 10 7d 1f 	add	r8,1023
+    fbd0:	20 70 03 e2 	movepc	rret,8
+    fbd4:	14 30 c1 0f 	br	10 <compare>,#al
+    fbd8:	00 10 00 41 	add	r2,1
+    fbdc:	0d 46 dd 04 	wl16	r8,0x36e4
+    fbe0:	0d 60 01 03 	wh16	r8,0x3
+    fbe4:	10 40 01 08 	ld32	r8,r8
+    fbe8:	0d 47 29 2c 	wl16	r9,0x394c
+    fbec:	0d 60 01 23 	wh16	r9,0x3
+    fbf0:	10 40 01 29 	ld32	r9,r9
+    fbf4:	00 10 fd 1f 	add	r8,-1
+    fbf8:	20 70 03 e2 	movepc	rret,8
+    fbfc:	14 30 c1 05 	br	10 <compare>,#al
+    fc00:	00 10 00 41 	add	r2,1
+    fc04:	14 30 c1 15 	br	58 <finish>,#al
 
-セクション .data の逆アセンブル:
+セクション .assert の逆アセンブル:
 
 00020000 <CHECK_FLAG>:
    20000:	00 00 00 01 	add	r0,r1
@@ -16163,7 +16164,7 @@
 00020014 <ERROR_EXPECT>:
    20014:	00 00 00 00 	add	r0,r0
 
-セクション .testdata の逆アセンブル:
+セクション .data の逆アセンブル:
 
 00030000 <T_SRC0_0>:
    30000:	00 00 00 00 	add	r0,r0
@@ -26741,7 +26742,7 @@
    33710:	00 00 02 00 	add	r16,r0
 
 00033714 <T_IMM_EXPECT11>:
-   33714:	00 00 04 00 	*unknown*
+   33714:	ff ff fc 00 	*unknown*
 
 00033718 <T_IMM_EXPECT12>:
    33718:	00 00 00 01 	add	r0,r1
@@ -26777,7 +26778,7 @@
    33740:	00 00 02 01 	add	r16,r1
 
 00033744 <T_IMM_EXPECT23>:
-   33744:	00 00 04 01 	*unknown*
+   33744:	ff ff fc 01 	*unknown*
 
 00033748 <T_IMM_EXPECT24>:
    33748:	00 00 00 02 	add	r0,r2
@@ -26813,7 +26814,7 @@
    33770:	00 00 02 02 	add	r16,r2
 
 00033774 <T_IMM_EXPECT35>:
-   33774:	00 00 04 02 	*unknown*
+   33774:	ff ff fc 02 	*unknown*
 
 00033778 <T_IMM_EXPECT36>:
    33778:	00 00 00 04 	add	r0,r4
@@ -26849,7 +26850,7 @@
    337a0:	00 00 02 04 	add	r16,r4
 
 000337a4 <T_IMM_EXPECT47>:
-   337a4:	00 00 04 04 	*unknown*
+   337a4:	ff ff fc 04 	*unknown*
 
 000337a8 <T_IMM_EXPECT48>:
    337a8:	00 00 00 08 	add	r0,r8
@@ -26885,7 +26886,7 @@
    337d0:	00 00 02 08 	add	r16,r8
 
 000337d4 <T_IMM_EXPECT59>:
-   337d4:	00 00 04 08 	*unknown*
+   337d4:	ff ff fc 08 	*unknown*
 
 000337d8 <T_IMM_EXPECT60>:
    337d8:	00 00 00 10 	add	r0,r16
@@ -26921,7 +26922,7 @@
    33800:	00 00 02 10 	add	r16,r16
 
 00033804 <T_IMM_EXPECT71>:
-   33804:	00 00 04 10 	*unknown*
+   33804:	ff ff fc 10 	*unknown*
 
 00033808 <T_IMM_EXPECT72>:
    33808:	00 00 00 20 	add	r1,r0
@@ -26957,7 +26958,7 @@
    33830:	00 00 02 20 	add	r17,r0
 
 00033834 <T_IMM_EXPECT83>:
-   33834:	00 00 04 20 	*unknown*
+   33834:	ff ff fc 20 	*unknown*
 
 00033838 <T_IMM_EXPECT84>:
    33838:	00 00 00 40 	add	r2,r0
@@ -26993,7 +26994,7 @@
    33860:	00 00 02 40 	add	r18,r0
 
 00033864 <T_IMM_EXPECT95>:
-   33864:	00 00 04 40 	*unknown*
+   33864:	ff ff fc 40 	*unknown*
 
 00033868 <T_IMM_EXPECT96>:
    33868:	00 00 00 80 	add	r4,r0
@@ -27029,7 +27030,7 @@
    33890:	00 00 02 80 	add	r20,r0
 
 00033894 <T_IMM_EXPECT107>:
-   33894:	00 00 04 80 	*unknown*
+   33894:	ff ff fc 80 	*unknown*
 
 00033898 <T_IMM_EXPECT108>:
    33898:	00 00 01 00 	add	r8,r0
@@ -27065,7 +27066,7 @@
    338c0:	00 00 03 00 	add	r24,r0
 
 000338c4 <T_IMM_EXPECT119>:
-   338c4:	00 00 05 00 	*unknown*
+   338c4:	ff ff fd 00 	*unknown*
 
 000338c8 <T_IMM_EXPECT120>:
    338c8:	00 00 02 00 	add	r16,r0
@@ -27101,7 +27102,7 @@
    338f0:	00 00 04 00 	*unknown*
 
 000338f4 <T_IMM_EXPECT131>:
-   338f4:	00 00 06 00 	*unknown*
+   338f4:	ff ff fe 00 	*unknown*
 
 000338f8 <T_IMM_EXPECT132>:
    338f8:	00 00 04 00 	*unknown*
@@ -27137,7 +27138,7 @@
    33920:	00 00 06 00 	*unknown*
 
 00033924 <T_IMM_EXPECT143>:
-   33924:	00 00 08 00 	*unknown*
+   33924:	00 00 00 00 	add	r0,r0
 
 00033928 <T_IMM_EXPECT144>:
    33928:	00 00 00 06 	add	r0,r6
@@ -27167,7 +27168,7 @@
    33948:	00 00 07 fe 	*unknown*
 
 0003394c <T_IMM_EXPECT153>:
-   3394c:	00 00 0f fe 	*unknown*
+   3394c:	00 00 07 fe 	*unknown*
 
 セクション .stack の逆アセンブル:
 

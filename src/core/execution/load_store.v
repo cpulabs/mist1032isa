@@ -232,29 +232,47 @@ module load_store(
 					end
 			endcase
 		end
+		//Sys Load / Store
 		else begin
-			if(iCMD == `EXE_SYS_LDST_READ_SPR)begin
-				spr_valid = 1'b1;
-				spr = iSPR;		
-				data = iSPR;
-				ldst_addr = iSOURCE1;
-				ldst_data = iSPR;
-				ldst_rw = 1'b0;
-				ldst_order = 2'h2;
-				ldst_load_mask = 2'h0;
-				ldst_load_shift = 2'h0;
-			end
-			else begin
-				spr_valid = 1'b1;
-				spr = iSOURCE0;			
-				data = 32'h0;
-				ldst_addr = iSOURCE0;
-				ldst_data = iSOURCE0;
-				ldst_rw = 1'b1;
-				ldst_order = 2'h2;
-				ldst_load_mask = 2'h0;
-				ldst_load_shift = 2'h0;
-			end
+			case(iCMD)
+				`EXE_SYS_LDST_READ_SPR:
+					begin
+						spr_valid = 1'b1;
+						spr = iSPR;		
+						data = iSPR;
+						ldst_addr = iSOURCE1;
+						ldst_data = iSPR;
+						ldst_rw = 1'b0;
+						ldst_order = 2'h2;
+						ldst_load_mask = 2'h0;
+						ldst_load_shift = 2'h0;
+					end
+				`EXE_SYS_LDST_WRITE_SPR:
+					begin
+						spr_valid = 1'b1;
+						spr = iSOURCE0;			
+						data = 32'h0;
+						ldst_addr = iSOURCE0;
+						ldst_data = iSOURCE0;
+						ldst_rw = 1'b1;
+						ldst_order = 2'h2;
+						ldst_load_mask = 2'h0;
+						ldst_load_shift = 2'h0;
+					end
+				//EXE_SYS_LDST_ADD_SPR
+				default:
+					begin
+						spr_valid = 1'b1;
+						spr = iSOURCE0 + iSOURCE1;			
+						data = 32'h0;
+						ldst_addr = iSOURCE0;
+						ldst_data = iSOURCE0 + iSOURCE1;
+						ldst_rw = 1'b1;
+						ldst_order = 2'h2;
+						ldst_load_mask = 2'h0;
+						ldst_load_shift = 2'h0;
+					end
+			endcase
 		end
 	end
 	

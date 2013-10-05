@@ -759,6 +759,121 @@ module decoder(
 							/* Execute Module */					`EXE_SELECT_ADDER
 							};
 					end
+
+
+				`OC_UMULL : 
+					begin
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_MUL_UMULL,
+								/* Execute Module */					`EXE_SELECT_MUL
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{21{1'b0}}, f_decode_inst[15:10], f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_MUL_UMULL,
+								/* Execute Module */					`EXE_SELECT_MUL
+							};
+						end
+					end
+
+				`OC_UMULH : 
+					begin
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_MUL_UMULH,
+								/* Execute Module */					`EXE_SELECT_MUL
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],
+								/* Source1 */							{{21{1'b0}}, f_decode_inst[15:10], f_decode_inst[4:0]},
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b1,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_MUL_UMULH,
+								/* Execute Module */					`EXE_SELECT_MUL
+							};
+						end
+					end
+
+
 					
 				`OC_IC :
 					begin
@@ -2874,9 +2989,171 @@ module decoder(
 							};
 						end
 					end
-				//`OC_BURN
-				//`OC_BRN
-				//`OC_BN
+				`OC_BURN :
+					begin	
+						if(!f_decode_inst[20])begin			//JO1
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],//	/* Source0 */							`SYSREG_PC,							//PC
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[9:5]},	//Rd
+								/* Source0 Use Flags*/					1'b1,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,		//Flag
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b1,//1'b0,//	/* Source0 System Register */			1'b1,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						`SYSREG_PCR,
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b1,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_BRANCH_BUR,
+								/* Execute Module */					`EXE_SELECT_BRANCH
+							};
+						end
+						else begin							//JI16
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],//	/* Source0 */							`SYSREG_PC,							//PC
+								/* Source1 */							{{14{1'b0}}, f_decode_inst[15:0], 2'h0},	//Rd
+								/* Source0 Use Flags*/					1'b1,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,		//Flag
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b1,//1'b0,//	/* Source0 System Register */			1'b1,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						`SYSREG_PCR,
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b1,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_BRANCH_BUR,
+								/* Execute Module */					`EXE_SELECT_BRANCH
+							};
+						end
+					end
+				`OC_BRN :
+					begin	
+						if(!f_decode_inst[20])begin			//JO1
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],//	/* Source0 */							`SYSREG_PC,							//PC
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[9:5]},	//Rd
+								/* Source0 Use Flags*/					1'b1,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,		//Flag
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b1,//1'b0,//	/* Source0 System Register */			1'b1,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						`SYSREG_PCR,
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b1,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_BRANCH_BR,
+								/* Execute Module */					`EXE_SELECT_BRANCH
+							};
+						end
+						else begin							//JI16
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],//	/* Source0 */							`SYSREG_PC,							//PC
+								/* Source1 */							{{14{f_decode_inst[15]}}, f_decode_inst[15:0], 2'h0}, //{{16{1'b0}}, f_decode_inst[15:0]},	//Rd
+								/* Source0 Use Flags*/					1'b1,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,		//Flag
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b1,//1'b0,//	/* Source0 System Register */			1'b1,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						`SYSREG_PCR,
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b1,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_BRANCH_BR,
+								/* Execute Module */					`EXE_SELECT_BRANCH
+							};
+						end
+					end
+				`OC_BN :
+					begin	
+						if(!f_decode_inst[20])begin			//JO1
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							{5{1'b0}},								//none
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[9:5]},		//Rd
+								/* Source0 Use Flags*/					1'b1,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,//1'b0,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b1,//1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						`SYSREG_PCR,
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b1,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_BRANCH_B,
+								/* Execute Module */					`EXE_SELECT_BRANCH
+							};
+						end
+						else begin							//JI16
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							{5{1'b0}},								//none		
+								/* Source1 */							{{14{1'b0}}, f_decode_inst[15:0], 2'b0},		//Rd
+								/* Source0 Use Flags*/					1'b1,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,//1'b0,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b1,//1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						`SYSREG_PCR,
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b1,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_BRANCH_B,
+								/* Execute Module */					`EXE_SELECT_BRANCH
+							};
+						end
+					end
 				/*******************
 				System Read
 				*******************/			
@@ -3393,7 +3670,7 @@ module decoder(
 							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
-				`OC_PFLAGR: 
+				`OC_SRPFLAGR: 
 					begin									//O1
 						f_decode	=	{
 							/* Decode Error */						1'b0,
@@ -3885,6 +4162,34 @@ module decoder(
 							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
+				`OC_SRSPWADD : 
+					begin						//CI16
+						f_decode	=	{
+							/* Decode Error */						1'b0,
+							/* Commit Wait Instruction */			1'b0,
+							/* Condition Code & AFE */				f_decode_inst[19:16],
+							/* Source0 */							`SYSREG_SPR,
+							/* Source1 */							{{16{1'b0}}, f_decode_inst[15:0]},
+							/* Source0 Use Flags*/					1'b0,
+							/* Source1-Immediate */					1'b1,
+							/* Source0 Active */					1'b1,
+							/* Source1 Active */					1'b1,
+							/* Source0 System Register */			1'b1,
+							/* Source1 System Register */			1'b0,
+							/* Source0 System Register Rename */	1'b0,
+							/* Source1 System Register Rename */	1'b0,
+							/* Displacement Data -> ADV */			6'h0,
+							/* Displacement Data -> ADV Enable */	1'b0,
+							/* Destination */						`SYSREG_SPR,
+							/* Write Back Enable */					1'b1,
+							/* Make Flag Instruction */				1'b0,
+							/* Destination is System Register */	1'b1,
+							/* Destination Rename*/					1'b0,
+							/* Execute Module Command */			`EXE_SYS_LDST_ADD_SPR,
+							/* Execute Module */					`EXE_SELECT_SYS_REG
+						};
+					end
+
 				/*******************
 				Other
 				*******************/

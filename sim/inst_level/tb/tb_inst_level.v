@@ -234,6 +234,8 @@ module tb_mist1032isa_normal_test;
 	******************************************************/
 	reg assert_check_flag;
 	reg [31:0] assert_wrong_number;
+	reg [31:0] assert_result;
+	reg [31:0] assert_expect;
 
 		always@(posedge iCORE_CLOCK)begin
 		if(inRESET && oMEMORY_REQ && !iMEMORY_LOCK && oMEMORY_ORDER == 2'h2 && oMEMORY_RW)begin

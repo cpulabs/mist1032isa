@@ -4,7 +4,7 @@
 `include "irq.h"
 `include "common.h"
 
-`define FOWARDING_NEW_CHECK
+//`define FOWARDING_NEW_CHECK
 
 module execution(
 		input wire iCLOCK,
@@ -671,8 +671,8 @@ module execution(
 	wire mul_pf_h = mul_tmp[32];
 	wire mul_zf_h = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
 	
-	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
-	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
+	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
+	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? mul_tmp[63:32] : mul_tmp[31:0];
 	
 	
 	/*

@@ -1,4 +1,4 @@
-default: code_check sim_run
+default: code_check sim_run sim_summary
 
 
 code_check:
@@ -10,3 +10,7 @@ code_check:
 
 sim_run:
 	python sim.py code_check.log compile_list.txt bin/
+
+sim_summary:
+	python sim_summary.py sim/
+	
