@@ -123,7 +123,7 @@ module utim64(
 	wire compare0_config_write_cc = (req_fifo_addr == `UTIM64XACC0CFRG)? write_condition : 1'b0;
 	wire compare0_counter_low_write_cc = (req_fifo_addr == `UTIM64XACC0R31_0)? write_condition : 1'b0;
 	wire compare0_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC0R63_32)? write_condition : 1'b0;
-	wire [63:0] compare0_counter_write_data = (compare0_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
+	wire [63:0] compare0_counter_write_data = (compare0_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};//64'h00000000_000071af;
 	wire compare0_irq;
 	comparator_counter COMPARATOR0(
 		.iCLOCK(iTIMER_CLOCK),

@@ -56,6 +56,8 @@ module default_peripheral_system(
 	wire [4:0] utim64_mode = iDPS_ADDR[6:2];
 	wire utim64_irq;
 	wire utim64_ack;
+	wire sci_tire_irq;
+	wire sci_rire_irq;
 	wire [1:0] sci_addr = iDPS_ADDR[3:2];
 	wire sci_irq;
 	wire sci_ack;
@@ -63,18 +65,24 @@ module default_peripheral_system(
 	wire [31:0] sci_r_data;
 	wire mimsr_r_valid;
 	wire [31:0] mimsr_r_data;
+	wire lsflags_r_valid;
+	wire [31:0] lsflags_r_data;
 	reg b_stamp_state;
-	reg [1:0] b_stamp;				//0:UTIM64 | 1:SCI | 2:MIMSR
+	reg [1:0] b_stamp;
 	//IRQ NUM Check
 	wire irq_bum_buffer;
 	
 	//Condition
 	wire dps_request_lock = oDPS_BUSY || utim64_busy || sci_busy;
-	wire utim64_condition = !dps_request_lock && iDPS_REQ && (iDPS_ADDR <= 32'h74);
+	wire utim64_condition = !dps_request_lock && iDPS_REQ && ((iDPS_ADDR <= 32'h74) || (iDPS_ADDR == 32'h7c));
 	wire sci_condition = !dps_request_lock && iDPS_REQ && ((iDPS_ADDR == 32'h100) || (iDPS_ADDR == 32'h104) || (iDPS_ADDR == 32'h108));
 	wire mimsr_condition = !dps_request_lock && iDPS_REQ && (iDPS_ADDR == 32'h120);
+	wire lsflags_condition = !dps_request_lock && iDPS_REQ && (iDPS_ADDR == 32'h1FC);
 	
-	
+	localparam PL_LOAD_STT_UTIM64 = 2'h0;
+	localparam PL_LOAD_STT_SCI = 2'h1;
+	localparam PL_LOAD_STT_MIMSR = 2'h2;
+	localparam PL_LOAD_STT_LSFLAGS = 2'h3;
 	
 	/*********************************
 	Read Wait State
@@ -82,7 +90,7 @@ module default_peripheral_system(
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_stamp_state <= MAIN_STT_IDLE;
-			b_stamp <= 2'h0;
+			b_stamp <= PL_LOAD_STT_UTIM64;
 		end
 		else begin
 			case(b_stamp_state)
@@ -91,21 +99,25 @@ module default_peripheral_system(
 						if(!iDPS_RW)begin
 							if(utim64_condition)begin
 								b_stamp_state <= MAIN_STT_RD_WAIT;
-								b_stamp <= 2'h0;
+								b_stamp <= PL_LOAD_STT_UTIM64;
 							end
 							else if(sci_condition)begin
 								b_stamp_state <= MAIN_STT_RD_WAIT;
-								b_stamp <= 2'h1;
+								b_stamp <= PL_LOAD_STT_SCI;
 							end
 							else if(mimsr_condition)begin
 								b_stamp_state <= MAIN_STT_RD_WAIT;
-								b_stamp <= 2'h2;
+								b_stamp <= PL_LOAD_STT_MIMSR;
+							end
+							else if(lsflags_condition)begin
+								b_stamp_state <= MAIN_STT_RD_WAIT;
+								b_stamp <= PL_LOAD_STT_LSFLAGS;
 							end
 						end
 					end
 				MAIN_STT_RD_WAIT:
 					begin
-						if(utim64_r_valid || sci_r_valid || mimsr_r_valid)begin
+						if(utim64_r_valid || sci_r_valid || mimsr_r_valid || lsflags_r_valid)begin
 							b_stamp_state <= MAIN_STT_IDLE;
 							b_stamp <= 2'h0;
 						end
@@ -144,6 +156,9 @@ module default_peripheral_system(
 		.iDPS_BASE_CLOCK(iDPS_BASE_CLOCK),
 		//Reset
 		.inRESET(inRESET),
+		//LSFLAGS
+		.oLSFLAGS_TIRE_IRQ(sci_tire_irq),
+		.oLSFLAGS_RIRE_IRQ(sci_rire_irq),
 		//CPU Interface
 		.iREQ_VALID(sci_condition),
 		.oREQ_BUSY(sci_busy),		//Ignore
@@ -171,6 +186,21 @@ module default_peripheral_system(
 		.oREQ_DATA(mimsr_r_data)
 	);
 	
+	dps_lsflags DPS_FLAGS(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
+		//
+		.iSCI_VALID(sci_irq),
+		.iSCI_SCITIE(sci_tire_irq),
+		.iSCI_SCIRIE(sci_rire_irq),
+		//
+		.iREAD_VALID(lsflags_condition),
+		//
+		.oLSFLAGS_VALID(lsflags_r_valid),
+		.oLSFLAGS(lsflags_r_data)
+	);
+	
 	/*********************************
 	IRQ Controlor
 	*********************************/
@@ -195,10 +225,10 @@ module default_peripheral_system(
 		.iIRQ_ACK(iDPS_IRQ_ACK)
 	);
 	
-	assign oDPS_IRQ_NUM = 6'h36 + {5'h00, irq_bum_buffer};
+	assign oDPS_IRQ_NUM = 6'd36 + {5'h00, irq_bum_buffer};
 	assign oDPS_BUSY = b_stamp_state || utim64_busy || sci_busy;
-	assign oDPS_VALID = sci_r_valid || utim64_r_valid || mimsr_r_valid;
-	assign oDPS_DATA = (b_stamp == 2'h0)? utim64_r_data : ((b_stamp == 2'h1)? sci_r_data : mimsr_r_data);
+	assign oDPS_VALID = sci_r_valid || utim64_r_valid || mimsr_r_valid || lsflags_r_valid;
+	assign oDPS_DATA = (b_stamp == PL_LOAD_STT_UTIM64)? utim64_r_data : (b_stamp == PL_LOAD_STT_SCI)? sci_r_data : (b_stamp == PL_LOAD_STT_MIMSR)? mimsr_r_data : lsflags_r_data;
 	
 endmodule
 

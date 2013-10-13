@@ -58,15 +58,15 @@ module dps_irq(
 	IRQ Check
 	*******************************************************/
 	reg irq_valid;	//IRQ Valid
-	reg irq_num;	//0:SCI | 1:TIMER
+	reg irq_num;	//0:TIMER | 1:SCI
 	always @* begin
 		if(iUTIM64FLAGS_IRQ && (!b_ctrl_mem_valid[0] || (b_ctrl_mem_valid[0] && b_ctrl_mem_mask[0])))begin
 			irq_valid <= 1'b1;
-			irq_num <= 1'b1;
+			irq_num <= 1'b0;
 		end
 		else if(iLSFLAGS_IRQ && (!b_ctrl_mem_valid[1] || (b_ctrl_mem_valid[1] && b_ctrl_mem_mask[1])))begin
 			irq_valid <= 1'b1;
-			irq_num <= 1'b0;
+			irq_num <= 1'b1;
 		end
 		else begin
 			irq_valid <= 1'b0;
@@ -108,8 +108,8 @@ module dps_irq(
 	end
 	
 	
-	assign oUTIM64FLAGS_ACK = (b_irq_state == L_PARAM_IRQ_STT_IDLE)? (irq_num == 1'b1) && irq_valid : 1'b0;
-	assign oLSFLAGS_ACK = (b_irq_state == L_PARAM_IRQ_STT_IDLE)? (irq_num == 1'b0) && irq_valid : 1'b0;		
+	assign oUTIM64FLAGS_ACK = (b_irq_state == L_PARAM_IRQ_STT_IDLE)? ((irq_num == 1'b0) && irq_valid) : 1'b0;
+	assign oLSFLAGS_ACK = (b_irq_state == L_PARAM_IRQ_STT_IDLE)? ((irq_num == 1'b1) && irq_valid) : 1'b0;		
 	//IRQ Out
 	assign oIRQ_VALID = (b_irq_state == L_PARAM_IRQ_STT_ACK_WAIT)? 1'b1 : 1'b0;
 	assign oIRQ_NUM = b_irq_num;

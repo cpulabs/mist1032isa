@@ -29,7 +29,7 @@ module dps_utim64(
 	wire utim64_flags_cc;
 	assign utim64a_req_cc = !utim64a_busy && !utim64b_busy && iREQ_VALID && (iREQ_ADDR >= 5'h0 && iREQ_ADDR <= 5'he);
 	assign utim64b_req_cc = !utim64a_busy && !utim64b_busy && iREQ_VALID && (iREQ_ADDR >= 5'h10 && iREQ_ADDR <= 5'h1e);
-	assign utim64_flags_cc = !utim64a_busy && !utim64b_busy && iREQ_VALID && !iREQ_RW && (iREQ_ADDR == 5'h16);
+	assign utim64_flags_cc = !utim64a_busy && !utim64b_busy && iREQ_VALID && !iREQ_RW && (iREQ_ADDR == 5'h1f);
 	
 	wire utim64a_out_valid;
 	wire utim64b_out_valid;
@@ -72,7 +72,7 @@ module dps_utim64(
 					end
 				L_PARAM_MAIN_STT_RD_WAIT:
 					begin
-						if(utim64a_out_valid || utim64b_out_valid)begin
+						if(utim64a_out_valid || utim64b_out_valid || b_flag_buffer_valid)begin
 							b_state <= L_PARAM_MAIN_STT_IDLE;
 						end
 					end
@@ -125,10 +125,11 @@ module dps_utim64(
 	/************************************
 	IRQ Flags
 	************************************/
-	parameter L_PARAM_IRQ_STT_IDLE = 1'b0;
-	parameter L_PARAM_IRQ_STT_IRQ = 1'b1;
+	parameter L_PARAM_IRQ_STT_IDLE = 2'h0;
+	parameter L_PARAM_IRQ_STT_IRQ = 2'h1;
+	parameter L_PARAM_IRQ_STT_FLAG = 2'h2;
 	
-	reg b_irq_state;
+	reg [1:0] b_irq_state;
 	reg [7:0] b_irq_flags;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -139,6 +140,16 @@ module dps_utim64(
 			case(b_irq_state)
 				L_PARAM_IRQ_STT_IDLE:
 					begin
+						if(|{utim64a_irq, utim64b_irq})begin
+							b_irq_state <= L_PARAM_IRQ_STT_IRQ;
+							b_irq_flags <= b_irq_flags | {utim64b_irq, utim64a_irq};
+						end
+						begin
+							b_irq_flags <= b_irq_flags | {utim64b_irq, utim64a_irq};
+						end
+						
+						
+						/*
 						if(|{utim64a_irq, utim64b_irq})begin
 							b_irq_state <= L_PARAM_IRQ_STT_IRQ;
 							if(utim64_flags_cc)begin
@@ -156,33 +167,59 @@ module dps_utim64(
 								b_irq_flags <= b_irq_flags;
 							end
 						end
+						*/
 					end
 				L_PARAM_IRQ_STT_IRQ:
 					begin
 						if(iIRQ_ACK)begin
+							b_irq_state <= L_PARAM_IRQ_STT_FLAG;
+						end
+						b_irq_flags <= b_irq_flags | {utim64b_irq, utim64a_irq};
+						
+						/*
+						if(iIRQ_ACK)begin
 							if(utim64_flags_cc)begin
 								//Flag Load Condition
-								b_irq_state <= (|{utim64a_irq, utim64b_irq})? L_PARAM_IRQ_STT_IRQ : L_PARAM_IRQ_STT_IDLE;
-								b_irq_flags <= (|{utim64a_irq, utim64b_irq})? {utim64a_irq, utim64b_irq} : 8'h00;
+								b_irq_state <= (utim64a_irq || utim64b_irq)? L_PARAM_IRQ_STT_IRQ : L_PARAM_IRQ_STT_IDLE;
+								b_irq_flags <= (utim64a_irq || utim64b_irq)? {utim64a_irq, utim64b_irq} : 8'h00;
 							end
 							else begin
 								//Not Flag Load Condition
-								b_irq_state <= (|{utim64a_irq, utim64b_irq})? L_PARAM_IRQ_STT_IRQ : L_PARAM_IRQ_STT_IDLE;
-								b_irq_flags <= (|{utim64a_irq, utim64b_irq})? (b_irq_flags | {utim64a_irq, utim64b_irq}) : b_irq_flags;
+								b_irq_state <= (utim64a_irq || utim64b_irq)? L_PARAM_IRQ_STT_IRQ : L_PARAM_IRQ_STT_IDLE;
+								b_irq_flags <= (utim64a_irq || utim64b_irq)? (b_irq_flags | {utim64a_irq, utim64b_irq}) : b_irq_flags;
 							end
 						end
 						else begin
 							if(utim64_flags_cc)begin
 								//Flag Load Condition
 								b_irq_state <= L_PARAM_IRQ_STT_IRQ;
-								b_irq_flags <= (|{utim64a_irq, utim64b_irq})? {utim64a_irq, utim64b_irq} : 8'h00;
+								b_irq_flags <= (utim64a_irq || utim64b_irq)? {utim64a_irq, utim64b_irq} : 8'h00;
 							end
 							else begin
 								//Not Flag Load Condition
 								b_irq_state <= L_PARAM_IRQ_STT_IRQ;
-								b_irq_flags <= (|{utim64a_irq, utim64b_irq})? (b_irq_flags | {utim64a_irq, utim64b_irq}) : b_irq_flags;
+								b_irq_flags <= (utim64a_irq || utim64b_irq)? (b_irq_flags | {utim64a_irq, utim64b_irq}) : b_irq_flags;
 							end
 						end
+						*/
+					end
+					
+					
+				L_PARAM_IRQ_STT_FLAG:
+					begin
+						if(utim64_flags_cc)begin
+							//Flag Load Condition
+							b_irq_state <= L_PARAM_IRQ_STT_IDLE;
+							b_irq_flags <= {utim64b_irq, utim64a_irq};
+						end
+						else begin
+							//Not Flag Load Condition
+							b_irq_flags <= b_irq_flags | {utim64b_irq, utim64a_irq};
+						end
+					end
+				default:
+					begin
+						b_irq_state <= L_PARAM_IRQ_STT_IDLE;
 					end
 			endcase
 		end
@@ -196,7 +233,7 @@ module dps_utim64(
 			b_flag_buffer_flags <= 8'h0;
 		end
 		else begin
-			b_flag_buffer_valid <= utim64_flags_cc && (b_irq_state == L_PARAM_IRQ_STT_IRQ);
+			b_flag_buffer_valid <= utim64_flags_cc;//utim64_flags_cc && (b_irq_state == L_PARAM_IRQ_STT_IRQ);
 			b_flag_buffer_flags <= b_irq_flags;
 		end
 	end

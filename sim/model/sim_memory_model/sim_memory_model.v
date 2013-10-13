@@ -25,6 +25,27 @@ module sim_memory_model(
 	wire system_write_condition = iMEMORY_REQ && iMEMORY_RW && !system_busy;
 	
 	
+	
+	//////////////////////////////////////////////////////////
+	wire [31:0] idtr = 32'h03effc00;
+	wire [63:0] gci0 = b_mem_data[idtr[25:3]+4];
+	wire [63:0] gci1 = b_mem_data[idtr[25:3]+5];
+	wire [63:0] gci2 = b_mem_data[idtr[25:3]+6];
+	wire [63:0] gci3 = b_mem_data[idtr[25:3]+7];
+	wire [63:0] gci4 = b_mem_data[idtr[25:3]+8];
+	wire [63:0] utim = b_mem_data[idtr[25:3]+36];
+	wire [63:0] lsflags = b_mem_data[idtr[25:3]+37];
+	
+	
+	
+	
+	
+	
+	
+	//////////////////////////////////////////////////////////
+	
+	
+	
 	function [3:0] func_byte_addressing_controllor;
 		input [1:0] func_order;	//2
 		input [1:0] func_address;	//0

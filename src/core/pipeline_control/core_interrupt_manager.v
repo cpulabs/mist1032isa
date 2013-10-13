@@ -20,7 +20,7 @@ module core_interrupt_manager(
 		input wire [5:0] iEXT_NUM,
 		output wire oEXT_ACK,
 		//output				oEXT_BUSY,
-		//Core-ALU1
+		//Core-ALU
 		input wire iFAULT_ACTIVE,
 		input wire [6:0] iFAULT_NUM,	
 		input wire [31:0] iFAULT_FI0R,

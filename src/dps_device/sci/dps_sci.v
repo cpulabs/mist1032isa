@@ -6,6 +6,9 @@ module dps_sci(
 		input wire iDPS_BASE_CLOCK,
 		//Reset
 		input wire inRESET,
+		//LSFLAGS
+		output wire oLSFLAGS_TIRE_IRQ,
+		output wire oLSFLAGS_RIRE_IRQ,
 		//CPU Interface
 		input wire iREQ_VALID,
 		output wire oREQ_BUSY,		//Ignore
@@ -59,6 +62,7 @@ module dps_sci(
 	/**********************************
 	SCI Config Register
 	**********************************/
+	wire scicfg_write_condition = iREQ_ADDR == SCICFG && iREQ_VALID && iREQ_RW;
 	always@(posedge iIF_CLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_scicfg_ten <= 1'b0;
@@ -70,7 +74,7 @@ module dps_sci(
 			b_scicfg_rcrl <= 1'b0;
 		end
 		else begin
-			if(iREQ_ADDR == SCICFG && iREQ_VALID && iREQ_RW)begin
+			if(scicfg_write_condition)begin
 				b_scicfg_ten <= iREQ_DATA[0];					
 				b_scicfg_ren <= iREQ_DATA[1];
 				b_scicfg_bdr <= iREQ_DATA[5:2];
@@ -126,8 +130,15 @@ module dps_sci(
 			b_irq_transmit_buff_resresh_wait <= 1'b0;
 			b_irq_transmit_buff_resresh_count <= 4'h0;
 		end
+		//Reset
+		else if(scicfg_write_condition)begin
+			b_irq_transmit_buff_irq <= 1'b0;
+			b_irq_transmit_buff_resresh_wait <= 1'b0;
+			b_irq_transmit_buff_resresh_count <= 4'h0;
+		end
 		//FIFO Resresh Wait
 		else if(b_irq_transmit_buff_resresh_wait)begin
+			b_irq_transmit_buff_irq <= 1'b0;
 			if(b_irq_transmit_buff_resresh_count > uart_mod_txd_fifo_counter)begin
 				b_irq_transmit_buff_resresh_wait <= 1'b0;
 			end
@@ -188,8 +199,15 @@ module dps_sci(
 			b_irq_receive_buff_resresh_wait <= 1'b0;
 			b_irq_receive_buff_resresh_count <= 4'h0;
 		end
+		//Reset
+		else if(scicfg_write_condition)begin
+			b_irq_receive_buff_irq <= 1'b0;
+			b_irq_receive_buff_resresh_wait <= 1'b0;
+			b_irq_receive_buff_resresh_count <= 4'h0;
+		end
 		//FIFO Resresh Wait
 		else if(b_irq_receive_buff_resresh_wait)begin
+			b_irq_receive_buff_irq <= 1'b0;///////////////////////
 			if(b_irq_receive_buff_resresh_count < uart_mod_rxd_fifo_counter)begin
 				b_irq_receive_buff_resresh_wait <= 1'b0;
 			end
@@ -300,7 +318,7 @@ module dps_sci(
 			b_ack_buffer_ack <= 1'b0;
 		end
 		else begin
-			b_ack_buffer_ack <= (iREQ_VALID && !uart_mod_empty && (iREQ_ADDR == SCIRX) && !iREQ_RW) || iREQ_VALID && (iREQ_ADDR == SCICFG) && !iREQ_RW;
+			b_ack_buffer_ack <= (iREQ_VALID && /*!uart_mod_empty &&*/ (iREQ_ADDR == SCIRX) && !iREQ_RW) || iREQ_VALID && (iREQ_ADDR == SCICFG) && !iREQ_RW;
 		end
 	end
 	
@@ -312,6 +330,9 @@ module dps_sci(
 			b_ack_buffer_data <= (iREQ_ADDR == SCICFG)? {18'h0, b_scicfg_rcrl, b_scicfg_tcrl, b_scicfg_rire, b_scicfg_tire, b_scicfg_bdr, b_scicfg_ren, b_scicfg_ten} : ((uart_mod_empty)? 32'h0 : 32'h80000000 | uart_mod_data);
 		end
 	end
+	
+	assign oLSFLAGS_TIRE_IRQ = b_irq_transmit_buff_irq;
+	assign oLSFLAGS_RIRE_IRQ = b_irq_receive_buff_irq;
 	
 	assign oREQ_BUSY = uart_mod_full;//1'b0;//!(iREQ_VALID && !uart_mod_full && (iREQ_ADDR == `SCITX) && iREQ_RW);
 	assign oREQ_VALID = b_ack_buffer_ack;//(iREQ_VALID && !uart_mod_empty && (iREQ_ADDR == SCIRX) && !iREQ_RW) || iREQ_VALID && (iREQ_ADDR == SCICFG) && !iREQ_RW;
