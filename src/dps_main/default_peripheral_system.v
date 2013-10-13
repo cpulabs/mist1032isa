@@ -11,7 +11,7 @@ module default_peripheral_system(
 		****************************************/	
 		//IRQ Tables	
 		input wire iDPS_IRQ_CONFIG_TABLE_REQ,
-		input wire [5:0] iDPS_IRQ_CONFIG_TABLE_ENTRY,			//UTIM64_IRT | LSFLAGS_IRT 
+		input wire [1:0] iDPS_IRQ_CONFIG_TABLE_ENTRY,			//[0]UTIM64_IRT | [1]LSFLAGS_IRT | [2~3]Reserved 
 		input wire iDPS_IRQ_CONFIG_TABLE_FLAG_MASK,
 		input wire iDPS_IRQ_CONFIG_TABLE_FLAG_VALID,
 		input wire [1:0] iDPS_IRQ_CONFIG_TABLE_FLAG_LEVEL,

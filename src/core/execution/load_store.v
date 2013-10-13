@@ -48,7 +48,7 @@ module load_store(
 						ldst_rw = 1'b0;
 						ldst_order = 2'h0;
 						ldst_load_mask = 2'h0;
-						ldst_load_shift = iSOURCE1[1:0];
+						ldst_load_shift = 2'h3 - iSOURCE1[1:0];
 					end
 				`EXE_LDSW_LD16:
 					begin
@@ -60,7 +60,7 @@ module load_store(
 						ldst_rw = 1'b0;
 						ldst_order = 2'h1;
 						ldst_load_mask = 2'h1;
-						ldst_load_shift = iSOURCE1[1:0];
+						ldst_load_shift = 2'h3 - iSOURCE1[1:0];
 					end
 				`EXE_LDSW_LD32:
 					begin
@@ -156,7 +156,7 @@ module load_store(
 						ldst_rw = 1'b0;
 						ldst_order = 2'h0;
 						ldst_load_mask = 2'h0;
-						ldst_load_shift = iSOURCE1[1:0];
+						ldst_load_shift = 2'h3 - iSOURCE1[1:0];
 					end
 				`EXE_LDSW_LDD16:
 					begin
@@ -168,7 +168,7 @@ module load_store(
 						ldst_rw = 1'b0;
 						ldst_order = 2'h1;
 						ldst_load_mask = 2'h1;
-						ldst_load_shift = iSOURCE1[1:0];
+						ldst_load_shift = 2'h3 - iSOURCE1[1:0];
 					end
 				`EXE_LDSW_LDD32:
 					begin

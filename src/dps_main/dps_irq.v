@@ -8,7 +8,7 @@ module dps_irq(
 		input wire inRESET,
 		//IRQ Tables	
 		input wire iDPS_IRQ_CONFIG_TABLE_REQ,
-		input wire [5:0] iDPS_IRQ_CONFIG_TABLE_ENTRY,			//UTIM64_IRT | LSFLAGS_IRT 
+		input wire [1:0] iDPS_IRQ_CONFIG_TABLE_ENTRY,			//[0]UTIM64_IRT | [1]LSFLAGS_IRT | [2~3]Reserved 
 		input wire iDPS_IRQ_CONFIG_TABLE_FLAG_MASK,
 		input wire iDPS_IRQ_CONFIG_TABLE_FLAG_VALID,
 		input wire [1:0] iDPS_IRQ_CONFIG_TABLE_FLAG_LEVEL,
@@ -31,9 +31,9 @@ module dps_irq(
 	Interrupt Infomation Memory
 	*******************************************************/
 	//Interrupt Infomation Memory
-	reg b_ctrl_mem_mask[0:1];
-	reg b_ctrl_mem_valid[0:1];
-	reg [1:0] b_ctrl_mem_mode[0:1];
+	reg b_ctrl_mem_mask[0:3];
+	reg b_ctrl_mem_valid[0:3];
+	reg [1:0] b_ctrl_mem_mode[0:3];
 
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin

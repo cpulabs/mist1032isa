@@ -526,8 +526,7 @@ module mist1032isa(
 	/********************************************************************************
 	DPS
 	********************************************************************************/
-	wire [5:0] core2dps_irq_tables_entry_tmp;
-	assign core2dps_irq_tables_entry_tmp = core2io_irq_tables_entry - 6'd46;
+	wire [5:0] core2dps_irq_tables_entry_dps = core2io_irq_tables_entry - 6'd36;
 	
 	default_peripheral_system DPS(
 		.iCLOCK(iBUS_CLOCK),
@@ -538,7 +537,7 @@ module mist1032isa(
 		****************************************/
 		//IRQ Tables	
 		.iDPS_IRQ_CONFIG_TABLE_REQ(core2io_irq_tables_req && (core2io_irq_tables_entry == 6'd36 || core2io_irq_tables_entry == 6'd37)),
-		.iDPS_IRQ_CONFIG_TABLE_ENTRY(core2dps_irq_tables_entry_tmp[0]),
+		.iDPS_IRQ_CONFIG_TABLE_ENTRY(core2dps_irq_tables_entry_dps[1:0]),
 		.iDPS_IRQ_CONFIG_TABLE_FLAG_MASK(core2io_irq_tables_flag_mask),
 		.iDPS_IRQ_CONFIG_TABLE_FLAG_VALID(core2io_irq_tables_flag_valid),
 		.iDPS_IRQ_CONFIG_TABLE_FLAG_LEVEL(core2io_irq_tables_flag_level),

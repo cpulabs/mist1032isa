@@ -1692,6 +1692,7 @@ module execution(
 	Verilog Assertion
 	*************************************************/
 	//`ifdef MIST1032ISA_VLG_ASSERTION
+	localparam time_ena = 1;
 	always@(posedge iCLOCK)begin
 
 	/*
@@ -1711,22 +1712,30 @@ module execution(
 		end
 	*/
 		
-		
 		//Load
 		if(inRESET)begin
 			if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
-				//$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, iDATAIO_DATA);
-				$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, iDATAIO_DATA);
+				if(time_ena == 1)begin
+					$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
+				end
+				else begin
+					$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
+				end
 			end
 		end
 		//Store
 		if(inRESET)begin
 			if(oDATAIO_REQ && oDATAIO_RW)begin
-				//$display("%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
-				$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
+				if(time_ena == 1)begin
+					$display("%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
+				end
+				else begin
+					$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
+				end
 			end
 		end
 		
+		/*
 		if(oNEXT_VALID && b_pc == 32'h2c4)begin
 			$display("%d, !!!!!!!!!!!%x", $time, oNEXT_DATA);
 		end
@@ -1734,6 +1743,8 @@ module execution(
 		if(oNEXT_VALID && b_pc == 32'h2c8)begin
 			$display("%d, !!!!!!!!!!!%x", $time, oNEXT_DATA);
 		end
+		*/
+		
 		
 /*
 --------------------------------

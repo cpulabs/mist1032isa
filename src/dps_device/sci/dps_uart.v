@@ -125,7 +125,7 @@ module dps_uart(
 	/*********************************************
 	* Uart Transmitter
 	*********************************************/
-	mist1032isa_uart_transmitter #(1'b0, 20'd108) UART_TRANSMITTER(
+	mist1032isa_uart_transmitter #(1'b1, 20'd108) UART_TRANSMITTER(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -142,7 +142,7 @@ module dps_uart(
 	/*********************************************
 	* Uart Receiver
 	*********************************************/
-	mist1032isa_uart_receiver #(1'b0, 20'd108) UART_RECEIVER(
+	mist1032isa_uart_receiver #(1'b1, 20'd108) UART_RECEIVER(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),

@@ -18,7 +18,7 @@ UART Transmitter Module
 
 		
 -Make	: 2013/2/21
--Update	: 
+-Update	: 2013/10/13
 
 Takahiro Ito
 **************************************************************************/
@@ -171,7 +171,7 @@ module mist1032isa_uart_transmitter #(
 				TXD_WORKING:
 					begin
 						b_txd_ack <= 1'b0;
-						if(b_txd_counter == 6'd33)begin
+						if(b_txd_counter == 6'd36)begin
 							b_txd_state <= TXD_IDLE;
 							b_txd_end <= 1'b1;
 						end
