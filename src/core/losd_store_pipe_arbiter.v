@@ -4,6 +4,7 @@ module losd_store_pipe_arbiter(
 		output wire oLDST_REQ,
 		input wire iLDST_BUSY,	
 		output wire [1:0] oLDST_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		output wire [3:0] oLDST_MASK,
 		output wire oLDST_RW,		//0=Read 1=Write
 		output wire [13:0] oLDST_TID,
 		output wire [1:0] oLDST_MMUMOD,
@@ -20,6 +21,7 @@ module losd_store_pipe_arbiter(
 		input wire iEXE_REQ,
 		output wire oEXE_BUSY,
 		input wire [1:0] iEXE_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		input wire [3:0] iEXE_MASK,
 		input wire iEXE_RW,		//0=Read 1=Write
 		input wire [13:0] iEXE_TID,
 		input wire [1:0] iEXE_MMUMOD,
@@ -49,6 +51,7 @@ module losd_store_pipe_arbiter(
 	//Output Port
 	assign oLDST_REQ = (iUSE_SEL)? iEXCEPT_REQ : iEXE_REQ;
 	assign oLDST_ORDER = (iUSE_SEL)? iEXCEPT_ORDER : iEXE_ORDER;
+	assign oLDST_MASK = (iUSE_SEL)? 4'hf : iEXE_MASK;
 	assign oLDST_RW = (iUSE_SEL)? iEXCEPT_RW : iEXE_RW;
 	assign oLDST_TID = (iUSE_SEL)? iEXCEPT_TID : iEXE_TID;		
 	assign oLDST_MMUMOD = (iUSE_SEL)? iEXCEPT_MMUMOD : iEXE_MMUMOD;		

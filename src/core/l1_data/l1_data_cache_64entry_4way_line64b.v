@@ -41,6 +41,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b_damy(
 		input wire iUP_REQ,
 		output wire oUP_BUSY,
 		input wire [1:0] iUP_ORDER,
+		input wire [3:0] iUP_MASK,
 		input wire [31:0] iUP_ADDR,				
 		input wire [31:0] iUP_DATA,
 		/********************************
@@ -106,6 +107,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		input wire iUP_REQ,
 		output wire oUP_BUSY,
 		input wire [1:0] iUP_ORDER,
+		input wire [3:0] iUP_MASK,
 		input wire [31:0] iUP_ADDR,				
 		input wire [31:0] iUP_DATA,
 		/********************************
@@ -223,7 +225,22 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 	assign memory_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
 	assign memory_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
 	assign memory_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
-	assign memory_write_byte_enable = (iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[5:0], iUP_ORDER) : {64{1'b1}};
+	`ifdef MIST32_NEW_TEST
+		assign memory_write_byte_enable = (iUP_REQ)? func_up_mask_gen(iUP_ADDR[5:2], iUP_MASK) : {64{1'b1}};
+		
+		
+		function [63:0] func_up_mask_gen;
+			input [3:0] func_wordsel;
+			input [3:0] func_mask;
+			begin
+				func_up_mask_gen = {60'h0, func_mask} << (func_wordsel*4);
+			end
+		endfunction
+	`else
+		assign memory_write_byte_enable = (iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[5:0], iUP_ORDER) : {64{1'b1}};
+	`endif
+	
+	
 	assign memory_write_data = (iUP_REQ)? {16{iUP_DATA}} : iWR_DATA;
 	
 	wire memory_mmuflag_write_way0_condition;

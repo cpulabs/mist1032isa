@@ -51,6 +51,7 @@ module core
 		output wire oDATA_REQ,
 		input wire iDATA_LOCK,
 		output wire [1:0] oDATA_ORDER,
+		output wire [3:0] oDATA_MASK,
 		output wire oDATA_RW,		//0=Write 1=Read
 		output wire [13:0] oDATA_TID,
 		output wire [1:0] oDATA_MMUMOD,
@@ -189,6 +190,7 @@ module core
 		.oDATA_REQ(oDATA_REQ),
 		.iDATA_LOCK(iDATA_LOCK),
 		.oDATA_ORDER(oDATA_ORDER),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		.oDATA_MASK(oDATA_MASK),
 		.oDATA_RW(oDATA_RW),			//1=Write 0=Read
 		.oDATA_TID(oDATA_TID),
 		.oDATA_MMUMOD(oDATA_MMUMOD),

@@ -23,6 +23,7 @@ module mmu(
 		input wire [1:0] iLOGIC_MODE,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		input wire [31:0] iLOGIC_PDT,		//Page Directory Table 
 		input wire [1:0] iLOGIC_ORDER,
+		input wire [3:0] iLOGIC_MASK,
 		input wire iLOGIC_RW,				//0=Read 1=Write
 		input wire [31:0] iLOGIC_ADDR,
 		input wire [31:0] iLOGIC_DATA,		
@@ -44,6 +45,7 @@ module mmu(
 		output wire oMEMORY_DATA_STORE_ACK,
 		output wire oMEMORY_MMU_USE,
 		output wire [1:0] oMEMORY_ORDER,
+		output wire [3:0] oMEMORY_MASK,
 		output wire oMEMORY_RW,
 		output wire [31:0] oMEMORY_ADDR,
 		output wire [31:0] oMEMORY_DATA,
@@ -84,6 +86,7 @@ module mmu(
 	reg b_req;
 	reg b_data_store_ack;
 	reg [1:0] b_order;
+	reg [3:0] b_mask;
 	reg b_rw;
 	reg [31:0] b_pdt;
 	reg [1:0] b_mode;
@@ -103,7 +106,8 @@ module mmu(
 		if(!inRESET)begin
 			b_req <= 1'b0;
 			b_data_store_ack <= 1'b0;
-			b_order <= 32'h0;
+			b_order <= 2'h0;
+			b_mask <= 4'h0;
 			b_rw <= 1'b0;
 			b_mode <= 2'h0;
 			b_pdt <= {32{1'b0}};
@@ -115,6 +119,7 @@ module mmu(
 				b_req <= iLOGIC_REQ;
 				b_data_store_ack <= iLOGIC_DATA_STORE_ACK;
 				b_order <= iLOGIC_ORDER;
+				b_mask <= iLOGIC_MASK;
 				b_rw <= iLOGIC_RW;
 				b_mode <= iLOGIC_MODE;
 				b_pdt <= iLOGIC_PDT;
@@ -353,6 +358,7 @@ module mmu(
 	assign oMEMORY_DATA_STORE_ACK = b_data_store_ack;
 	assign oMEMORY_MMU_USE = (b_mode == 2'h0)? 1'b0 : 1'b1;
 	assign oMEMORY_ORDER = (b_main_state == MAIN_STT_REQ_MEM || b_mode == 2'h0)? b_order : 2'h2;
+	assign oMEMORY_MASK = (b_main_state == MAIN_STT_REQ_MEM || b_mode == 2'h0)? b_mask : 4'hf;
 	assign oMEMORY_RW = (b_main_state == MAIN_STT_REQ_MEM || b_mode == 2'h0)? b_rw : 1'b0;
 	assign oMEMORY_DATA = b_data;
 	reg [31:0] memory_addr;

@@ -8,6 +8,7 @@ module memory_pipe_arbiter(
 		input wire iDATA_REQ,
 		output wire oDATA_LOCK,
 		input wire [1:0] iDATA_ORDER,
+		input wire [3:0] iDATA_MASK,
 		input wire iDATA_RW,
 		input wire [13:0] iDATA_TID,
 		input wire [1:0] iDATA_MMUMOD,
@@ -40,6 +41,7 @@ module memory_pipe_arbiter(
 		output wire [1:0] oMEMORY_MMU_MODE,
 		output wire [31:0] oMEMORY_PDT,
 		output wire [1:0] oMEMORY_ORDER,
+		output wire [3:0] oMEMORY_MASK,
 		output wire oMEMORY_RW,
 		output wire [31:0] oMEMORY_ADDR,
 		output wire [31:0] oMEMORY_DATA,
@@ -70,6 +72,7 @@ module memory_pipe_arbiter(
 	reg b_core2mem_req;
 	reg b_core2mem_data_store_ack;
 	reg [1:0] b_core2mem_order;
+	reg [3:0] b_core2mem_mask;
 	reg b_core2mem_rw;
 	reg [1:0] b_core2mem_mmumod;
 	reg [13:0] b_core2mem_pdt;
@@ -125,6 +128,7 @@ module memory_pipe_arbiter(
 		if(!inRESET)begin
 			b_core2mem_req <= 1'b0;
 			b_core2mem_order <= 2'h0;
+			b_core2mem_mask <= 4'h0;
 			b_core2mem_rw <= 1'b0;
 			b_core2mem_data_store_ack <= 1'b0;
 			b_core2mem_mmumod <= 2'h0;
@@ -135,6 +139,7 @@ module memory_pipe_arbiter(
 		else if(iMEMORY_QUEUE_FLUSH)begin
 			b_core2mem_req <= 1'b0;
 			b_core2mem_order <= 2'h0;
+			b_core2mem_mask <= 4'h0;
 			b_core2mem_rw <= 1'b0;
 			b_core2mem_data_store_ack <= 1'b0;
 			b_core2mem_mmumod <= 2'h0;
@@ -148,6 +153,7 @@ module memory_pipe_arbiter(
 				if(core2mem_data_condition)begin
 					b_core2mem_req <= 1'b1;
 					b_core2mem_order <= iDATA_ORDER;
+					b_core2mem_mask <= iDATA_MASK;
 					b_core2mem_rw <= iDATA_RW;
 					b_core2mem_data_store_ack <= core2mem_data_write_ack_condition;
 					b_core2mem_mmumod <= iDATA_MMUMOD;
@@ -158,6 +164,7 @@ module memory_pipe_arbiter(
 				else if(core2mem_inst_condition)begin
 					b_core2mem_req <= 1'b1;
 					b_core2mem_order <= 2'h2;
+					b_core2mem_mask <= 4'hff;
 					b_core2mem_rw <= 1'b0;
 					b_core2mem_data_store_ack <= 1'b0;
 					b_core2mem_mmumod <= iINST_MMUMOD;
@@ -230,6 +237,7 @@ module memory_pipe_arbiter(
 	assign oMEMORY_MMU_MODE = b_core2mem_mmumod;
 	assign oMEMORY_PDT = b_core2mem_pdt;
 	assign oMEMORY_ORDER = b_core2mem_order;
+	assign oMEMORY_MASK = b_core2mem_mask;
 	assign oMEMORY_RW = b_core2mem_rw;
 	assign oMEMORY_ADDR = b_core2mem_addr;
 	assign oMEMORY_DATA = b_core2mem_data;

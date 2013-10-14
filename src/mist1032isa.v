@@ -94,6 +94,7 @@ module mist1032isa(
 	wire core2mem_data_req;
 	wire mem2core_data_lock;
 	wire [1:0] core2mem_data_order;	
+	wire [3:0] core2mem_data_mask;
 	wire core2mem_data_rw;		//0=Read | 1=Write
 	wire [13:0] core2mem_data_tid;
 	wire [1:0] core2mem_data_mmumod;
@@ -134,6 +135,7 @@ module mist1032isa(
 	wire processor2memory_req;
 	wire memory2processor_lock;
 	wire [1:0] processor2memory_order;
+	wire [3:0] processor2memory_mask;
 	wire processor2memory_rw;
 	wire [31:0] processor2memory_addr;
 	wire [31:0] processor2memory_data;
@@ -184,6 +186,10 @@ module mist1032isa(
 		assign memory2processor_req = iMEMORY_VALID;
 		assign memory2processor_data = iMEMORY_DATA;
 	`endif
+	
+	
+	
+	
 	
 			
 	/********************************************************************************
@@ -244,6 +250,7 @@ module mist1032isa(
 		.oDATA_REQ(core2mem_data_req),
 		.iDATA_LOCK(mem2core_data_lock),
 		.oDATA_ORDER(core2mem_data_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		.oDATA_MASK(core2mem_data_mask),
 		.oDATA_RW(core2mem_data_rw),			//1=Write 0=Read
 		.oDATA_TID(core2mem_data_tid),
 		.oDATA_MMUMOD(core2mem_data_mmumod),
@@ -346,6 +353,7 @@ module mist1032isa(
 	wire [1:0] m_arbiter2mmu_mmu_mode;
 	wire [31:0] m_arbiter2mmu_pdt;
 	wire [1:0] m_arbiter2mmu_order;
+	wire [3:0] m_arbiter2mmu_mask;
 	wire m_arbiter2mmu_rw;
 	wire [31:0] m_arbiter2mmu_addr;
 	wire [31:0] m_arbiter2mmu_data;
@@ -365,6 +373,7 @@ module mist1032isa(
 		.iDATA_REQ(core2mem_data_req),
 		.oDATA_LOCK(mem2core_data_lock),
 		.iDATA_ORDER(core2mem_data_order),
+		.iDATA_MASK(core2mem_data_mask),
 		.iDATA_RW(core2mem_data_rw),
 		.iDATA_TID(core2mem_data_tid),
 		.iDATA_MMUMOD(core2mem_data_mmumod),
@@ -397,6 +406,7 @@ module mist1032isa(
 		.oMEMORY_MMU_MODE(m_arbiter2mmu_mmu_mode),
 		.oMEMORY_PDT(m_arbiter2mmu_pdt),
 		.oMEMORY_ORDER(m_arbiter2mmu_order),
+		.oMEMORY_MASK(m_arbiter2mmu_mask),
 		.oMEMORY_RW(m_arbiter2mmu_rw),
 		.oMEMORY_ADDR(m_arbiter2mmu_addr),
 		.oMEMORY_DATA(m_arbiter2mmu_data),
@@ -411,6 +421,11 @@ module mist1032isa(
 	);
 	
 	//MMU
+	wire [3:0] processor2endian_mask;
+	wire [31:0] processor2endian_data;
+	
+	wire [63:0] endian2processor_data;
+	
 	mmu_if MMU_IF(
 		.iCLOCK(iBUS_CLOCK),
 		.inRESET(inRESET),
@@ -425,6 +440,7 @@ module mist1032isa(
 		.iCORE_MMU_MODE(m_arbiter2mmu_mmu_mode),		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		.iCORE_PDT(m_arbiter2mmu_pdt),					//Page Table Register
 		.iCORE_ORDER(m_arbiter2mmu_order),
+		.iCORE_MASK(m_arbiter2mmu_mask),
 		.iCORE_RW(m_arbiter2mmu_rw),
 		.iCORE_ADDR(m_arbiter2mmu_addr),
 		.iCORE_DATA(m_arbiter2mmu_data),
@@ -443,14 +459,52 @@ module mist1032isa(
 		.oMEMORY_REQ(processor2memory_req),
 		.iMEMORY_LOCK(memory2processor_lock),
 		.oMEMORY_ORDER(processor2memory_order),
+		.oMEMORY_MASK(processor2endian_mask),
 		.oMEMORY_RW(processor2memory_rw),
 		.oMEMORY_ADDR(processor2memory_addr),
-		.oMEMORY_DATA(processor2memory_data),
+		.oMEMORY_DATA(processor2endian_data),
 		//Memory -> This
 		.iMEMORY_REQ(memory2processor_req),
 		.oMEMORY_LOCK(processor2memory_busy),
-		.iMEMORY_DATA(memory2processor_data)
+		.iMEMORY_DATA(endian2processor_data)
 	); 
+	
+	`ifdef MIST32_NEW_TEST
+	
+	//Endian Control
+	endian_controller ENDIAN_TO_MEM(
+		//Source
+		.iSRC_MASK(processor2endian_mask),
+		.iSRC_DATA(processor2endian_data),
+		//Destnation
+		.oDEST_MASK(processor2memory_mask),
+		.oDEST_DATA(processor2memory_data)
+	);
+	
+	endian_controller ENDIAN_TO_CPU_L(
+		//Source
+		.iSRC_MASK(4'h0),
+		.iSRC_DATA(memory2processor_data[31:0]),
+		//Destnation
+		.oDEST_MASK(),
+		.oDEST_DATA(endian2processor_data[31:0])
+	);
+	
+	endian_controller ENDIAN_TO_CPU_H(
+		//Source
+		.iSRC_MASK(4'h0),
+		.iSRC_DATA(memory2processor_data[63:32]),
+		//Destnation
+		.oDEST_MASK(),
+		.oDEST_DATA(endian2processor_data[63:32])
+	);
+	
+	`else
+	assign processor2memory_mask = processor2endian_mask;
+	assign processor2memory_data = processor2endian_data;
+	assign endian2processor_data = memory2processor_data;
+	
+	`endif
 
 	/********************************************************************************
 	IO Interface

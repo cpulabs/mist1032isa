@@ -16,6 +16,7 @@ module mmu_if(
 		input wire [1:0] iCORE_MMU_MODE,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		input wire [31:0] iCORE_PDT,			//Page Table Register
 		input wire [1:0] iCORE_ORDER,
+		input wire [3:0] iCORE_MASK,
 		input wire iCORE_RW,
 		input wire [31:0] iCORE_ADDR,
 		input wire [31:0] iCORE_DATA,
@@ -34,6 +35,7 @@ module mmu_if(
 		output wire oMEMORY_REQ,
 		input wire iMEMORY_LOCK,
 		output wire [1:0] oMEMORY_ORDER,
+		output wire [3:0] oMEMORY_MASK,
 		output wire oMEMORY_RW,
 		output wire [31:0] oMEMORY_ADDR,
 		output wire [31:0] oMEMORY_DATA,
@@ -99,6 +101,7 @@ module mmu_if(
 		.iLOGIC_MODE(iCORE_MMU_MODE),					//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		.iLOGIC_PDT(iCORE_PDT),							//Page Directory Table 
 		.iLOGIC_ORDER(iCORE_ORDER),
+		.iLOGIC_MASK(iCORE_MASK),
 		.iLOGIC_RW(iCORE_RW),							//0=Read 1=Write
 		.iLOGIC_ADDR(iCORE_ADDR),
 		.iLOGIC_DATA(iCORE_DATA),
@@ -121,6 +124,7 @@ module mmu_if(
 		.oMEMORY_DATA_STORE_ACK(mmu2memory_data_store_ack),
 		.oMEMORY_MMU_USE(mmu2matching_type),
 		.oMEMORY_ORDER(oMEMORY_ORDER),
+		.oMEMORY_MASK(oMEMORY_MASK),
 		.oMEMORY_RW(mmu2memory_rw),
 		.oMEMORY_ADDR(oMEMORY_ADDR),
 		.oMEMORY_DATA(oMEMORY_DATA),

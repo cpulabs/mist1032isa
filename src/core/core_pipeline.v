@@ -48,6 +48,7 @@ module core_pipeline
 		output wire oDATA_REQ,
 		input wire iDATA_LOCK,
 		output wire [1:0] oDATA_ORDER,
+		output wire [3:0] oDATA_MASK,
 		output wire oDATA_RW,		//0=Write 1=Read
 		output wire [13:0] oDATA_TID,
 		output wire [1:0] oDATA_MMUMOD,
@@ -258,6 +259,7 @@ module core_pipeline
 	//Load Store 
 	wire execution2ldst_ldst_req;
 	wire [1:0] execution2ldst_ldst_order;
+	wire [3:0] execution2ldst_ldst_mask;
 	wire execution2ldst_ldst_rw;
 	wire [13:0] execution2ldst_ldst_tid;
 	wire [1:0] execution2ldst_ldst_mmumod;
@@ -891,6 +893,7 @@ module core_pipeline
 		.oDATAIO_REQ(execution2ldst_ldst_req),
 		.iDATAIO_BUSY(ldst2execution_ldst_busy),
 		.oDATAIO_ORDER(execution2ldst_ldst_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		.oDATAIO_MASK(execution2ldst_ldst_mask),//[0]=Byte0, [1]=Byte1... 
 		.oDATAIO_RW(execution2ldst_ldst_rw),		//0=Read 1=Write
 		.oDATAIO_TID(execution2ldst_ldst_tid),
 		.oDATAIO_MMUMOD(execution2ldst_ldst_mmumod),
@@ -943,6 +946,7 @@ module core_pipeline
 	wire ldst_arbiter2d_cache_req;
 	wire d_cache2ldst_arbiter_busy;
 	wire [1:0] ldst_arbiter2d_cache_order;
+	wire [3:0] ldst_arbiter2d_cache_mask;
 	wire ldst_arbiter2d_cache_rw;
 	wire [31:0] ldst_arbiter2d_cache_tid;
 	wire [1:0] ldst_arbiter2d_cache_mmumod;
@@ -959,6 +963,7 @@ module core_pipeline
 		.oLDST_REQ(ldst_arbiter2d_cache_req),
 		.iLDST_BUSY(d_cache2ldst_arbiter_busy),	
 		.oLDST_ORDER(ldst_arbiter2d_cache_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		.oLDST_MASK(ldst_arbiter2d_cache_mask),
 		.oLDST_RW(ldst_arbiter2d_cache_rw),		//0=Read 1=Write
 		.oLDST_TID(ldst_arbiter2d_cache_tid),
 		.oLDST_MMUMOD(ldst_arbiter2d_cache_mmumod),
@@ -975,6 +980,7 @@ module core_pipeline
 		.iEXE_REQ(execution2ldst_ldst_req),
 		.oEXE_BUSY(ldst2execution_ldst_busy),
 		.iEXE_ORDER(execution2ldst_ldst_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		.iEXE_MASK(execution2ldst_ldst_mask),
 		.iEXE_RW(execution2ldst_ldst_rw),		//0=Read 1=Write
 		.iEXE_TID(execution2ldst_ldst_tid),
 		.iEXE_MMUMOD(execution2ldst_ldst_mmumod),
@@ -1016,6 +1022,7 @@ module core_pipeline
 		.iLDST_REQ(ldst_arbiter2d_cache_req),
 		.oLDST_BUSY(d_cache2ldst_arbiter_busy),
 		.iLDST_ORDER(ldst_arbiter2d_cache_order),
+		.iLDST_MASK(ldst_arbiter2d_cache_mask),
 		.iLDST_RW(ldst_arbiter2d_cache_rw),
 		.iLDST_TID(ldst_arbiter2d_cache_tid),
 		.iLDST_MMUMOD(ldst_arbiter2d_cache_mmumod),
@@ -1034,6 +1041,7 @@ module core_pipeline
 		.oDATA_REQ(oDATA_REQ),
 		.iDATA_LOCK(iDATA_LOCK),
 		.oDATA_ORDER(oDATA_ORDER),
+		.oDATA_MASK(oDATA_MASK),
 		.oDATA_RW(oDATA_RW),		//0=Write 1=Read
 		.oDATA_TID(oDATA_TID),
 		.oDATA_MMUMOD(oDATA_MMUMOD),
