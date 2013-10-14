@@ -234,6 +234,7 @@ module tb_mist1032isa_normal_test;
 	******************************************************/
 	reg assert_check_flag;
 	reg [31:0] assert_wrong_number;
+	reg [31:0] assert_wrong_type;
 	reg [31:0] assert_result;
 	reg [31:0] assert_expect;
 
@@ -243,6 +244,7 @@ module tb_mist1032isa_normal_test;
 			if(oMEMORY_ADDR == 32'h0002_0004)begin
 				if(!assert_check_flag)begin
 					$display("[SIM-ERR]Wrong Data.");
+					$display("[SIM-ERR]Wrong Type : %d", assert_wrong_type);
 					$display("[SIM-ERR]Index:%d, Expect:%x, Result:%x", assert_wrong_number, assert_expect, assert_result);
 					$display("[SIM-ERR]Simulation Finished.");
 					$stop;
@@ -259,6 +261,10 @@ module tb_mist1032isa_normal_test;
 			//Error Number
 			else if(oMEMORY_ADDR == 32'h0002_000c)begin
 				assert_wrong_number = oMEMORY_DATA;
+			end
+			//Error Type
+			else if(oMEMORY_ADDR == 32'h0002_0008)begin
+				assert_wrong_type = oMEMORY_DATA;
 			end
 			//Error Result
 			else if(oMEMORY_ADDR == 32'h0002_0010)begin

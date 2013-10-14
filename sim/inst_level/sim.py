@@ -99,7 +99,7 @@ def sim_start(sourcelist):
                 print("-[" + str(cnt) + "]Finish : [" + line + "] : " + date.strftime("%Y-%m-%d %H:%M:%S"));
                 cnt = cnt + 1;
 
-                sys.exit();
+                #sys.exit();
 	
                 #Tempfile Remove
                 os.remove("sim_run.tcl");
