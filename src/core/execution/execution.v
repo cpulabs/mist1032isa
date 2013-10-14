@@ -559,8 +559,8 @@ module execution(
 				`EXE_LOGIC_WBH		:	func_logic_select = 5'h11;
 				`EXE_LOGIC_CLB		:	func_logic_select = 5'h0A;
 				`EXE_LOGIC_STB		:	func_logic_select = 5'h0B;
-				`EXE_LOGIC_CLW		:	func_logic_select = 5'h00;
-				`EXE_LOGIC_STW		:	func_logic_select = 5'h00;
+				`EXE_LOGIC_CLW		:	func_logic_select = 5'h15;
+				`EXE_LOGIC_STW		:	func_logic_select = 5'h16;
 				`EXE_LOGIC_BITREV	:	func_logic_select = 5'h0C;
 				`EXE_LOGIC_BYTEREV	:	func_logic_select = 5'h0D;
 				`EXE_LOGIC_GETBIT	:	func_logic_select = 5'h0E;

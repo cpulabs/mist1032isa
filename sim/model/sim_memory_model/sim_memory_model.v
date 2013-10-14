@@ -113,8 +113,8 @@ module sim_memory_model(
 	initial begin
 		#0 begin
 			if(P_MEM_INIT_LOAD)begin
-				//$readmemh("lowlayer_slideshow.O1.hex", b_mem_data);
-				$readmemh("uart.hex", b_mem_data);
+				$readmemh("mirb.hex", b_mem_data);
+				//$readmemh("uart.hex", b_mem_data);
 				$display("Mem[0]->%x", b_mem_data[0]);
 				$display("Mem[1]->%x", b_mem_data[1]);
 				$display("Mem[2]->%x", b_mem_data[2]);

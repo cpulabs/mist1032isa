@@ -189,7 +189,7 @@ module exception_manager(
 	reg [31:0] b_sysr_idtr;
 	
 	wire interrupt_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LOCK && iSYSREG_PSR[2];
-	wire interrupt_and_branch_condition = iEXCEPT_IRQ_REQ && iSYSREG_PSR[2];
+	wire interrupt_and_branch_condition = 1'b0;// Bug! -> iEXCEPT_IRQ_REQ && iSYSREG_PSR[2];		
 	reg b_irq_request_test;
 	
 	always@(posedge iCLOCK or negedge inRESET)begin

@@ -70,6 +70,8 @@ module logic_n #(
 				5'h11 : f_logic		=		{f_data1[15:0], f_data0[15:0]};									//Set H 2Byte
 				5'h12 : f_logic		=		{{16{f_data1[15]}}, f_data1[15:0]};								//LIL
 				5'h14 : f_logic		=		{16'h0, f_data1[15:0]};											//ULIL
+				5'h15 : f_logic		=		32'h0;															//Clear Word
+				5'h16 : f_logic		=		{32{1'b1}};															//Set Word
 				default :
 					begin
 						f_logic		=		f_data0;
