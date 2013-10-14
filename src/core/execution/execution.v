@@ -61,6 +61,7 @@ module execution(
 		output wire oDATAIO_REQ,
 		input wire iDATAIO_BUSY,
 		output wire [1:0] oDATAIO_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		output wire [3:0] oDATAIO_MASK,		//[0]=Byte0, [1]=Byte1... 
 		output wire oDATAIO_RW,				//0=Read 1=Write
 		output wire [13:0] oDATAIO_TID,
 		output wire [1:0] oDATAIO_MMUMOD,
@@ -773,8 +774,11 @@ module execution(
 	wire [31:0] ldst_pipe_data;
 	wire [1:0] ldst_pipe_order;	
 	wire [1:0] load_pipe_shift;
-	wire [1:0] load_pipe_mask;
-
+	`ifdef MIST32_NEW_TEST
+		wire [3:0] load_pipe_mask;
+	`else
+		wire [1:0] load_pipe_mask;
+	`endif
 
 	load_store LDST(
 		//Prev
@@ -855,6 +859,7 @@ module execution(
 	reg [1:0] b_ldst_pipe_order;
 	reg [31:0] b_ldst_pipe_addr;
 	reg [31:0] b_ldst_pipe_data;
+	reg [3:0] b_ldst_pipe_mask;
 	reg [1:0] b_load_pipe_shift;
 	reg [1:0] b_load_pipe_mask;
 	reg b_exception_valid;
@@ -891,6 +896,7 @@ module execution(
 			b_ldst_pipe_order <= 2'h0;
 			b_ldst_pipe_addr <= 32'h0;
 			b_ldst_pipe_data <= 32'h0;
+			b_ldst_pipe_mask <= 4'h0;
 			b_load_pipe_shift <= 2'h0;
 			b_load_pipe_mask <= 2'h0;
 			b_exception_valid <= 1'b0;
@@ -926,6 +932,7 @@ module execution(
 			b_ldst_pipe_order <= 2'h0;
 			b_ldst_pipe_addr <= 32'h0;
 			b_ldst_pipe_data <= 32'h0;
+			b_ldst_pipe_mask <= 4'h0;
 			b_load_pipe_shift <= 2'h0;
 			b_load_pipe_mask <= 2'h0;
 			b_exception_valid <= 1'b0;
@@ -1024,6 +1031,7 @@ module execution(
 										b_ldst_pipe_valid <= 1'b1;
 										b_ldst_pipe_order <= ldst_pipe_order;
 										b_ldst_pipe_addr <= ldst_pipe_addr;
+										b_ldst_pipe_mask <= load_pipe_mask;
 										b_load_pipe_shift <= load_pipe_shift;
 										b_load_pipe_mask <= load_pipe_mask;
 										b_state <= L_PARAM_STT_LOAD;
@@ -1046,6 +1054,7 @@ module execution(
 										b_ldst_pipe_order <= ldst_pipe_order;
 										b_ldst_pipe_addr <= ldst_pipe_addr;
 										b_ldst_pipe_data <= ldst_pipe_data;
+										b_ldst_pipe_mask <= load_pipe_mask;
 										b_jump <= 1'b0;
 										b_idts <= 1'b0;
 										b_pdts <= 1'b0;
@@ -1385,7 +1394,11 @@ module execution(
 							else begin
 								b_valid <= 1'b1;
 								b_state <= L_PARAM_STT_NORMAL;
-								b_r_data <= func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8));
+								`ifdef MIST32_NEW_TEST
+									b_r_data <= func_load_fairing(b_ldst_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)); 
+								`else
+									b_r_data <= func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8));
+								`endif
 								b_spr_writeback <= 1'b1;//1'b0;
 								b_r_spr <= b_r_spr;//ldst_spr;
 							end
@@ -1602,6 +1615,20 @@ module execution(
 			endcase
 		end
 	endfunction
+	
+	function [31:0] func_load_fairing;	
+		input [3:0] func_mask;
+		input [31:0] func_data;
+		reg [7:0] func_tmp0, func_tmp1, func_tmp2, func_tmp3;
+		begin
+			func_tmp0 = (func_mask[0])? func_data[7:0] : 8'h0;
+			func_tmp1 = (func_mask[1])? func_data[15:8] : 8'h0;
+			func_tmp2 = (func_mask[2])? func_data[23:16] : 8'h0;
+			func_tmp3 = (func_mask[3])? func_data[31:24] : 8'h0;
+			func_load_fairing = {func_tmp3, func_tmp2, func_tmp1, func_tmp0}; 
+		end
+	endfunction
+	
 
 	/****************************************
 	AFE
@@ -1632,6 +1659,11 @@ module execution(
 	//Load Store Pipe
 	assign oDATAIO_REQ = (b_state == L_PARAM_STT_LOAD || b_state == L_PARAM_STT_STORE)? b_ldst_pipe_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK && !io_lock_condition : 1'b0;
 	assign oDATAIO_ORDER = b_ldst_pipe_order;
+	`ifdef MIST32_NEW_TEST
+		assign oDATAIO_MASK = b_ldst_pipe_mask;
+	`else
+		assign oDATAIO_MASK = 4'h0;
+	`endif
 	assign oDATAIO_RW = (b_state == L_PARAM_STT_STORE)? 1'b1 : 1'b0;
 	assign oDATAIO_TID = b_sysreg_tidr[13:0];
 	assign oDATAIO_MMUMOD = b_sysreg_psr[1:0];
@@ -1691,49 +1723,95 @@ module execution(
 	/*************************************************
 	Verilog Assertion
 	*************************************************/
+	wire test________ = oDATAIO_REQ && oDATAIO_ADDR == 32'h000d5ca8;
+	
+	function [31:0] func_assert_write_data;
+		input [4:0] func_mask;
+		input [31:0] func_data;
+		begin  
+			if(func_mask == 4'hf)begin
+				func_assert_write_data = func_data;
+			end
+			else if(func_mask == 4'b0011)begin
+				func_assert_write_data = {16'h0, func_data[15:0]};
+			end
+			else if(func_mask == 4'b1100)begin
+				func_assert_write_data = {16'h0, func_data[31:16]};
+			end
+			else if(func_mask == 4'b1000)begin
+				func_assert_write_data = {24'h0, func_data[31:24]};
+			end
+			else if(func_mask == 4'b0100)begin
+				func_assert_write_data = {24'h0, func_data[23:16]};
+			end
+			else if(func_mask == 4'b0010)begin
+				func_assert_write_data = {24'h0, func_data[15:8]};
+			end
+			else if(func_mask == 4'b0001)begin
+				func_assert_write_data = {24'h0, func_data[7:0]};
+			end
+			else begin
+				func_assert_write_data = 32'h0;
+			end
+		end
+	endfunction
+	
 	//`ifdef MIST1032ISA_VLG_ASSERTION
-	localparam time_ena = 1;
+	localparam time_ena = 0;
 	always@(posedge iCLOCK)begin
 
-	/*
-		//Load
-		if(inRESET)begin
-			if(iDATAIO_REQ && ((|iDATAIO_DATA) === 1'bx || (|iDATAIO_DATA) === 1'bz) && b_state == L_PARAM_STT_LOAD)begin
-				$display("[Error] : Load/Store(Load) | PC:%x(Inst:%x), SP:%x, LoadAddr:%x, LoadData:%x", b_pc, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, iDATAIO_DATA);
-				$stop;
-			end
-		end
-		//Store
-		if(inRESET)begin
-			if(oDATAIO_REQ && oDATAIO_RW && ((|oDATAIO_DATA) === 1'bx || (|oDATAIO_DATA) === 1'bz))begin
-				$display("[Error] : Load/Store(Store) | PC:%x(Inst:%x), SP:%x, StoreAddr:%x, StoreData:%x", b_pc, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
-				$stop;
-			end
-		end
-	*/
+
+		`ifdef MIST32_NEW_TEST
 		
-		//Load
-		if(inRESET)begin
-			if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
-				if(time_ena == 1)begin
-					$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
-				end
-				else begin
-					$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
-				end
-			end
-		end
-		//Store
-		if(inRESET)begin
-			if(oDATAIO_REQ && oDATAIO_RW)begin
-				if(time_ena == 1)begin
-					$display("%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
-				end
-				else begin
-					$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, oDATAIO_DATA);
+			
+			//Load
+			if(inRESET)begin
+				if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
+					if(time_ena == 1)begin
+						$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
+					end
+					else begin
+						$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
+					end
 				end
 			end
-		end
+			//Store
+			if(inRESET)begin
+				if(oDATAIO_REQ && oDATAIO_RW)begin
+					if(time_ena == 1)begin
+						$display("%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
+					end
+					else begin
+						$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
+					end
+				end
+			end
+			
+			
+		`else
+			//Load
+			if(inRESET)begin
+				if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
+					if(time_ena == 1)begin
+						$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
+					end
+					else begin
+						$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
+					end
+				end
+			end
+			//Store
+			if(inRESET)begin
+				if(oDATAIO_REQ && oDATAIO_RW)begin
+					if(time_ena == 1)begin
+						$display("%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, (b_ldst_pipe_order == 2'h2)? oDATAIO_DATA : (b_ldst_pipe_order == 2'h1)? {16'h0, oDATAIO_DATA[15:0]} : {24'h0, oDATAIO_DATA[7:0]});
+					end
+					else begin
+						$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, (b_ldst_pipe_order == 2'h2)? oDATAIO_DATA : (b_ldst_pipe_order == 2'h1)? {16'h0, oDATAIO_DATA[15:0]} : {24'h0, oDATAIO_DATA[7:0]});
+					end
+				end
+			end
+		`endif
 		
 		/*
 		if(oNEXT_VALID && b_pc == 32'h2c4)begin
