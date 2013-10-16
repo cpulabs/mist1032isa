@@ -1790,8 +1790,10 @@ module execution(
 	
 	//`ifdef MIST1032ISA_VLG_ASSERTION
 	localparam time_ena = 0;
+	/*
 	integer F_HANDLE;
 	initial F_HANDLE = $fopen("ldst_time_dump.log");
+	*/
 	always@(posedge iCLOCK)begin
 
 
@@ -1807,7 +1809,7 @@ module execution(
 					else begin
 						$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
 					end
-					$fdisplay(F_HANDLE, "%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
+					//$fdisplay(F_HANDLE, "%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
 				end
 			end
 			//Store
@@ -1819,7 +1821,7 @@ module execution(
 					else begin
 						$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
 					end
-					$fdisplay(F_HANDLE, "%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
+					//$fdisplay(F_HANDLE, "%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
 				end
 			end
 

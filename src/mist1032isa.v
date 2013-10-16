@@ -25,6 +25,7 @@ module mist1032isa(
 		output wire oMEMORY_REQ,
 		input wire iMEMORY_LOCK,
 		output wire [1:0] oMEMORY_ORDER,				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		output wire [3:0] oMEMORY_MASK,
 		output wire oMEMORY_RW,						//1:Write | 0:Read
 		output wire [31:0] oMEMORY_ADDR,
 		//This -> Data RAM
@@ -180,6 +181,7 @@ module mist1032isa(
 		//Processor -> Memory
 		assign oMEMORY_REQ = processor2memory_req;
 		assign oMEMORY_ORDER = processor2memory_order;
+		assign oMEMORY_MASK = processor2memory_mask;
 		assign oMEMORY_RW = processor2memory_rw;
 		assign oMEMORY_ADDR = processor2memory_addr;
 		assign oMEMORY_DATA = processor2memory_data;
