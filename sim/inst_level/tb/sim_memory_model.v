@@ -8,6 +8,7 @@ module sim_memory_model(
 		input wire iMEMORY_REQ,
 		output wire oMEMORY_LOCK,
 		input wire [1:0] iMEMORY_ORDER,				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+		input wire [3:0] iMEMORY_MASK,
 		input wire iMEMORY_RW,						//1:Write | 0:Read
 		input wire [25:0] iMEMORY_ADDR,
 		//This -> Data RAM
@@ -23,40 +24,7 @@ module sim_memory_model(
 	wire system_busy = fifo_write_full;
 	wire system_read_condition = iMEMORY_REQ && !iMEMORY_RW && !system_busy;
 	wire system_write_condition = iMEMORY_REQ && iMEMORY_RW && !system_busy;
-	
-	
-	function [3:0] func_byte_addressing_controllor;
-		input [1:0] func_order;	//2
-		input [1:0] func_address;	//0
-		begin
-			if(func_address == 2'h0)begin
-				case(func_order)
-					2'h0: func_byte_addressing_controllor = 4'b0001;
-					2'h1: func_byte_addressing_controllor = 4'b0011;
-					2'h2: func_byte_addressing_controllor = 4'b1111;
-					default: func_byte_addressing_controllor = 4'b0000;
-				endcase
-			end
-			else if(func_address == 2'h1)begin
-				case(func_order)
-					2'h0: func_byte_addressing_controllor = 4'b0010;
-					2'h1: func_byte_addressing_controllor = 4'b0110;
-					default: func_byte_addressing_controllor = 4'b0000;
-				endcase
-			end
-			else if(func_address == 2'h2)begin			
-				case(func_order)
-					2'h0: func_byte_addressing_controllor = 4'b0100;
-					2'h1: func_byte_addressing_controllor = 4'b1100;
-					default: func_byte_addressing_controllor = 4'b0000;
-				endcase
-			end
-			else begin
-				func_byte_addressing_controllor = 4'b1000;
-			end
-		end
-	endfunction
-	
+						
 	
 	function [63:0] func_data_mask;
 		input func_word_select; //0
@@ -83,43 +51,58 @@ module sim_memory_model(
 		end
 	endfunction
 	
-	//Memory
-	reg [63:0] b_mem_data[0:(134217728/8)-1];
-	//reg [63:0] b_mem_data[0:(536870912/8)-1];
-	
-	
-	initial begin
-		#0 begin
-			if(P_MEM_INIT_LOAD)begin
-				//$readmemh("../inst_level_test_tmp.hex", b_mem_data);
-				$readmemh("inst_level_test_tmp.hex", b_mem_data);
-			end
-		end
-	end
-	
-	
 	//Memory Write Block
 	always@(posedge iCLOCK )begin
 		if(system_write_condition)begin
 			b_mem_data[iMEMORY_ADDR[25:3]] <= 
-				{
-					func_data_mask(
-						iMEMORY_ADDR[2],
-						func_byte_addressing_controllor(
-							iMEMORY_ORDER,
-							iMEMORY_ADDR[1:0]
-						), 
-						iMEMORY_DATA, 
-						b_mem_data[iMEMORY_ADDR[25:3]])
-				};
+				func_data_mask(
+					iMEMORY_ADDR[2],
+					iMEMORY_MASK, 
+					iMEMORY_DATA, 
+					b_mem_data[iMEMORY_ADDR[25:3]]
+				);
 		end
 	end
 	
-
+	
+	//Memory
+	parameter P_MEM_SIZE = 134217728/8;
+	reg [63:0] b_mem_data[0:P_MEM_SIZE-1];
+	
+	integer i;
+	
+	initial begin
+		#0 begin
+			if(P_MEM_INIT_LOAD)begin
+				//Load File
+				$readmemh("inst_level_test_tmp.hex", b_mem_data);
+				//Endian Convert
+				$display("[INF][sim_memory_model.v]Please wait. Endian converting for test file.");
+				for(i = 0; i < P_MEM_SIZE; i = i + 1)begin
+					b_mem_data[i] = func_endian_convert(b_mem_data[i]);		//[]
+				end
+				$display("[INF][sim_memory_model.v]Mem[0]->%x", b_mem_data[0]);
+			end
+		end
+	end
+	
+	function [63:0] func_endian_convert;
+		input [63:0] func_data;
+		reg [31:0] func_tmp;
+		begin
+			func_tmp = func_data[63:32];
+			func_endian_convert = {
+				func_tmp[7:0], func_tmp[15:8], func_tmp[23:16], func_tmp[31:24],
+				func_data[7:0], func_data[15:8], func_data[23:16], func_data[31:24]
+			};
+		end
+	endfunction
+	
+	
 	wire fifo_write_full;
 	wire fifo_read_empty;
+	wire [63:0] fifo_read_data;
 	
-
 	mist1032isa_sync_fifo #(64, 8, 3) OUT_FIFO(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -128,11 +111,12 @@ module sim_memory_model(
 		.iWR_DATA(b_mem_data[iMEMORY_ADDR[25:3]]),
 		.oWR_FULL(fifo_write_full),
 		.iRD_EN(!iMEMORY_LOCK  && !fifo_read_empty),
-		.oRD_DATA(oMEMORY_DATA),
+		.oRD_DATA(fifo_read_data),
 		.oRD_EMPTY(fifo_read_empty)
 	);
 	
-	assign oMEMORY_VALID = !iMEMORY_LOCK  && !fifo_read_empty;	
+	assign oMEMORY_VALID = !iMEMORY_LOCK  && !fifo_read_empty;
+	assign oMEMORY_DATA = fifo_read_data;
 	assign oMEMORY_LOCK = fifo_write_full;
 	
 endmodule

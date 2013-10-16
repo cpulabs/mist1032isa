@@ -164,6 +164,9 @@ module mist1032isa(
 			.iMEMORY_REQ(processor2memory_req),
 			.oMEMORY_LOCK(memory2processor_lock),
 			.iMEMORY_ORDER(processor2memory_order),				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
+			`ifdef MIST32_NEW_TEST
+				.iMEMORY_MASK(processor2memory_mask),
+			`endif
 			.iMEMORY_RW(processor2memory_rw),						//1:Write | 0:Read
 			.iMEMORY_ADDR(processor2memory_addr),
 			//This -> Data RAM
@@ -483,7 +486,7 @@ module mist1032isa(
 	
 	endian_controller ENDIAN_TO_CPU_L(
 		//Source
-		.iSRC_MASK(4'h0),
+		.iSRC_MASK(4'hf),
 		.iSRC_DATA(memory2processor_data[31:0]),
 		//Destnation
 		.oDEST_MASK(),
@@ -492,7 +495,7 @@ module mist1032isa(
 	
 	endian_controller ENDIAN_TO_CPU_H(
 		//Source
-		.iSRC_MASK(4'h0),
+		.iSRC_MASK(4'hf),
 		.iSRC_DATA(memory2processor_data[63:32]),
 		//Destnation
 		.oDEST_MASK(),

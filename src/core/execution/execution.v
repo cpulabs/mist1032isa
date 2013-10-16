@@ -1395,7 +1395,7 @@ module execution(
 								b_valid <= 1'b1;
 								b_state <= L_PARAM_STT_NORMAL;
 								`ifdef MIST32_NEW_TEST
-									b_r_data <= func_load_fairing(b_ldst_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)); 
+									b_r_data <= func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA);//func_load_fairing(b_ldst_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)); 
 								`else
 									b_r_data <= func_load_mask(b_load_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8));
 								`endif
@@ -1618,14 +1618,45 @@ module execution(
 	
 	function [31:0] func_load_fairing;	
 		input [3:0] func_mask;
+		input [1:0] func_shift;
 		input [31:0] func_data;
 		reg [7:0] func_tmp0, func_tmp1, func_tmp2, func_tmp3;
 		begin
+			if(func_mask == 4'hf)begin
+				func_load_fairing = func_data;
+			end
+			else if(func_mask == 4'b0001)begin
+				func_load_fairing = {24'h0, func_data[31:24]};
+			end
+			else if(func_mask == 4'b0010)begin
+				func_load_fairing = {24'h0, func_data[23:16]};
+			end
+			else if(func_mask == 4'b0100)begin
+				func_load_fairing = {24'h0, func_data[15:8]};
+			end
+			else if(func_mask == 4'b1000)begin
+				func_load_fairing = {24'h0, func_data[7:0]};
+			end
+			else if(func_mask == 4'b0011)begin
+				func_load_fairing = {24'h0, func_data[31:16]};
+			end
+			else begin
+			//else if(func_mask == 4'b1100)begin
+				func_load_fairing = {24'h0, func_data[15:0]};
+			end
+			
+			/*
 			func_tmp0 = (func_mask[0])? func_data[7:0] : 8'h0;
 			func_tmp1 = (func_mask[1])? func_data[15:8] : 8'h0;
 			func_tmp2 = (func_mask[2])? func_data[23:16] : 8'h0;
 			func_tmp3 = (func_mask[3])? func_data[31:24] : 8'h0;
-			func_load_fairing = {func_tmp3, func_tmp2, func_tmp1, func_tmp0}; 
+			case(func_shift)
+				2'h0 : func_load_fairing = {func_tmp3, func_tmp2, func_tmp1, func_tmp0}; 
+				2'h1 : func_load_fairing = {8'h0, func_tmp3, func_tmp2, func_tmp1}; 
+				2'h2 : func_load_fairing = {16'h0, func_tmp3, func_tmp2}; 
+				2'h3 : func_load_fairing = {24'h0, func_tmp3}; 
+			endcase
+			*/
 		end
 	endfunction
 	
@@ -1723,7 +1754,8 @@ module execution(
 	/*************************************************
 	Verilog Assertion
 	*************************************************/
-	wire test________ = oDATAIO_REQ && oDATAIO_ADDR == 32'h000d5ca8;
+	wire test________ = oDATAIO_REQ && (oDATAIO_ADDR == 32'h000d5cba || oDATAIO_ADDR == 32'h000d5cb8 || oDATAIO_ADDR == 32'h000d5cb9 || oDATAIO_ADDR == 32'h000d5cbb);
+	wire test_byte_order = oDATAIO_REQ && oDATAIO_ORDER == 2'h0;
 	
 	function [31:0] func_assert_write_data;
 		input [4:0] func_mask;
@@ -1758,6 +1790,8 @@ module execution(
 	
 	//`ifdef MIST1032ISA_VLG_ASSERTION
 	localparam time_ena = 0;
+	integer F_HANDLE;
+	initial F_HANDLE = $fopen("ldst_time_dump.log");
 	always@(posedge iCLOCK)begin
 
 
@@ -1768,11 +1802,12 @@ module execution(
 			if(inRESET)begin
 				if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
 					if(time_ena == 1)begin
-						$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
+						$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
 					end
 					else begin
-						$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, iDATAIO_DATA >> (b_load_pipe_shift*8)));
+						$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
 					end
+					$fdisplay(F_HANDLE, "%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
 				end
 			end
 			//Store
@@ -1784,8 +1819,11 @@ module execution(
 					else begin
 						$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
 					end
+					$fdisplay(F_HANDLE, "%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
 				end
 			end
+
+
 			
 			
 		`else

@@ -27,8 +27,7 @@ module mist1032isa_sync_fifo
 		parameter N = 16,
 		parameter DEPTH = 4,
 		parameter D_N = 2
-	)	
-	(
+	)(
 		//System
 		input wire iCLOCK,
 		input wire inRESET,
