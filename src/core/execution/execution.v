@@ -509,6 +509,9 @@ module execution(
 					else if(iPREVIOUS_EX_MUL)begin
 						b_sysreg_flags <= mul_flags;
 					end
+					else if(iPREVIOUS_EX_LOGIC)begin	
+						b_sysreg_flags <= logic_flags;
+					end
 				end
 			end
 		end
@@ -1794,6 +1797,7 @@ module execution(
 	integer F_HANDLE;
 	initial F_HANDLE = $fopen("ldst_time_dump.log");
 	*/
+	
 	always@(posedge iCLOCK)begin
 
 
