@@ -229,7 +229,7 @@ module peripheral_interface_controller(
 	wire device_select = (b_cpu_addr >= 32'h00000200)? 1'b1 : 1'b0;
 	
 	//DPS
-	assign oDPS_REQ = b_iosize_state == 2'h1 || b_cpu_req && !device_select;
+	assign oDPS_REQ = b_cpu_req && !device_select;
 	assign oDPS_RW = (b_iosize_state == 2'h1)? 1'b0 : b_cpu_rw;
 	assign oDPS_ADDR = (b_iosize_state == 2'h1)? 32'h4 : b_cpu_addr;
 	assign oDPS_DATA = (b_iosize_state == 2'h1)? 32'h0 : b_cpu_data;
