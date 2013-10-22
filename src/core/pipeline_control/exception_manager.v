@@ -25,6 +25,7 @@ module exception_manager(
 		output wire oFREE_TLB_FLUSH,	
 		//Interrupt Lock
 		input wire iINTERRUPT_LOCK,
+		input wire iINTERRUPT_LDST_LOCK,
 		//System Register - Input
 		input wire [31:0] iSYSREG_SPR,
 		input wire [31:0] iSYSREG_TIDR,
@@ -189,7 +190,7 @@ module exception_manager(
 	reg [31:0] b_sysr_idtr;
 	
 	wire interrupt_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LOCK && iSYSREG_PSR[2];
-	wire interrupt_and_branch_condition = 1'b0;// Bug! -> iEXCEPT_IRQ_REQ && iSYSREG_PSR[2];		
+	wire interrupt_and_branch_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LDST_LOCK && iSYSREG_PSR[2];		
 	reg b_irq_request_test;
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -295,7 +296,7 @@ module exception_manager(
 							b_sysreg_set_mode <= L_PARAM_SRMODE_IRQ_SET;
 							b_sysreg_set <= 1'b1;
 							b_main_state <= L_PARAM_MAINSTT_IRQ_SET;
-							b_pipeline_flush_event <= 1'b1;
+							b_pipeline_flush_event <= 1'b0;//1'b1;
 							//b_branch_addr <= iSYSREG_PCR;
 							b_ppcr_set <= 1'b1;
 							b_ppcr <= iEXCEPT_JUMP_ADDR;

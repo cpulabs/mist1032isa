@@ -81,6 +81,7 @@ module sim_memory_model(
 				for(i = 0; i < P_MEM_SIZE; i = i + 1)begin
 					b_mem_data[i] = func_endian_convert(b_mem_data[i]);		//[]
 				end
+				$display("test!!!!!");
 				$display("[INF][sim_memory_model.v]Mem[0]->%x", b_mem_data[0]);
 			end
 		end

@@ -256,23 +256,23 @@ module tb_mist1032isa_normal_test;
 			end
 			//Check Flag
 			else if(oMEMORY_ADDR == 32'h0002_0000)begin
-				assert_check_flag = oMEMORY_DATA[0];
+				assert_check_flag = oMEMORY_DATA[24];
 			end
 			//Error Number
 			else if(oMEMORY_ADDR == 32'h0002_000c)begin
-				assert_wrong_number = oMEMORY_DATA;
+				assert_wrong_number = {oMEMORY_DATA[7:0], oMEMORY_DATA[15:8], oMEMORY_DATA[23:16], oMEMORY_DATA[31:24]};
 			end
 			//Error Type
 			else if(oMEMORY_ADDR == 32'h0002_0008)begin
-				assert_wrong_type = oMEMORY_DATA;
+				assert_wrong_type = {oMEMORY_DATA[7:0], oMEMORY_DATA[15:8], oMEMORY_DATA[23:16], oMEMORY_DATA[31:24]};
 			end
 			//Error Result
 			else if(oMEMORY_ADDR == 32'h0002_0010)begin
-				assert_result = oMEMORY_DATA;
+				assert_result = {oMEMORY_DATA[7:0], oMEMORY_DATA[15:8], oMEMORY_DATA[23:16], oMEMORY_DATA[31:24]};
 			end
 			//Error Expect
 			else if(oMEMORY_ADDR == 32'h0002_0014)begin
-				assert_expect = oMEMORY_DATA;
+				assert_expect = {oMEMORY_DATA[7:0], oMEMORY_DATA[15:8], oMEMORY_DATA[23:16], oMEMORY_DATA[31:24]};
 			end
 			
 		end

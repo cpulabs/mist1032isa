@@ -285,6 +285,7 @@ module core_pipeline
 	
 	//Interrupt Lock
 	wire interrupt_lock;
+	wire interrupt_ldst_lock;
 	wire dispatch_exception_lock;
 	wire execute_exception_lock;
 	
@@ -421,6 +422,7 @@ module core_pipeline
 		Interrupt Lock
 		************************************/
 		.iINTERRUPT_LOCK(interrupt_lock),
+		.iINTERRUPT_LDST_LOCK(interrupt_ldst_lock),
 		/************************************
 		System Register
 		************************************/
@@ -846,6 +848,7 @@ module core_pipeline
 		.iFREE_PIPELINE_STOP(free_pipeline_stop),
 		.iFREE_REFRESH(free_pipeline_flush),
 		.oEXCEPTION_LOCK(execute_exception_lock),
+		.oEXCEPTION_LDST_LOCK(interrupt_ldst_lock),
 		//System Register
 		.oSYSREG_FLAGR(sysreg_flagr),
 		//Pipeline 
