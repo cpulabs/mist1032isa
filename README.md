@@ -32,6 +32,9 @@ Macro Option(Synth/Sim)
   
   MIST1032ISA_STANDARD_DEBUGGER		:	SDI Enable
 
+  MIST1032ISA_ALTERA_PRIMITIVE  : Use altera promitive block(Farst. But altera only).
+  
+
 
 Macro Option(Synth-Only)
   MIST1032ISA_SYNTH					:	Synthesize Mode(Always Simulation Macro Disable)

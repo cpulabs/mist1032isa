@@ -1,4 +1,4 @@
-Riviera-PRO 2013.02.81.4877(Windows64) 2013-10-05 17:15:19
+Riviera-PRO 2013.02.81.4877(Windows64) 2013-11-21 14:50:36
 
 Elaboration top modules:
 Verilog Module                tb_mist1032isa_normal_test
@@ -14,6 +14,7 @@ core                                           | work    |      | 2013.02.81 (Wi
 sdi_debugger                                   | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 memory_pipe_arbiter                            | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 mmu_if                                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+endian_controller                              | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 peripheral_interface_controller                | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 default_peripheral_system                      | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 core_pipeline                                  | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
@@ -54,6 +55,7 @@ tlb                                            | work    |      | 2013.02.81 (Wi
 dps_utim64                                     | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 dps_sci                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 dps_mimsr                                      | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
+dps_lsflags                                    | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 dps_irq                                        | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 utim64                                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include
 mist1032isa_async_fifo                         | work    |      | 2013.02.81 (Windows64) | -l work -dbg +incdir+../../src/include +incdir+../../src/core/include

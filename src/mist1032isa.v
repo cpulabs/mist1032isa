@@ -5,6 +5,8 @@ MIST1032ISA Processor
 `include "processor.h"
 `include "common.h"
 
+
+
 module mist1032isa(
 		/****************************************
 		System
@@ -165,7 +167,9 @@ module mist1032isa(
 			.iMEMORY_REQ(processor2memory_req),
 			.oMEMORY_LOCK(memory2processor_lock),
 			.iMEMORY_ORDER(processor2memory_order),				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
-			.iMEMORY_MASK(processor2memory_mask),
+			`ifdef MIST32_NEW_TEST
+				.iMEMORY_MASK(processor2memory_mask),
+			`endif
 			.iMEMORY_RW(processor2memory_rw),						//1:Write | 0:Read
 			.iMEMORY_ADDR(processor2memory_addr),
 			//This -> Data RAM
@@ -472,6 +476,8 @@ module mist1032isa(
 		.iMEMORY_DATA(endian2processor_data)
 	); 
 	
+	`ifdef MIST32_NEW_TEST
+	
 	//Endian Control
 	endian_controller ENDIAN_TO_MEM(
 		//Source
@@ -500,6 +506,12 @@ module mist1032isa(
 		.oDEST_DATA(endian2processor_data[63:32])
 	);
 	
+	`else
+	assign processor2memory_mask = processor2endian_mask;
+	assign processor2memory_data = processor2endian_data;
+	assign endian2processor_data = memory2processor_data;
+	
+	`endif
 
 	/********************************************************************************
 	IO Interface

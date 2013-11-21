@@ -9,6 +9,7 @@ Open Design Computer Project
   http://open-arch.org
 ********************************************************/
 
+`define MIST32_NEW_TEST
 
 `ifdef MIST1032ISA_SYNTH
 	//Synthesize Mode
@@ -23,7 +24,7 @@ Open Design Computer Project
 `else
 	//Normal Simulation Mode
 	`define MIST1032ISA_STANDARD_DEBUGGER
-	
+	`define MIST1032ISA_BRANCH_PREDICT
 `endif
 
 

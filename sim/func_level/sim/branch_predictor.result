@@ -1,0 +1,944 @@
+# ALIB: Library `work' attached.
+# work = C:/dev/home/takahiro/test/mist1032isa/sim/func_level/work/work.lib
+# work
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa found in current working library.
+# ALOG: Info: VCP2113 Module core found in current working library.
+# ALOG: Info: VCP2113 Module sdi_debugger found in current working library.
+# ALOG: Info: VCP2113 Module memory_pipe_arbiter found in current working library.
+# ALOG: Info: VCP2113 Module mmu_if found in current working library.
+# ALOG: Info: VCP2113 Module endian_controller found in current working library.
+# ALOG: Info: VCP2113 Module peripheral_interface_controller found in current working library.
+# ALOG: Info: VCP2113 Module default_peripheral_system found in current working library.
+# ALOG: Info: VCP2113 Module sim_memory_model found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module core found in current working library.
+# ALOG: Info: VCP2113 Module core_pipeline found in current working library.
+# ALOG: Info: VCP2113 Module sdi_debugger found in current working library.
+# ALOG: Info: VCP2113 Module sdi_interface_control found in current working library.
+# ALOG: Info: VCP2113 Module memory_pipe_arbiter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
+# ALOG: Info: VCP2113 Module mmu_if found in current working library.
+# ALOG: Info: VCP2113 Module mmu found in current working library.
+# ALOG: Info: VCP2113 Module endian_controller found in current working library.
+# ALOG: Info: VCP2113 Module peripheral_interface_controller found in current working library.
+# ALOG: Info: VCP2113 Module default_peripheral_system found in current working library.
+# ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
+# ALOG: Info: VCP2113 Module dps_sci found in current working library.
+# ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_lsflags found in current working library.
+# ALOG: Info: VCP2113 Module dps_irq found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module core_pipeline found in current working library.
+# ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
+# ALOG: Info: VCP2113 Module exception_manager found in current working library.
+# ALOG: Info: VCP2113 Module core_paging_support found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache found in current working library.
+# ALOG: Info: VCP2113 Module fetch found in current working library.
+# ALOG: Info: VCP2113 Module instruction_buffer found in current working library.
+# ALOG: Info: VCP2113 Module decoder found in current working library.
+# ALOG: Info: VCP2113 Module dispatch found in current working library.
+# ALOG: Info: VCP2113 Module execution found in current working library.
+# ALOG: Info: VCP2113 Module losd_store_pipe_arbiter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache found in current working library.
+# ALOG: Info: VCP2113 Module core_debug found in current working library.
+# ALOG: Info: VCP2113 Module sdi_interface_control found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
+# ALOG: Info: VCP2113 Module mmu found in current working library.
+# ALOG: Info: VCP2113 Module tlb found in current working library.
+# ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
+# ALOG: Info: VCP2113 Module utim64 found in current working library.
+# ALOG: Info: VCP2113 Module dps_sci found in current working library.
+# ALOG: Info: VCP2113 Module dps_uart found in current working library.
+# ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_lsflags found in current working library.
+# ALOG: Info: VCP2113 Module dps_irq found in current working library.
+# ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
+# ALOG: Info: VCP2113 Module exception_manager found in current working library.
+# ALOG: Info: VCP2113 Module core_paging_support found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module fetch found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module instruction_buffer found in current working library.
+# ALOG: Info: VCP2113 Module decoder found in current working library.
+# ALOG: Info: VCP2113 Module dispatch found in current working library.
+# ALOG: Info: VCP2113 Module system_register found in current working library.
+# ALOG: Info: VCP2113 Module frcr_timer found in current working library.
+# ALOG: Info: VCP2113 Module execution found in current working library.
+# ALOG: Info: VCP2113 Module sys_reg found in current working library.
+# ALOG: Info: VCP2113 Module logic_n found in current working library.
+# ALOG: Info: VCP2113 Module shift_n found in current working library.
+# ALOG: Info: VCP2113 Module adder_n found in current working library.
+# ALOG: Info: VCP2113 Module pipelined_div_radix2 found in current working library.
+# ALOG: Info: VCP2113 Module load_store found in current working library.
+# ALOG: Info: VCP2113 Module branch found in current working library.
+# ALOG: Info: VCP2113 Module losd_store_pipe_arbiter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module core_debug found in current working library.
+# ALOG: Info: VCP2113 Module tlb found in current working library.
+# ALOG: Info: VCP2113 Module utim64 found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
+# ALOG: Info: VCP2113 Module main_counter found in current working library.
+# ALOG: Info: VCP2113 Module comparator_counter found in current working library.
+# ALOG: Info: VCP2113 Module dps_uart found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module system_register found in current working library.
+# ALOG: Info: VCP2113 Module frcr_timer found in current working library.
+# ALOG: Info: VCP2113 Module sys_reg found in current working library.
+# ALOG: Info: VCP2113 Module logic_n found in current working library.
+# ALOG: Info: VCP2113 Module shift_n found in current working library.
+# ALOG: Info: VCP2113 Module adder_n found in current working library.
+# ALOG: Info: VCP2113 Module pipelined_div_radix2 found in current working library.
+# ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
+# ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Info: VCP2113 Module load_store found in current working library.
+# ALOG: Info: VCP2113 Module branch found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module main_counter found in current working library.
+# ALOG: Info: VCP2113 Module comparator_counter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
+# ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/sim/func_level/tb/tb_func_level.v : (84, 1): Some unconnected ports remain at instance: TARGET. Module mist1032isa has unconnected  port(s) : oMEMORY_MASK.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/sim/func_level/tb/tb_func_level.v : (215, 1): Some unconnected ports remain at instance: MEMORY_MODEL. Module sim_memory_model has unconnected  port(s) : iMEMORY_MASK.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Unit top modules: tb_mist1032isa_func_level_test.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/sim/model/sim_memory_model/sim_memory_model.v : (129, 1): Some unconnected ports remain at instance: OUT_FIFO. Module mist1032isa_sync_fifo has unconnected  port(s) : iREMOVE.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
+# ALOG: Info: VCP2113 Module core found in current working library.
+# ALOG: Info: VCP2113 Module core_pipeline found in current working library.
+# ALOG: Info: VCP2113 Module sdi_debugger found in current working library.
+# ALOG: Info: VCP2113 Module sdi_interface_control found in current working library.
+# ALOG: Info: VCP2113 Module mmu_if found in current working library.
+# ALOG: Info: VCP2113 Module mmu found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module default_peripheral_system found in current working library.
+# ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
+# ALOG: Info: VCP2113 Module dps_sci found in current working library.
+# ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_lsflags found in current working library.
+# ALOG: Info: VCP2113 Module dps_irq found in current working library.
+# ALOG: Info: VCP2113 Module core_pipeline found in current working library.
+# ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
+# ALOG: Info: VCP2113 Module exception_manager found in current working library.
+# ALOG: Info: VCP2113 Module core_paging_support found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache found in current working library.
+# ALOG: Info: VCP2113 Module fetch found in current working library.
+# ALOG: Info: VCP2113 Module instruction_buffer found in current working library.
+# ALOG: Info: VCP2113 Module decoder found in current working library.
+# ALOG: Info: VCP2113 Module dispatch found in current working library.
+# ALOG: Info: VCP2113 Module execution found in current working library.
+# ALOG: Info: VCP2113 Module losd_store_pipe_arbiter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache found in current working library.
+# ALOG: Info: VCP2113 Module core_debug found in current working library.
+# ALOG: Info: VCP2113 Module sdi_interface_control found in current working library.
+# ALOG: Info: VCP2113 Module mmu found in current working library.
+# ALOG: Info: VCP2113 Module tlb found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
+# ALOG: Info: VCP2113 Module utim64 found in current working library.
+# ALOG: Info: VCP2113 Module dps_sci found in current working library.
+# ALOG: Info: VCP2113 Module dps_uart found in current working library.
+# ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_lsflags found in current working library.
+# ALOG: Info: VCP2113 Module dps_irq found in current working library.
+# ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
+# ALOG: Info: VCP2113 Module exception_manager found in current working library.
+# ALOG: Info: VCP2113 Module core_paging_support found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module fetch found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module instruction_buffer found in current working library.
+# ALOG: Info: VCP2113 Module decoder found in current working library.
+# ALOG: Info: VCP2113 Module dispatch found in current working library.
+# ALOG: Info: VCP2113 Module system_register found in current working library.
+# ALOG: Info: VCP2113 Module frcr_timer found in current working library.
+# ALOG: Info: VCP2113 Module execution found in current working library.
+# ALOG: Info: VCP2113 Module sys_reg found in current working library.
+# ALOG: Info: VCP2113 Module logic_n found in current working library.
+# ALOG: Info: VCP2113 Module shift_n found in current working library.
+# ALOG: Info: VCP2113 Module adder_n found in current working library.
+# ALOG: Info: VCP2113 Module pipelined_div_radix2 found in current working library.
+# ALOG: Info: VCP2113 Module load_store found in current working library.
+# ALOG: Info: VCP2113 Module branch found in current working library.
+# ALOG: Info: VCP2113 Module losd_store_pipe_arbiter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module core_debug found in current working library.
+# ALOG: Info: VCP2113 Module tlb found in current working library.
+# ALOG: Info: VCP2113 Module utim64 found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
+# ALOG: Info: VCP2113 Module main_counter found in current working library.
+# ALOG: Info: VCP2113 Module comparator_counter found in current working library.
+# ALOG: Info: VCP2113 Module dps_uart found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module system_register found in current working library.
+# ALOG: Info: VCP2113 Module frcr_timer found in current working library.
+# ALOG: Info: VCP2113 Module sys_reg found in current working library.
+# ALOG: Info: VCP2113 Module logic_n found in current working library.
+# ALOG: Info: VCP2113 Module shift_n found in current working library.
+# ALOG: Info: VCP2113 Module adder_n found in current working library.
+# ALOG: Info: VCP2113 Module pipelined_div_radix2 found in current working library.
+# ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
+# ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Info: VCP2113 Module load_store found in current working library.
+# ALOG: Info: VCP2113 Module branch found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module main_counter found in current working library.
+# ALOG: Info: VCP2113 Module comparator_counter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
+# ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Warning: VCP2641 C:/dev/home/takahiro/test/mist1032isa/src/memory_pipe_arbiter.v : (167, 40): Redundant digits given in number 4'hff.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/peripheral_interface_controller.v, ln 118).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/processor_debugger.v, ln 156).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/processor_debugger.v, ln 194).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/processor_debugger.v, ln 248).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/processor_debugger_uart.v, ln 65).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/processor_debugger_uart.v, ln 116).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/processor_debugger_uart_transmit_format.v, ln 75).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/processor_debugger_uart_transmit_format.v, ln 143).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/sdi_debugger.v, ln 186).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/sdi_debugger.v, ln 282).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/debugger/sdi_debugger.v, ln 326).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Unit top modules: processor_debugger.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Unit top modules: dps_mimsr.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b dps_mimsr.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/src/dps_device/sci/dps_sci.v : (98, 1): Some unconnected ports remain at instance: UARTMOD. Module dps_uart has unconnected  port(s) : oIRQ_VALID.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_device/sci/dps_sci.v, ln 281).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Unit top modules: dps_sci.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b dps_mimsr dps_sci.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_device/utim64/dps_utim64.v, ln 55).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_device/utim64/dps_utim64.v, ln 140).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_sci found in current working library.
+# ALOG: Unit top modules: dps_utim64.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b dps_mimsr dps_sci dps_utim64.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
+# ALOG: Info: VCP2113 Module utim64 found in current working library.
+# ALOG: Info: VCP2113 Module dps_sci found in current working library.
+# ALOG: Info: VCP2113 Module dps_uart found in current working library.
+# ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module utim64 found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
+# ALOG: Info: VCP2113 Module main_counter found in current working library.
+# ALOG: Info: VCP2113 Module comparator_counter found in current working library.
+# ALOG: Info: VCP2113 Module dps_uart found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module main_counter found in current working library.
+# ALOG: Info: VCP2113 Module comparator_counter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/dps_main/dps_irq.v : (43, 1): Conditional expression 1'b0 at 'if' statement is constant.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_main/default_peripheral_system.v, ln 96).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_main/dps_irq.v, ln 92).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/lib/mist1032isa_uart_receiver.v, ln 109).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/lib/mist1032isa_uart_receiver.v, ln 173).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/lib/mist1032isa_uart_transmitter.v, ln 84).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/lib/mist1032isa_uart_transmitter.v, ln 161).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/mmu/tlb.v : (219, 1): Conditional expression 1'b0 at 'if' statement is constant.
+# ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/mmu/tlb.v : (242, 1): Conditional expression 1'b0 at 'if' statement is constant.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 153).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 147).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 218).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu_if.v, ln 146).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
+# ALOG: Info: VCP2113 Module exception_manager found in current working library.
+# ALOG: Info: VCP2113 Module core_paging_support found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module fetch found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module instruction_buffer found in current working library.
+# ALOG: Info: VCP2113 Module decoder found in current working library.
+# ALOG: Info: VCP2113 Module dispatch found in current working library.
+# ALOG: Info: VCP2113 Module system_register found in current working library.
+# ALOG: Info: VCP2113 Module frcr_timer found in current working library.
+# ALOG: Info: VCP2113 Module execution found in current working library.
+# ALOG: Info: VCP2113 Module sys_reg found in current working library.
+# ALOG: Info: VCP2113 Module logic_n found in current working library.
+# ALOG: Info: VCP2113 Module shift_n found in current working library.
+# ALOG: Info: VCP2113 Module adder_n found in current working library.
+# ALOG: Info: VCP2113 Module pipelined_div_radix2 found in current working library.
+# ALOG: Info: VCP2113 Module load_store found in current working library.
+# ALOG: Info: VCP2113 Module branch found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module core_debug found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
+# ALOG: Info: VCP2113 Module l1_instruction_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module system_register found in current working library.
+# ALOG: Info: VCP2113 Module frcr_timer found in current working library.
+# ALOG: Info: VCP2113 Module sys_reg found in current working library.
+# ALOG: Info: VCP2113 Module logic_n found in current working library.
+# ALOG: Info: VCP2113 Module shift_n found in current working library.
+# ALOG: Info: VCP2113 Module adder_n found in current working library.
+# ALOG: Info: VCP2113 Module pipelined_div_radix2 found in current working library.
+# ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
+# ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Info: VCP2113 Module load_store found in current working library.
+# ALOG: Info: VCP2113 Module branch found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
+# ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (326, 1): Undefined port oCORE_FLASH in module core.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (342, 1): Undefined port oINST_TID in module core.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (394, 1): Undefined port oDEBUG1 in module core.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (317, 1): Some unconnected ports remain at instance: CORE. Module core has unconnected  port(s) : oFREE_TLB_FLUSH, iINST_PAGEFAULT, iINST_QUEUE_FLUSH, oDATA_MASK, iDATA_PAGEFAULT, iDATA_MMU_FLAGS, oDEBUG_PC.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Unit top modules: core_if.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 4 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Unit top modules: branch_predictor.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b branch_predictor.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/core_debug/core_debug.v, ln 118).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/core_debug/core_debug.v, ln 175).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b branch_predictor.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Case expression too large, will not check for overlapping labels (../../src/core/decode/decode.v, ln 236).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b branch_predictor.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b branch_predictor.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module pipelined_div_radix2 found in current working library.
+# ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
+# ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
+# ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/execution/execution.v, ln 952).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/execution/execution.v, ln 1527).
+# ALOG: Warning: VCP2905 C:/dev/home/takahiro/test/mist1032isa/src/core/execution/execution.v : (561, 1): Expression '5'h08' yields a value that is a duplicate of another case item expression.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Unit top modules: ex_forwarding ex_forwarding_register mul_booth32.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b branch_predictor.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 1[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b branch_predictor.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Warning: VCP2515 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_data/l1_data_cache_64entry_4way_line64b.v : (324, 11): Undefined module: cache_ram_16entry_512bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Warning: VCP2515 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_data/l1_data_cache_64entry_4way_line64b.v : (425, 11): Undefined module: cache_ram_16entry_256bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/l1_data/l1_data_cache.v, ln 170).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Unit top modules: l1_data_cache_64entry_4way_line64b_bus_8b.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Warning: VCP2515 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (305, 11): Undefined module: cache_ram_16entry_512bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Warning: VCP2515 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (405, 11): Undefined module: cache_ram_16entry_256bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Warning: VCP2814 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (468, 49): Function func_upload_enable_byte_gen should return a value.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/l1_instruction/l1_instruction_cache.v, ln 96).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Unit top modules: l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 3 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/core/pipeline_control/core_interrupt_manager.v : (67, 1): Conditional expression 1'b0 at 'if' statement is constant.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/core_interrupt_manager.v, ln 121).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 321).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 390).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 449).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 231).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 508).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 562).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 610).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 658).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_func_level_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_func_level_test processor_debugger core_if ex_forwarding ex_forwarding_register mul_booth32 l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 1[s].
+# ALOG: done
+# ELBREAD: Elaboration process.
+# ELBREAD: Warning: Module 'mist1032isa' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'sim_memory_model' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'core' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'sdi_debugger' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'memory_pipe_arbiter' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mmu_if' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'endian_controller' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'peripheral_interface_controller' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'default_peripheral_system' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'core_pipeline' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'core_interrupt_manager' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'exception_manager' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'core_paging_support' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'l1_instruction_cache' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'fetch' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'instruction_buffer' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'decoder' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'dispatch' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'execution' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'losd_store_pipe_arbiter' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'l1_data_cache' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'core_debug' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_arbiter_matching_queue' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'l1_instruction_cache_counter' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'l1_cache_64entry_4way_line64b_bus_8b_damy' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'branch_predictor' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_sync_fifo' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'branch_cache' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'system_register' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'frcr_timer' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'sys_reg' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'logic_n' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'shift_n' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'adder_n' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'pipelined_div_radix2' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'load_store' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'branch' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'radix2_linediv' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'div_pipelined_latch' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'l1_data_cache_counter' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'l1_data_cache_64entry_4way_line64b_bus_8b_damy' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'sdi_interface_control' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mmu' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'tlb' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'dps_utim64' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'dps_sci' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'dps_mimsr' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'dps_lsflags' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'dps_irq' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'utim64' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_async_fifo' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'main_counter' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'comparator_counter' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_async_fifo_double_flipflop' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'dps_uart' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_uart_transmitter' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_uart_receiver' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_uart_transmitter_double_flipflop' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_uart_transmitter_async2sync' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_uart_receiver_double_flipflop' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Warning: Module 'mist1032isa_uart_receiver_async2sync' does not have a `timescale directive, but previous modules do.
+# ELBREAD: Elaboration time 0.0 [s].
+# KERNEL: Main thread initiated.
+# KERNEL: Kernel process initialization phase.
+# KERNEL: Time resolution set to 1ns.
+# ELAB2: Elaboration final pass...
+# KERNEL: PLI/VHPI kernel's engine initialization done.
+# PLI: Loading library 'C:\Aldec\Riviera-PRO-2013.02-x64\bin\systf.dll'
+# ELAB2: Create instances ...
+# ELAB2: Warning: ELAB2_0051 l1_instruction_cache.v (299): Length of connection (64) does not match the length of port "iUP_DATA" (32) on instance "/tb_mist1032isa_func_level_test/TARGET/CORE/CORE_PIPELINE/L1_INST_CACHE/CACHE_MODULE"
+# ELAB2: Warning: ELAB2_0051 execution.v (783): Length of connection (6) does not match the length of port "iADV_DATA" (32) on instance "/tb_mist1032isa_func_level_test/TARGET/CORE/CORE_PIPELINE/EXECUTION/LDST"
+# ELAB2: Warning: ELAB2_0051 core_pipeline.v (965): Length of connection (32) does not match the length of port "oLDST_TID" (14) on instance "/tb_mist1032isa_func_level_test/TARGET/CORE/CORE_PIPELINE/LDST_PIPE_ARBITOR"
+# ELAB2: Warning: ELAB2_0051 tb_func_level.v (215): Length of connection (32) does not match the length of port "iMEMORY_ADDR" (26) on instance "/tb_mist1032isa_func_level_test/MEMORY_MODEL"
+# ELAB2: Create instances complete.
+# SLP: Started
+# SLP: Elaboration phase ...
+# SLP: Elaboration phase ... skipped, nothing to simulate in SLP mode : 0.0 [s]
+# SLP: Finished : 0.0 [s]
+# ELAB2: Elaboration final pass complete - time: 0.2 [s].
+# COVERAGE: Opening session in merge mode for local units.
+# KERNEL: Kernel process initialization done.
+# Allocation: Simulator allocated 273077 kB (elbread=2065 elab2=270334 kernel=676 sdf=0)
+# KERNEL: ASDB file was created in location C:/dev/home/takahiro/test/mist1032isa/sim/func_level/dataset.asdb
+# KERNEL: Check Start
+# KERNEL: [INF][sim_memory_model.v]Please wait. Endian converting for test file.
+# KERNEL: test!!!!!
+# KERNEL: [INF][sim_memory_model.v]Mem[0]->0f00600d0000400d
+# KERNEL: [S], 00000018, 000f0000, 00020008, 00000269
+# KERNEL: [SIM-LOG]#d       617
+# KERNEL: [S], 00000018, 000f0000, 00020008, 00000036
+# KERNEL: [SIM-LOG]#d        54
+# KERNEL: [S], 00000018, 000f0000, 00020008, 00000036
+# KERNEL: [SIM-LOG]#d        54
+# KERNEL: [S], 00000018, 000f0000, 00020008, 00000036
+# KERNEL: [SIM-LOG]#d        54
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 00000018, 000f0000, 00020008, 0000002e
+# KERNEL: [SIM-LOG]#d        46
+# KERNEL: [S], 0000002c, 000f0000, 00020004, 00000001
+# KERNEL: [SIM-OK]Simulation Finished.
+# RUNTIME: Info: RUNTIME_0070 tb_func_level.v (254): $stop called.
+# KERNEL: Time: 133470 ns,  Iteration: 0,  Instance: /tb_mist1032isa_func_level_test,  Process: @ALWAYS#241_4@.
+# KERNEL: stopped at delta: 0 at time 133470 ns.
+# COVERAGE: Results written to ./coverage
+# COVERAGE: Closing session.
+# VSIM: Simulation has finished.

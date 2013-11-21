@@ -1,9 +1,8 @@
 # ALIB: Library `work' attached.
-# work = C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/sim/inst_level/work/work.lib
+# work = C:/dev/home/takahiro/test/mist1032isa/sim/inst_level/work/work.lib
 # work
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa found in current working library.
 # ALOG: Info: VCP2113 Module core found in current working library.
 # ALOG: Info: VCP2113 Module sdi_debugger found in current working library.
@@ -11,6 +10,8 @@
 # ALOG: Info: VCP2113 Module mmu_if found in current working library.
 # ALOG: Info: VCP2113 Module peripheral_interface_controller found in current working library.
 # ALOG: Info: VCP2113 Module default_peripheral_system found in current working library.
+# ALOG: Info: VCP2113 Module sim_memory_model found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
 # ALOG: Info: VCP2113 Module core found in current working library.
 # ALOG: Info: VCP2113 Module core_pipeline found in current working library.
 # ALOG: Info: VCP2113 Module sdi_debugger found in current working library.
@@ -25,6 +26,7 @@
 # ALOG: Info: VCP2113 Module dps_sci found in current working library.
 # ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
 # ALOG: Info: VCP2113 Module dps_irq found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
 # ALOG: Info: VCP2113 Module core_pipeline found in current working library.
 # ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
 # ALOG: Info: VCP2113 Module exception_manager found in current working library.
@@ -118,10 +120,8 @@
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
 # ALOG: Pass 2. Processing instantiations.
-# ALOG: Info: VCP2618 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/sim/inst_level/tb/sim_memory_model.v : (87, 16): Array size is greater than 2^24 bits: b_mem_data [63:0]reg[0:16777215].
-# ALOG: Warning: VCP2597 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/sim/inst_level/tb/sim_memory_model.v : (123, 1): Some unconnected ports remain at instance: OUT_FIFO. Module mist1032isa_sync_fifo has unconnected  port(s) : iREMOVE.
+# ALOG: Warning: VCP2705 C:/dev/home/takahiro/test/mist1032isa/sim/inst_level/tb/tb_inst_level.v : (229, 6): Too many parameters for sim_memory_model.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Info: VCP2618 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/sim/inst_level/tb/sim_memory_model.v : (87, 16): Array size is greater than 2^24 bits: b_mem_data [63:0]reg[0:16777215].
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module processor_debugger found in current working library.
@@ -135,6 +135,26 @@
 # ALOG: Unit top modules: tb_mist1032isa_normal_test.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
 # ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 1[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/sim/model/sim_memory_model/sim_memory_model.v : (129, 1): Some unconnected ports remain at instance: OUT_FIFO. Module mist1032isa_sync_fifo has unconnected  port(s) : iREMOVE.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module fetch_________ found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -244,7 +264,11 @@
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
 # ALOG: Pass 2. Processing instantiations.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/mist1032isa.v : (260, 1): Undefined port oDATA_MASK in module core.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/mist1032isa.v : (450, 1): Undefined port iCORE_MASK in module mmu_if.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/mist1032isa.v : (469, 1): Undefined port oMEMORY_MASK in module mmu_if.
 # ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Warning: VCP2641 C:/dev/home/takahiro/test/mist1032isa/src/memory_pipe_arbiter.v : (167, 40): Redundant digits given in number 4'hff.
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/peripheral_interface_controller.v, ln 118).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -258,7 +282,7 @@
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: Compile success 0 Errors 4 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -305,7 +329,7 @@
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: Unit top modules: dps_mimsr.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register dps_mimsr.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -321,9 +345,9 @@
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
 # ALOG: Pass 2. Processing instantiations.
-# ALOG: Warning: VCP2597 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/dps_device/sci/dps_sci.v : (94, 1): Some unconnected ports remain at instance: UARTMOD. Module dps_uart has unconnected  port(s) : oIRQ_VALID.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/src/dps_device/sci/dps_sci.v : (98, 1): Some unconnected ports remain at instance: UARTMOD. Module dps_uart has unconnected  port(s) : oIRQ_VALID.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_device/sci/dps_sci.v, ln 263).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_device/sci/dps_sci.v, ln 281).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
@@ -348,7 +372,7 @@
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_device/utim64/dps_utim64.v, ln 55).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_device/utim64/dps_utim64.v, ln 139).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_device/utim64/dps_utim64.v, ln 140).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
@@ -364,7 +388,7 @@
 # ALOG: Info: VCP2113 Module dps_sci found in current working library.
 # ALOG: Unit top modules: dps_utim64.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register dps_mimsr dps_sci dps_utim64.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -399,8 +423,8 @@
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Warning: VCP2900 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/dps_main/dps_irq.v : (43, 1): Conditional expression 1'b0 at 'if' statement is constant.
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_main/default_peripheral_system.v, ln 88).
+# ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/dps_main/dps_irq.v : (43, 1): Conditional expression 1'b0 at 'if' statement is constant.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_main/default_peripheral_system.v, ln 96).
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/dps_main/dps_irq.v, ln 92).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -414,7 +438,7 @@
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -444,12 +468,12 @@
 # ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Warning: VCP2900 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/mmu/tlb.v : (219, 1): Conditional expression 1'b0 at 'if' statement is constant.
-# ALOG: Warning: VCP2900 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/mmu/tlb.v : (242, 1): Conditional expression 1'b0 at 'if' statement is constant.
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 148).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 142).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 213).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu_if.v, ln 142).
+# ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/mmu/tlb.v : (219, 1): Conditional expression 1'b0 at 'if' statement is constant.
+# ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/mmu/tlb.v : (242, 1): Conditional expression 1'b0 at 'if' statement is constant.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 153).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 147).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 218).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu_if.v, ln 146).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
@@ -462,7 +486,7 @@
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 1[s].
+# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -519,10 +543,15 @@
 # ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
 # ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
 # ALOG: Pass 2. Processing instantiations.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/core_if.v : (326, 1): Undefined port oCORE_FLASH in module core.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/core_if.v : (342, 1): Undefined port oINST_TID in module core.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/core_if.v : (394, 1): Undefined port oDEBUG1 in module core.
-# ALOG: Warning: VCP2597 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/core_if.v : (317, 1): Some unconnected ports remain at instance: CORE. Module core has unconnected  port(s) : oFREE_TLB_FLUSH, iINST_PAGEFAULT, iINST_QUEUE_FLUSH, iDATA_PAGEFAULT, iDATA_MMU_FLAGS, oDEBUG_PC.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (425, 1): Undefined port iINTERRUPT_LDST_LOCK in module exception_manager.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (851, 1): Undefined port oEXCEPTION_LDST_LOCK in module execution.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (899, 1): Undefined port oDATAIO_MASK in module execution.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (1028, 1): Undefined port iLDST_MASK in module l1_data_cache.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (1047, 1): Undefined port oDATA_MASK in module l1_data_cache.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (326, 1): Undefined port oCORE_FLASH in module core.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (342, 1): Undefined port oINST_TID in module core.
+# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (394, 1): Undefined port oDEBUG1 in module core.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (317, 1): Some unconnected ports remain at instance: CORE. Module core has unconnected  port(s) : oFREE_TLB_FLUSH, iINST_PAGEFAULT, iINST_QUEUE_FLUSH, oDATA_MASK, iDATA_PAGEFAULT, iDATA_MMU_FLAGS, oDEBUG_PC.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -536,7 +565,7 @@
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: Unit top modules: core_if.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 4 Warnings  Analysis time: 0[s].
+# ALOG: Compile success 0 Errors 9 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -561,9 +590,8 @@
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/core_debug/core_debug.v, ln 169).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/core_debug/core_debug.v, ln 232).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/core_debug/core_debug.v, ln 226).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/core_debug/core_debug.v, ln 118).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/core_debug/core_debug.v, ln 175).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
@@ -597,7 +625,7 @@
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -627,9 +655,9 @@
 # ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/execution/execution.v, ln 945).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/execution/execution.v, ln 1518).
-# ALOG: Warning: VCP2905 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/execution/execution.v : (556, 1): Expression '5'h08' yields a value that is a duplicate of another case item expression.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/execution/execution.v, ln 952).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/execution/execution.v, ln 1527).
+# ALOG: Warning: VCP2905 C:/dev/home/takahiro/test/mist1032isa/src/core/execution/execution.v : (561, 1): Expression '5'h08' yields a value that is a duplicate of another case item expression.
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
@@ -641,7 +669,7 @@
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
 # ALOG: Unit top modules: ex_forwarding ex_forwarding_register mul_booth32.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
-# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 1[s].
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -660,7 +688,7 @@
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -668,25 +696,6 @@
 # ALOG: Info: VCP2113 Module branch_cache found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
 # ALOG: Info: VCP2113 Module branch_cache found in current working library.
-# ALOG: Pass 2. Processing instantiations.
-# ALOG: Pass 3. Processing behavioral statements.
-# ALOG: ELB/DAG code generating.
-# ALOG: Info: VCP2113 Module \$root found in current working library.
-# ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
-# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
-# ALOG: Info: VCP2113 Module core_if found in current working library.
-# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
-# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
-# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
-# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
-# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: Unit top modules: fetch_________.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
-# ALOG: done
-# ALOG: Pass 1. Scanning modules hierarchy.
-# ALOG: Info: VCP2113 Module \$root found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: ELB/DAG code generating.
@@ -705,11 +714,30 @@
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
-# ALOG: Warning: VCP2515 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/l1_data/l1_data_cache_64entry_4way_line64b.v : (310, 11): Undefined module: cache_ram_16entry_512bit was used. Port connection rules will not be checked at such instantiations.
-# ALOG: Warning: VCP2515 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/l1_data/l1_data_cache_64entry_4way_line64b.v : (411, 11): Undefined module: cache_ram_16entry_256bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/l1_data/l1_data_cache.v, ln 164).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module fetch_________ found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Warning: VCP2515 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_data/l1_data_cache_64entry_4way_line64b.v : (324, 11): Undefined module: cache_ram_16entry_512bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Warning: VCP2515 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_data/l1_data_cache_64entry_4way_line64b.v : (425, 11): Undefined module: cache_ram_16entry_256bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/l1_data/l1_data_cache.v, ln 170).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
@@ -722,16 +750,16 @@
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: Unit top modules: l1_data_cache_64entry_4way_line64b_bus_8b.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 0[s].
+# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
-# ALOG: Warning: VCP2515 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (305, 11): Undefined module: cache_ram_16entry_512bit was used. Port connection rules will not be checked at such instantiations.
-# ALOG: Warning: VCP2515 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (405, 11): Undefined module: cache_ram_16entry_256bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Warning: VCP2515 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (305, 11): Undefined module: cache_ram_16entry_512bit was used. Port connection rules will not be checked at such instantiations.
+# ALOG: Warning: VCP2515 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (405, 11): Undefined module: cache_ram_16entry_256bit was used. Port connection rules will not be checked at such instantiations.
 # ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Warning: VCP2814 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (468, 49): Function func_upload_enable_byte_gen should return a value.
+# ALOG: Warning: VCP2814 C:/dev/home/takahiro/test/mist1032isa/src/core/l1_instruction/l1_cache_64entry_4way_line64b.v : (468, 49): Function func_upload_enable_byte_gen should return a value.
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/l1_instruction/l1_instruction_cache.v, ln 96).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -745,22 +773,22 @@
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
 # ALOG: Unit top modules: l1_cache_64entry_4way_line64b_bus_8b.
 # ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 3 Warnings  Analysis time: 0[s].
+# ALOG: Compile success 0 Errors 3 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
-# ALOG: Warning: VCP2900 C:/dev/home/takahiro/projects/mist1032isa/git/mist1032isa/src/core/pipeline_control/core_interrupt_manager.v : (67, 1): Conditional expression 1'b0 at 'if' statement is constant.
+# ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/core/pipeline_control/core_interrupt_manager.v : (67, 1): Conditional expression 1'b0 at 'if' statement is constant.
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/core_interrupt_manager.v, ln 121).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 320).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 389).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 448).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 230).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 507).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 561).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 609).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 657).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 321).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 390).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 449).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 231).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 508).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 562).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 610).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/core/pipeline_control/exception_manager.v, ln 658).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.

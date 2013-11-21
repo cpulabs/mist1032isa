@@ -1739,6 +1739,7 @@ module decoder(
 							/* Decode Error */						1'b0,
 							/* Commit Wait Instruction */			1'b0,
 							/* Condition Code & AFE */				f_decode_inst[19:16],
+							/* Source0 */							f_decode_inst[9:5],
 							/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},
 							/* Source0 Use Flags*/					1'b0,
 							/* Source1-Immediate */					1'b0,

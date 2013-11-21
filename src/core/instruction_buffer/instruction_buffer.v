@@ -118,32 +118,49 @@ module instruction_buffer(
 	/*************************************************
 	Instruction Loop Buffer
 	*************************************************/
-	mist1032isa_sync_fifo #(102, 32, 5) INST_LOOPBUFFER(
-		.iCLOCK(iCLOCK), 
-		.inRESET(inRESET), 
-		.iREMOVE(iFREE_REFRESH), 
-		.oCOUNT(fifo_count), 	
-		.iWR_EN(!fifo_full && iPREVIOUS_INST_VALID), 
-		.iWR_DATA({fault, 
-				iPREVIOUS_PAGING_ENA, 
-				iPREVIOUS_KERNEL_ACCESS, 
-				iPREVIOUS_BRANCH_PREDICT, 
-				iPREVIOUS_BRANCH_PREDICT_ADDR, 
-				iPREVIOUS_INST, iPREVIOUS_PC}
-			), 
-		.oWR_FULL(fifo_full),
-		.iRD_EN(!fifo_empty && !iNEXT_LOCK), 
-		.oRD_DATA({oNEXT_FAULT_PAGEFAULT, 
-				oNEXT_FAULT_PRIVILEGE_ERROR, 
-				oNEXT_FAULT_INVALID_INST, 
-				oNEXT_PAGING_ENA, 
-				oNEXT_KERNEL_ACCESS, 
-				oNEXT_BRANCH_PREDICT, 
-				oNEXT_BRANCH_PREDICT_ADDR, 
-				oNEXT_INST, oNEXT_PC}
-			), 
-		.oRD_EMPTY(fifo_empty)
-	);
+	`ifdef MIST1032ISA_ALTERA_PRIMITIVE
+		//FIFO Mode				: Show Ahead Synchronous FIFO Mode
+		//Width					: 102bit
+		//Depth					: 32Word
+		//Asynchronous Reset	: Use
+		//Synchronous Reset		: Use
+		//Usedw					: Use
+		//Full					: Use
+		//Empty					: Use
+		//Almost Full			: Use(Value=2)
+		//Almost Empty			: Use(Value=30)
+		//Overflow Checking		: Disable
+		//Undesflow Checking	: Disable
+
+
+	`else
+		mist1032isa_sync_fifo #(102, 32, 5) INST_LOOPBUFFER(
+			.iCLOCK(iCLOCK), 
+			.inRESET(inRESET), 
+			.iREMOVE(iFREE_REFRESH), 
+			.oCOUNT(fifo_count), 	
+			.iWR_EN(!fifo_full && iPREVIOUS_INST_VALID), 
+			.iWR_DATA({fault, 
+					iPREVIOUS_PAGING_ENA, 
+					iPREVIOUS_KERNEL_ACCESS, 
+					iPREVIOUS_BRANCH_PREDICT, 
+					iPREVIOUS_BRANCH_PREDICT_ADDR, 
+					iPREVIOUS_INST, iPREVIOUS_PC}
+				), 
+			.oWR_FULL(fifo_full),
+			.iRD_EN(!fifo_empty && !iNEXT_LOCK), 
+			.oRD_DATA({oNEXT_FAULT_PAGEFAULT, 
+					oNEXT_FAULT_PRIVILEGE_ERROR, 
+					oNEXT_FAULT_INVALID_INST, 
+					oNEXT_PAGING_ENA, 
+					oNEXT_KERNEL_ACCESS, 
+					oNEXT_BRANCH_PREDICT, 
+					oNEXT_BRANCH_PREDICT_ADDR, 
+					oNEXT_INST, oNEXT_PC}
+				), 
+			.oRD_EMPTY(fifo_empty)
+		);
+	`endif
 
 	assign oPREVIOUS_LOCK = fifo_full;	
 	assign oNEXT_INST_VALID = !fifo_empty && !iNEXT_LOCK;			

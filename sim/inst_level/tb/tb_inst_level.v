@@ -208,11 +208,10 @@ module tb_mist1032isa_normal_test;
 	end
 
 
-
 	/******************************************************
 	Memory Model
 	******************************************************/
-	sim_memory_model MEMORY_MODEL(
+	sim_memory_model #(1, "inst_level_test_tmp.hex") MEMORY_MODEL(
 		.iCLOCK(iCORE_CLOCK),
 		.inRESET(inRESET),
 		//Req

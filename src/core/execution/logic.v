@@ -54,7 +54,7 @@ module logic_n #(
 											f_data0[16], f_data0[17], f_data0[18], f_data0[19],
 											f_data0[20], f_data0[21], f_data0[22], f_data0[23],
 											f_data0[24], f_data0[25], f_data0[26], f_data0[27],
-											f_data0[28], f_data0[28], f_data0[30], f_data0[31]};
+											f_data0[28], f_data0[29], f_data0[30], f_data0[31]};
 				5'hD : f_logic		=		{f_data0[7:0], f_data0[15:8], f_data0[23:16], f_data0[31:24]};	//Byte Reverse
 				5'hE : f_logic		=		{{31{1'b0}}, f_data0[f_data1[4:0]]};								//Get Bit
 				5'hF : 					

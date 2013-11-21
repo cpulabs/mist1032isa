@@ -40,6 +40,7 @@ module sim_memory_model(
 	);
 	
 	parameter P_MEM_INIT_LOAD = 1;		//0=not load | 1=load
+	parameter P_MEM_INIT_LOAD_FIEL = "binary_file.bin";
 
 	wire system_busy = fifo_write_full;
 	wire system_read_condition = iMEMORY_REQ && !iMEMORY_RW && !system_busy;
@@ -95,12 +96,14 @@ module sim_memory_model(
 		#0 begin
 			if(P_MEM_INIT_LOAD)begin
 				//Load File
-				$readmemh("mirb.hex", b_mem_data);
+				//$readmemh("inst_level_test_tmp.hex", b_mem_data);
+				$readmemh(P_MEM_INIT_LOAD_FIEL, b_mem_data);
 				//Endian Convert
 				$display("[INF][sim_memory_model.v]Please wait. Endian converting for test file.");
 				for(i = 0; i < P_MEM_SIZE; i = i + 1)begin
 					b_mem_data[i] = func_endian_convert(b_mem_data[i]);		//[]
 				end
+				$display("test!!!!!");
 				$display("[INF][sim_memory_model.v]Mem[0]->%x", b_mem_data[0]);
 			end
 		end
@@ -142,6 +145,7 @@ module sim_memory_model(
 endmodule
 
 
-
 `default_nettype wire
+
+
 
