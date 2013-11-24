@@ -8,6 +8,7 @@
 # ALOG: Info: VCP2113 Module sdi_debugger found in current working library.
 # ALOG: Info: VCP2113 Module memory_pipe_arbiter found in current working library.
 # ALOG: Info: VCP2113 Module mmu_if found in current working library.
+# ALOG: Info: VCP2113 Module endian_controller found in current working library.
 # ALOG: Info: VCP2113 Module peripheral_interface_controller found in current working library.
 # ALOG: Info: VCP2113 Module default_peripheral_system found in current working library.
 # ALOG: Info: VCP2113 Module sim_memory_model found in current working library.
@@ -20,11 +21,14 @@
 # ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
 # ALOG: Info: VCP2113 Module mmu_if found in current working library.
 # ALOG: Info: VCP2113 Module mmu found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_28in_28out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module endian_controller found in current working library.
 # ALOG: Info: VCP2113 Module peripheral_interface_controller found in current working library.
 # ALOG: Info: VCP2113 Module default_peripheral_system found in current working library.
 # ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
 # ALOG: Info: VCP2113 Module dps_sci found in current working library.
 # ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_lsflags found in current working library.
 # ALOG: Info: VCP2113 Module dps_irq found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
 # ALOG: Info: VCP2113 Module core_pipeline found in current working library.
@@ -44,11 +48,14 @@
 # ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
 # ALOG: Info: VCP2113 Module mmu found in current working library.
 # ALOG: Info: VCP2113 Module tlb found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_28in_28out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
 # ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
 # ALOG: Info: VCP2113 Module utim64 found in current working library.
 # ALOG: Info: VCP2113 Module dps_sci found in current working library.
 # ALOG: Info: VCP2113 Module dps_uart found in current working library.
 # ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_lsflags found in current working library.
 # ALOG: Info: VCP2113 Module dps_irq found in current working library.
 # ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
 # ALOG: Info: VCP2113 Module exception_manager found in current working library.
@@ -58,7 +65,9 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module fetch found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_34in_34out_8depth found in current working library.
 # ALOG: Info: VCP2113 Module instruction_buffer found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_102in_102out_32depth found in current working library.
 # ALOG: Info: VCP2113 Module decoder found in current working library.
 # ALOG: Info: VCP2113 Module dispatch found in current working library.
 # ALOG: Info: VCP2113 Module system_register found in current working library.
@@ -77,17 +86,22 @@
 # ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module core_debug found in current working library.
 # ALOG: Info: VCP2113 Module tlb found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Info: VCP2113 Module utim64 found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
 # ALOG: Info: VCP2113 Module main_counter found in current working library.
 # ALOG: Info: VCP2113 Module comparator_counter found in current working library.
 # ALOG: Info: VCP2113 Module dps_uart found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
 # ALOG: Info: VCP2113 Module l1_instruction_cache_counter found in current working library.
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
 # ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_34in_34out_8depth found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_102in_102out_32depth found in current working library.
 # ALOG: Info: VCP2113 Module system_register found in current working library.
 # ALOG: Info: VCP2113 Module frcr_timer found in current working library.
 # ALOG: Info: VCP2113 Module sys_reg found in current working library.
@@ -101,10 +115,12 @@
 # ALOG: Info: VCP2113 Module branch found in current working library.
 # ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
 # ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module main_counter found in current working library.
 # ALOG: Info: VCP2113 Module comparator_counter found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
@@ -120,7 +136,8 @@
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
 # ALOG: Pass 2. Processing instantiations.
-# ALOG: Warning: VCP2705 C:/dev/home/takahiro/test/mist1032isa/sim/inst_level/tb/tb_inst_level.v : (229, 6): Too many parameters for sim_memory_model.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/sim/inst_level/tb/tb_inst_level.v : (84, 1): Some unconnected ports remain at instance: TARGET. Module mist1032isa has unconnected  port(s) : oMEMORY_MASK.
+# ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/sim/inst_level/tb/tb_inst_level.v : (214, 1): Some unconnected ports remain at instance: MEMORY_MODEL. Module sim_memory_model has unconnected  port(s) : iMEMORY_MASK.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -132,9 +149,42 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Unit top modules: tb_mist1032isa_normal_test.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 1[s].
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -153,8 +203,294 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
 # ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2876 C:/dev/home/takahiro/test/mist1032isa/sim/model/altera/altera_mf.v : (36614, 36): Implicit net declaration, symbol systolic1_reg_wire_clk has not been declared in module altmult_add.
+# ALOG: Info: VCP2876 C:/dev/home/takahiro/test/mist1032isa/sim/model/altera/altera_mf.v : (36619, 36): Implicit net declaration, symbol systolic3_reg_wire_clk has not been declared in module altmult_add.
+# ALOG: Info: VCP2876 C:/dev/home/takahiro/test/mist1032isa/sim/model/altera/altera_mf.v : (37027, 35): Implicit net declaration, symbol systolic1_reg_wire_en has not been declared in module altmult_add.
+# ALOG: Info: VCP2876 C:/dev/home/takahiro/test/mist1032isa/sim/model/altera/altera_mf.v : (37032, 35): Implicit net declaration, symbol systolic3_reg_wire_en has not been declared in module altmult_add.
+# ALOG: Info: VCP2876 C:/dev/home/takahiro/test/mist1032isa/sim/model/altera/altera_mf.v : (37449, 36): Implicit net declaration, symbol systolic1_reg_wire_clr has not been declared in module altmult_add.
+# ALOG: Info: VCP2876 C:/dev/home/takahiro/test/mist1032isa/sim/model/altera/altera_mf.v : (37453, 36): Implicit net declaration, symbol systolic3_reg_wire_clr has not been declared in module altmult_add.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: Parameters in case labels, will not check for overlapping labels (../model/altera/altera_mf.v, ln 49926).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../model/altera/altera_mf.v, ln 50205).
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module fetch_________ found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Unit top modules: lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 8[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module fetch_________ found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: Unit top modules: altera_primitive_sync_fifo_8in_8out_16depth.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe altera_primitive_sync_fifo_8in_8out_16depth.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module fetch_________ found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
+# ALOG: Unit top modules: altera_primitive_sync_fifo_28in_28out_16depth.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe altera_primitive_sync_fifo_8in_8out_16depth altera_primitive_sync_fifo_28in_28out_16depth.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module fetch_________ found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_28in_28out_16depth found in current working library.
+# ALOG: Unit top modules: altera_primitive_sync_fifo_34in_34out_8depth.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe altera_primitive_sync_fifo_8in_8out_16depth altera_primitive_sync_fifo_28in_28out_16depth altera_primitive_sync_fifo_34in_34out_8depth.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: done
+# ALOG: Pass 1. Scanning modules hierarchy.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Pass 2. Processing instantiations.
+# ALOG: Pass 3. Processing behavioral statements.
+# ALOG: ELB/DAG code generating.
+# ALOG: Info: VCP2113 Module \$root found in current working library.
+# ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
+# ALOG: Info: VCP2113 Module processor_debugger found in current working library.
+# ALOG: Info: VCP2113 Module core_if found in current working library.
+# ALOG: Info: VCP2113 Module mul_booth32 found in current working library.
+# ALOG: Info: VCP2113 Module fetch_________ found in current working library.
+# ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
+# ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_28in_28out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_34in_34out_8depth found in current working library.
+# ALOG: Unit top modules: altera_primitive_sync_fifo_102in_102out_32depth.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe altera_primitive_sync_fifo_8in_8out_16depth altera_primitive_sync_fifo_28in_28out_16depth altera_primitive_sync_fifo_34in_34out_8depth altera_primitive_sync_fifo_102in_102out_32depth.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -165,11 +501,12 @@
 # ALOG: Info: VCP2113 Module sdi_interface_control found in current working library.
 # ALOG: Info: VCP2113 Module mmu_if found in current working library.
 # ALOG: Info: VCP2113 Module mmu found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_28in_28out_16depth found in current working library.
 # ALOG: Info: VCP2113 Module default_peripheral_system found in current working library.
 # ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
 # ALOG: Info: VCP2113 Module dps_sci found in current working library.
 # ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_lsflags found in current working library.
 # ALOG: Info: VCP2113 Module dps_irq found in current working library.
 # ALOG: Info: VCP2113 Module core_pipeline found in current working library.
 # ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
@@ -187,12 +524,14 @@
 # ALOG: Info: VCP2113 Module sdi_interface_control found in current working library.
 # ALOG: Info: VCP2113 Module mmu found in current working library.
 # ALOG: Info: VCP2113 Module tlb found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_28in_28out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
 # ALOG: Info: VCP2113 Module dps_utim64 found in current working library.
 # ALOG: Info: VCP2113 Module utim64 found in current working library.
 # ALOG: Info: VCP2113 Module dps_sci found in current working library.
 # ALOG: Info: VCP2113 Module dps_uart found in current working library.
 # ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
+# ALOG: Info: VCP2113 Module dps_lsflags found in current working library.
 # ALOG: Info: VCP2113 Module dps_irq found in current working library.
 # ALOG: Info: VCP2113 Module core_interrupt_manager found in current working library.
 # ALOG: Info: VCP2113 Module exception_manager found in current working library.
@@ -202,7 +541,9 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module fetch found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_34in_34out_8depth found in current working library.
 # ALOG: Info: VCP2113 Module instruction_buffer found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_102in_102out_32depth found in current working library.
 # ALOG: Info: VCP2113 Module decoder found in current working library.
 # ALOG: Info: VCP2113 Module dispatch found in current working library.
 # ALOG: Info: VCP2113 Module system_register found in current working library.
@@ -221,17 +562,22 @@
 # ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module core_debug found in current working library.
 # ALOG: Info: VCP2113 Module tlb found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Info: VCP2113 Module utim64 found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
 # ALOG: Info: VCP2113 Module main_counter found in current working library.
 # ALOG: Info: VCP2113 Module comparator_counter found in current working library.
 # ALOG: Info: VCP2113 Module dps_uart found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
 # ALOG: Info: VCP2113 Module l1_instruction_cache_counter found in current working library.
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
 # ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_34in_34out_8depth found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_102in_102out_32depth found in current working library.
 # ALOG: Info: VCP2113 Module system_register found in current working library.
 # ALOG: Info: VCP2113 Module frcr_timer found in current working library.
 # ALOG: Info: VCP2113 Module sys_reg found in current working library.
@@ -245,10 +591,12 @@
 # ALOG: Info: VCP2113 Module branch found in current working library.
 # ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
 # ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module main_counter found in current working library.
 # ALOG: Info: VCP2113 Module comparator_counter found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
@@ -264,9 +612,6 @@
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
 # ALOG: Pass 2. Processing instantiations.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/mist1032isa.v : (260, 1): Undefined port oDATA_MASK in module core.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/mist1032isa.v : (450, 1): Undefined port iCORE_MASK in module mmu_if.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/mist1032isa.v : (469, 1): Undefined port oMEMORY_MASK in module mmu_if.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: Warning: VCP2641 C:/dev/home/takahiro/test/mist1032isa/src/memory_pipe_arbiter.v : (167, 40): Redundant digits given in number 4'hff.
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/peripheral_interface_controller.v, ln 118).
@@ -281,8 +626,41 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 4 Warnings  Analysis time: 1[s].
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -308,9 +686,42 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Unit top modules: processor_debugger.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -327,23 +738,60 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Unit top modules: dps_mimsr.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register dps_mimsr.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe dps_mimsr.
 # ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Warning: VCP2597 C:/dev/home/takahiro/test/mist1032isa/src/dps_device/sci/dps_sci.v : (98, 1): Some unconnected ports remain at instance: UARTMOD. Module dps_uart has unconnected  port(s) : oIRQ_VALID.
 # ALOG: Pass 3. Processing behavioral statements.
@@ -359,9 +807,42 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
 # ALOG: Unit top modules: dps_sci.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register dps_mimsr dps_sci.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe dps_mimsr dps_sci.
 # ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
@@ -384,11 +865,44 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Info: VCP2113 Module dps_mimsr found in current working library.
 # ALOG: Info: VCP2113 Module dps_sci found in current working library.
 # ALOG: Unit top modules: dps_utim64.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register dps_mimsr dps_sci dps_utim64.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe dps_mimsr dps_sci dps_utim64.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -402,14 +916,15 @@
 # ALOG: Info: VCP2113 Module main_counter found in current working library.
 # ALOG: Info: VCP2113 Module comparator_counter found in current working library.
 # ALOG: Info: VCP2113 Module dps_uart found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module main_counter found in current working library.
 # ALOG: Info: VCP2113 Module comparator_counter found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_8in_8out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
@@ -417,10 +932,13 @@
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_async_fifo_double_flipflop found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_transmitter_async2sync found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_double_flipflop found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_uart_receiver_async2sync found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/dps_main/dps_irq.v : (43, 1): Conditional expression 1'b0 at 'if' statement is constant.
@@ -437,8 +955,41 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 1[s].
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -459,13 +1010,50 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module mist1032isa_arbiter_matching_queue found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_28in_28out_16depth found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: Warning: VCP2900 C:/dev/home/takahiro/test/mist1032isa/src/mmu/tlb.v : (219, 1): Conditional expression 1'b0 at 'if' statement is constant.
@@ -473,7 +1061,7 @@
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 153).
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 147).
 # ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu.v, ln 218).
-# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu_if.v, ln 146).
+# ALOG: Parameters in case labels, will not check for overlapping labels (../../src/mmu/mmu_if.v, ln 147).
 # ALOG: ELB/DAG code generating.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module tb_mist1032isa_normal_test found in current working library.
@@ -485,8 +1073,41 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 0[s].
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -501,8 +1122,9 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module fetch found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_34in_34out_8depth found in current working library.
 # ALOG: Info: VCP2113 Module instruction_buffer found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_102in_102out_32depth found in current working library.
 # ALOG: Info: VCP2113 Module decoder found in current working library.
 # ALOG: Info: VCP2113 Module dispatch found in current working library.
 # ALOG: Info: VCP2113 Module system_register found in current working library.
@@ -525,7 +1147,9 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
 # ALOG: Info: VCP2113 Module branch_cache found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_34in_34out_8depth found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_102in_102out_32depth found in current working library.
 # ALOG: Info: VCP2113 Module system_register found in current working library.
 # ALOG: Info: VCP2113 Module frcr_timer found in current working library.
 # ALOG: Info: VCP2113 Module sys_reg found in current working library.
@@ -540,14 +1164,12 @@
 # ALOG: Info: VCP2113 Module l1_data_cache_counter found in current working library.
 # ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b_damy found in current working library.
 # ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Info: VCP2113 Module radix2_linediv found in current working library.
 # ALOG: Info: VCP2113 Module div_pipelined_latch found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Pass 2. Processing instantiations.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (425, 1): Undefined port iINTERRUPT_LDST_LOCK in module exception_manager.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (851, 1): Undefined port oEXCEPTION_LDST_LOCK in module execution.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (899, 1): Undefined port oDATAIO_MASK in module execution.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (1028, 1): Undefined port iLDST_MASK in module l1_data_cache.
-# ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_pipeline.v : (1047, 1): Undefined port oDATA_MASK in module l1_data_cache.
 # ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (326, 1): Undefined port oCORE_FLASH in module core.
 # ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (342, 1): Undefined port oINST_TID in module core.
 # ALOG: Warning: VCP2590 C:/dev/home/takahiro/test/mist1032isa/src/core/core_if.v : (394, 1): Undefined port oDEBUG1 in module core.
@@ -563,9 +1185,42 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Unit top modules: core_if.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 9 Warnings  Analysis time: 1[s].
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 4 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -582,8 +1237,41 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Unit top modules: branch_predictor.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe branch_predictor.
 # ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
@@ -603,9 +1291,42 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe branch_predictor.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -623,9 +1344,42 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
-# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe branch_predictor.
+# ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -642,8 +1396,41 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe branch_predictor.
 # ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
@@ -666,10 +1453,43 @@
 # ALOG: Info: VCP2113 Module fetch_________ found in current working library.
 # ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
 # ALOG: Unit top modules: ex_forwarding ex_forwarding_register mul_booth32.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
-# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe branch_predictor.
+# ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -686,16 +1506,53 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register branch_predictor.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe branch_predictor.
 # ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
 # ALOG: Info: VCP2113 Module branch_predictor found in current working library.
 # ALOG: Info: VCP2113 Module branch_cache found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_34in_34out_8depth found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
 # ALOG: Info: VCP2113 Module branch_cache found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: ELB/DAG code generating.
@@ -709,12 +1566,49 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
 # ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
-# ALOG: Info: VCP2113 Module mist1032isa_sync_fifo found in current working library.
+# ALOG: Info: VCP2113 Module altera_primitive_sync_fifo_102in_102out_32depth found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module scfifo found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
+# ALOG: Info: VCP2113 Module ALTERA_DEVICE_FAMILIES found in current working library.
 # ALOG: Pass 2. Processing instantiations.
 # ALOG: Pass 3. Processing behavioral statements.
 # ALOG: ELB/DAG code generating.
@@ -728,7 +1622,40 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
 # ALOG: Compile success 0 Errors 0 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
@@ -748,8 +1675,41 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Unit top modules: l1_data_cache_64entry_4way_line64b_bus_8b.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
 # ALOG: Compile success 0 Errors 2 Warnings  Analysis time: 1[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
@@ -771,9 +1731,42 @@
 # ALOG: Info: VCP2113 Module l1_data_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
 # ALOG: Unit top modules: l1_cache_64entry_4way_line64b_bus_8b.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
-# ALOG: Compile success 0 Errors 3 Warnings  Analysis time: 1[s].
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
+# ALOG: Compile success 0 Errors 3 Warnings  Analysis time: 0[s].
 # ALOG: done
 # ALOG: Pass 1. Scanning modules hierarchy.
 # ALOG: Info: VCP2113 Module \$root found in current working library.
@@ -800,6 +1793,39 @@
 # ALOG: Info: VCP2113 Module l1_cache_64entry_4way_line64b_bus_8b found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding found in current working library.
 # ALOG: Info: VCP2113 Module ex_forwarding_register found in current working library.
-# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register.
+# ALOG: Info: VCP2113 Module lcell found in current working library.
+# ALOG: Info: VCP2113 Module altpll found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_rx found in current working library.
+# ALOG: Info: VCP2113 Module altlvds_tx found in current working library.
+# ALOG: Info: VCP2113 Module dcfifo found in current working library.
+# ALOG: Info: VCP2113 Module altaccumulate found in current working library.
+# ALOG: Info: VCP2113 Module altmult_accum found in current working library.
+# ALOG: Info: VCP2113 Module altmult_add found in current working library.
+# ALOG: Info: VCP2113 Module altfp_mult found in current working library.
+# ALOG: Info: VCP2113 Module altsqrt found in current working library.
+# ALOG: Info: VCP2113 Module altclklock found in current working library.
+# ALOG: Info: VCP2113 Module altddio_bidir found in current working library.
+# ALOG: Info: VCP2113 Module altdpram found in current working library.
+# ALOG: Info: VCP2113 Module alt3pram found in current working library.
+# ALOG: Info: VCP2113 Module parallel_add found in current working library.
+# ALOG: Info: VCP2113 Module altshift_taps found in current working library.
+# ALOG: Info: VCP2113 Module a_graycounter found in current working library.
+# ALOG: Info: VCP2113 Module altsquare found in current working library.
+# ALOG: Info: VCP2113 Module altera_std_synchronizer_bundle found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_mm found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_c3gxb found in current working library.
+# ALOG: Info: VCP2113 Module alt_cal_sv found in current working library.
+# ALOG: Info: VCP2113 Module alt_aeq_s4 found in current working library.
+# ALOG: Info: VCP2113 Module alt_eyemon found in current working library.
+# ALOG: Info: VCP2113 Module alt_dfe found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag found in current working library.
+# ALOG: Info: VCP2113 Module sld_signaltap found in current working library.
+# ALOG: Info: VCP2113 Module altstratixii_oct found in current working library.
+# ALOG: Info: VCP2113 Module altparallel_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module altserial_flash_loader found in current working library.
+# ALOG: Info: VCP2113 Module sld_virtual_jtag_basic found in current working library.
+# ALOG: Info: VCP2113 Module altsource_probe found in current working library.
+# ALOG: $root top modules: tb_mist1032isa_normal_test processor_debugger core_if mul_booth32 fetch_________ l1_data_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b ex_forwarding ex_forwarding_register lcell altpll altlvds_rx altlvds_tx dcfifo altaccumulate altmult_accum altmult_add altfp_mult altsqrt altclklock altddio_bidir altdpram alt3pram parallel_add altshift_taps a_graycounter altsquare altera_std_synchronizer_bundle alt_cal alt_cal_mm alt_cal_c3gxb alt_cal_sv alt_aeq_s4 alt_eyemon alt_dfe sld_virtual_jtag sld_signaltap altstratixii_oct altparallel_flash_loader altserial_flash_loader sld_virtual_jtag_basic altsource_probe.
 # ALOG: Compile success 0 Errors 1 Warnings  Analysis time: 0[s].
 # ALOG: done

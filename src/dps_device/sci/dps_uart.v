@@ -1,4 +1,5 @@
 `default_nettype none
+`include "common.h"
 
 /* Baudrate Select
 	0x0		:	9600 (Reset After)
@@ -87,39 +88,102 @@ module dps_uart(
 	wire receiver_rx_enable;
 	wire receiver_rx_busy;
 	wire [7:0] receiver_rx_data;
+
+	//Txd Buffer
+	`ifdef MIST1032ISA_ALTERA_PRIMITIVE
+		//FIFO Mode				: Show Ahead Synchronous FIFO Mode
+		//Width					: 8bit
+		//Depth					: 16Word
+		//Asynchronous Reset	: Use
+		//Synchronous Reset		: Use
+		//Usedw					: Use
+		//Full					: Use
+		//Empty					: Use
+		//Almost Full			: Use(Value=2)
+		//Almost Empty			: Use(Value=14)
+		//Overflow Checking		: Disable
+		//Undesflow Checking	: Disable
+		altera_primitive_sync_fifo_8in_8out_16depth TX_FIFO(
+			.aclr(!inRESET),				//Asynchronous Reset
+			.clock(iCLOCK),				//Clock
+			.data(iTX_DATA),				//Data-In
+			.rdreq(!transmitter_tx_enable && !transmitter_tx_busy),				//Read Data Request
+			.sclr(iTX_CLEAR),				//Synchthronous Reset
+			.wrreq(iTX_EN && iTX_REQ),				//Write Req
+			.almost_empty(),		
+			.almost_full(),
+			.empty(transmitter_tx_enable),
+			.full(oTX_BUSY),
+			.q(transmitter_tx_data),					//Dataout
+			.usedw(oTX_BUFF_CNT)
+		);
+	`elsif MIST1032ISA_XILINX_PRIMITIVE
+
+	`else
+		mist1032isa_sync_fifo #(8, 16, 4) TX_FIFO(
+			//System
+			.iCLOCK(iCLOCK),
+			.inRESET(inRESET),
+			.iREMOVE(iTX_CLEAR),
+			.oCOUNT(oTX_BUFF_CNT),
+			//WR
+			.iWR_EN(iTX_EN && iTX_REQ),
+			.iWR_DATA(iTX_DATA),
+			.oWR_FULL(oTX_BUSY),
+			//RD
+			.iRD_EN(!transmitter_tx_enable && !transmitter_tx_busy),
+			.oRD_DATA(transmitter_tx_data),
+			.oRD_EMPTY(transmitter_tx_enable)
+		);
+	`endif
 	
-	mist1032isa_sync_fifo #(8, 16, 4) TX_FIFO(
-		//System
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
-		.iREMOVE(iTX_CLEAR),
-		.oCOUNT(oTX_BUFF_CNT),
-		//WR
-		.iWR_EN(iTX_EN && iTX_REQ),
-		.iWR_DATA(iTX_DATA),
-		.oWR_FULL(oTX_BUSY),
-		//RD
-		.iRD_EN(!transmitter_tx_enable && !transmitter_tx_busy),
-		.oRD_DATA(transmitter_tx_data),
-		.oRD_EMPTY(transmitter_tx_enable)
-	);
-	
-	mist1032isa_sync_fifo #(8, 16, 4) RX_FIFO(
-		//System
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
-		.iREMOVE(iRX_CLEAR),
-		.oCOUNT(oRX_BUFF_CNT),
-		//WR
-		.iWR_EN(receiver_rx_enable && !receiver_rx_busy),
-		.iWR_DATA(receiver_rx_data),
-		.oWR_FULL(receiver_rx_busy),
-		//RD
-		.iRD_EN(iRX_EN && iRX_REQ),
-		.oRD_DATA(oRX_DATA),
-		.oRD_EMPTY(oRX_EMPTY)
-	);
-	
+	//Rxd Buffer
+	`ifdef MIST1032ISA_ALTERA_PRIMITIVE
+		//FIFO Mode				: Show Ahead Synchronous FIFO Mode
+		//Width					: 8bit
+		//Depth					: 16Word
+		//Asynchronous Reset	: Use
+		//Synchronous Reset		: Use
+		//Usedw					: Use
+		//Full					: Use
+		//Empty					: Use
+		//Almost Full			: Use(Value=2)
+		//Almost Empty			: Use(Value=14)
+		//Overflow Checking		: Disable
+		//Undesflow Checking	: Disable
+		altera_primitive_sync_fifo_8in_8out_16depth RX_FIFO(
+			.aclr(!inRESET),				//Asynchronous Reset
+			.clock(iCLOCK),				//Clock
+			.data(receiver_rx_data),				//Data-In
+			.rdreq(iRX_EN && iRX_REQ),				//Read Data Request
+			.sclr(iRX_CLEAR),				//Synchthronous Reset
+			.wrreq(receiver_rx_enable && !receiver_rx_busy),				//Write Req
+			.almost_empty(),		
+			.almost_full(),
+			.empty(oRX_EMPTY),
+			.full(receiver_rx_busy),
+			.q(oRX_DATA),					//Dataout
+			.usedw(oRX_BUFF_CNT)
+		);
+	`elsif MIST1032ISA_XILINX_PRIMITIVE
+
+	`else
+		mist1032isa_sync_fifo #(8, 16, 4) RX_FIFO(
+			//System
+			.iCLOCK(iCLOCK),
+			.inRESET(inRESET),
+			.iREMOVE(iRX_CLEAR),
+			.oCOUNT(oRX_BUFF_CNT),
+			//WR
+			.iWR_EN(receiver_rx_enable && !receiver_rx_busy),
+			.iWR_DATA(receiver_rx_data),
+			.oWR_FULL(receiver_rx_busy),
+			//RD
+			.iRD_EN(iRX_EN && iRX_REQ),
+			.oRD_DATA(oRX_DATA),
+			.oRD_EMPTY(oRX_EMPTY)
+		);
+	`endif
 	
 	
 	/*********************************************

@@ -25,6 +25,7 @@ Open Design Computer Project
 	//Normal Simulation Mode
 	`define MIST1032ISA_STANDARD_DEBUGGER
 	`define MIST1032ISA_BRANCH_PREDICT
+	`define MIST1032ISA_ALTERA_PRIMITIVE
 `endif
 
 

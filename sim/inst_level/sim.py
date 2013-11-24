@@ -66,6 +66,12 @@ def sim_start(sourcelist):
         for instlist in check_list:
                 message = message + instlist + ", ";
         print(message);
+        
+        #subprocess.call("rm sim/*.*", shell=True);
+        
+        if(os.path.exists("sim") != True):
+                subprocess.call("mkdir sim", shell=True);
+
 
         #Simulation Loop
 	for line in check_list:

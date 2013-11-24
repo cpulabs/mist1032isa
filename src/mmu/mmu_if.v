@@ -1,5 +1,6 @@
 
 `default_nettype none
+`include "common.h"
 
 
 module mmu_if(
@@ -193,18 +194,50 @@ module mmu_if(
 	/********************************************************************************
 	MMU Flags Queue
 	********************************************************************************/
-	mist1032isa_sync_fifo #(28, 16, 4) MMUFLAGS_QUEUE(
-		.iCLOCK(iCLOCK), 
-		.inRESET(inRESET), 
-		.iREMOVE(pagefault_condition), 
-		.oCOUNT(), 	
-		.iWR_EN(mmu2mmufifo_req && !memory2mmu_lock_condition), 
-		.iWR_DATA(mmu2mmufifo_flags), 
-		.oWR_FULL(mmufifo2mmu_lock),
-		.iRD_EN(iMEMORY_REQ && matching2coreout_type && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition), 
-		.oRD_DATA(mmufifo2coreout_flags), 
-		.oRD_EMPTY()
-	);
+	`ifdef MIST1032ISA_ALTERA_PRIMITIVE
+		//FIFO Mode				: Show Ahead Synchronous FIFO Mode
+		//Width					: 8bit
+		//Depth					: 16Word
+		//Asynchronous Reset	: Use
+		//Synchronous Reset		: Use
+		//Usedw					: Use
+		//Full					: Use
+		//Empty					: Use
+		//Almost Full			: Use(Value=2)
+		//Almost Empty			: Use(Value=14)
+		//Overflow Checking		: Disable
+		//Undesflow Checking	: Disable
+		altera_primitive_sync_fifo_28in_28out_16depth MMUFLAGS_QUEUE(
+			.aclr(!inRESET),				//Asynchronous Reset
+			.clock(iCLOCK),				//Clock
+			.data(mmu2mmufifo_flags),				//Data-In
+			.rdreq(iMEMORY_REQ && matching2coreout_type && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition),				//Read Data Request
+			.sclr(pagefault_condition),				//Synchthronous Reset
+			.wrreq(mmu2mmufifo_req && !memory2mmu_lock_condition),				//Write Req
+			.almost_empty(),		
+			.almost_full(),
+			.empty(),
+			.full(mmufifo2mmu_lock),
+			.q(mmufifo2coreout_flags),					//Dataout
+			.usedw()
+		);
+	`elsif MIST1032ISA_XILINX_PRIMITIVE
+
+	`else
+		mist1032isa_sync_fifo #(28, 16, 4) MMUFLAGS_QUEUE(
+			.iCLOCK(iCLOCK), 
+			.inRESET(inRESET), 
+			.iREMOVE(pagefault_condition), 
+			.oCOUNT(), 	
+			.iWR_EN(mmu2mmufifo_req && !memory2mmu_lock_condition), 
+			.iWR_DATA(mmu2mmufifo_flags), 
+			.oWR_FULL(mmufifo2mmu_lock),
+			.iRD_EN(iMEMORY_REQ && matching2coreout_type && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition), 
+			.oRD_DATA(mmufifo2coreout_flags), 
+			.oRD_EMPTY()
+		);
+	`endif
+	
 	
 	/********************************************************************************
 	Core Output Latch

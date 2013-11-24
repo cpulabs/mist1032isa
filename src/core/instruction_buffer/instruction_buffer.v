@@ -132,6 +132,42 @@ module instruction_buffer(
 		//Overflow Checking		: Disable
 		//Undesflow Checking	: Disable
 
+		altera_primitive_sync_fifo_102in_102out_32depth INST_LOOPBUFFER(
+			.aclr(!inRESET),				//Asynchronous Reset
+			.clock(iCLOCK),				//Clock
+			.data(
+				{
+					fault, 
+					iPREVIOUS_PAGING_ENA, 
+					iPREVIOUS_KERNEL_ACCESS, 
+					iPREVIOUS_BRANCH_PREDICT, 
+					iPREVIOUS_BRANCH_PREDICT_ADDR, 
+					iPREVIOUS_INST, iPREVIOUS_PC
+				}
+			),				//Data-In
+			.rdreq(!fifo_empty && !iNEXT_LOCK),				//Read Data Request
+			.sclr(iFREE_REFRESH),				//Synchthronous Reset
+			.wrreq(!fifo_full && iPREVIOUS_INST_VALID),				//Write Req
+			.almost_empty(),		
+			.almost_full(),
+			.empty(fifo_empty),
+			.full(fifo_full),
+			.q(
+				{
+					oNEXT_FAULT_PAGEFAULT, 
+					oNEXT_FAULT_PRIVILEGE_ERROR, 
+					oNEXT_FAULT_INVALID_INST, 
+					oNEXT_PAGING_ENA, 
+					oNEXT_KERNEL_ACCESS, 
+					oNEXT_BRANCH_PREDICT, 
+					oNEXT_BRANCH_PREDICT_ADDR, 
+					oNEXT_INST, oNEXT_PC
+				}
+			),					//Dataout
+			.usedw(fifo_count)
+		);
+	
+	`elsif MIST1032ISA_XILINX_PRIMITIVE
 
 	`else
 		mist1032isa_sync_fifo #(102, 32, 5) INST_LOOPBUFFER(
@@ -140,24 +176,30 @@ module instruction_buffer(
 			.iREMOVE(iFREE_REFRESH), 
 			.oCOUNT(fifo_count), 	
 			.iWR_EN(!fifo_full && iPREVIOUS_INST_VALID), 
-			.iWR_DATA({fault, 
+			.iWR_DATA(
+				{
+					fault, 
 					iPREVIOUS_PAGING_ENA, 
 					iPREVIOUS_KERNEL_ACCESS, 
 					iPREVIOUS_BRANCH_PREDICT, 
 					iPREVIOUS_BRANCH_PREDICT_ADDR, 
-					iPREVIOUS_INST, iPREVIOUS_PC}
-				), 
+					iPREVIOUS_INST, iPREVIOUS_PC
+				}
+			), 
 			.oWR_FULL(fifo_full),
 			.iRD_EN(!fifo_empty && !iNEXT_LOCK), 
-			.oRD_DATA({oNEXT_FAULT_PAGEFAULT, 
+			.oRD_DATA(
+				{
+					oNEXT_FAULT_PAGEFAULT, 
 					oNEXT_FAULT_PRIVILEGE_ERROR, 
 					oNEXT_FAULT_INVALID_INST, 
 					oNEXT_PAGING_ENA, 
 					oNEXT_KERNEL_ACCESS, 
 					oNEXT_BRANCH_PREDICT, 
 					oNEXT_BRANCH_PREDICT_ADDR, 
-					oNEXT_INST, oNEXT_PC}
-				), 
+					oNEXT_INST, oNEXT_PC
+				}
+			), 
 			.oRD_EMPTY(fifo_empty)
 		);
 	`endif

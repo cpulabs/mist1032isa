@@ -127,19 +127,61 @@ module fetch(
 	/****************************************
 	Fetch Address & Flag Queue
 	****************************************/
-	mist1032isa_sync_fifo #(34, 8, 3) FETCH_REQ_ADDR_QUEUE(
-		.iCLOCK(iCLOCK), 
-		.inRESET(inRESET), 
-		.iREMOVE(iEXCEPTION_EVENT || branch_predictor_flush), 
-		.oCOUNT(/* Not Use */), 	
-		.iWR_EN(!iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP), 
-		.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_pc}), 
-		.oWR_FULL(fetch_queue_full),
-		.iRD_EN(iPREVIOUS_INST_VALID), 
-		.oRD_DATA({fetch_queue_kernel_access, fetch_queue_paging_ena, fetch_queue_addr}), 
-		.oRD_EMPTY(/* Not Use */)
-	);
-	
+	`ifdef MIST1032ISA_ALTERA_PRIMITIVE
+		//FIFO Mode				: Show Ahead Synchronous FIFO Mode
+		//Width					: 34bit
+		//Depth					: 8Word
+		//Asynchronous Reset	: Use
+		//Synchronous Reset		: Use
+		//Usedw					: Use
+		//Full					: Use
+		//Empty					: Use
+		//Almost Full			: Use(Value=2)
+		//Almost Empty			: Use(Value=6)
+		//Overflow Checking		: Disable
+		//Undesflow Checking	: Disable
+		altera_primitive_sync_fifo_34in_34out_8depth FETCH_REQ_ADDR_QUEUE(
+			.aclr(!inRESET),				//Asynchronous Reset
+			.clock(iCLOCK),				//Clock
+			.data(
+				{
+					!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, 
+					(iSYSREG_PSR[1] || iSYSREG_PSR[0]), 
+					b_pc
+				}
+			),				//Data-In
+			.rdreq(iPREVIOUS_INST_VALID),				//Read Data Request
+			.sclr(iEXCEPTION_EVENT || branch_predictor_flush),				//Synchthronous Reset
+			.wrreq(!iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),				//Write Req
+			.almost_empty(),		
+			.almost_full(),
+			.empty(),
+			.full(fetch_queue_full),
+			.q(
+				{
+					fetch_queue_kernel_access, 
+					fetch_queue_paging_ena, 
+					fetch_queue_addr
+				}
+			),					//Dataout
+			.usedw()
+		);
+	`elsif MIST1032ISA_XILINX_PRIMITIVE
+
+	`else
+		mist1032isa_sync_fifo #(34, 8, 3) FETCH_REQ_ADDR_QUEUE(
+			.iCLOCK(iCLOCK), 
+			.inRESET(inRESET), 
+			.iREMOVE(iEXCEPTION_EVENT || branch_predictor_flush), 
+			.oCOUNT(/* Not Use */), 	
+			.iWR_EN(!iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP), 
+			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_pc}), 
+			.oWR_FULL(fetch_queue_full),
+			.iRD_EN(iPREVIOUS_INST_VALID), 
+			.oRD_DATA({fetch_queue_kernel_access, fetch_queue_paging_ena, fetch_queue_addr}), 
+			.oRD_EMPTY(/* Not Use */)
+		);
+	`endif
 	
 	/****************************************
 	This -> Previous
