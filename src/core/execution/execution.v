@@ -4,7 +4,7 @@
 `include "irq.h"
 `include "common.h"
 
-//`define FOWARDING_NEW_CHECK
+`define FOWARDING_NEW_CHECK
 
 module execution(
 		input wire iCLOCK,
@@ -395,7 +395,7 @@ module execution(
 	wire forwarding_reg_gr_dest_sysreg;
 	wire forwarding_reg_spr_valid;
 	wire [31:0] forwarding_reg_spr_data;
-	wire [31:0] ex_module_spr = forwarding_reg_spr_data;
+	wire [31:0] ex_module_spr;// = forwarding_reg_spr_data;
 
 	ex_forwarding_register FORWARDING_REGISTER(
 		.iCLOCK(iCLOCK),
@@ -452,7 +452,8 @@ module execution(
 		.iPREVIOUS_SOURCE_IMM(1'b0/*iPREVIOUS_SOURCE0_IMM*/),
 		.iPREVIOUS_SOURCE_DATA(iPREVIOUS_SOURCE0),
 		//Output
-		.oNEXT_SOURCE_DATA(ex_module_source0)
+		.oNEXT_SOURCE_DATA(ex_module_source0),
+		.oNEXT_SOURCE_SPR(ex_module_spr)
 	);
 
 	ex_forwarding FORWARDING_RS1(
@@ -481,7 +482,8 @@ module execution(
 		.iPREVIOUS_SOURCE_IMM(iPREVIOUS_SOURCE1_IMM),
 		.iPREVIOUS_SOURCE_DATA(iPREVIOUS_SOURCE1),
 		//Output
-		.oNEXT_SOURCE_DATA(ex_module_source1)
+		.oNEXT_SOURCE_DATA(ex_module_source1),
+		.oNEXT_SOURCE_SPR()
 	);
 
 
