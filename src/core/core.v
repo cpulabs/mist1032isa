@@ -89,11 +89,11 @@ module core
 		****************************************/
 		input wire iSYSINFO_IOSR_VALID,
 		input wire [31:0] iSYSINFO_IOSR,
-		output wire [31:0] oDEBUG_PC,
-		output wire [31:0] oDEBUG0,
 		/****************************************
 		Debug
 		****************************************/
+		output wire [31:0] oDEBUG_PC,
+		output wire [31:0] oDEBUG0,
 		input wire iDEBUG_CMD_REQ,
 		output wire oDEBUG_CMD_BUSY,
 		input wire [3:0] iDEBUG_CMD_COMMAND,

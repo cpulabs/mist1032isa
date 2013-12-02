@@ -76,10 +76,15 @@ module l1_data_cache(
 			b_io_startaddr <= {32{1'b0}};
 		end
 		else begin
-			if(iSYSINFO_IOSR_VALID)begin
+			`ifdef MIST1032ISA_IOSTART_ADDR_OPTION
 				b_io_startaddr_valid <= 1'b1;
-				b_io_startaddr <= iSYSINFO_IOSR;
-			end
+				b_io_startaddr <= MIST1032ISA_IOSTART_ADDR_OPTION;
+			`else
+				if(iSYSINFO_IOSR_VALID)begin
+					b_io_startaddr_valid <= 1'b1;
+					b_io_startaddr <= iSYSINFO_IOSR;
+				end
+			`endif
 		end
 	end
 	
