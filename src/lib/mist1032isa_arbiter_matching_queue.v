@@ -16,12 +16,12 @@ module mist1032isa_arbiter_matching_queue #(
 		input wire iFLASH,
 		//Write
 		input wire iWR_REQ,
-		input wire iWR_FLAG,
+		input wire [FN-1:0] iWR_FLAG,
 		output wire oWR_FULL,
 		//Read
 		input wire iRD_REQ,
 		output wire oRD_VALID,
-		output wire oRD_FLAG,
+		output wire [FN-1:0] oRD_FLAG,
 		output wire oRD_EMPTY
 	);
 	
@@ -36,7 +36,7 @@ module mist1032isa_arbiter_matching_queue #(
 	reg [DN:0] wr_counter;
 	reg [DN:0] rd_counter;
 	reg queue_valid[0:D-1];
-	reg queue_type[0:D-1];
+	reg [FN-1:0] queue_type[0:D-1];
 	
 	integer i;
 	
