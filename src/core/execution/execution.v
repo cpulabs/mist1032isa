@@ -4,7 +4,8 @@
 `include "irq.h"
 `include "common.h"
 
-`define FOWARDING_NEW_CHECK
+`define MIST32_AFE_ENA
+
 
 module execution(
 		input wire iCLOCK,
@@ -114,277 +115,6 @@ module execution(
 	assign oPREVIOUS_LOCK = lock_condition || iFREE_PIPELINE_STOP;
 
 
-
-`ifndef FOWARDING_NEW_CHECK
-	//0
-	reg b_ex_history0_valid;
-	reg [31:0] b_ex_history0_data;
-	reg [4:0] b_ex_history0_destination;
-	reg b_ex_history0_destination_sysreg;
-	reg b_ex_history0_writeback;
-	reg b_ex_history0_spr_writeback;
-	reg [31:0] b_ex_history0_spr;
-	reg [31:0] b_ex_history0_pc;
-	//1
-	reg b_ex_history1_valid;
-	reg [31:0] b_ex_history1_data;
-	reg [4:0] b_ex_history1_destination;
-	reg b_ex_history1_destination_sysreg;
-	reg b_ex_history1_writeback;
-	reg b_ex_history1_spr_writeback;
-	reg [31:0] b_ex_history1_spr;
-	reg [31:0] b_ex_history1_pc;
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			//0
-			b_ex_history0_valid <= 1'h0;
-			b_ex_history0_data <= 32'h0;
-			b_ex_history0_destination <= 5'h0;
-			b_ex_history0_destination_sysreg <= 1'h0;
-			b_ex_history0_writeback <= 1'h0;
-			b_ex_history0_spr_writeback <= 1'h0;
-			b_ex_history0_spr <= 32'h0;
-			b_ex_history0_pc <= 32'h0;
-			//1
-			b_ex_history1_valid <= 1'h0;
-			b_ex_history1_data <= 32'h0;
-			b_ex_history1_destination <= 5'h0;
-			b_ex_history1_destination_sysreg <= 1'h0;
-			b_ex_history1_writeback <= 1'h0;
-			b_ex_history1_spr_writeback <= 1'h0;
-			b_ex_history1_spr <= 32'h0;
-			b_ex_history1_pc <= 32'h0;
-		end
-		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
-			//0
-			b_ex_history0_valid <= 1'h0;
-			b_ex_history0_data <= 32'h0;
-			b_ex_history0_destination <= 5'h0;
-			b_ex_history0_destination_sysreg <= 1'h0;
-			b_ex_history0_writeback <= 1'h0;
-			b_ex_history0_spr_writeback <= 1'h0;
-			b_ex_history0_spr <= 32'h0;
-			b_ex_history0_pc <= 32'h0;
-			//1
-			b_ex_history1_valid <= 1'h0;
-			b_ex_history1_data <= 32'h0;
-			b_ex_history1_destination <= 5'h0;
-			b_ex_history1_destination_sysreg <= 1'h0;
-			b_ex_history1_writeback <= 1'h0;
-			b_ex_history1_spr_writeback <= 1'h0;
-			b_ex_history1_spr <= 32'h0;
-			b_ex_history1_pc <= 32'h0;
-		end
-		else begin
-			if(b_valid)begin
-				//0
-				b_ex_history0_valid <= 1'b1;
-				b_ex_history0_data <= b_r_data;
-				b_ex_history0_destination <= b_destination;
-				b_ex_history0_destination_sysreg <= b_destination_sysreg;
-				b_ex_history0_writeback <= b_writeback;
-				b_ex_history0_spr_writeback <= b_spr_writeback;
-				b_ex_history0_spr <= b_r_spr;
-				b_ex_history0_pc <= b_pc - 32'h00000004;
-				//1
-				b_ex_history1_valid <= b_ex_history0_valid;
-				b_ex_history1_data <= b_ex_history0_data;
-				b_ex_history1_destination <= b_ex_history0_destination;
-				b_ex_history1_destination_sysreg <= b_ex_history0_destination_sysreg;
-				b_ex_history1_writeback <= b_ex_history0_writeback;
-				b_ex_history1_spr_writeback <= b_ex_history0_spr_writeback;
-				b_ex_history1_spr <= b_ex_history0_spr;
-				b_ex_history1_pc <= b_ex_history0_pc;
-			end
-		end
-	end
-
-
-	reg [31:0] ex_module_tmp_source0;
-	reg [31:0] ex_module_tmp_source1;
-	always @* begin
-		if(b_ex_history0_valid)begin
-			if(iPREVIOUS_SOURCE0_SYSREG)begin
-				if(b_ex_history0_destination_sysreg)begin
-					if(iPREVIOUS_SOURCE0_POINTER == `SYSREG_PCR && b_ex_history0_destination == `SYSREG_PCR)begin
-						ex_module_tmp_source0 = b_ex_history0_pc;
-					end
-					else if(iPREVIOUS_SOURCE0_POINTER == `SYSREG_SPR && b_ex_history0_spr_writeback)begin
-						ex_module_tmp_source0 = b_ex_history0_spr;
-					end
-					else if(iPREVIOUS_SOURCE0_POINTER == b_ex_history0_destination && b_ex_history0_writeback)begin
-						ex_module_tmp_source0 = b_ex_history0_data;
-					end
-					else begin
-						ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
-					end
-				end
-				else begin
-					ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
-				end
-			end
-			else begin
-				if(iPREVIOUS_SOURCE0_POINTER == b_ex_history0_destination && !b_ex_history0_destination_sysreg && b_ex_history0_writeback)begin
-					ex_module_tmp_source0 = b_ex_history0_data;
-				end
-				else begin
-					ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
-				end
-			end
-		end
-		else begin
-			ex_module_tmp_source0 = iPREVIOUS_SOURCE0;
-		end
-	end
-	
-	always @* begin
-		if(!iPREVIOUS_SOURCE1_IMM)begin
-			if(b_ex_history0_valid)begin
-				if(iPREVIOUS_SOURCE1_SYSREG)begin
-					if(b_ex_history0_destination_sysreg)begin
-						if(iPREVIOUS_SOURCE1_POINTER == `SYSREG_PCR && b_ex_history0_destination == `SYSREG_PCR)begin //new
-							ex_module_tmp_source1 = b_ex_history0_pc;
-						end
-						else if(iPREVIOUS_SOURCE1_POINTER == `SYSREG_SPR && b_ex_history0_spr_writeback)begin
-							ex_module_tmp_source1 = b_ex_history0_spr;
-						end
-						else if(iPREVIOUS_SOURCE1_POINTER == b_ex_history0_destination && b_ex_history0_writeback)begin
-							ex_module_tmp_source1 = b_ex_history0_data;
-						end
-						else begin
-							ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
-						end
-					end
-					else begin
-						ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
-					end
-				end
-				else begin
-					if(iPREVIOUS_SOURCE1_POINTER == b_ex_history0_destination && !b_ex_history0_destination_sysreg && b_ex_history0_writeback)begin
-						ex_module_tmp_source1 = b_ex_history0_data;
-					end
-					else begin
-						ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
-					end
-				end
-			end
-			else begin
-				ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
-			end
-		end
-		else begin
-			ex_module_tmp_source1 = iPREVIOUS_SOURCE1;
-		end
-	end
-	
-	
-	
-	reg [31:0] ex_module_source0;
-	reg [31:0] ex_module_source1;
-	always @* begin
-		if(b_valid)begin
-			if(iPREVIOUS_SOURCE0_SYSREG)begin
-				if(b_destination_sysreg)begin
-					if(iPREVIOUS_SOURCE0_POINTER == `SYSREG_PCR)begin
-						ex_module_source0 = b_pc - 32'h00000004;
-					end
-					else if(iPREVIOUS_SOURCE0_POINTER == `SYSREG_SPR && b_spr_writeback)begin
-						ex_module_source0 = b_r_spr;
-					end
-					else if(iPREVIOUS_SOURCE0_POINTER == b_destination && b_writeback)begin
-						ex_module_source0 = b_r_data;
-					end
-					else begin
-						ex_module_source0 = ex_module_tmp_source0;
-					end
-				end
-				else begin
-					ex_module_source0 = ex_module_tmp_source0;
-				end
-			end
-			else begin
-				if(iPREVIOUS_SOURCE0_POINTER == b_destination && !b_destination_sysreg && b_writeback)begin
-					ex_module_source0 = b_r_data;
-				end
-				else begin
-					ex_module_source0 = ex_module_tmp_source0;
-				end
-			end
-		end
-		else begin
-			ex_module_source0 = ex_module_tmp_source0;
-		end
-	end
-	
-	
-	always @* begin
-		if(!iPREVIOUS_SOURCE1_IMM)begin
-			if(b_valid)begin
-				if(iPREVIOUS_SOURCE1_SYSREG)begin
-					if(b_destination_sysreg)begin
-						if(iPREVIOUS_SOURCE1_POINTER == `SYSREG_PCR)begin
-							ex_module_source1 = b_pc - 32'h00000004;
-						end
-						else if(iPREVIOUS_SOURCE1_POINTER == `SYSREG_SPR && b_spr_writeback)begin
-							ex_module_source1 = b_r_spr;
-						end
-						else if(iPREVIOUS_SOURCE1_POINTER == b_destination && b_writeback)begin
-							ex_module_source1 = b_r_data;
-						end
-						else begin
-							ex_module_source1 = ex_module_tmp_source1;
-						end
-					end
-					else begin
-						ex_module_source1 = ex_module_tmp_source1;
-					end
-				end
-				else begin
-					if(iPREVIOUS_SOURCE1_POINTER == b_destination && !b_destination_sysreg && b_writeback)begin
-						ex_module_source1 = b_r_data;
-					end
-					else begin
-						ex_module_source1 = ex_module_tmp_source1;
-					end
-				end
-			end
-			else begin
-				ex_module_source1 = ex_module_tmp_source1;
-			end
-		end
-		else begin
-			ex_module_source1 = ex_module_tmp_source1;
-		end
-	end
-	
-	
-	
-	//SPR
-	reg [31:0] ex_module_spr;
-	always @* begin
-		if(b_spr_writeback && b_valid)begin
-			ex_module_spr = b_r_spr;
-		end
-		else if(b_valid && b_destination_sysreg && b_writeback && b_destination == `SYSREG_SPR)begin
-			ex_module_spr = b_r_data;
-		end
-		else begin
-			if(b_ex_history0_spr_writeback && b_ex_history0_valid)begin
-				ex_module_spr = b_ex_history0_spr;
-			end
-			else if(b_ex_history0_valid && b_ex_history0_destination_sysreg && b_ex_history0_writeback && b_ex_history0_destination == `SYSREG_SPR)begin
-				ex_module_spr = b_ex_history0_data;
-			end
-			else begin
-				ex_module_spr = iPREVIOUS_SPR;
-			end
-		end
-	end
-
-
-	
-`else 
-
 	wire [31:0] ex_module_source0;
 	wire [31:0] ex_module_source1;
 
@@ -403,7 +133,7 @@ module execution(
 		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
-		.iWB_GR_DATA(b_r_data),
+		.iWB_GR_DATA(result_data_with_afe),
 		.iWB_GR_DEST(b_destination),
 		.iWB_GR_DEST_SYSREG(b_destination_sysreg),
 		//Writeback - Stack Point Register
@@ -411,7 +141,7 @@ module execution(
 		.iWB_SPR_DATA(b_r_spr),
 		//Writeback Auto - Stack Point Register
 		.iWB_AUTO_SPR_VALID(b_valid && b_destination_sysreg && b_writeback && b_destination == `SYSREG_SPR),
-		.iWB_AUTO_SPR_DATA(b_r_data),
+		.iWB_AUTO_SPR_DATA(result_data_with_afe),
 		//Current -Stak Point Register
 		.iCUUR_SPR_DATA(iPREVIOUS_SPR),					//NEW
 		//Fowerding Register Output
@@ -432,7 +162,7 @@ module execution(
 		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
-		.iWB_GR_DATA(b_r_data),
+		.iWB_GR_DATA(result_data_with_afe),
 		.iWB_GR_DEST(b_destination),
 		.iWB_GR_DEST_SYSREG(b_destination_sysreg),
 		//Writeback - Stack Point Register
@@ -462,7 +192,7 @@ module execution(
 		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
-		.iWB_GR_DATA(b_r_data),
+		.iWB_GR_DATA(result_data_with_afe),
 		.iWB_GR_DEST(b_destination),
 		.iWB_GR_DEST_SYSREG(b_destination_sysreg),
 		//Writeback - Stack Point Register
@@ -485,9 +215,6 @@ module execution(
 		.oNEXT_SOURCE_DATA(ex_module_source1),
 		.oNEXT_SOURCE_SPR()
 	);
-
-
-`endif
 
 
 	//Flags Register
@@ -1661,24 +1388,26 @@ module execution(
 
 	/****************************************
 	AFE
-	****************************************/	
-	/*
-	reg [31:0] b_afe_data_result;
-	//Load Store
-	afe AFE_MOD(
-		//AFE-Conrtol
-		.iAFE_LDST(),
-		.iAFE_CODE(b_afe),
-		//Data-In/Out
-		.iDATA(b_r_data),
-		.oDATA()
-	);
-	*/
+	****************************************/
+	wire [31:0] result_data_with_afe;	
+	`ifdef MIST32_AFE_ENA
+		reg [31:0] b_afe_data_result;
+		//Load Store
+		afe_load_store AFE_LDST(
+			//AFE-Conrtol
+			.iAFE_CODE(b_afe),
+			//Data-In/Out
+			.iDATA(b_r_data),
+			.oDATA(result_data_with_afe)
+		);
+	`else 
+		assign result_data_with_afe = b_r_data;
+	`endif
 	
 	
 	//Writeback
 	assign oNEXT_VALID = b_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
-	assign oNEXT_DATA = b_r_data;
+	assign oNEXT_DATA = result_data_with_afe;
 	assign oNEXT_DESTINATION = b_destination;
 	assign oNEXT_DESTINATION_SYSREG = b_destination_sysreg;
 	assign oNEXT_WRITEBACK = b_writeback;
@@ -1736,6 +1465,7 @@ module execution(
 	/*************************************************
 	Assertion - SVA
 	*************************************************/
+	//synthesis translate_off
 	`ifdef MIST1032ISA_SVA_ASSERTION
 	
 		property PRO_DATAPIPE_REQ_ACK;
@@ -1744,11 +1474,12 @@ module execution(
 		
 		assert property(PRO_DATAPIPE_REQ_ACK);
 	`endif
-	
+	//synthesis translate_on
 	
 	/*************************************************
 	Verilog Assertion
 	*************************************************/
+	//synthesis translate_off
 	function [31:0] func_assert_write_data;
 		input [4:0] func_mask;
 		input [31:0] func_data;
@@ -1828,6 +1559,7 @@ module execution(
 		
 	end
 	//`endif
+	//synthesis translate_on
 endmodule
 
 

@@ -1,12 +1,10 @@
 
-/*
 `include "core.h"
 `default_nettype none
 
 
-module afe(
+module afe_load_store(
 		//AFE-Conrtol
-		input wire [3:0] iAFE_MODE,
 		input wire [3:0] iAFE_CODE,
 		//Data-In/Out
 		input wire [31:0] iDATA,
@@ -28,12 +26,9 @@ module afe(
 	endfunction
 	
 	
-	assign oDATA = 32'h0;//(iAFE_ENA)? func_afe(iAFE_CODE, iDATA) : iDATA;
+	assign oDATA = func_afe(iAFE_CODE, iDATA);
 	
 endmodule
 
-
-
 `default_nettype wire 
-*/
 

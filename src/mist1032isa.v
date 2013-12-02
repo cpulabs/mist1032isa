@@ -167,9 +167,7 @@ module mist1032isa(
 			.iMEMORY_REQ(processor2memory_req),
 			.oMEMORY_LOCK(memory2processor_lock),
 			.iMEMORY_ORDER(processor2memory_order),				//00=Byte Order 01=2Byte Order 10= Word Order 11= None
-			`ifdef MIST32_NEW_TEST
-				.iMEMORY_MASK(processor2memory_mask),
-			`endif
+			.iMEMORY_MASK(processor2memory_mask),
 			.iMEMORY_RW(processor2memory_rw),						//1:Write | 0:Read
 			.iMEMORY_ADDR(processor2memory_addr),
 			//This -> Data RAM
