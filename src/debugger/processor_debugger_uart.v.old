@@ -23,15 +23,23 @@ module processor_debugger_uart #(
 	**************************************************************/
 	localparam IDLE = 1'b0;
 	localparam WORKING = 1'b1;
+
+	reg b_tx_state;
+	reg [7:0] b_tx_buffer;
+	reg [3:0] b_tx_counter;
+
+	reg b_rx_state;
+	reg [7:0] b_rx_buffer;
+	reg [3:0] b_rx_counter;
+	reg b_rx_end;
+
+	reg [12:0]  b_bd_wait_counter;
+	reg b_bd_enable;
+	
 	
 	/**************************************************************
 	Tx Module
 	**************************************************************/
-	reg b_tx_state;
-	reg [7:0] b_tx_buffer;
-	reg [3:0] b_tx_counter;
-	
-
 	assign oUART_TXD = (b_tx_state == IDLE)? 1'b1 : func_txd(b_tx_counter, b_tx_buffer);
 	assign oTX_BUSY = (b_tx_state == IDLE)? 1'b0 : 1'b1;
 	
@@ -96,11 +104,7 @@ module processor_debugger_uart #(
 						b_rx_buffer[4], b_rx_buffer[5], b_rx_buffer[6], b_rx_buffer[7]};
 	
 	
-	reg b_rx_state;
-	reg [7:0] b_rx_buffer;
-	reg [3:0] b_rx_counter;
-	reg b_rx_end;
-	
+
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_rx_state <= IDLE;
@@ -144,8 +148,6 @@ module processor_debugger_uart #(
 	/**************************************************************
 	Baudrate Counter
 	**************************************************************/
-	reg [12:0]  b_bd_wait_counter;
-	reg b_bd_enable;
 	always@(posedge iCLOCK or negedge inRESET)begin	
 		if(!inRESET)begin
 			b_bd_wait_counter <= 13'h0;

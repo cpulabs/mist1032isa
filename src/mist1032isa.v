@@ -146,6 +146,18 @@ module mist1032isa(
 	wire processor2memory_busy;
 	wire [63:0] memory2processor_data;
 	
+	wire mmu_lock = memory2processor_lock;
+	
+	wire debuger2processor_cmd_req;
+	wire processor2debuger_cmd_busy;
+	wire [3:0] debuger2processor_cmd_command;
+	wire [7:0] debuger2processor_cmd_target;
+	wire [31:0] debuger2processor_cmd_data;
+	wire processor2debuger_cmd_valid;
+	wire processor2debuger_cmd_error;
+	wire [31:0] processor2debuger_cmd_data;
+	
+	reg b_io_write_ack;
 	
 
 	/********************************************************************************
@@ -205,6 +217,8 @@ module mist1032isa(
 	wire core2io_irq_tables_flag_mask;
 	wire core2io_irq_tables_flag_valid;
 	wire [1:0] core2io_irq_tables_flag_level;
+	
+	
 	
 	
 	assign oIO_IRQ_CONFIG_TABLE_REQ = core2io_irq_tables_req;
@@ -308,19 +322,7 @@ module mist1032isa(
 		.oDEBUG_CMD_DATA(processor2debuger_cmd_data)
 	);
 	
-	
-	wire mmu_lock = memory2processor_lock;
-	
-	wire debuger2processor_cmd_req;
-	wire processor2debuger_cmd_busy;
-	wire [3:0] debuger2processor_cmd_command;
-	wire [7:0] debuger2processor_cmd_target;
-	wire [31:0] debuger2processor_cmd_data;
-	wire processor2debuger_cmd_valid;
-	wire processor2debuger_cmd_error;
-	wire [31:0] processor2debuger_cmd_data;
-	
-	
+
 	sdi_debugger SDI_DEBUGGER(
 		//Clock 
 		.iCLOCK(iCORE_CLOCK),
@@ -628,7 +630,6 @@ module mist1032isa(
 	Write Ack(Data Pipe)
 	*********************************************************/	
 	//IO
-	reg b_io_write_ack;
 	always@(posedge iBUS_CLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_io_write_ack <= 1'b0;

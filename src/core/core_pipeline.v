@@ -103,9 +103,6 @@ module core_pipeline
 	);
 	
 	
-	assign oDEBUG0 = sysreg_ppcr;//{iINST_FETCH_BUSY, oINST_BUSY, icache2fetch_lock, fetch2icache_lock, lbuffer2fetch_fetch_lock, decoder2lbuffer_lock, dispatch2decoder_lock, execution2dispatch_lock, iLDST_BUSY, ldst2execution_ldst_busy, ldst2exception_ldst_busy};
-	assign oDEBUG_PC = debug_register2debug_pcr;
-	
 	
 	
 	//Cache
@@ -1151,6 +1148,10 @@ module core_pipeline
 	
 	//System
 	assign oFREE_TLB_FLUSH = 1'b0;//free_tlb_flush;
+
+	
+	assign oDEBUG0 = sysreg_ppcr;//{iINST_FETCH_BUSY, oINST_BUSY, icache2fetch_lock, fetch2icache_lock, lbuffer2fetch_fetch_lock, decoder2lbuffer_lock, dispatch2decoder_lock, execution2dispatch_lock, iLDST_BUSY, ldst2execution_ldst_busy, ldst2exception_ldst_busy};
+	assign oDEBUG_PC = debug_register2debug_pcr;
 	
 endmodule
 

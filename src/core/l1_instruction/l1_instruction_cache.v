@@ -44,10 +44,6 @@ module l1_instruction_cache(
 		input wire iNEXT_LOCK
 	);
 	
-	wire request_lock = iINST_LOCK && (b_req_main_state != L_PARAM_IDLE);
-	wire load_lock = iINST_LOCK;
-	wire out_lock = iNEXT_LOCK;
-	
 	
 	/****************************************
 	Instruction Access 
@@ -70,6 +66,23 @@ module l1_instruction_cache(
 	reg [511:0] b_cache_write_data;
 	reg [255:0] b_cache_write_mmu_flags;
 	reg b_pagefault;
+
+	
+	wire cache_result_valid;
+	wire cache_result_hit;
+	wire [63:0] cache_result_data;
+	wire [27:0] cache_result_mmu_flags;
+
+	wire request_lock = iINST_LOCK && (b_req_main_state != L_PARAM_IDLE);
+	wire load_lock = iINST_LOCK;
+	wire out_lock = iNEXT_LOCK;
+	
+	reg next_0_inst_valid;
+	reg [31:0] next_0_inst_inst;
+	reg [13:0] next_0_inst_mmu_flags;
+	reg next_1_inst_valid;
+	reg [31:0] next_1_inst_inst;
+	reg [13:0] next_1_inst_mmu_flags;
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -236,6 +249,7 @@ module l1_instruction_cache(
 		.oRD_EMPTY(/* Not Use */)
 	);
 	
+	/*
 	//Cache Hit Counter
 	wire [6:0] cache_hit_counter;
 	l1_instruction_cache_counter L1_CACHE_HIT_COUNTER(
@@ -247,12 +261,8 @@ module l1_instruction_cache(
 		//Infomation
 		.oINFO_COUNT(cache_hit_counter)
 	);
+	*/
 	
-	
-	wire cache_result_valid;
-	wire cache_result_hit;
-	wire [63:0] cache_result_data;
-	wire [27:0] cache_result_mmu_flags;
 
 	`ifdef MIST1032ISA_INST_L1_CACHE
 		l1_cache_64entry_4way_line64b_bus_8b CACHE_MODULE(
@@ -336,13 +346,6 @@ module l1_instruction_cache(
 		);
 	`endif
 				
-
-	reg next_0_inst_valid;
-	reg [31:0] next_0_inst_inst;
-	reg [13:0] next_0_inst_mmu_flags;
-	reg next_1_inst_valid;
-	reg [31:0] next_1_inst_inst;
-	reg [13:0] next_1_inst_mmu_flags;
 	always @* begin
 		if(b_req_main_state == L_PARAM_OUTINST)begin
 			next_0_inst_valid = b_mem_result_0_valid;

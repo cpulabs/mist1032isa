@@ -97,6 +97,21 @@ module sdi_debugger(
 	localparam L_PARAM_CMDCODE_SE = 8'h53;
 	localparam L_PARAM_CMDCODE_BE = 8'h42;
 	localparam L_PARAM_CMDCODE_SB = 8'h50;
+
+	localparam L_PARAM_MAIN_STT_IDLE = 4'h0;
+	localparam L_PARAM_MAIN_STT_ACTIVE = 4'h1;
+	localparam L_PARAM_MAIN_STT_NOP = 4'h2;
+	localparam L_PARAM_MAIN_STT_REGISTER_READ = 4'h3;
+	localparam L_PARAM_MAIN_STT_REGISTER_WRITE = 4'h4;
+	localparam L_PARAM_MAIN_STT_STEP_EXECUTE = 4'h5;
+	localparam L_PARAM_MAIN_STT_BREAK_EXECUTE = 4'h6;
+	localparam L_PARAM_MAIN_STT_SET_BREAK_POINT = 4'h7;
+	localparam L_PARAM_MAIN_STT_ERROR = 4'h8;
+
+	localparam L_PARAM_CORE_ACK_STT_IDLE = 2'h0;
+	localparam L_PARAM_CORE_ACK_STT_WAIT = 2'h1;
+	localparam L_PARAM_CORE_ACK_STT_IF_ACK = 2'h2;
+	
 	
 	//Interface
 	wire if2ctrl_req;
@@ -108,7 +123,18 @@ module sdi_debugger(
 	wire ctrl2if_error;
 	wire [31:0] ctrl2if_data;
 	
+	reg [31:0] b_if_req_data;
+	reg [3:0] b_cmd_state;
+	reg [1:0] b_ack_state;
+	reg core_buff_error;
+	reg [31:0] core_buff_data;
+	reg core_req_req;
+	reg [3:0] core_req_cmd;
+	reg [31:0] core_req_data;
 
+	wire interface_req_condition = if2ctrl_req && !ctrl2if_busy && !iDEBUG_CMD_BUSY;
+	wire ack_state_start_condition = (b_cmd_state != L_PARAM_MAIN_STT_IDLE) && (b_cmd_state != L_PARAM_MAIN_STT_ACTIVE) && (b_cmd_state != L_PARAM_MAIN_STT_NOP) && (b_cmd_state != L_PARAM_MAIN_STT_ERROR);
+	
 	
 
 	/****************************************************************
@@ -147,23 +173,9 @@ module sdi_debugger(
 	assign ctrl2if_error = 1'b0;
 	assign ctrl2if_data = core_buff_data;
 
-	wire interface_req_condition = if2ctrl_req && !ctrl2if_busy && !iDEBUG_CMD_BUSY;
-	wire ack_state_start_condition = (b_cmd_state != L_PARAM_MAIN_STT_IDLE) && (b_cmd_state != L_PARAM_MAIN_STT_ACTIVE) && (b_cmd_state != L_PARAM_MAIN_STT_NOP) && (b_cmd_state != L_PARAM_MAIN_STT_ERROR);
-	
 	/****************************************************************
 	Uart Command Check
 	****************************************************************/
-	localparam L_PARAM_MAIN_STT_IDLE = 4'h0;
-	localparam L_PARAM_MAIN_STT_ACTIVE = 4'h1;
-	localparam L_PARAM_MAIN_STT_NOP = 4'h2;
-	localparam L_PARAM_MAIN_STT_REGISTER_READ = 4'h3;
-	localparam L_PARAM_MAIN_STT_REGISTER_WRITE = 4'h4;
-	localparam L_PARAM_MAIN_STT_STEP_EXECUTE = 4'h5;
-	localparam L_PARAM_MAIN_STT_BREAK_EXECUTE = 4'h6;
-	localparam L_PARAM_MAIN_STT_SET_BREAK_POINT = 4'h7;
-	localparam L_PARAM_MAIN_STT_ERROR = 4'h8;
-	
-	reg [31:0] b_if_req_data;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_if_req_data <= 32'h0;
@@ -176,7 +188,6 @@ module sdi_debugger(
 	end
 			
 	
-	reg [3:0] b_cmd_state;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			if(!inRESET)begin
@@ -269,11 +280,6 @@ module sdi_debugger(
 	end //CMD State
 
 	
-	localparam L_PARAM_CORE_ACK_STT_IDLE = 2'h0;
-	localparam L_PARAM_CORE_ACK_STT_WAIT = 2'h1;
-	localparam L_PARAM_CORE_ACK_STT_IF_ACK = 2'h2;
-	
-	reg [1:0] b_ack_state;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin	
 			b_ack_state <= L_PARAM_CORE_ACK_STT_IDLE;
@@ -301,8 +307,7 @@ module sdi_debugger(
 	end
 	
 	
-	reg core_buff_error;
-	reg [31:0] core_buff_data;
+
 	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -317,10 +322,6 @@ module sdi_debugger(
 		end
 	end
 	
-	
-	reg core_req_req;
-	reg [3:0] core_req_cmd;
-	reg [31:0] core_req_data;
 	always @* begin
 		if(!iDEBUG_CMD_BUSY)begin
 			case(b_cmd_state)

@@ -21,6 +21,14 @@ module dps_utim64(
 		output wire oIRQ_VALID,
 		input wire iIRQ_ACK
 	);
+
+	wire [3:0] utim64a_irq;
+	wire [3:0] utim64b_irq;
+	reg [1:0] b_irq_state;
+	reg [7:0] b_irq_flags;
+	reg b_flag_buffer_valid;
+	reg [7:0] b_flag_buffer_flags;
+	
 	
 	wire utim64a_busy;
 	wire utim64b_busy;
@@ -84,7 +92,6 @@ module dps_utim64(
 	/************************************
 	Timer Module
 	************************************/
-	wire [3:0] utim64a_irq;
 	utim64 UTIM64A(
 		//System
 		.iIF_CLOCK(iCLOCK),
@@ -103,7 +110,6 @@ module dps_utim64(
 	);
 	
 	
-	wire [3:0] utim64b_irq;
 	utim64 UTIM64B(
 		//System
 		.iIF_CLOCK(iCLOCK),
@@ -129,8 +135,6 @@ module dps_utim64(
 	parameter L_PARAM_IRQ_STT_IRQ = 2'h1;
 	parameter L_PARAM_IRQ_STT_FLAG = 2'h2;
 	
-	reg [1:0] b_irq_state;
-	reg [7:0] b_irq_flags;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_irq_state <= L_PARAM_IRQ_STT_IDLE;
@@ -225,8 +229,6 @@ module dps_utim64(
 		end
 	end
 	
-	reg b_flag_buffer_valid;
-	reg [7:0] b_flag_buffer_flags;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_flag_buffer_valid <= 1'b0;

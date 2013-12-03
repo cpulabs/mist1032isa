@@ -174,8 +174,6 @@ module dispatch
 	wire [31:0] w_sysreg_pcr_regist_data;
 	wire [31:0] w_sysreg_pcr_info_data;
 	
-	assign oSYSREG_PCR = w_sysreg_pcr_info_data;
-	assign oEXCEPTION_LOCK = !b_pcr_valid || !b_valid || (b_valid && b_ex_branch);
 	//PCR
 	system_register PCR	(
 		.iCLOCK(iCLOCK), .inRESET(inRESET),
@@ -203,7 +201,9 @@ module dispatch
 		end
 	end
 	
-
+	//General Register
+	reg [31:0] b_gr_register[0:31];
+	integer i;
 	//System Register
 	wire [31:0] w_sysreg_cpuidr_info_data;
 	wire [31:0] w_sysreg_coreidr_info_data;
@@ -673,9 +673,6 @@ module dispatch
 	/****************************************
 	General Register File
 	****************************************/
-	reg [31:0] b_gr_register[0:31];
-	integer i;
-	
 	//Write Back
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -1026,6 +1023,9 @@ module dispatch
 	assign oSYSREG_SPR = w_sysreg_spr_info_data;
 	
 	assign oPREVIOUS_LOCK = iNEXT_LOCK;//this_lock;
+
+	assign oSYSREG_PCR = w_sysreg_pcr_info_data;
+	assign oEXCEPTION_LOCK = !b_pcr_valid || !b_valid || (b_valid && b_ex_branch);
 	
 endmodule
 

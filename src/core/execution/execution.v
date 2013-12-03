@@ -109,6 +109,60 @@ module execution(
 		output wire oDEBUG_CTRL_ACK,
 		output wire [31:0] oDEBUG_REG_OUT_FLAGR
 	);
+
+	localparam L_PARAM_STT_NORMAL =  3'h0;
+	localparam L_PARAM_STT_DIV_WAIT = 3'h1;
+	localparam L_PARAM_STT_LOAD = 3'h2;
+	localparam L_PARAM_STT_STORE = 3'h3;
+	localparam L_PARAM_STT_BRANCH = 3'h4;
+	localparam L_PARAM_STT_EXCEPTION = 3'h5;
+	localparam L_PARAM_STT_HALT = 3'h6;
+	
+	//Debugger
+	reg [1:0] b_debug_state;
+	reg b_debug_stop;
+	reg b_debug_cmd_ack;
+
+	reg b_valid;
+	reg b_paging_ena;
+	reg b_kernel_access;
+	reg [31:0] b_sysreg_psr;
+	reg [31:0] b_sysreg_tidr;
+	reg [31:0] b_sysreg_pdtr;
+	reg [2:0] b_state;
+	reg b_load_store;
+	reg b_writeback;
+	reg b_destination_sysreg;
+	reg [4:0] b_destination;
+	reg [3:0] b_afe;
+	reg [31:0] b_r_data;
+	reg b_spr_writeback;
+	reg [31:0] b_r_spr;
+	reg b_ldst_pipe_valid;
+	reg [1:0] b_ldst_pipe_order;
+	reg [31:0] b_ldst_pipe_addr;
+	reg [31:0] b_ldst_pipe_data;
+	reg [3:0] b_ldst_pipe_mask;
+	reg [1:0] b_load_pipe_shift;
+	reg [1:0] b_load_pipe_mask;
+	reg b_exception_valid;
+	reg [6:0] b_exception_num;
+	reg [31:0] b_exception_fi0r;
+	reg b_jump;
+	reg b_idts;
+	reg b_pdts;
+	reg b_ib;
+	reg [31:0] b_branch_addr;
+	reg b_branch_predict;	
+	reg b_branch_predict_hit;
+	reg [31:0] b_branch_predict_addr;
+	reg [31:0] b_pc;
+
+
+	reg b_div_wait;
+	reg b_div_q_r_condition;
+
+
 	
 	wire lock_condition = (b_state != L_PARAM_STT_NORMAL) || b_div_wait || b_debug_stop;// || iDATAIO_BUSY;
 	wire io_lock_condition = iDATAIO_BUSY;
@@ -126,6 +180,70 @@ module execution(
 	wire forwarding_reg_spr_valid;
 	wire [31:0] forwarding_reg_spr_data;
 	wire [31:0] ex_module_spr;// = forwarding_reg_spr_data;
+
+	//System Register
+	wire sys_reg_sf = 1'b0;
+	wire sys_reg_of = 1'b0;
+	wire sys_reg_cf = 1'b0;
+	wire sys_reg_pf = 1'b0;
+	wire sys_reg_zf = 1'b0;
+	wire [4:0] sys_reg_flags = {sys_reg_sf, sys_reg_of, sys_reg_cf, sys_reg_pf, sys_reg_zf};
+	wire [31:0] sys_reg_data;	
+	//Logic
+	wire logic_sf;
+	wire logic_of;
+	wire logic_cf;
+	wire logic_pf;
+	wire logic_zf;
+	wire [31:0] logic_data;
+	wire [4:0] logic_flags = {logic_sf, logic_of, logic_cf, logic_pf, logic_zf};
+	//Shift
+	wire shift_sf, shift_of, shift_cf, shift_pf, shift_zf;
+	wire [31:0] shift_data;
+	wire [4:0] shift_flags = {shift_sf, shift_of, shift_cf, shift_pf, shift_zf};
+	//Adder
+	wire [31:0] adder_data;
+	wire adder_sf, adder_of, adder_cf, adder_pf, adder_zf;
+	wire [4:0] adder_flags = {adder_sf, adder_of, adder_cf, adder_pf, adder_zf};
+	//MUL
+	wire [63:0]	mul_tmp;
+	wire mul_sf_l;
+	wire mul_cf_l;
+	wire mul_of_l;
+	wire mul_pf_l;
+	wire mul_zf_l;
+	wire mul_sf_h;
+	wire mul_cf_h;
+	wire mul_of_h;
+	wire mul_pf_h;
+	wire mul_zf_h;	
+	wire [4:0] mul_flags;
+	wire [31:0] mul_data;
+	//Div
+	wire [31:0] divider_out_q;
+	wire [31:0] divider_out_r;
+	wire divider_condition;
+	wire divider_out_valid;
+	//Load Store
+	wire ldst_spr_valid;
+	wire [31:0] ldst_spr;
+	wire [31:0] ldst_data;
+	wire ldst_pipe_rw;
+	wire [31:0] ldst_pipe_addr;
+	wire [31:0] ldst_pipe_data;
+	wire [1:0] ldst_pipe_order;	
+	wire [1:0] load_pipe_shift;
+	wire [3:0] load_pipe_mask;
+	//Branch
+	wire [31:0] branch_branch_addr;
+	wire branch_jump_valid;
+	wire branch_not_jump_valid;
+	wire branch_ib_valid;
+	wire branch_idts_valid;
+	wire branch_halt_valid;
+
+	//AFE
+	wire [31:0] result_data_with_afe;	
 
 	ex_forwarding_register FORWARDING_REGISTER(
 		.iCLOCK(iCLOCK),
@@ -253,15 +371,7 @@ module execution(
 
 	/****************************************
 	System Register
-	****************************************/
-	wire sys_reg_sf = 1'b0;
-	wire sys_reg_of = 1'b0;
-	wire sys_reg_cf = 1'b0;
-	wire sys_reg_pf = 1'b0;
-	wire sys_reg_zf = 1'b0;
-	wire [4:0] sys_reg_flags = {sys_reg_sf, sys_reg_of, sys_reg_cf, sys_reg_pf, sys_reg_zf};
-	wire [31:0] sys_reg_data;		
-	
+	****************************************/	
 	sys_reg EXE_SYS_REG(
 		.iCMD(iPREVIOUS_CMD),
 		.iSOURCE0(ex_module_source0),
@@ -323,15 +433,6 @@ module execution(
 		.oZF(logic_zf)
 	);
 	
-	wire logic_sf;
-	wire logic_of;
-	wire logic_cf;
-	wire logic_pf;
-	wire logic_zf;
-			
-	wire [31:0] logic_data;
-	wire [4:0] logic_flags = {logic_sf, logic_of, logic_cf, logic_pf, logic_zf};
-	
 	/****************************************
 	Shift
 	****************************************/	
@@ -346,8 +447,6 @@ module execution(
 		.oPF(shift_pf), 
 		.oZF(shift_zf)
 	);
-	
-	wire shift_sf, shift_of, shift_cf, shift_pf, shift_zf;
 
 
 	function [2:0] func_shift_select;
@@ -365,16 +464,10 @@ module execution(
 		end
 	endfunction
 
-	wire [31:0] shift_data;
-	wire [4:0] shift_flags = {shift_sf, shift_of, shift_cf, shift_pf, shift_zf};
 
 	/****************************************
 	Adder
-	****************************************/
-	
-	wire [31:0] adder_data;
-	wire adder_sf, adder_of, adder_cf, adder_pf, adder_zf;
-	
+	****************************************/	
 	adder_n	#(32) EXE_ADDER(
 		.iDATA_0(ex_module_source0), 
 		.iDATA_1(ex_module_source1), 
@@ -387,41 +480,29 @@ module execution(
 		.oZF(adder_zf)
 	);
 
-	wire [4:0] adder_flags = {adder_sf, adder_of, adder_cf, adder_pf, adder_zf};
 	
 	/****************************************
 	Mul 
 	****************************************/	
 	
-	wire [63:0]	mul_tmp = ex_module_source0 * ex_module_source1;
-	wire mul_sf_l = mul_tmp[31];
-	wire mul_cf_l = mul_tmp[32];
-	wire mul_of_l = mul_tmp[31] ^ mul_tmp[32];
-	wire mul_pf_l = mul_tmp[0];
-	wire mul_zf_l = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
-	wire mul_sf_h = mul_tmp[63];
-	wire mul_cf_h = 1'b0;
-	wire mul_of_h = 1'b0;
-	wire mul_pf_h = mul_tmp[32];
-	wire mul_zf_h = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
+	assign mul_tmp = ex_module_source0 * ex_module_source1;
+	assign mul_sf_l = mul_tmp[31];
+	assign mul_cf_l = mul_tmp[32];
+	assign mul_of_l = mul_tmp[31] ^ mul_tmp[32];
+	assign mul_pf_l = mul_tmp[0];
+	assign mul_zf_l = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
+	assign mul_sf_h = mul_tmp[63];
+	assign mul_cf_h = 1'b0;
+	assign mul_of_h = 1'b0;
+	assign mul_pf_h = mul_tmp[32];
+	assign mul_zf_h = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
 	
-	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
-	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? mul_tmp[63:32] : mul_tmp[31:0];
+	assign mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
+	assign mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? mul_tmp[63:32] : mul_tmp[31:0];
+
 	
 	
 	/*
-	wire [63:0]	mul_tmp;
-	wire mul_sf_l;
-	wire mul_cf_l;
-	wire mul_of_l;
-	wire mul_pf_l;
-	wire mul_zf_l;
-	wire mul_sf_h;
-	wire mul_cf_h;
-	wire mul_of_h;
-	wire mul_pf_h;
-	wire mul_zf_h;
-	
 	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
 	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
 	
@@ -448,11 +529,7 @@ module execution(
 	/****************************************
 	Div
 	****************************************/
-	wire [31:0] divider_out_q;
-	wire [31:0] divider_out_r;
-	wire divider_condition;
 	assign divider_condition = iPREVIOUS_VALID && (iPREVIOUS_EX_UDIV || iPREVIOUS_EX_SDIV) && !lock_condition;
-	wire divider_out_valid;
 	
 	pipelined_div_radix2 EXE_DIV(
 		//System
@@ -472,8 +549,6 @@ module execution(
 		.oOUT_DATA_R(divider_out_r)
 	);
 
-	reg b_div_wait;
-	reg b_div_q_r_condition;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_div_wait <= 1'b0;
@@ -499,16 +574,6 @@ module execution(
 	/****************************************
 	Load Store(Addr calculation)
 	****************************************/	
-	wire ldst_spr_valid;
-	wire [31:0] ldst_spr;
-	wire [31:0] ldst_data;
-	wire ldst_pipe_rw;
-	wire [31:0] ldst_pipe_addr;
-	wire [31:0] ldst_pipe_data;
-	wire [1:0] ldst_pipe_order;	
-	wire [1:0] load_pipe_shift;
-	wire [3:0] load_pipe_mask;
-
 	load_store LDST(
 		//Prev
 		.iCMD(iPREVIOUS_CMD),
@@ -535,12 +600,6 @@ module execution(
 	/****************************************
 	Branch
 	****************************************/
-	wire [31:0] branch_branch_addr;
-	wire branch_jump_valid;
-	wire branch_not_jump_valid;
-	wire branch_ib_valid;
-	wire branch_idts_valid;
-	wire branch_halt_valid;
 	branch EXE_BRANCH(
 		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),		
@@ -560,50 +619,6 @@ module execution(
 	/****************************************
 	Execution Module Select
 	****************************************/
-	localparam L_PARAM_STT_NORMAL =  3'h0;
-	localparam L_PARAM_STT_DIV_WAIT = 3'h1;
-	localparam L_PARAM_STT_LOAD = 3'h2;
-	localparam L_PARAM_STT_STORE = 3'h3;
-	localparam L_PARAM_STT_BRANCH = 3'h4;
-	localparam L_PARAM_STT_EXCEPTION = 3'h5;
-	localparam L_PARAM_STT_HALT = 3'h6;
-	
-	
-	reg b_valid;
-	reg b_paging_ena;
-	reg b_kernel_access;
-	reg [31:0] b_sysreg_psr;
-	reg [31:0] b_sysreg_tidr;
-	reg [31:0] b_sysreg_pdtr;
-	reg [2:0] b_state;
-	reg b_load_store;
-	reg b_writeback;
-	reg b_destination_sysreg;
-	reg [4:0] b_destination;
-	reg [3:0] b_afe;
-	reg [31:0] b_r_data;
-	reg b_spr_writeback;
-	reg [31:0] b_r_spr;
-	reg b_ldst_pipe_valid;
-	reg [1:0] b_ldst_pipe_order;
-	reg [31:0] b_ldst_pipe_addr;
-	reg [31:0] b_ldst_pipe_data;
-	reg [3:0] b_ldst_pipe_mask;
-	reg [1:0] b_load_pipe_shift;
-	reg [1:0] b_load_pipe_mask;
-	reg b_exception_valid;
-	reg [6:0] b_exception_num;
-	reg [31:0] b_exception_fi0r;
-	reg b_jump;
-	reg b_idts;
-	reg b_pdts;
-	reg b_ib;
-	reg [31:0] b_branch_addr;
-	reg b_branch_predict;	
-	reg b_branch_predict_hit;
-	reg [31:0] b_branch_predict_addr;
-	reg [31:0] b_pc;
-	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_valid <= 1'b0;
@@ -1240,9 +1255,6 @@ module execution(
 	localparam L_PARAM_DEBUG_IDLE = 2'h0;
 	localparam L_PARAM_DEBUG_START_REQ = 2'h1;
 	localparam L_PARAM_DEBUG_STOP_REQ = 2'h2;
-	reg [1:0] b_debug_state;
-	reg b_debug_stop;
-	reg b_debug_cmd_ack;
 	
 	//Debug Module Enable
 	`ifdef MIST1032ISA_STANDARD_DEBUGGER
@@ -1389,7 +1401,6 @@ module execution(
 	/****************************************
 	AFE
 	****************************************/
-	wire [31:0] result_data_with_afe;	
 	`ifdef MIST32_AFE_ENA
 		reg [31:0] b_afe_data_result;
 		//Load Store

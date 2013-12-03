@@ -41,6 +41,15 @@ module sim_memory_model(
 	
 	parameter P_MEM_INIT_LOAD = 1;		//0=not load | 1=load
 	parameter P_MEM_INIT_LOAD_FIEL = "binary_file.bin";
+	parameter P_MEM_SIZE = 134217728/8;
+	
+	wire fifo_write_full;
+	wire fifo_read_empty;
+	wire [63:0] fifo_read_data;
+	
+	reg [63:0] b_mem_data[0:P_MEM_SIZE-1];
+	
+	integer i;
 
 	wire system_busy = fifo_write_full;
 	wire system_read_condition = iMEMORY_REQ && !iMEMORY_RW && !system_busy;
@@ -87,11 +96,7 @@ module sim_memory_model(
 	
 	
 	//Memory
-	parameter P_MEM_SIZE = 134217728/8;
-	reg [63:0] b_mem_data[0:P_MEM_SIZE-1];
-	
-	integer i;
-	
+
 	initial begin
 		#0 begin
 			if(P_MEM_INIT_LOAD)begin
@@ -120,11 +125,7 @@ module sim_memory_model(
 			};
 		end
 	endfunction
-	
-	
-	wire fifo_write_full;
-	wire fifo_read_empty;
-	wire [63:0] fifo_read_data;
+
 	
 	mist1032isa_sync_fifo #(64, 8, 3) OUT_FIFO(
 		.iCLOCK(iCLOCK),

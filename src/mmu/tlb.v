@@ -376,8 +376,8 @@ module tlb
 	/********************************************
 	LRU Control - Timer
 	********************************************/
-	assign lru_valid = (b_lru_timer == {LRU_TIMER_N{1'b1}})? 1'b1 : 1'b0;
 	reg [LRU_TIMER_N-1:0] b_lru_timer;
+	assign lru_valid = (b_lru_timer == {LRU_TIMER_N{1'b1}})? 1'b1 : 1'b0;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_lru_timer <= {LRU_TIMER_N{1'b0}};

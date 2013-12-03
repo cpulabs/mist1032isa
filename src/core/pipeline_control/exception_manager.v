@@ -82,9 +82,7 @@ module exception_manager(
 		output wire oEXCEPT_IRQ_BUSY
 	);
 
-	
-	wire debug_im = iSYSREG_PSR[2];
-	wire debug_idth = (b_main_state == L_PARAM_MAINSTT_IRQ_SET)? 1'b1 : 1'b0;
+
 	
 	/************************************************************
 	Main State parameter
@@ -753,6 +751,7 @@ module exception_manager(
 		
 	//IRQ Busy
 	assign oEXCEPT_IRQ_BUSY = 1'b0;
+
 
 endmodule
 

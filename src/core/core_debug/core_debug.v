@@ -84,10 +84,14 @@ module core_debug(
 	localparam CORE_DEBUG_CMD_INTGO_CORE = 4'h9;
 	localparam CORE_DEBUG_CMD_SINGLESTEP_CORE = 4'hA;
 	localparam CORE_DEBUG_CMD_STOP_CORE = 4'hF;
+
+
+	localparam L_PARAM_REG_READ_STT_IDLE = 1'h0;
+	localparam L_PARAM_REG_READ_STT_READEND = 1'h1;
 	
 
 	
-	wire this_busy = b_main_wait || reg_working;
+	wire this_busy;
 	
 	/***************************************************
 	//Main State
@@ -99,6 +103,18 @@ module core_debug(
 	reg b_main_wait;
 	reg b_main_core_stop;
 	reg b_main_core_ack;
+
+
+	reg b_reg_read_state;
+	reg [31:0] b_reg_read_r_data;
+	reg b_reg_read_end;
+
+	wire reg_working = (b_reg_read_state == L_PARAM_REG_READ_STT_READEND);
+	wire reg_read_start = b_main_core_stop && !b_main_wait && (iCMD_COMMAND == CORE_DEBUG_CMD_READ_REG) && iCMD_REQ && !this_busy;
+	wire reg_read_end = b_reg_read_end;
+	wire [7:0] reg_read_target = iCMD_TARGET;
+
+	assign this_busy = b_main_wait || reg_working;
 	
 	//Debug Module Enable
 	`ifdef MIST1032ISA_STANDARD_DEBUGGER
@@ -151,18 +167,6 @@ module core_debug(
 	/***************************************************
 	//Register Read State
 	***************************************************/
-	parameter L_PARAM_REG_READ_STT_IDLE = 1'h0;
-	parameter L_PARAM_REG_READ_STT_READEND = 1'h1;
-	
-	wire reg_working = (b_reg_read_state == L_PARAM_REG_READ_STT_READEND);
-	wire reg_read_start = b_main_core_stop && !b_main_wait && (iCMD_COMMAND == CORE_DEBUG_CMD_READ_REG) && iCMD_REQ && !this_busy;
-	wire reg_read_end = b_reg_read_end;
-	wire [7:0] reg_read_target = iCMD_TARGET;
-	reg b_reg_read_state;
-	reg [31:0] b_reg_read_r_data;
-	reg b_reg_read_end;
-	
-	
 	//Debug Module Enable
 	`ifdef MIST1032ISA_STANDARD_DEBUGGER
 		always@(posedge iCLOCK or negedge inRESET)begin

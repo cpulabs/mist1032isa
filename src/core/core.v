@@ -105,55 +105,10 @@ module core
 	);
 		
 	
-	wire inst_fetch2cache_request_lock_cc;
-	wire inst_cache2memory_request_lock_cc;
-	wire inst_cache_mem2fetch_request_lock_cc;
-				
 	/************************************************************************************
 	Wire and Register
 	************************************************************************************/		
-	//IO Start Address Buffer
-	reg b_io_startaddr_valid;
-	reg [31:0] b_io_startaddr;
-	//Load State 
-	reg b_ldst_state;
-	reg b_ldst_type;	//0:IO | 1:DATA
-	//Core Info
-	//Instruction
-	wire core2inst_fetch_req;
-	wire [13:0] core2inst_fetch_tid;
-	wire [1:0] core2inst_fetch_mmumod;
-	wire [31:0] core2inst_fetch_pdt;
-	wire [31:0] core2inst_fetch_addr;
-	wire core2inst_fetch_busy;
-	//Load Store
-	wire core2ldst_req;
-	wire [1:0] core2ldst_order;
-	wire core2ldst_rw;
-	wire [13:0] core2ldst_tid;
-	wire [1:0] core2ldst_mmumod;
-	wire [31:0] core2ldst_pdt;
-	wire [31:0] core2ldst_addr;
-	wire [31:0] core2ldst_data;
-	//Instruction Cache
-	wire inst_l1_cache_rd_lock;
-	wire inst_l1_cache_rd_valid;
-	wire inst_l1_cache_rd_hit;
-	wire [63:0] inst_l1_cache_rd_data;
-	wire [11:0] inst_l1_cache_rd_mmuflags;		
-	wire inst_l1_cache_wr_lock;
-	//Instruction Memory Acess Controllor
-	reg b_inst_mem_state;
-	reg [31:0] b_inst_core2mem_addr;
-	reg [13:0] b_inst_core2mem_tid;
-	reg [1:0] b_inst_core2mem_mmumod;
-	reg [31:0] b_inst_core2mem_pdt;
-	//instruction Memory Matching Bridge
-	wire inst_matching_bridge_full;
-	wire inst_matching_bridge_valid;
-	//Data Memory matching Bridge
-	wire dataio_matching_bridge_full;
-	wire dataio_valid;
+	wire [31:0] debug0;
 	
 	/************************************************************************************
 	Core - Main Pipeline
@@ -240,17 +195,8 @@ module core
 	
 	
 	
-	wire [31:0] debug0;
-	//assign oDEBUG0 = {iDATA_LOCK, iIO_BUSY, !b_io_startaddr_valid, dataio_valid, b_ldst_state, debug0[2:0]};
 	assign oDEBUG0 = debug0;
 	
-	assign inst_fetch2cache_request_lock_cc = inst_matching_bridge_full || iINST_LOCK || inst_l1_cache_rd_lock || (inst_l1_cache_rd_valid && !inst_l1_cache_rd_hit);
-	
-	assign inst_cache2memory_request_lock_cc = iINST_LOCK;
-	
-	assign inst_cache_mem2fetch_request_lock_cc = core2inst_fetch_busy || inst_l1_cache_wr_lock || iINST_LOCK;
-	
-
 endmodule
 
 

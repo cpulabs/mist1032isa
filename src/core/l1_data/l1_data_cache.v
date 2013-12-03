@@ -137,6 +137,13 @@ module l1_data_cache(
 	reg [511:0] b_cache_result_data;
 	reg [255:0] b_cache_result_mmu_flags;
 	reg b_pagefault;
+
+	
+	wire cache_req_busy;
+	wire cache_result_valid;
+	wire cache_result_hit;
+	wire [31:0] cache_result_data;
+	wire [13:0] cache_result_mmu_flags;
 	
 	
 	
@@ -340,7 +347,7 @@ module l1_data_cache(
 		end	
 	end
 	
-	
+	/*
 	//Cache Hit Counter
 	wire [6:0] cache_hit_counter;
 	l1_data_cache_counter L1_CACHE_HIT_COUNTER(
@@ -352,12 +359,8 @@ module l1_data_cache(
 		//Infomation
 		.oINFO_COUNT(cache_hit_counter)
 	);
+	*/
 	
-	wire cache_req_busy;
-	wire cache_result_valid;
-	wire cache_result_hit;
-	wire [31:0] cache_result_data;
-	wire [13:0] cache_result_mmu_flags;
 
 	
 	`ifdef MIST1032ISA_DATA_L1_CACHE
