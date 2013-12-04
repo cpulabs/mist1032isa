@@ -1,0 +1,17 @@
+# vsim -do sim_run.tcl -c tb_mist1032isa_func_level_test 
+# //  ModelSim SE-64 10.1d Nov  1 2012 
+# //
+# //  Copyright 1991-2012 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Loading work.tb_mist1032isa_func_level_test(fast)
+# Loading work.scfifo(fast)
+# Loading work.ALTERA_DEVICE_FAMILIES(fast)
+# Loading work.scfifo(fast__1)
+# Loading work.scfifo(fast__2)
+# Loading work.scfifo(fast__3)
+# do sim_run.tcl 

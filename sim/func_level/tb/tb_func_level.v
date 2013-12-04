@@ -203,7 +203,7 @@ module tb_mist1032isa_func_level_test;
 
 
 		#15000000 begin
-			$stop;
+			$finish;
 		end
 	end
 
@@ -247,11 +247,11 @@ module tb_mist1032isa_func_level_test;
 					$display("[SIM-ERR]Wrong Type : %d", assert_wrong_type);
 					$display("[SIM-ERR]Index:%d, Expect:%x, Result:%x", assert_wrong_number, assert_expect, assert_result);
 					$display("[SIM-ERR]Simulation Finished.");
-					$stop;
+					$finish;
 				end
 				else begin
 					$display("[SIM-OK]Simulation Finished.");
-					$stop;
+					$finish;
 				end
 			end
 			//Check Log

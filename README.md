@@ -14,6 +14,15 @@ BSD 2-Clause License
 
 See ./LICENSE
 
+Directory
+---
+  com		:	Common file. Source path, Include path...
+  
+  src		:	Source
+  
+  sim		:	Simulation
+
+
 Include
 ---
   ./include/processor.h				:	Processor Infomation
