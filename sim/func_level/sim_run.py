@@ -107,7 +107,7 @@ def sim_start(simulator, tb_model_list, srclist, inclist):
 		#sys.exit();
 
 		#Tempfile Remove
-		os.remove("sim_run.tcl");
+		#os.remove("sim_run.tcl");
 		os.remove("func_level_test_tmp.hex");
 
 

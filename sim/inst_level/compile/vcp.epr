@@ -1,5 +1,10 @@
-"../../../src/core/pipeline_control/core_interrupt_manager.v"	2
-"../../../src/core/include/core.h"	1
-"../../../src/include/processor.h"	1
-"../../../src/core/pipeline_control/core_paging_support.v"	1
-"../../../src/core/pipeline_control/exception_manager.v"	1
+"../../../src/lib/mist1032isa_uart_receiver.v"	1
+"../../../src/lib/mist1032isa_async_fifo_double_flipflop.v"	1
+"../../../src/lib/mist1032isa_uart_receiver_double_flipflop.v"	1
+"../../../src/lib/mist1032isa_uart_transmitter.v"	1
+"../../../src/lib/mist1032isa_sync_fifo.v"	1
+"../../../src/lib/mist1032isa_uart_transmitter_async2sync.v"	1
+"../../../src/lib/mist1032isa_uart_transmitter_double_flipflop.v"	1
+"../../../src/lib/mist1032isa_arbiter_matching_queue.v"	1
+"../../../src/lib/mist1032isa_async_fifo.v"	1
+"../../../src/lib/mist1032isa_uart_receiver_async2sync.v"	1

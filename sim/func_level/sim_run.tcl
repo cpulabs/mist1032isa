@@ -1,4 +1,5 @@
-transcript file code_check.log
+transcript file sim/forwarding.result
+
 alib work
 set work work
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ./tb/*.v
@@ -53,3 +54,6 @@ alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ..
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/core/l1_instruction/*.v
 
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/core/pipeline_control/*.v
+asim -coverage tb_mist1032isa_func_level_test
+run -all
+quit

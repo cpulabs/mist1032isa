@@ -11,7 +11,7 @@ def generate_tcl(run, simulator, tb_model_list, srclist, inclist, log_name, tcl)
 		wr_string = wr_string + "vlib work\n";
 	elif(simulator == "riviera"):
 		cmd = "alog -work work -dbg "
-		wr_string = wr_string + "alib work\n";
+		wr_string = wr_string + "alib work\nset work work\n";
 	else:
 		print("Error, Simulator Parameter");
 		sys.exit();
@@ -37,9 +37,15 @@ def generate_tcl(run, simulator, tb_model_list, srclist, inclist, log_name, tcl)
 
 	if(run == 1):
 		#wr_string = wr_string + "run 1500000000\n\n";
-		wr_string = wr_string + "run 1500000000\n\n";
+		#wr_string = wr_string + "run 1500000000\n\n";
+		if(simulator == "riviera"):
+			wr_string = wr_string + "asim -coverage tb_mist1032isa_func_level_test\n";
+			wr_string = wr_string + "run -all\n";
+			wr_string = wr_string + "quit\n";
 
-	wr_string = wr_string + "quit\n"
+		elif(simulator == "modelsim"):
+			wr_string = wr_string + "run -all\n";
+			wr_string = wr_string + "quit\n"
 
 	#Save
 	fh = open(tcl, "w");
