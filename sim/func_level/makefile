@@ -3,10 +3,10 @@
 ####################################################################
 
 #Model-sim
-#default: modelsim_code_check modelsim_sim_run sim_summary
+default: modelsim_code_check modelsim_sim_run sim_summary
 
 #Riviera-Pro
-default: riviera_code_check riviera_sim_run sim_summary
+#default: riviera_code_check riviera_sim_run sim_summary
 ####################################################################
 
 
