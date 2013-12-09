@@ -359,7 +359,7 @@
 (_templates
 	(_template 0 D Dummy top-level Dummy top-level work
 	)
-	(_template 1 V tb_mist1032isa_func_level_test  work
+	(_template 1 V tb_func_level  work
 		(_process 0 @ALWAYS#156_0@ 4548 6)
 		(_process 1 @ALWAYS#160_1@ 4554 6)
 		(_process 2 @ALWAYS#164_2@ 4560 6)

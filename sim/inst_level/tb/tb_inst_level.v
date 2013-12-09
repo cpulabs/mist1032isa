@@ -2,7 +2,7 @@
 `default_nettype none
 `timescale 1ns/1ns
 
-module tb_mist1032isa_normal_test;
+module tb_inst_level;
 	localparam PL_CORE_CYCLE = 20;		//It's necessary "Core Clock == Bus Clock". This restriction is removed near future.
 	localparam PL_BUS_CYCLE = 20;		//
 	localparam PL_DPS_CYCLE = 18;
@@ -211,7 +211,7 @@ module tb_mist1032isa_normal_test;
 	/******************************************************
 	Memory Model
 	******************************************************/
-	sim_memory_model #(1, "inst_level_test_tmp.hex") MEMORY_MODEL(
+	sim_memory_model #(1, "tb_inst_test.hex") MEMORY_MODEL(
 		.iCLOCK(iCORE_CLOCK),
 		.inRESET(inRESET),
 		//Req

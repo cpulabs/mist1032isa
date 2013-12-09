@@ -158,6 +158,17 @@ module execution(
 	reg [31:0] b_branch_predict_addr;
 	reg [31:0] b_pc;
 
+	reg b_ex_kind_adder;
+	reg b_ex_kind_logic;
+	reg b_ex_kind_mul;
+	reg b_ex_kind_sdiv;
+	reg b_ex_kind_udiv;
+	reg b_ex_kind_ldst;
+	reg b_ex_kind_shift;
+	reg b_ex_kind_branch;
+	reg b_ex_kind_sys_reg;
+	reg b_ex_kind_sys_ldst;
+
 
 	reg b_div_wait;
 	reg b_div_q_r_condition;
@@ -615,6 +626,51 @@ module execution(
 		.oHALT_VALID(branch_halt_valid)
 	);
 	
+
+	/****************************************
+	Current Execute Kind
+	****************************************/
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_ex_kind_adder <= 1'b0;
+			b_ex_kind_logic <= 1'b0;
+			b_ex_kind_mul <= 1'b0;
+			b_ex_kind_sdiv <= 1'b0;
+			b_ex_kind_udiv <= 1'b0;
+			b_ex_kind_ldst <= 1'b0;
+			b_ex_kind_shift <= 1'b0;
+			b_ex_kind_branch <= 1'b0;
+			b_ex_kind_sys_reg <= 1'b0;
+			b_ex_kind_sys_ldst <= 1'b0;
+		end
+		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
+			b_ex_kind_adder <= 1'b0;
+			b_ex_kind_logic <= 1'b0;
+			b_ex_kind_mul <= 1'b0;
+			b_ex_kind_sdiv <= 1'b0;
+			b_ex_kind_udiv <= 1'b0;
+			b_ex_kind_ldst <= 1'b0;
+			b_ex_kind_shift <= 1'b0;
+			b_ex_kind_branch <= 1'b0;
+			b_ex_kind_sys_reg <= 1'b0;
+			b_ex_kind_sys_ldst <= 1'b0;
+		end
+		else begin
+			if(b_state == L_PARAM_STT_NORMAL && iPREVIOUS_VALID && !lock_condition)begin
+				b_ex_kind_adder <= iPREVIOUS_EX_ADDER;
+				b_ex_kind_logic <= iPREVIOUS_EX_LOGIC;
+				b_ex_kind_mul <= iPREVIOUS_EX_MUL;
+				b_ex_kind_sdiv <= iPREVIOUS_EX_SDIV;
+				b_ex_kind_udiv <= iPREVIOUS_EX_UDIV;
+				b_ex_kind_ldst <= iPREVIOUS_EX_LDST;
+				b_ex_kind_shift <= iPREVIOUS_EX_SHIFT;
+				b_ex_kind_branch <= iPREVIOUS_EX_BRANCH;
+				b_ex_kind_sys_reg <= iPREVIOUS_EX_SYS_REG;
+				b_ex_kind_sys_ldst <= iPREVIOUS_EX_SYS_LDST;
+			end
+		end
+	end
+
 
 	/****************************************
 	Execution Module Select
@@ -1402,15 +1458,36 @@ module execution(
 	AFE
 	****************************************/
 	`ifdef MIST32_AFE_ENA
-		reg [31:0] b_afe_data_result;
+
+
+		//AFE - Load / Store
+		wire  [31:0] afe_ldst_data_result;
 		//Load Store
 		afe_load_store AFE_LDST(
 			//AFE-Conrtol
 			.iAFE_CODE(b_afe),
 			//Data-In/Out
 			.iDATA(b_r_data),
-			.oDATA(result_data_with_afe)
+			.oDATA(afe_ldst_data_result)
 		);
+
+		//AFE - Output Select
+		function [31:0] func_afe_select;
+			input func_ldst;
+			input [31:0] func_ldst_data;
+			input [31:0] func_non_afe_data;
+			begin
+				if(func_ldst)begin
+					func_afe_select = func_ldst_data;
+				end
+				else begin
+					func_afe_select = func_non_afe_data;
+				end
+			end
+		endfunction
+
+		assign result_data_with_afe = func_afe_select(b_ex_kind_ldst, afe_ldst_data_result, b_r_data);
+
 	`else 
 		assign result_data_with_afe = b_r_data;
 	`endif
