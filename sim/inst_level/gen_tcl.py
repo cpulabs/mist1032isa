@@ -41,9 +41,15 @@ def generate_tcl(run, simulator, top_name, tb_model_list, srclist, inclist, log_
 		#wr_string = wr_string + "run 1500000000\n\n";
 		if(simulator == "riviera"):
 			wr_string = wr_string + "asim -coverage " + top_name + "\n";
+			#wr_string = wr_string + "wave -rec /*\n";
 			wr_string = wr_string + "run -all\n";
 
 		elif(simulator == "modelsim"):
+			"""
+			#For Wave save
+			wr_string = wr_string + "radix -hexadecimal\n";
+			wr_string = wr_string + "log -r /*\n";
+			"""
 			wr_string = wr_string + "run -all\n";
 
 	#Quit

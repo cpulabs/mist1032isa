@@ -40,7 +40,7 @@ module decode_function(
 	);
 
 
-		function [81:0]	f_decode;
+	function [81:0]	f_decode;
 		input [31:0] f_decode_inst;
 		begin
 			case(f_decode_inst[30 : 21])
@@ -1576,6 +1576,7 @@ module decode_function(
 							/* Decode Error */						1'b0,
 							/* Commit Wait Instruction */			1'b0,
 							/* Condition Code & AFE */				f_decode_inst[19:16],
+							/* Source0 */							f_decode_inst[9:5],
 							/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},
 							/* Source0 Use Flags*/					1'b0,
 							/* Source1-Immediate */					1'b0,
@@ -4208,6 +4209,7 @@ module decode_function(
 			endcase
 		end
 	endfunction
+	
 
 
 	assign {
@@ -4236,13 +4238,15 @@ module decode_function(
 		oDECODE_EX_SYS_LDST,	
 		oDECODE_EX_LOGIC,
 		oDECODE_EX_SHIFT,
-		oDECODE_EX_ADDER,
-		oDECODE_EX_MUL,			
+		oDECODE_EX_ADDER,		
 		oDECODE_EX_SDIV,		
-		oDECODE_EX_UDIV,		
+		oDECODE_EX_UDIV,
+		oDECODE_EX_MUL,			
 		oDECODE_EX_LDST,
 		oDECODE_EX_BRANCH
 	} = f_decode(iINSTLUCTION);
+
+
 
 endmodule
 

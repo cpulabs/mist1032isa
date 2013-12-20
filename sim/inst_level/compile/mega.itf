@@ -1,0 +1,148 @@
+E $root VERILOG 
+L VL;
+U VL.VERILOG_LOGIC;
+PL 0
+IIM dps_sci dps_uart altera_primitive_sync_fifo_8in_8out_16depth mist1032isa_uart_transmitter mist1032isa_uart_receiver 
+IIM altdpram ALTERA_DEVICE_FAMILIES ALTERA_MF_MEMORY_INITIALIZATION 
+IIM altera_std_synchronizer_bundle altera_std_synchronizer 
+IIM l1_data_cache_64entry_4way_line64b_bus_8b cache_ram_16entry_256bit cache_ram_16entry_512bit 
+IIM l1_cache_64entry_4way_line64b_bus_8b cache_ram_16entry_512bit cache_ram_16entry_256bit 
+IIM altlvds_tx ALTERA_DEVICE_FAMILIES MF_stratix_pll stx_m_cntr stx_n_cntr stx_scale_cntr MF_pll_reg dffp MF_stratixii_pll arm_m_cntr arm_n_cntr arm_scale_cntr MF_stratixiii_pll ttn_m_cntr ttn_n_cntr ttn_scale_cntr stratix_tx_outclk stratixii_tx_outclk flexible_lvds_tx stratixv_local_clk_divider 
+IIM altmult_accum ALTERA_DEVICE_FAMILIES 
+IIM altddio_bidir altddio_in ALTERA_DEVICE_FAMILIES altddio_out 
+IIM altera_primitive_sync_fifo_8in_8out_16depth scfifo 
+IIM sld_virtual_jtag signal_gen jtag_tap_controller dummy_hub 
+IIM altera_primitive_sync_fifo_102in_102out_32depth scfifo 
+IIM alt3pram ALTERA_DEVICE_FAMILIES ALTERA_MF_MEMORY_INITIALIZATION ALTERA_MF_HINT_EVALUATION altsyncram 
+IIM tb_inst_level altera_primitive_sync_fifo_34in_34out_8depth branch_predictor afe_load_store branch load_store pipelined_div_radix2 adder_n shift_n logic_n sys_reg ex_forwarding ex_forwarding ex_forwarding_register decode_function dps_irq dps_lsflags dps_mimsr dps_sci dps_utim64 sdi_interface_control mist1032isa sim_memory_model mist1032isa_sync_fifo core sdi_debugger memory_pipe_arbiter mist1032isa_arbiter_matching_queue mmu_if endian_controller endian_controller endian_controller peripheral_interface_controller default_peripheral_system mmu mist1032isa_arbiter_matching_queue tlb mist1032isa_arbiter_matching_queue altera_primitive_sync_fifo_28in_28out_16depth core_pipeline core_interrupt_manager exception_manager core_paging_support l1_instruction_cache fetch instruction_buffer decoder dispatch execution losd_store_pipe_arbiter l1_data_cache core_debug core_interrupt_manager exception_manager core_paging_support l1_instruction_cache fetch instruction_buffer decoder dispatch execution losd_store_pipe_arbiter l1_data_cache core_debug system_register system_register system_register system_register system_register system_register system_register system_register system_register system_register system_register system_register system_register system_register system_register system_register system_register frcr_timer system_register system_register radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch radix2_linediv div_pipelined_latch 
+IIM altmult_add ALTERA_DEVICE_FAMILIES 
+IIM altclklock ALTERA_DEVICE_FAMILIES 
+IIM altpll ALTERA_DEVICE_FAMILIES pll_iobuf MF_stratix_pll stx_m_cntr stx_n_cntr stx_scale_cntr MF_pll_reg dffp MF_stratixii_pll arm_m_cntr arm_n_cntr arm_scale_cntr MF_stratixiii_pll ttn_m_cntr ttn_n_cntr ttn_scale_cntr MF_cycloneiii_pll cda_m_cntr cda_n_cntr cda_scale_cntr MF_cycloneiiigl_pll MF_cycloneiiigl_m_cntr MF_cycloneiiigl_n_cntr cycloneiiigl_post_divider MF_cycloneiiigl_scale_cntr 
+IIM dcfifo dcfifo_mixed_widths ALTERA_DEVICE_FAMILIES dcfifo_low_latency ALTERA_MF_HINT_EVALUATION dcfifo_dffpipe dcfifo_sync dcfifo_async dcfifo_fefifo 
+IIM dps_utim64 comparator_counter main_counter mist1032isa_async_fifo utim64 
+IIM altera_primitive_sync_fifo_28in_28out_16depth scfifo 
+IIM altlvds_rx ALTERA_DEVICE_FAMILIES stratix_lvds_rx stratixgx_dpa_lvds_rx flexible_lvds_rx MF_stratix_pll stx_m_cntr stx_n_cntr stx_scale_cntr MF_pll_reg dffp MF_stratixii_pll arm_m_cntr arm_n_cntr arm_scale_cntr MF_stratixiii_pll ttn_m_cntr ttn_n_cntr ttn_scale_cntr stratixii_lvds_rx stratixiii_lvds_rx stratixiii_lvds_rx_channel stratixiii_lvds_rx_dpa stratixv_local_clk_divider 
+IIM altera_primitive_sync_fifo_34in_34out_8depth scfifo 
+IIM branch_predictor branch_cache 
+I tb_inst_level tb_inst_level 
+I lcell lcell 
+I altpll altpll 
+I altlvds_rx altlvds_rx 
+I altlvds_tx altlvds_tx 
+I dcfifo dcfifo 
+I altaccumulate altaccumulate 
+I altmult_accum altmult_accum 
+I altmult_add altmult_add 
+I altfp_mult altfp_mult 
+I altsqrt altsqrt 
+I altclklock altclklock 
+I altddio_bidir altddio_bidir 
+I altdpram altdpram 
+I alt3pram alt3pram 
+I parallel_add parallel_add 
+I altshift_taps altshift_taps 
+I a_graycounter a_graycounter 
+I altsquare altsquare 
+I altera_std_synchronizer_bundle altera_std_synchronizer_bundle 
+I alt_cal alt_cal 
+I alt_cal_mm alt_cal_mm 
+I alt_cal_c3gxb alt_cal_c3gxb 
+I alt_cal_sv alt_cal_sv 
+I alt_aeq_s4 alt_aeq_s4 
+I alt_eyemon alt_eyemon 
+I alt_dfe alt_dfe 
+I sld_virtual_jtag sld_virtual_jtag 
+I sld_signaltap sld_signaltap 
+I altstratixii_oct altstratixii_oct 
+I altparallel_flash_loader altparallel_flash_loader 
+I altserial_flash_loader altserial_flash_loader 
+I sld_virtual_jtag_basic sld_virtual_jtag_basic 
+I altsource_probe altsource_probe 
+I mul_booth32 mul_booth32 
+I l1_data_cache_64entry_4way_line64b_bus_8b l1_data_cache_64entry_4way_line64b_bus_8b 
+I l1_data_cache_counter l1_data_cache_counter 
+I l1_cache_64entry_4way_line64b_bus_8b l1_cache_64entry_4way_line64b_bus_8b 
+I l1_instruction_cache_counter l1_instruction_cache_counter 
+X $root
+E fetch VERILOG 
+L VL;
+U VL.VERILOG_LOGIC;
+PL 0
+P iCLOCK _in wire
+V iCLOCK - - - -
+P inRESET _in wire
+V inRESET - - - -
+P iSYSREG_PSR _in wire[31:0]
+V iSYSREG_PSR - - - -
+P iEXCEPTION_EVENT _in wire
+V iEXCEPTION_EVENT - - - -
+P iEXCEPTION_ADDR_SET _in wire
+V iEXCEPTION_ADDR_SET - - - -
+P iEXCEPTION_ADDR _in wire[31:0]
+V iEXCEPTION_ADDR - - - -
+P iEXCEPTION_RESTART _in wire
+V iEXCEPTION_RESTART - - - -
+P oBRANCH_PREDICT_FETCH_FLUSH _out wire
+V oBRANCH_PREDICT_FETCH_FLUSH - - - -
+P iBRANCH_PREDICT_RESULT_PREDICT _in wire
+V iBRANCH_PREDICT_RESULT_PREDICT - - - -
+P iBRANCH_PREDICT_RESULT_HIT _in wire
+V iBRANCH_PREDICT_RESULT_HIT - - - -
+P iBRANCH_PREDICT_RESULT_JUMP _in wire
+V iBRANCH_PREDICT_RESULT_JUMP - - - -
+P iBRANCH_PREDICT_RESULT_JUMP_ADDR _in wire[31:0]
+V iBRANCH_PREDICT_RESULT_JUMP_ADDR - - - -
+P iBRANCH_PREDICT_RESULT_INST_ADDR _in wire[31:0]
+V iBRANCH_PREDICT_RESULT_INST_ADDR - - - -
+P iPREVIOUS_INST_VALID _in wire
+V iPREVIOUS_INST_VALID - - - -
+P iPREVIOUS_PAGEFAULT _in wire
+V iPREVIOUS_PAGEFAULT - - - -
+P iPREVIOUS_MMU_FLAGS _in wire[13:0]
+V iPREVIOUS_MMU_FLAGS - - - -
+P iPREVIOUS_INST _in wire[31:0]
+V iPREVIOUS_INST - - - -
+P oPREVIOUS_LOCK _out wire
+V oPREVIOUS_LOCK - - - -
+P oPREVIOUS_FETCH_REQ _out wire
+V oPREVIOUS_FETCH_REQ - - - -
+P iPREVIOUS_FETCH_LOCK _in wire
+V iPREVIOUS_FETCH_LOCK - - - -
+P oPREVIOUS_MMUMOD _out wire[1:0]
+V oPREVIOUS_MMUMOD - - - -
+P oPREVIOUS_FETCH_ADDR _out wire[31:0]
+V oPREVIOUS_FETCH_ADDR - - - -
+P oNEXT_INST_VALID _out wire
+V oNEXT_INST_VALID - - - -
+P oNEXT_PAGEFAULT _out wire
+V oNEXT_PAGEFAULT - - - -
+P oNEXT_MMU_FLAGS _out wire[13:0]
+V oNEXT_MMU_FLAGS - - - -
+P oNEXT_PAGING_ENA _out wire
+V oNEXT_PAGING_ENA - - - -
+P oNEXT_KERNEL_ACCESS _out wire
+V oNEXT_KERNEL_ACCESS - - - -
+P oNEXT_BRANCH_PREDICT _out wire
+V oNEXT_BRANCH_PREDICT - - - -
+P oNEXT_BRANCH_PREDICT_ADDR _out wire[31:0]
+V oNEXT_BRANCH_PREDICT_ADDR - - - -
+P oNEXT_INST _out wire[31:0]
+V oNEXT_INST - - - -
+P oNEXT_PC _out wire[31:0]
+V oNEXT_PC - - - -
+P iNEXT_FETCH_STOP _in wire
+V iNEXT_FETCH_STOP - - - -
+P iNEXT_LOCK _in wire
+V iNEXT_LOCK - - - -
+I branch_predictor BRANCH_PREDICTOR 
+I altera_primitive_sync_fifo_34in_34out_8depth FETCH_REQ_ADDR_QUEUE 
+IB
+ISB func_branch_inst_check  reg
+ISP func_inst _in reg[31:0]
+ISE func_branch_inst_check
+ISB ^func_branch_inst_check^^ $
+ISE ^func_branch_inst_check^^
+ISB ^func_branch_inst_check^^^OUT $
+ISE ^func_branch_inst_check^^^OUT
+IE
+X fetch

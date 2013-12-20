@@ -246,11 +246,11 @@ module tb_inst_level;
 					$display("[SIM-ERR]Wrong Type : %d", assert_wrong_type);
 					$display("[SIM-ERR]Index:%d, Expect:%x, Result:%x", assert_wrong_number, assert_expect, assert_result);
 					$display("[SIM-ERR]Simulation Finished.");
-					$stop;
+					$finish;
 				end
 				else begin
 					$display("[SIM-OK]Simulation Finished.");
-					$stop;
+					$finish;
 				end
 			end
 			//Check Flag

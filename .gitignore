@@ -3,3 +3,9 @@
 /sim/func_level/sim
 /sim/func_level/work
 /sim/modelsim/work
+
+#For modelsim and riviera-pro
+*.wlf
+transcript*
+*.asdb
+*.ucdb
