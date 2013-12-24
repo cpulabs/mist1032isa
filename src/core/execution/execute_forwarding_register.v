@@ -1,7 +1,7 @@
 
 `default_nettype none
 
-module ex_forwarding_register(
+module execute_forwarding_register(
 		input wire iCLOCK,
 		input wire inRESET,
 		input wire iRESET_SYNC,

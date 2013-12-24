@@ -2,7 +2,7 @@
 `include "core.h"
 `default_nettype none
 
-module ex_forwarding(
+module execute_forwarding(
 		input wire iCLOCK,
 		input wire inRESET,
 		input wire iRESET_SYNC,

@@ -1,10 +1,15 @@
+/****************************************
+Load Store
+for MIST32 Processor
 
+Takahiro Ito @cpu_labs
+****************************************/
 
 `default_nettype none
 `include "core.h"
 
 
-module load_store(
+module execute_load_store(
 		//Prev
 		input wire [4:0] iCMD,
 		input wire iLOADSTORE_MODE,		//0:SYS_LDST | 1:LDST

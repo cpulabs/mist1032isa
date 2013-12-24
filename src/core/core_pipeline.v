@@ -838,7 +838,7 @@ module core_pipeline
 	);
 	
 	
-	execution EXECUTION(
+	execute EXECUTION(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iFREE_REGISTER_LOCK(free_register_lock),

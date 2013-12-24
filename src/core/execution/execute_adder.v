@@ -1,23 +1,22 @@
 /****************************************
-	Adder Unit
-	- 32bit Adder
-	
-	
-	Make	:	2010/12/07
-	Update	:		
+Adder
+for MIST32 Processor
+
+Takahiro Ito @cpu_labs
 ****************************************/
+
 `default_nettype none
 `include "core.h"
 
-module adder_n #(
-		parameter N	= 32
+module execute_adder #(
+		parameter P_N = 32
 	)(
 		//iDATA
-		input wire [N-1:0] iDATA_0,
-		input wire [N-1:0] iDATA_1,
+		input wire [P_N-1:0] iDATA_0,
+		input wire [P_N-1:0] iDATA_1,
 		input wire [4:0] iADDER_CMD,
 		//oDATA
-		output wire [N-1:0] oDATA,
+		output wire [P_N-1:0] oDATA,
 		output wire oSF,
 		output wire oOF,				
 		output wire oCF,
@@ -59,8 +58,8 @@ module adder_n #(
 					begin
 						func_pri_op0 = {1'b0, func_data0};
 						func_pri_op1 = {1'b0, func_data1};
-						func_pri_out = ~func_data0 + {{N-1{1'b0}}, 1'b1};
-						func_adder_execution = {5'h0, func_pri_out[31:0]};//{(func_pri_out[31:0] == {32{1'h0}}), func_pri_out[0], (func_pri_out[32] ^ func_pri_out[31]), func_pri_out[31], func_pri_out[32], func_pri_out[31:0]};
+						func_pri_out = ~func_data0 + {{P_N-1{1'b0}}, 1'b1};
+						func_adder_execution = {5'h0, func_pri_out[31:0]};
 					end
 				`EXE_ADDER_COUT	:
 					begin
@@ -74,14 +73,14 @@ module adder_n #(
 						func_pri_op0 = {1'b0, func_data0};
 						func_pri_op1 = {1'b0, func_data1};
 						func_pri_out = {1'b0, {24{func_data1[7]}}, func_data1[7:0]};
-						func_adder_execution = {5'h0, func_pri_out[31:0]};//{(func_pri_out[31:0] == {32{1'h0}}), func_pri_out[0], (func_pri_out[32] ^ func_pri_out[31]), func_pri_out[31], func_pri_out[32], func_pri_out[31:0]};
+						func_adder_execution = {5'h0, func_pri_out[31:0]};
 					end
 				`EXE_ADDER_SEXT16 :
 					begin
 						func_pri_op0 = {1'b0, func_data0};
 						func_pri_op1 = {1'b0, func_data1};
 						func_pri_out = {1'b0, {16{func_data1[15]}}, func_data1[15:0]};
-						func_adder_execution = {5'h0, func_pri_out[31:0]};//{(func_pri_out[31:0] == {32{1'h0}}), func_pri_out[0], (func_pri_out[32] ^ func_pri_out[31]), func_pri_out[31], func_pri_out[32], func_pri_out[31:0]};
+						func_adder_execution = {5'h0, func_pri_out[31:0]};
 					end
 				`EXE_ADDER_MAX :
 					if(func_data0[31] && func_data1[31])begin	

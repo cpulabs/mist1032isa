@@ -7,7 +7,7 @@
 `define MIST32_AFE_ENA
 
 
-module execution(
+module execute(
 		input wire iCLOCK,
 		input wire inRESET,
 		input wire iFREE_REGISTER_LOCK,
@@ -256,7 +256,7 @@ module execution(
 	//AFE
 	wire [31:0] result_data_with_afe;	
 
-	ex_forwarding_register FORWARDING_REGISTER(
+	execute_forwarding_register FORWARDING_REGISTER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
@@ -285,7 +285,7 @@ module execution(
 
 
 
-	ex_forwarding FORWARDING_RS0(
+	execute_forwarding FORWARDING_RS0(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
@@ -315,7 +315,7 @@ module execution(
 		.oNEXT_SOURCE_SPR(ex_module_spr)
 	);
 
-	ex_forwarding FORWARDING_RS1(
+	execute_forwarding FORWARDING_RS1(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
@@ -383,7 +383,7 @@ module execution(
 	/****************************************
 	System Register
 	****************************************/	
-	sys_reg EXE_SYS_REG(
+	execute_sys_reg EXE_SYS_REG(
 		.iCMD(iPREVIOUS_CMD),
 		.iSOURCE0(ex_module_source0),
 		.iSOURCE1(ex_module_source1),
@@ -432,7 +432,7 @@ module execution(
 	endfunction
 				
 	
-	logic_n #(32) EXE_LOGIC(	
+	execute_logic #(32) EXE_LOGIC(	
 		.iCONTROL_CMD(logic_cmd),
 		.iDATA_0(ex_module_source0), 
 		.iDATA_1(ex_module_source1),
@@ -447,7 +447,7 @@ module execution(
 	/****************************************
 	Shift
 	****************************************/	
-	shift_n #(32) EXE_SHIFT(	
+	execute_shift #(32) EXE_SHIFT(	
 		.iCONTROL_MODE(func_shift_select(iPREVIOUS_CMD)),
 		.iDATA_0(ex_module_source0), 
 		.iDATA_1(ex_module_source1),
@@ -479,7 +479,7 @@ module execution(
 	/****************************************
 	Adder
 	****************************************/	
-	adder_n	#(32) EXE_ADDER(
+	execute_adder	#(32) EXE_ADDER(
 		.iDATA_0(ex_module_source0), 
 		.iDATA_1(ex_module_source1), 
 		.iADDER_CMD(iPREVIOUS_CMD),
@@ -518,7 +518,7 @@ module execution(
 	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
 	
 	
-	mul_booth32 EXE_MUL_BOOTH(
+	execute_mul_booth32 EXE_MUL_BOOTH(
 		//iDATA
 		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),
@@ -585,7 +585,7 @@ module execution(
 	/****************************************
 	Load Store(Addr calculation)
 	****************************************/	
-	load_store LDST(
+	execute_load_store LDST(
 		//Prev
 		.iCMD(iPREVIOUS_CMD),
 		.iLOADSTORE_MODE(iPREVIOUS_EX_LDST),
@@ -611,7 +611,7 @@ module execution(
 	/****************************************
 	Branch
 	****************************************/
-	branch EXE_BRANCH(
+	execute_branch EXE_BRANCH(
 		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),		
 		.iPC(iPREVIOUS_PC - 32'h4),
@@ -1463,7 +1463,7 @@ module execution(
 		//AFE - Load / Store
 		wire  [31:0] afe_ldst_data_result;
 		//Load Store
-		afe_load_store AFE_LDST(
+		execute_afe_load_store AFE_LDST(
 			//AFE-Conrtol
 			.iAFE_CODE(b_afe),
 			//Data-In/Out

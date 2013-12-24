@@ -5,7 +5,7 @@
  
  
  
- module sys_reg(
+ module execute_sys_reg(
 		input wire [4:0] iCMD,
 		input wire [31:0] iSOURCE0,
 		input wire [31:0] iSOURCE1,

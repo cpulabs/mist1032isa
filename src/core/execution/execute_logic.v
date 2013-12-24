@@ -1,23 +1,22 @@
 /****************************************
-	Logic
-	- Logic Calcration Circuit
-	
-	
-	Make	:	2011/01/20
-	Update	:	2011/01/26
+Logic
+for MIST32 Processor
+
+Takahiro Ito @cpu_labs
 ****************************************/
+
 `default_nettype none
 
-module logic_n #(
-		parameter N	= 32
+module execute_logic #(
+		parameter P_N = 32
 	)(
 		//Control
 		input wire [4:0] iCONTROL_CMD,
 		//iDATA
-		input wire [N-1:0] iDATA_0,
-		input wire [N-1:0] iDATA_1,
+		input wire [P_N-1:0] iDATA_0,
+		input wire [P_N-1:0] iDATA_1,
 		//oDATA
-		output wire [N-1:0] oDATA,
+		output wire [P_N-1:0] oDATA,
 		output wire oSF,
 		output wire oOF,				
 		output wire oCF,
@@ -25,14 +24,14 @@ module logic_n #(
 		output wire oZF
 	);
 
-	wire [31:0] tmp;
-	assign tmp = f_logic(iCONTROL_CMD, iDATA_0, iDATA_1);
+	wire [31:0] result_data;
+	assign result_data = f_logic(iCONTROL_CMD, iDATA_0, iDATA_1);
 	
 	
-	function [N-1 : 0] f_logic;
+	function [P_N-1 : 0] f_logic;
 		input [4 : 0] f_cmd;
-		input [N-1 : 0] f_data0;
-		input [N-1 : 0] f_data1;
+		input [P_N-1 : 0] f_data0;
+		input [P_N-1 : 0] f_data1;
 		begin
 			case(f_cmd)
 				5'h0 : f_logic		=		f_data0;														//Buffer
@@ -45,8 +44,8 @@ module logic_n #(
 				5'h7 : f_logic		=		~(f_data0 & f_data1);											//NAND
 				5'h8 : f_logic		=		~(f_data0 | f_data1);											//NOA	
 				5'h9 : f_logic		=		~(f_data0 ^ f_data1);											//XNOR	
-				5'hA : f_logic		=		f_data0 | (1'b1 << f_data1);									//Set Bit	
-				5'hB : f_logic		=		f_data0 & (32'hFFFFFFFF ^ (1'b1 << f_data1));					//Clear Bit				
+				5'hA : f_logic		=		f_data0 | (32'h0000_0001 << f_data1[4:0]);						//Set Bit	
+				5'hB : f_logic		=		f_data0 & (32'hFFFF_FFFF ^ (32'h0000_0001 << f_data1[4:0]));	//Clear Bit				
 				5'hC : f_logic		=		{f_data0[0], f_data0[1], f_data0[2], f_data0[3],				//Bit Reverse
 											f_data0[4], f_data0[5], f_data0[6], f_data0[7],
 											f_data0[8], f_data0[9], f_data0[10], f_data0[11],
@@ -76,7 +75,7 @@ module logic_n #(
 					begin
 						f_logic		=		f_data0;
 						/*
-						f_logic	=		{N{1'b0}};
+						f_logic	=		{P_N{1'b0}};
 						$display("[Logic Calcration Error] file : logic.v : Not CMD[CMD:%x]", f_cmd);
 						*/
 					end
@@ -86,12 +85,12 @@ module logic_n #(
 	
 	
 	//Output assign
-	assign oDATA = tmp;
-	assign oSF = tmp[31];
+	assign oDATA = result_data;
+	assign oSF = result_data[31];
 	assign oOF = 1'b0;
 	assign oCF = 1'b0;
-	assign oPF = tmp[0];
-	assign oZF = (tmp == {N{1'b0}})? 1'b1 : 1'b0;
+	assign oPF = result_data[0];
+	assign oZF = (result_data == {P_N{1'b0}})? 1'b1 : 1'b0;
 	
 endmodule
 

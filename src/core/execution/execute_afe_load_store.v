@@ -3,7 +3,7 @@
 `default_nettype none
 
 
-module afe_load_store(
+module execute_afe_load_store(
 		//AFE-Conrtol
 		input wire [3:0] iAFE_CODE,
 		//Data-In/Out

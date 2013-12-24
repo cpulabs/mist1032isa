@@ -249,21 +249,21 @@
 # Top level modules:
 # 	dispatch
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
-# -- Compiling module adder_n
-# -- Compiling module afe_load_store
-# -- Compiling module branch
-# -- Compiling module ex_forwarding
-# -- Compiling module ex_forwarding_register
-# -- Compiling module execution
-# -- Compiling module load_store
-# -- Compiling module logic_n
-# -- Compiling module mul_booth32
-# -- Compiling module shift_n
-# -- Compiling module sys_reg
+# -- Compiling module execute
+# -- Compiling module execute_adder
+# -- Compiling module execute_afe_load_store
+# -- Compiling module execute_branch
+# -- Compiling module execute_forwarding
+# -- Compiling module execute_forwarding_register
+# -- Compiling module execute_load_store
+# -- Compiling module execute_logic
+# -- Compiling module execute_mul_booth32
+# -- Compiling module execute_shift
+# -- Compiling module execute_sys_reg
 # 
 # Top level modules:
-# 	execution
-# 	mul_booth32
+# 	execute
+# 	execute_mul_booth32
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module div_pipelined_latch
 # -- Compiling module pipelined_div_radix2

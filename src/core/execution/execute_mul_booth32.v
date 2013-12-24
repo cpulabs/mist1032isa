@@ -11,7 +11,7 @@
 
 
 
-module mul_booth32(
+module execute_mul_booth32(
 		//iDATA
 		input wire [31:0] iDATA_0,
 		input wire [31:0] iDATA_1,

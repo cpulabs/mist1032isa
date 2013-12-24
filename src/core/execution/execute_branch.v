@@ -1,8 +1,13 @@
+/****************************************
+Branch
+for MIST32 Processor
 
+Takahiro Ito @cpu_labs
+****************************************/
 `include "core.h"
 `default_nettype none
 
-module branch(
+module execute_branch(
 		input wire [31:0] iDATA_0,
 		input wire [31:0] iDATA_1,		
 		input wire [31:0] iPC,
@@ -19,10 +24,12 @@ module branch(
 	
 	
 	assign oBRANCH_ADDR = func_branch_addr(
-										iCMD,
-										iPC,
-										iDATA_1
-									);//(iCMD == `EXE_BRANCH_INTB)? iDATA_1 : ((iCMD == `EXE_BRANCH_BUR)? iDATA_1 + iPC : ((iCMD == `EXE_BRANCH_BR)? iDATA_1 + iPC : iDATA_1));
+		iCMD,
+		iPC,
+		iDATA_1
+	);
+
+
 	function [31:0] func_branch_addr;
 		input [4:0] func_cmd;
 		input [31:0] func_pc;
@@ -149,11 +156,11 @@ module branch(
 					end
 				`CC_SO : 
 					begin
-						func_ex_branch_check = !((func_ex_branch_check_flag[`FLAGS_SF] ^ func_ex_branch_check_flag[`FLAGS_OF]) || func_ex_branch_check_flag[`FLAGS_ZF]);//!func_ex_branch_check_flag[`FLAGS_ZF] || (func_ex_branch_check_flag[`FLAGS_SF] == func_ex_branch_check_flag[`FLAGS_OF]);
+						func_ex_branch_check = !((func_ex_branch_check_flag[`FLAGS_SF] ^ func_ex_branch_check_flag[`FLAGS_OF]) || func_ex_branch_check_flag[`FLAGS_ZF]);
 					end
 				`CC_SEU : 
 					begin
-						func_ex_branch_check = (func_ex_branch_check_flag[`FLAGS_SF] ^ func_ex_branch_check_flag[`FLAGS_OF]) || func_ex_branch_check_flag[`FLAGS_ZF];//func_ex_branch_check_flag[`FLAGS_ZF] || (func_ex_branch_check_flag[`FLAGS_SF] != func_ex_branch_check_flag[`FLAGS_OF]);
+						func_ex_branch_check = (func_ex_branch_check_flag[`FLAGS_SF] ^ func_ex_branch_check_flag[`FLAGS_OF]) || func_ex_branch_check_flag[`FLAGS_ZF];
 					end
 				default : func_ex_branch_check = 1'b1;
 			endcase
