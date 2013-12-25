@@ -1,7 +1,7 @@
 
 `default_nettype none	
 
-module peripheral_interface_controller(
+module pic(
 		//System
 		input wire iCLOCK,
 		input wire inRESET,

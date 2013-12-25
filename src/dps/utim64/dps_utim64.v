@@ -92,7 +92,7 @@ module dps_utim64(
 	/************************************
 	Timer Module
 	************************************/
-	utim64 UTIM64A(
+	dps_utim64_module UTIM64A(
 		//System
 		.iIF_CLOCK(iCLOCK),
 		.iTIMER_CLOCK(iTIMER_CLOCK),
@@ -110,7 +110,7 @@ module dps_utim64(
 	);
 	
 	
-	utim64 UTIM64B(
+	dps_utim64_module UTIM64B(
 		//System
 		.iIF_CLOCK(iCLOCK),
 		.iTIMER_CLOCK(iTIMER_CLOCK),

@@ -17,13 +17,15 @@ vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../s
 
 vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/debugger/*.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_device/mimsr/*.v
+vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/dps/mimsr/*.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_device/sci/*.v
+vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/dps/sci/*.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_device/utim64/*.v
+vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/dps/utim64/*.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_main/*.v
+vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/dps/*.v
+
+vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/pic/*.v
 
 vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/mmu/*.v
 

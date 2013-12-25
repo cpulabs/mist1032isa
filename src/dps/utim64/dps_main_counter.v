@@ -2,7 +2,7 @@
 
 
 
-module main_counter(		
+module dps_main_counter(		
 		input wire iCLOCK,
 		input wire inRESET,
 		//Config Write

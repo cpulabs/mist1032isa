@@ -156,7 +156,6 @@
 # -- Compiling module memory_pipe_arbiter
 # ** Warning: ../../src/memory_pipe_arbiter.v(167): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
 # -- Compiling module mist1032isa
-# -- Compiling module peripheral_interface_controller
 # 
 # Top level modules:
 # 	mist1032isa
@@ -178,20 +177,25 @@
 # Top level modules:
 # 	dps_sci
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
-# -- Compiling module comparator_counter
+# -- Compiling module dps_comparator_counter
+# -- Compiling module dps_main_counter
 # -- Compiling module dps_utim64
-# -- Compiling module main_counter
-# -- Compiling module utim64
+# -- Compiling module dps_utim64_module
 # 
 # Top level modules:
 # 	dps_utim64
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
-# -- Compiling module default_peripheral_system
+# -- Compiling module dps
 # -- Compiling module dps_irq
 # -- Compiling module dps_lsflags
 # 
 # Top level modules:
-# 	default_peripheral_system
+# 	dps
+# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# -- Compiling module pic
+# 
+# Top level modules:
+# 	pic
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module mmu
 # -- Compiling module mmu_if

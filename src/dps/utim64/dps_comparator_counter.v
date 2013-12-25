@@ -1,6 +1,6 @@
 `default_nettype none
 
-module comparator_counter(
+module dps_comparator_counter(
 		input wire iCLOCK,
 		input wire inRESET,
 		//Main Counter

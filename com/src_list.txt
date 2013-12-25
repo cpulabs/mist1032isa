@@ -4,10 +4,11 @@
 ../../src/primitive/altera/sync_fifo_102in_102out_32depth/altera_primitive_sync_fifo_102in_102out_32depth.v
 ../../src/*.v
 ../../src/debugger/*.v
-../../src/dps_device/mimsr/*.v
-../../src/dps_device/sci/*.v
-../../src/dps_device/utim64/*.v
-../../src/dps_main/*.v
+../../src/dps/mimsr/*.v
+../../src/dps/sci/*.v
+../../src/dps/utim64/*.v
+../../src/dps/*.v
+../../src/pic/*.v
 ../../src/mmu/*.v
 ../../src/lib/*.v
 ../../src/core/*.v

@@ -517,7 +517,7 @@ module mist1032isa(
 	IO Interface
 	********************************************************************************/		
 	//Peripheral Interface Controller
-	peripheral_interface_controller PIC(
+	pic PIC( //peripheral_interface_controller
 		/****************************************
 		System
 		****************************************/
@@ -589,7 +589,7 @@ module mist1032isa(
 	********************************************************************************/
 	wire [5:0] core2dps_irq_tables_entry_dps = core2io_irq_tables_entry - 6'd36;
 	
-	default_peripheral_system DPS(
+	dps DPS( //default_peripheral_system
 		.iCLOCK(iBUS_CLOCK),
 		.iDPS_BASE_CLOCK(iDPS_CLOCK),			//49.5120MHz
 		.inRESET(inRESET),

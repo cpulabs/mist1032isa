@@ -40,7 +40,7 @@ Address
 
 
 
-module utim64(
+module dps_utim64_module(
 		//System
 		input wire iIF_CLOCK,				//Global Clock
 		input wire iTIMER_CLOCK,
@@ -107,7 +107,7 @@ module utim64(
 	wire [63:0] main_counter_write_data = (main_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
 	wire main_counter_working;
 	wire [63:0] main_counter;
-	main_counter MAIN_COUNTER(		
+	dps_main_counter MAIN_COUNTER(		
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
 		.iCONF_WRITE(main_config_write_cc),
@@ -125,7 +125,7 @@ module utim64(
 	wire compare0_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC0R63_32)? write_condition : 1'b0;
 	wire [63:0] compare0_counter_write_data = (compare0_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};//64'h00000000_000071af;
 	wire compare0_irq;
-	comparator_counter COMPARATOR0(
+	dps_comparator_counter COMPARATOR0(
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
 		.iMTIMER_WORKING(main_counter_working),
@@ -148,7 +148,7 @@ module utim64(
 	wire compare1_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC1R63_32)? write_condition : 1'b0;
 	wire [63:0] compare1_counter_write_data = (compare1_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
 	wire compare1_irq;
-	comparator_counter COMPARATOR1(
+	dps_comparator_counter COMPARATOR1(
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
 		.iMTIMER_WORKING(main_counter_working),
@@ -171,7 +171,7 @@ module utim64(
 	wire compare2_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC2R63_32)? write_condition : 1'b0;
 	wire [63:0] compare2_counter_write_data = (compare2_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
 	wire			compare2_irq;
-	comparator_counter COMPARATOR2(
+	dps_comparator_counter COMPARATOR2(
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
 		.iMTIMER_WORKING(main_counter_working),
@@ -193,7 +193,7 @@ module utim64(
 	wire compare3_counter_high_write_cc = (req_fifo_addr == `UTIM64XACC3R63_32)? write_condition : 1'b0;
 	wire [63:0] compare3_counter_write_data = (compare3_counter_high_write_cc)? {req_fifo_data, 32'h0} : {32'h0, req_fifo_data};
 	wire compare3_irq;
-	comparator_counter COMPARATOR3(
+	dps_comparator_counter COMPARATOR3(
 		.iCLOCK(iTIMER_CLOCK),
 		.inRESET(inRESET),
 		.iMTIMER_WORKING(main_counter_working),
