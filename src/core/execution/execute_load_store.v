@@ -194,7 +194,7 @@ module execute_load_store(
 						spr = iSPR - 32'h4;		
 						data = 32'h0;
 						ldst_addr = iSPR - 32'h4;
-						ldst_data = iSOURCE0;
+						ldst_data = iSOURCE1;//iSOURCE0;
 						ldst_rw = 1'b1;
 						ldst_order = 2'h2;
 						ldst_load_mask = 4'hf;
@@ -337,7 +337,18 @@ module execute_load_store(
 						ldst_load_mask = 4'h0;
 						ldst_load_shift = 2'h0;
 					end
-				//EXE_SYS_LDST_ADD_SPR
+				`EXE_SYS_LDST_ADD_SPR:
+					begin
+						spr_valid = 1'b1;
+						spr = iSOURCE0 + iSOURCE1;			
+						data = 32'h0;
+						ldst_addr = iSOURCE0;
+						ldst_data = iSOURCE0;
+						ldst_rw = 1'b1;
+						ldst_order = 2'h2;
+						ldst_load_mask = 4'h0;
+						ldst_load_shift = 2'h0;
+					end
 				default:
 					begin
 						spr_valid = 1'b1;

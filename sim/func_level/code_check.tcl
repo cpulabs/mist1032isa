@@ -18,13 +18,15 @@ alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ..
 
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/debugger/*.v
 
-alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_device/mimsr/*.v
+alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps/mimsr/*.v
 
-alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_device/sci/*.v
+alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps/sci/*.v
 
-alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_device/utim64/*.v
+alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps/utim64/*.v
 
-alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps_main/*.v
+alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/dps/*.v
+
+alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/pic/*.v
 
 alog -work work -dbg +incdir+../../src/include +incdir+../../src/core/include ../../src/mmu/*.v
 

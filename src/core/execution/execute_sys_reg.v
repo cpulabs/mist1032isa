@@ -26,6 +26,7 @@
 			`EXE_SYS_REG_SR1_MMUMOD_W : w_out = {iSOURCE0[31:2], iSOURCE1[1:0]};
 			`EXE_SYS_REG_SR1_IM_W : w_out = {iSOURCE0[31:3], iSOURCE1[0], iSOURCE0[1:0]};
 			`EXE_SYS_REG_SR1_CMOD_W : w_out = {iSOURCE0[31:7], iSOURCE1[1:0], iSOURCE0[4:0]};
+
 			default	:	
 				begin
 					w_out = iSOURCE0;

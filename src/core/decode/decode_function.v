@@ -2338,31 +2338,59 @@ module decode_function(
 						end
 					end
 				`OC_PUSH :
-					begin									//O1
-						f_decode	=	{
-							/* Decode Error */						1'b0,
-							/* Commit Wait Instruction */			1'b0,
-							/* Condition Code & AFE */				f_decode_inst[19:16],
-							/* Source0 */							f_decode_inst[9:5],						//Rs
-							/* Source1 */							{{27{1'b0}}, `SYSREG_SPR},				//SPR
-							/* Source0 Use Flags*/					1'b0,
-							/* Source1-Immediate */					1'b0,
-							/* Source0 Active */					1'b1,
-							/* Source1 Active */					1'b1,
-							/* Source0 System Register */			1'b0,
-							/* Source1 System Register */			1'b1,
-							/* Source0 System Register Rename */	1'b0,
-							/* Source1 System Register Rename */	1'b0,
-							/* Displacement Data -> ADV */			6'h0,
-							/* Displacement Data -> ADV Enable */	1'b0,
-							/* Destination */						5'h00,		//Memory
-							/* Write Back Enable */					1'b0,
-							/* Make Flag Instruction */				1'b0,
-							/* Destination is System Register */	1'b1,
-							/* Destination Rename*/					1'b0,
-							/* Execute Module Command */			`EXE_LDSW_PUSH,
-							/* Execute Module */					`EXE_SELECT_LDST
-						};
+					begin
+						if(!f_decode_inst[20])begin			//O2	
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							`SYSREG_SPR,							//Rs
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[9:5]},		//{{27{1'b0}}, `SYSREG_SPR},				//SPR
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b1,			//1'b0,
+								/* Source1 System Register */			1'b0,			//1'b1,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						5'h00,		//Memory
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b1,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_LDSW_PUSH,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+						else begin							//CI16
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							`SYSREG_SPR,						//Rs
+								/* Source1 */							{{16{f_decode_inst[15]}}, f_decode_inst[15:0]},		//{{27{1'b0}}, `SYSREG_SPR},				//SPR
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,			//1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b1,
+								/* Source1 System Register */			1'b0,			//1'b1,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						5'h00,		//Memory
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b1,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_LDSW_PUSH,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
 					end
 				`OC_PUSHPC :
 					begin									//C
