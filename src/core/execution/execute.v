@@ -10,6 +10,7 @@
 module execute(
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		input wire iFREE_REGISTER_LOCK,
 		input wire iFREE_PIPELINE_STOP,
 		input wire iFREE_REFRESH,
@@ -259,7 +260,7 @@ module execute(
 	execute_forwarding_register FORWARDING_REGISTER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
+		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -288,7 +289,7 @@ module execute(
 	execute_forwarding FORWARDING_RS0(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
+		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -318,7 +319,7 @@ module execute(
 	execute_forwarding FORWARDING_RS1(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK),
+		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -350,6 +351,9 @@ module execute(
 	reg [31:0] b_sysreg_flags;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
+			b_sysreg_flags <= 32'h0;
+		end
+		else if(iRESET_SYNC)begin
 			b_sysreg_flags <= 32'h0;
 		end
 		else if(iFREE_PIPELINE_STOP || iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
@@ -546,7 +550,7 @@ module execute(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iREMOVE(iFREE_REFRESH),
+		.iREMOVE(iFREE_REFRESH || iRESET_SYNC),
 		//Source
 		.oSOURCE_BUSY(/* Not Use*/),
 		.iSOURCE_VALID(divider_condition),
@@ -562,6 +566,10 @@ module execute(
 
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
+			b_div_wait <= 1'b0;
+			b_div_q_r_condition <= 1'b0;
+		end
+		if(iRESET_SYNC)begin
 			b_div_wait <= 1'b0;
 			b_div_q_r_condition <= 1'b0;
 		end
@@ -628,6 +636,21 @@ module execute(
 	
 
 	/****************************************
+	Load Data Mask
+	****************************************/
+	wire [31:0] load_data;
+	execute_load_data LOAD_MASK(
+		.iMASK(b_ldst_pipe_mask),
+		.iSHIFT(b_load_pipe_shift),
+		.iDATA(iDATAIO_DATA),
+		.oDATA(load_data)
+	);
+
+
+
+
+
+	/****************************************
 	Current Execute Kind
 	****************************************/
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -643,7 +666,7 @@ module execute(
 			b_ex_kind_sys_reg <= 1'b0;
 			b_ex_kind_sys_ldst <= 1'b0;
 		end
-		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
+		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
 			b_ex_kind_adder <= 1'b0;
 			b_ex_kind_logic <= 1'b0;
 			b_ex_kind_mul <= 1'b0;
@@ -712,7 +735,7 @@ module execute(
 			b_branch_predict_addr <= 32'h0;
 			b_pc <= 32'h0;
 		end
-		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
+		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
 			b_valid <= 1'b0;
 			b_paging_ena <= 1'b0;
 			b_kernel_access <= 1'b0;
@@ -1194,7 +1217,7 @@ module execute(
 							else begin
 								b_valid <= 1'b1;
 								b_state <= L_PARAM_STT_NORMAL;
-								b_r_data <= func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA);
+								b_r_data <= load_data;
 								b_spr_writeback <= 1'b1;//1'b0;
 								b_r_spr <= b_r_spr;//ldst_spr;
 							end
@@ -1320,6 +1343,11 @@ module execute(
 				b_debug_stop <= 1'b0;
 				b_debug_cmd_ack <= 1'b0;
 			end
+			else if(iRESET_SYNC)begin
+				b_debug_state <= L_PARAM_DEBUG_IDLE;
+				b_debug_stop <= 1'b0;
+				b_debug_cmd_ack <= 1'b0;
+			end
 			else begin
 				case(b_debug_state)
 					L_PARAM_DEBUG_IDLE:
@@ -1356,6 +1384,11 @@ module execute(
 				b_debug_stop <= 1'b0;
 				b_debug_cmd_ack <= 1'b0;
 			end
+			else if(iRESET_SYNC)begin
+				b_debug_state <= L_PARAM_DEBUG_IDLE;
+				b_debug_stop <= 1'b0;
+				b_debug_cmd_ack <= 1'b0;
+			end
 			else begin
 				b_debug_state <= b_debug_state;
 				b_debug_stop <= b_debug_stop;
@@ -1374,92 +1407,11 @@ module execute(
 		assign oDEBUG_REG_OUT_FLAGR = 32'h0;
 	`endif
 	
-	
-	/*****************************************************
-	b_read_shift and b_read_mask comment
-	*****************************************************/
-	/*
-	Memory--->---Shifter---Mask--->---Register
-	
-	Shifter(b_read_shift)
-		0	:	None Shift
-		1	:	>>1
-		2	:	>>2
-		3	:	>>3
-		
-	Mask(b_read_mask)
-		0	:	Data & 0x000000FF
-		1	:	Data & 0x0000FFFF
-		2	:	Data & 0x00FFFFFF
-		3	:	Data & 0xFFFFFFFF
-	*/
-	/****************************************************/
-	
-	function [31:0] func_load_mask;	
-		input [1:0] func_mask;
-		input [31:0] func_data;
-		begin
-			//Altera Worning Option
-			case(func_mask)//synthesis parallel_case full_case
-				2'h0: func_load_mask = func_data & 32'h000000FF;
-				2'h1: func_load_mask = func_data & 32'h0000FFFF;
-				2'h2: func_load_mask = func_data & 32'h00FFFFFF;
-				2'h3: func_load_mask = func_data & 32'hFFFFFFFF;
-			endcase
-		end
-	endfunction
-	
-	function [31:0] func_load_fairing;	
-		input [3:0] func_mask;
-		input [1:0] func_shift;
-		input [31:0] func_data;
-		reg [7:0] func_tmp0, func_tmp1, func_tmp2, func_tmp3;
-		begin
-			if(func_mask == 4'hf)begin
-				func_load_fairing = func_data;
-			end
-			else if(func_mask == 4'b0001)begin
-				func_load_fairing = {24'h0, func_data[31:24]};
-			end
-			else if(func_mask == 4'b0010)begin
-				func_load_fairing = {24'h0, func_data[23:16]};
-			end
-			else if(func_mask == 4'b0100)begin
-				func_load_fairing = {24'h0, func_data[15:8]};
-			end
-			else if(func_mask == 4'b1000)begin
-				func_load_fairing = {24'h0, func_data[7:0]};
-			end
-			else if(func_mask == 4'b0011)begin
-				func_load_fairing = {24'h0, func_data[31:16]};
-			end
-			else begin
-			//else if(func_mask == 4'b1100)begin
-				func_load_fairing = {24'h0, func_data[15:0]};
-			end
-			
-			/*
-			func_tmp0 = (func_mask[0])? func_data[7:0] : 8'h0;
-			func_tmp1 = (func_mask[1])? func_data[15:8] : 8'h0;
-			func_tmp2 = (func_mask[2])? func_data[23:16] : 8'h0;
-			func_tmp3 = (func_mask[3])? func_data[31:24] : 8'h0;
-			case(func_shift)
-				2'h0 : func_load_fairing = {func_tmp3, func_tmp2, func_tmp1, func_tmp0}; 
-				2'h1 : func_load_fairing = {8'h0, func_tmp3, func_tmp2, func_tmp1}; 
-				2'h2 : func_load_fairing = {16'h0, func_tmp3, func_tmp2}; 
-				2'h3 : func_load_fairing = {24'h0, func_tmp3}; 
-			endcase
-			*/
-		end
-	endfunction
-	
 
 	/****************************************
 	AFE
 	****************************************/
 	`ifdef MIST32_AFE_ENA
-
-
 		//AFE - Load / Store
 		wire  [31:0] afe_ldst_data_result;
 		//Load Store
@@ -1557,7 +1509,7 @@ module execute(
 	`ifdef MIST1032ISA_SVA_ASSERTION
 	
 		property PRO_DATAPIPE_REQ_ACK;
-			@(posedge iCLOCK) disable iff (!inRESET || iFREE_REFRESH) (oDATAIO_REQ |-> ##[1:50] iDATAIO_REQ);
+			@(posedge iCLOCK) disable iff (!inRESET || iFREE_REFRESH || iRESET_SYNC) (oDATAIO_REQ |-> ##[1:50] iDATAIO_REQ);
 		endproperty
 		
 		assert property(PRO_DATAPIPE_REQ_ACK);
@@ -1610,19 +1562,19 @@ module execute(
 
 
 		//Load
-		if(inRESET)begin
+		if(inRESET && !iRESET_SYNC)begin
 			if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
 				if(time_ena == 1)begin
-					$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
+					$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, load_data);
 				end
 				else begin
-					$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
+					$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, load_data);
 				end
 				//$fdisplay(F_HANDLE, "%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
 			end
 		end
 		//Store
-		if(inRESET)begin
+		if(inRESET && !iRESET_SYNC)begin
 			if(oDATAIO_REQ && oDATAIO_RW)begin
 				if(time_ena == 1)begin
 					$display("%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));

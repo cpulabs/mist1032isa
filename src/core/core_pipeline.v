@@ -841,6 +841,7 @@ module core_pipeline
 	execute EXECUTION(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
 		.iFREE_REGISTER_LOCK(free_register_lock),
 		.iFREE_PIPELINE_STOP(free_pipeline_stop),
 		.iFREE_REFRESH(free_pipeline_flush),
