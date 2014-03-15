@@ -5,8 +5,11 @@ Open Design Computer Project - [http://open-arch.org/](http://open-arch.org/)
 
 MIST1032ISA
 ---
-In order execution core for MIST32 arcitecture.
+In order execution processor for MIST32 arcitecture.
 
+If you need high performance. We offers a MIST1032SA out of order execute processor.
+
+[MIST1032SA](https://github.com/cpulabs/mist1032sa)
 
 License
 ---
