@@ -1558,10 +1558,13 @@ module execute(
 	initial F_HANDLE = $fopen("ldst_time_dump.log");
 	*/
 	
+	wire [31:0] for_assertion_store_real_data = func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA);
+	
 	always@(posedge iCLOCK)begin
 
 
 		//Load
+		/*
 		if(inRESET && !iRESET_SYNC)begin
 			if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
 				if(time_ena == 1)begin
@@ -1585,6 +1588,7 @@ module execute(
 				//$fdisplay(F_HANDLE, "%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
 			end
 		end
+		*/
 
 
 
