@@ -1,4 +1,5 @@
-transcript file code_check.log
+transcript file sim/gcc_dry2reg.result
+
 vlib work
 vlog -work work +incdir+../../src/include +incdir+../../src/core/include ./tb/*.v
 
@@ -54,4 +55,7 @@ vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../s
 vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/core/l1_instruction/*.v
 
 vlog -work work +incdir+../../src/include +incdir+../../src/core/include ../../src/core/pipeline_control/*.v
+radix -hexadecimal
+log -r /*
+run -all
 quit

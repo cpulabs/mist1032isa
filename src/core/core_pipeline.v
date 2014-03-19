@@ -838,7 +838,7 @@ module core_pipeline
 	);
 	
 	
-	execute EXECUTION(
+	execute EXECUTE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(1'b0),

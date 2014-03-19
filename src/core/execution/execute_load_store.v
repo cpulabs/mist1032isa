@@ -138,7 +138,7 @@ module execute_load_store(
 						ldst_rw = 1'b0;
 						ldst_order = 2'h1;
 						ldst_load_mask = func_bytemask(2'h1, iSOURCE1[1:0]);
-						ldst_load_shift = (iSOURCE1[1:0] == 2'h0)? 2'h0 : 2'h2;//2'h3 - iSOURCE1[1:0];
+						ldst_load_shift = (iSOURCE1[1:0] == 2'h0)? 2'h0 : 2'h2;
 					end
 				`EXE_LDSW_LD32:
 					begin
@@ -158,7 +158,7 @@ module execute_load_store(
 						spr = iSPR;		
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
-						ldst_data = func_store_data8(iSOURCE1[1:0], iSOURCE0);//iSOURCE0;
+						ldst_data = func_store_data8(iSOURCE1[1:0], iSOURCE0);
 						ldst_rw = 1'b1;
 						ldst_order = 2'h0;
 						ldst_load_mask = func_bytemask(2'h0, iSOURCE1[1:0]);
@@ -170,7 +170,7 @@ module execute_load_store(
 						spr = iSPR;		
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
-						ldst_data = func_store_data16((iSOURCE1[1:0] == 2'h0)? 2'h0 : 2'h2, iSOURCE0);//iSOURCE0;
+						ldst_data = func_store_data16((iSOURCE1[1:0] == 2'h0)? 2'h0 : 2'h2, iSOURCE0);
 						ldst_rw = 1'b1;
 						ldst_order = 2'h1;
 						ldst_load_mask = func_bytemask(2'h1, iSOURCE1[1:0]);
@@ -194,7 +194,7 @@ module execute_load_store(
 						spr = iSPR - 32'h4;		
 						data = 32'h0;
 						ldst_addr = iSPR - 32'h4;
-						ldst_data = iSOURCE1;//iSOURCE0;
+						ldst_data = iSOURCE0;
 						ldst_rw = 1'b1;
 						ldst_order = 2'h2;
 						ldst_load_mask = 4'hf;
