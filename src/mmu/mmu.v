@@ -1,26 +1,26 @@
-/****************************************
-Memory Management Unit
-	- MMU V1
-	- 1page = 16KB
-****************************************/
+/********************************************************************************
+Memory Management Unit Version 1
+for MIST32 Processor
+********************************************************************************/
 `default_nettype none
-`include "processor.h"
-
+//`include "processor.h"
 
 
 module mmu(			
 		//System
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		//TLB Flash
-		input wire iTLB_FLASH,
+		input wire iTLB_FLUSH,
 		/***********************
 		Logic Addres Request
 		***********************/
 		input wire iLOGIC_REQ,
 		output wire oLOGIC_LOCK,
 		input wire iLOGIC_DATA_STORE_ACK,
-		input wire [1:0] iLOGIC_MODE,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		input wire [1:0] iLOGIC_MOD,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion		<New Name>
+		input wire [2:0] iLOGIC_MMUPS,		//MMU Page Size														<New Port>
 		input wire [31:0] iLOGIC_PDT,		//Page Directory Table 
 		input wire [1:0] iLOGIC_ORDER,
 		input wire [3:0] iLOGIC_MASK,
@@ -55,326 +55,436 @@ module mmu(
 		input wire [63:0] iMEMORY_DATA
 	);
 
-	
-	localparam MAIN_STT_CACHE = 3'h0;
-	//localparam MAIN_STT_PDR_MEM = 3'h1
-	localparam MAIN_STT_1ST_MEM	= 3'h2;
-	localparam MAIN_STT_2ST_MEM	= 3'h3;
-	localparam MAIN_STT_REQ_MEM	= 3'h4;
 
-	localparam SUB_STT_REQ = 1'h0;
-	localparam SUB_STT_GET = 1'h1;
+	/************************************************************
+	Parameter
+	************************************************************/
+	localparam PL_PAGING_LEVEL_OFF = 2'h0;
+	localparam PL_PAGING_LEVEL_1 = 2'h1;
+	localparam PL_PAGING_LEVEL_2 = 2'h2;
 
+	localparam PL_MAIN_STT_TLB = 3'h0;
+	localparam PL_MAIN_STT_PAGE1_REQ = 3'h1;
+	localparam PL_MAIN_STT_PAGE1_WAIT = 3'h2;
+	localparam PL_MAIN_STT_PAGE2_REQ = 3'h1;
+	localparam PL_MAIN_STT_PAGE2_WAIT = 3'h4;
+	localparam PL_MAIN_STT_ACCESS = 3'h5;
 	
 	/************************************************************
 	Wire and Register
 	************************************************************/
-	//MMU Main State
-	reg [1:0] b_main_state;
-	reg b_invalid_page;
-	//Memory Selector Line
-	wire matching_bridge_full;
-	wire matching_bridge_valid;
-	//Busy Controll
-	wire cache_request_busy;
-	//TLB Check
+	//Logic Access
+	reg b_logic_req;
+	reg b_logic_data_store_ack;
+	reg [1:0] b_logic_order;
+	reg [3:0] b_logic_mask;
+	reg b_logic_rw;
+	reg [1:0] b_logic_mode;
+	reg [2:0] b_logic_mmups;
+	reg [31:0] b_logic_pdt;
+	reg [31:0] b_logic_addr;
+	reg [31:0] b_logic_data;
+	//State
+	reg [2:0] b_main_state;
+	//Table Load
+	wire table_load_done_valid;
+	wire [31:0] table_load_done_data;
+	wire table_mem_req;
+	wire [31:0] table_mem_addr;
+	//TLB
 	wire tlb_rd_valid;
 	wire tlb_rd_hit;
-	wire [27:0] tlb_rd_flags;
-	wire [63:0] tlb_rd_physical_addr;
-	//Input Buffer
-	reg b_req;
-	reg b_data_store_ack;
-	reg [1:0] b_order;
-	reg [3:0] b_mask;
-	reg b_rw;
-	reg [31:0] b_pdt;
-	reg [1:0] b_mode;
-	reg [31:0] b_logic_addr;
-	reg [31:0] b_data;
-
+	wire tlb_rd_flags;
+	wire [31:0] tlb_rd_physical_addr;
+	//Reservation Table
+	wire res_table_wr_full;
+	wire res_table_rd_valid;
 
 	
 	/************************************************************
-	State & Latch
-	************************************************************/	
-	//Condition
-	wire mmu_memory_ls_valid = tlb_rd_valid && !tlb_rd_hit && b_mode != 2'h0;
+	Condition
+	************************************************************/
+	wire mmu_prev_busy = (b_main_state != PL_MAIN_STT_TLB) || iMEMORY_LOCK;
+	wire mmu_prev_req_valid_condition = !mmu_prev_busy && iLOGIC_REQ;
+
+	wire tlb_misshit_condition = tlb_rd_valid && !tlb_rd_hit && (b_logic_mode != PL_PAGING_LEVEL_OFF);
+
 	
+	/************************************************************
+	Latch
+	************************************************************/	
 	//Request Latch
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_req <= 1'b0;
-			b_data_store_ack <= 1'b0;
-			b_order <= 2'h0;
-			b_mask <= 4'h0;
-			b_rw <= 1'b0;
-			b_mode <= 2'h0;
-			b_pdt <= {32{1'b0}};
+			b_logic_req <= 1'b0;
+			b_logic_data_store_ack <= 1'b0;
+			b_logic_order <= 2'h0;
+			b_logic_mask <= 4'h0;
+			b_logic_rw <= 1'b0;
+			b_logic_mode <= 2'h0;
+			b_logic_mmups <= 3'h0;
+			b_logic_pdt <= {32{1'b0}};
 			b_logic_addr <= {32{1'b0}};
-			b_data <= {32{1'b0}};
+			b_logic_data <= {32{1'b0}};
+		end
+		else if(iRESET_SYNC)begin
+			b_logic_req <= 1'b0;
+			b_logic_data_store_ack <= 1'b0;
+			b_logic_order <= 2'h0;
+			b_logic_mask <= 4'h0;
+			b_logic_rw <= 1'b0;
+			b_logic_mode <= 2'h0;
+			b_logic_mmups <= 3'h0;
+			b_logic_pdt <= {32{1'b0}};
+			b_logic_addr <= {32{1'b0}};
+			b_logic_data <= {32{1'b0}};
 		end
 		else begin
-			if(!cache_request_busy && !iMEMORY_LOCK)begin
-				b_req <= iLOGIC_REQ;
-				b_data_store_ack <= iLOGIC_DATA_STORE_ACK;
-				b_order <= iLOGIC_ORDER;
-				b_mask <= iLOGIC_MASK;
-				b_rw <= iLOGIC_RW;
-				b_mode <= iLOGIC_MODE;
-				b_pdt <= iLOGIC_PDT;
+			if(mmu_prev_req_valid_condition)begin
+				b_logic_req <= iLOGIC_REQ;
+				b_logic_data_store_ack <= iLOGIC_DATA_STORE_ACK;
+				b_logic_order <= iLOGIC_ORDER;
+				b_logic_mask <= iLOGIC_MASK;
+				b_logic_rw <= iLOGIC_RW;
+				b_logic_mode <= iLOGIC_MOD;
+				b_logic_mmups <= iLOGIC_MMUPS;
+				b_logic_pdt <= iLOGIC_PDT;
 				b_logic_addr <= iLOGIC_ADDR;
-				b_data <= iLOGIC_DATA;
+				b_logic_data <= iLOGIC_DATA;
 			end
 		end
 	end
-	
-	//Memory Read State
-	localparam L_PARAM_MMU_LS_IDLE = 2'h0;
-	localparam L_PARAM_MMU_LS_LDREQ = 2'h1;
-	localparam L_PARAM_MMU_LS_GETWAIT = 2'h2;
-	
-	reg [1:0] b_mmu_ls_state;
-	reg [31:0] b_mmu_ls_req_addr;
-	reg [63:0] b_mmu_ls_get_data; 
+
+
+	/************************************************************
+	State
+	************************************************************/	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_mmu_ls_state <= L_PARAM_MMU_LS_IDLE;
-			b_mmu_ls_req_addr <= 32'h0;
-			b_mmu_ls_get_data <= 64'h0;
+			b_main_state <= PL_MAIN_STT_TLB;
 		end
-		else begin
-			case(b_mmu_ls_state)
-				L_PARAM_MMU_LS_IDLE:
-					begin
-						if(mmu_memory_ls_valid)begin
-							b_mmu_ls_state <= L_PARAM_MMU_LS_LDREQ;
-							//Load Address
-							case(b_main_state)
-								MAIN_STT_1ST_MEM : 
-									begin
-										if(b_mode == 2'h1)begin
-											b_mmu_ls_req_addr <= {b_pdt[31:14], 14'h0} + {b_logic_addr[31:14], 2'h0};
-										end
-										else begin
-											b_mmu_ls_req_addr <= {b_pdt[31:14], 14'h0} + {b_logic_addr[31:23], 2'h0};
-										end
-									end
-								MAIN_STT_2ST_MEM : 
-									begin
-										if(!b_logic_addr[2])begin
-											b_mmu_ls_req_addr <= {b_mmu_ls_get_data[31:14], 14'h0} + {b_logic_addr[22:14], 2'h0};
-										end
-										else begin
-											b_mmu_ls_req_addr <= {b_mmu_ls_get_data[63:46], 14'h0} + {b_logic_addr[22:14], 2'h0};
-										end
-									end
-								MAIN_STT_REQ_MEM : 
-									begin
-										if(!b_logic_addr[2])begin
-											b_mmu_ls_req_addr <= {b_mmu_ls_get_data[31:14], b_logic_addr[22:14]};
-										end
-										else begin
-											b_mmu_ls_req_addr <= {b_mmu_ls_get_data[63:46], b_logic_addr[22:14]};
-										end
-									end
-							endcase
-							b_mmu_ls_get_data <= 64'h0;
-						end
-						else begin
-							b_mmu_ls_state <= L_PARAM_MMU_LS_IDLE;
-							b_mmu_ls_req_addr <= 32'h0;
-						end
-					end
-				L_PARAM_MMU_LS_LDREQ:
-					begin
-						if(!iMEMORY_LOCK)begin
-							b_mmu_ls_state <= L_PARAM_MMU_LS_GETWAIT;
-						end
-					end
-				L_PARAM_MMU_LS_GETWAIT:
-					begin
-						if(iMEMORY_VALID)begin
-							b_mmu_ls_state <= L_PARAM_MMU_LS_IDLE;
-							b_mmu_ls_get_data <= iMEMORY_DATA;
-						end
-					end
-				default: //ERROR
-					begin
-						b_mmu_ls_state <= L_PARAM_MMU_LS_IDLE;
-					end
-			endcase
+		else if(!inRESET)begin
+			b_main_state <= PL_MAIN_STT_TLB;
 		end
-	end
-	
-	
-	//Main State
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_main_state <= MAIN_STT_CACHE;
-			b_invalid_page <= 1'b0;
+		else if(iRESET_SYNC)begin
+			b_main_state <= PL_MAIN_STT_TLB;
 		end
 		else begin
 			case(b_main_state)
-				MAIN_STT_CACHE:
+				PL_MAIN_STT_TLB:
 					begin
-						b_invalid_page <= 1'b0;
-						if(mmu_memory_ls_valid)begin
-							b_main_state <= MAIN_STT_1ST_MEM;
+						if(tlb_misshit_condition)begin
+							b_main_state <= PL_MAIN_STT_PAGE1_REQ;
 						end
 					end
-				MAIN_STT_1ST_MEM:
+				PL_MAIN_STT_PAGE1_REQ:
 					begin
-						if(b_mmu_ls_state == L_PARAM_MMU_LS_GETWAIT && iMEMORY_VALID)begin
-							//Page Fault Check
-							if(!b_logic_addr[2] && !iMEMORY_DATA[0] || b_logic_addr[2] && !iMEMORY_DATA[32])begin
-								b_main_state <= MAIN_STT_CACHE;
-								b_invalid_page <= 1'b1;
+						b_main_state <= PL_MAIN_STT_PAGE1_WAIT;
+					end
+				PL_MAIN_STT_PAGE1_WAIT:
+					begin
+						if(table_load_done_valid)begin
+							if(b_logic_mode == PL_PAGING_LEVEL_2)begin
+								b_main_state <= PL_MAIN_STT_PAGE2_REQ;
 							end
 							else begin
-								if(b_mode == 2'h1)begin
-									b_main_state <= MAIN_STT_CACHE;
-								end
-								else begin
-									b_main_state <= MAIN_STT_REQ_MEM;
-								end
+								b_main_state <= PL_MAIN_STT_ACCESS;
 							end
 						end
 					end
-				MAIN_STT_2ST_MEM:
+				PL_MAIN_STT_PAGE2_REQ:
 					begin
-						if(b_mmu_ls_state == L_PARAM_MMU_LS_GETWAIT && iMEMORY_VALID)begin
-							//Page Fault Check
-							if(!b_logic_addr[2] && !iMEMORY_DATA[0] || b_logic_addr[2] && !iMEMORY_DATA[32])begin
-								b_main_state <= MAIN_STT_CACHE;
-								b_invalid_page <= 1'b1;
-							end
-							else begin
-								b_main_state <= MAIN_STT_REQ_MEM;
-							end
+						b_main_state <= PL_MAIN_STT_PAGE2_WAIT;
+					end
+				PL_MAIN_STT_PAGE2_WAIT:
+					begin
+						if(table_load_done_valid)begin
+							b_main_state <= PL_MAIN_STT_ACCESS;
 						end
 					end
-				MAIN_STT_REQ_MEM:	
+				PL_MAIN_STT_ACCESS:
 					begin
-						if(b_mmu_ls_state == L_PARAM_MMU_LS_GETWAIT && iMEMORY_VALID)begin
-							b_main_state <= MAIN_STT_CACHE;
+						if(!iMEMORY_LOCK)begin
+							b_main_state <= PL_MAIN_STT_TLB;
 						end
 					end
 			endcase
 		end
 	end
-	
-	//TLB Write Condition
-	reg tlb_write_condition;
-	always @* begin
-		if(b_mode != 2'h0)begin
-			//Memory Load Check
-			if(b_mmu_ls_state == L_PARAM_MMU_LS_GETWAIT && iMEMORY_VALID)begin
-				//Pagind Mode Check
-				if(b_mode == 2'h1)begin
-					tlb_write_condition = 1'b1;
-				end
-				else if(b_mode == 2'h2 && b_main_state == MAIN_STT_2ST_MEM)begin
-					tlb_write_condition = 1'b1;
-				end
-				else begin
-					tlb_write_condition = 1'b0;
-				end
-			end
-			else begin
-				tlb_write_condition = 1'b0;
-			end
-		end
-		else begin
-			tlb_write_condition = 1'b0;
-		end
-	end
-	
+
 	/************************************************************
-	Matching Bridge
-	************************************************************/	
-	//Matching Bridge 
-	mist1032isa_arbiter_matching_queue #(16, 4, 1) MMU_MATCHING_BRIDGE(
+	TABLE Load
+	************************************************************/
+	reg [31:0] table_load_ld_addr;
+	always @* begin
+		case(b_main_state)
+			PL_MAIN_STT_TLB : 
+				begin
+					if(b_logic_mode == PL_PAGING_LEVEL_1)begin
+						table_load_ld_addr = b_logic_pdt + func_table_level1_index(b_logic_mmups, b_logic_addr);
+					end
+					else begin
+						table_load_ld_addr = b_logic_pdt + func_table_level2_index1(b_logic_mmups, b_logic_addr);
+					end
+				end
+			PL_MAIN_STT_PAGE1_REQ : 
+				begin
+					table_load_ld_addr = func_table_get_addr(table_load_done_data) + func_table_level2_index2(b_logic_mmups, b_logic_addr);
+				end
+			PL_MAIN_STT_PAGE2_REQ : 
+				begin
+					if(b_logic_mode == PL_PAGING_LEVEL_1)begin
+						table_load_ld_addr = func_table_get_addr(table_load_done_data) + func_table_level1_offset(b_logic_mmups, b_logic_addr);
+					end
+					else begin
+						table_load_ld_addr = func_table_get_addr(table_load_done_data) + func_table_level2_offset(b_logic_mmups, b_logic_addr);
+					end
+				end
+			default : 
+				begin
+					table_load_ld_addr = 32'h0;
+				end
+		endcase
+	end
+
+	mmu_table_load TABLE_LOAD(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		//Flash
-		.iFLASH(iTLB_FLASH),
-		//Write
-		.iWR_REQ(tlb_rd_valid && !tlb_rd_hit && b_mode != 2'h0),
-		.iWR_FLAG(1'b0),
-		.oWR_FULL(matching_bridge_full),
-		//Read
-		.iRD_REQ(tlb_write_condition),
-		.oRD_VALID(matching_bridge_valid),
-		.oRD_FLAG(/* Not Use */),
-		.oRD_EMPTY(/* Not Use */)
+		.iRESET_SYNC(iRESET_SYNC),
+		//Load Req
+		.iLD_REQ(b_main_state == PL_MAIN_STT_PAGE1_REQ || b_main_state == PL_MAIN_STT_PAGE2_REQ),
+		.iLD_ADDR(table_load_ld_addr),
+		.oLD_BUSY(/*Not Use*/),
+		//Memory Pipe - REQ
+		.oMEM_REQ(table_mem_req),
+		.iMEM_LOCK(iMEMORY_LOCK || res_table_wr_full),
+		.oMEM_ADDR(table_mem_addr),
+		//Memory Pipe - ACK
+		.iMEM_VALID(iMEMORY_VALID),
+		.iMEM_DATA(iMEMORY_DATA),
+		//DONE
+		.oDONE_VALID(table_load_done_valid),
+		.oDONE_DATA(table_load_done_data)
 	);
-	
-	
+
 	/************************************************************
-	Busy Controll
-	************************************************************/
-	assign cache_request_busy = (tlb_rd_valid && !tlb_rd_hit && b_mode != 2'h0) || b_main_state != MAIN_STT_CACHE;
+	Load Address
+	************************************************************/	
+	function [31:0] func_table_level1_index;
+		input [2:0] func_mode;
+		input [31:0] func_addr;
+		begin
+			case(func_mode)
+				3'b001 : func_table_level1_index = {17'h0, func_addr[31:17]};
+				3'b010 : func_table_level1_index = {18'h0, func_addr[31:18]};
+				3'b011 : func_table_level1_index = {19'h0, func_addr[31:19]};
+				3'b100 : func_table_level1_index = {20'h0, func_addr[31:20]};
+				3'b101 : func_table_level1_index = {21'h0, func_addr[31:21]};
+				default : func_table_level1_index = 32'h0;
+			endcase
+		end
+	endfunction
+
+	function [31:0] func_table_level2_index1;
+		input [2:0] func_mode;
+		input [31:0] func_addr;
+		begin
+			case(func_mode)
+				3'b001 : func_table_level2_index1 = {22'h0, func_addr[31:22]};
+				3'b010 : func_table_level2_index1 = {24'h0, func_addr[31:24]};
+				3'b011 : func_table_level2_index1 = {26'h0, func_addr[31:26]};
+				3'b100 : func_table_level2_index1 = {28'h0, func_addr[31:28]};
+				3'b101 : func_table_level2_index1 = {30'h0, func_addr[31:30]};
+				default : func_table_level2_index1 = 32'h0;
+			endcase
+		end
+	endfunction
+
+	function [31:0] func_table_level2_index2;
+		input [2:0] func_mode;
+		input [31:0] func_addr;
+		begin
+			case(func_mode)
+				3'b001 : func_table_level2_index2 = {22'h0, func_addr[21:12]};
+				3'b010 : func_table_level2_index2 = {21'h0, func_addr[23:13]};
+				3'b011 : func_table_level2_index2 = {20'h0, func_addr[25:14]};
+				3'b100 : func_table_level2_index2 = {19'h0, func_addr[27:15]};
+				3'b101 : func_table_level2_index2 = {18'h0, func_addr[29:16]};
+				default : func_table_level2_index2 = 32'h0;
+			endcase
+		end
+	endfunction
+
+	function [31:0] func_table_level1_offset;
+		input [2:0] func_mode;
+		input [31:0] func_addr;
+		begin
+			case(func_mode)
+				3'b001 : func_table_level1_offset = {20'h0, func_addr[11:0]};
+				3'b010 : func_table_level1_offset = {19'h0, func_addr[12:0]};
+				3'b011 : func_table_level1_offset = {18'h0, func_addr[13:0]};
+				3'b100 : func_table_level1_offset = {17'h0, func_addr[14:0]};
+				3'b101 : func_table_level1_offset = {16'h0, func_addr[15:0]};
+				default : func_table_level1_offset = 32'h0;
+			endcase
+		end
+	endfunction
+
+	function [31:0] func_table_level2_offset;
+		input [2:0] func_mode;
+		input [31:0] func_addr;
+		begin
+			case(func_mode)
+				3'b001 : func_table_level2_offset = {15'h0, func_addr[16:0]};
+				3'b010 : func_table_level2_offset = {14'h0, func_addr[17:0]};
+				3'b011 : func_table_level2_offset = {13'h0, func_addr[18:0]};
+				3'b100 : func_table_level2_offset = {12'h0, func_addr[19:0]};
+				3'b101 : func_table_level2_offset = {11'h0, func_addr[20:0]};
+				default : func_table_level2_offset = 32'h0;
+			endcase
+		end
+	endfunction
+
+	function [31:0] func_table_get_addr;
+		input [31:0] func_data;
+		begin
+			func_table_get_addr = {func_data[31:12], 12'h0};
+		end
+	endfunction
+
+	function [11:0] func_table_get_flag;
+		input [31:0] func_data;
+		begin
+			func_table_get_flag = func_data[11:0];
+		end
+	endfunction
 	
+
+
+	/************************************************************
+	Memory Pipe 
+	************************************************************/	
+	reg mem_out_req;
+	reg mem_out_data_store_ack;
+	reg mem_out_mmu_use;
+	reg [1:0] mem_out_order;
+	reg [3:0] mem_out_mask;
+	reg mem_out_rw;
+	reg [31:0] mem_out_addr;
+	reg [31:0] mem_out_data;
+
+	assign oMEMORY_REQ = mem_out_req;
+	assign oMEMORY_DATA_STORE_ACK = mem_out_data_store_ack;
+	assign oMEMORY_MMU_USE = mem_out_mmu_use;
+	assign oMEMORY_ORDER = mem_out_order;
+	assign oMEMORY_MASK = mem_out_mask;
+	assign oMEMORY_RW = mem_out_rw;
+	assign oMEMORY_ADDR = mem_out_addr;
+	assign oMEMORY_DATA = mem_out_data;
+	//Data RAM -> This
+	assign oMEMORY_LOCK = 1'b0;
+
+	always @* begin
+		case(b_logic_mode)
+			PL_PAGING_LEVEL_OFF:
+				begin
+					mem_out_req = b_logic_req && !iMEMORY_LOCK;
+					mem_out_data_store_ack = b_logic_data_store_ack;
+					mem_out_mmu_use = 1'b0;
+					mem_out_order = b_logic_order;
+					mem_out_mask = b_logic_mask;
+					mem_out_rw = b_logic_rw;
+					mem_out_addr = b_logic_addr;
+					mem_out_data = b_logic_data;
+				end
+			PL_PAGING_LEVEL_1,
+			PL_PAGING_LEVEL_2:
+				begin
+					mem_out_req = table_mem_req && !res_table_wr_full && !iMEMORY_LOCK;
+					mem_out_data_store_ack = 1'b0;
+					mem_out_mmu_use = 1'b1;
+					mem_out_order = 2'h2;
+					mem_out_mask = 4'h0;
+					mem_out_rw = 1'b0;
+					mem_out_addr = table_mem_addr;
+					mem_out_data = 32'h0;
+				end
+			default:
+				begin
+					mem_out_req = 1'b0;
+					mem_out_data_store_ack = 1'b0;
+					mem_out_mmu_use = 1'b1;
+					mem_out_order = 2'h2;
+					mem_out_mask = 4'h0;
+					mem_out_rw = 1'b0;
+					mem_out_addr = 32'h0;
+					mem_out_data = 32'h0;
+				end
+		endcase
+	end
+
+
 	/************************************************************
 	TLB Check
-	************************************************************/	
-	tlb #(/*LRU Timing N*/10) TLB(
+	************************************************************/
+	wire tlb_write_condition = iMEMORY_VALID && res_table_rd_valid && (
+		(b_main_state == PL_MAIN_STT_PAGE1_WAIT && b_logic_mode == PL_PAGING_LEVEL_1) || 
+		(b_main_state == PL_MAIN_STT_PAGE2_WAIT && b_logic_mode == PL_PAGING_LEVEL_2)
+	);
+
+
+	mmu_tlb #(/*LRU Timing N*/10) TLB(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Core Info
-		.iREMOVE(iTLB_FLASH/* Context Switch */),			
+		.iREMOVE(iTLB_FLUSH || iRESET_SYNC), //context switch			
 		//Read
-		.iRD_REQ(iLOGIC_REQ && !cache_request_busy),
+		.iRD_REQ(mmu_prev_req_valid_condition),
 		.iRD_ADDR(iLOGIC_ADDR),	
 		.oRD_VALID(tlb_rd_valid),
 		.oRD_HIT(tlb_rd_hit),
 		.oRD_FLAGS(tlb_rd_flags),
 		.oRD_PHYS_ADDR(tlb_rd_physical_addr),
 		//Write
-		.iWR_REQ(tlb_write_condition && matching_bridge_valid),
-		.iWR_ADDR(b_logic_addr),
+		.iWR_REQ(tlb_write_condition),
+		.iWR_ADDR({b_logic_addr[31:3], 3'h0}),
 		.iWR_FLAGS({iMEMORY_DATA[45:32], iMEMORY_DATA[13:0]}),
 		.iWR_PHYS_ADDR(iMEMORY_DATA[63:0])	
 	);
+
+
+	/************************************************************
+	Reservation Table for non TLB access
+	************************************************************/	
+	wire res_table_wr_condition = mem_out_req && (
+		(b_main_state == PL_MAIN_STT_PAGE1_REQ) || 
+		(b_main_state == PL_MAIN_STT_PAGE1_REQ)
+	);
+
+	wire res_table_rd_condition = iMEMORY_VALID && (
+		(b_main_state == PL_MAIN_STT_PAGE1_WAIT) || 
+		(b_main_state == PL_MAIN_STT_PAGE2_WAIT)
+	);
+
+	//Matching Bridge 
+	mist1032isa_arbiter_matching_queue #(16, 4, 1) MMU_RES_TABLE(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		//Flash
+		.iFLASH(iTLB_FLUSH || iRESET_SYNC),	//context switch
+		//Write
+		.iWR_REQ(mem_out_req),
+		.iWR_FLAG(1'b0),
+		.oWR_FULL(res_table_wr_full),
+		//Read
+		.iRD_REQ(res_table_rd_condition),
+		.oRD_VALID(res_table_rd_valid),
+		.oRD_FLAG(/* Not Use */),
+		.oRD_EMPTY(/* Not Use */)
+	);
 	
-	
-	/*************************************************************
-	Assign
-	*************************************************************/
-	assign oMEMORY_LOCK = 1'b0;
-	
-	assign oLOGIC_LOCK = iMEMORY_LOCK || iMMUFLAGS_LOCK || (b_main_state != MAIN_STT_CACHE)? 1'b1 : (tlb_rd_valid && !tlb_rd_hit && b_mode != 2'h0);
-	
-	assign oMMUFLAGS_REQ = (tlb_rd_hit && tlb_rd_valid && b_mode != 2'h0) || (b_main_state == MAIN_STT_REQ_MEM) && (b_mmu_ls_state == L_PARAM_MMU_LS_LDREQ);
-	assign oMMUFLAGS_FLAGS = (tlb_rd_hit && tlb_rd_valid && b_mode != 2'h0)? tlb_rd_flags : (
-								(b_logic_addr[2])? b_mmu_ls_get_data[45:32] : b_mmu_ls_get_data[13:0]
-							);	
-	
-	assign oPAGEFAULT_VALID = b_invalid_page;
-	
-	assign oMEMORY_REQ = (b_req && b_mode == 2'h0) || (tlb_rd_hit && tlb_rd_valid && b_mode != 2'h0)  || (b_mmu_ls_state == L_PARAM_MMU_LS_LDREQ);
-	assign oMEMORY_DATA_STORE_ACK = b_data_store_ack;
-	assign oMEMORY_MMU_USE = (b_mode == 2'h0)? 1'b0 : 1'b1;
-	assign oMEMORY_ORDER = (b_main_state == MAIN_STT_REQ_MEM || b_mode == 2'h0)? b_order : 2'h2;
-	assign oMEMORY_MASK = (b_main_state == MAIN_STT_REQ_MEM || b_mode == 2'h0)? b_mask : 4'hf;
-	assign oMEMORY_RW = (b_main_state == MAIN_STT_REQ_MEM || b_mode == 2'h0)? b_rw : 1'b0;
-	assign oMEMORY_DATA = b_data;
-	reg [31:0] memory_addr;
-	always @* begin
-		if(tlb_rd_valid && !tlb_rd_hit && b_mode != 2'h0)begin
-			memory_addr = (b_logic_addr[14])? tlb_rd_physical_addr[63:32] + b_logic_addr[13:0] : tlb_rd_physical_addr[31:0] + b_logic_addr[13:0];
-		end
-		else if(b_mmu_ls_state == L_PARAM_MMU_LS_LDREQ) begin
-			memory_addr = b_mmu_ls_req_addr;
-		end
-		else begin
-			memory_addr = b_logic_addr;
-		end
-	end	
-	assign oMEMORY_ADDR = memory_addr;
-	
+	assign oPAGEFAULT_VALID = 1'b0; //Check
 	
 endmodule
 
