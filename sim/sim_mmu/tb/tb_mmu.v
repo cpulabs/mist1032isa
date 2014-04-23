@@ -149,13 +149,11 @@ module tb_mmu;
 		end
 	end
 
-
-
-
 	initial begin
 		#0 begin
 			iCLOCK = 1'b0;
 			inRESET = 1'b0;
+			iRESET_SYNC = 1'b0;
 			iTLB_FLUSH = 1'b0;
 			iLOGIC_MOD = PL_PAGING_LEVEL_OFF;		//Convertion Level
 			iLOGIC_MMUPS = 3'h0;
@@ -189,14 +187,15 @@ module tb_mmu;
 		//Read LogicAddr:1
 		#(PL_CYCLE) begin
 			iLOGIC_REQ = 1'b1;
-			iLOGIC_ADDR = 32'h00000001;
+			iLOGIC_ADDR = 32'h00000008;
 			iLOGIC_MOD = PL_PAGING_LEVEL_OFF;
 			#(PL_CYCLE);
 			iLOGIC_REQ = 1'b1;
-			iLOGIC_ADDR = 32'h00000002;
+			iLOGIC_ADDR = 32'h00000008;
 			iLOGIC_MOD = PL_PAGING_LEVEL_OFF;
 		end
 
+		/*
 
 		//Read LogicAddr:3
 		#(PL_CYCLE) begin
@@ -216,6 +215,7 @@ module tb_mmu;
 			iLOGIC_ADDR = 32'h4000;
 			iLOGIC_MOD = PL_PAGING_LEVEL_2;
 		end
+		*/
 
 		//STOP
 		#(PL_CYCLE) begin

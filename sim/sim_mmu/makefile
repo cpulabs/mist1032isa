@@ -12,4 +12,4 @@ compile:
 	vlog ../../src/lib/*.v
 
 sim:
-	vsim -gui tb_mmu -do "run -all"
+	vsim -gui -voptargs="+acc" tb_mmu -do "log -r /*; run -all"

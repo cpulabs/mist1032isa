@@ -140,7 +140,7 @@ module mmu(
 			b_logic_data <= {32{1'b0}};
 		end
 		else begin
-			if(mmu_prev_req_valid_condition)begin
+			if(/*mmu_prev_req_valid_condition*/!mmu_prev_busy)begin
 				b_logic_req <= iLOGIC_REQ;
 				b_logic_data_store_ack <= iLOGIC_DATA_STORE_ACK;
 				b_logic_order <= iLOGIC_ORDER;
@@ -485,7 +485,7 @@ module mmu(
 	);
 	
 	assign oPAGEFAULT_VALID = 1'b0; //Check
-	
+	assign oLOGIC_LOCK = mmu_prev_busy;
 endmodule
 
 `default_nettype wire
