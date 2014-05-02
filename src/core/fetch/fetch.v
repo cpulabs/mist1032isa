@@ -31,19 +31,18 @@ module fetch(
 		input wire [31:0] iBRANCH_PREDICT_RESULT_INST_ADDR,
 		//Previous
 		input wire iPREVIOUS_INST_VALID,
-		input wire iPREVIOUS_PAGEFAULT,
-		input wire [13:0] iPREVIOUS_MMU_FLAGS,
+		input wire [11:0] iPREVIOUS_MMU_FLAGS,
 		input wire [31:0] iPREVIOUS_INST,
 		output wire oPREVIOUS_LOCK,
 		//Fetch
 		output wire oPREVIOUS_FETCH_REQ,
 		input wire iPREVIOUS_FETCH_LOCK,
 		output wire [1:0] oPREVIOUS_MMUMOD,
+		output wire [2:0] oPREVIOUS_MMUPS,
 		output wire [31:0] oPREVIOUS_FETCH_ADDR,
 		//Next
 		output wire oNEXT_INST_VALID,
-		output wire oNEXT_PAGEFAULT,
-		output wire [13:0] oNEXT_MMU_FLAGS,
+		output wire [11:0] oNEXT_MMU_FLAGS,
 		output wire oNEXT_PAGING_ENA,
 		output wire oNEXT_KERNEL_ACCESS,
 		output wire oNEXT_BRANCH_PREDICT,			
@@ -70,8 +69,7 @@ module fetch(
 	//Next Output Buffer
 	reg [31:0] b_next_inst;
 	reg b_next_inst_valid;
-	reg b_next_pagefault;
-	reg [13:0] b_next_mmu_flags;
+	reg [11:0] b_next_mmu_flags;
 	reg b_next_paging_ena;
 	reg b_next_kernel_access;
 	reg [31:0] b_pc_out;
@@ -192,6 +190,7 @@ module fetch(
 
 	assign oPREVIOUS_FETCH_REQ = !iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP; 
 	assign oPREVIOUS_MMUMOD = iSYSREG_PSR[1:0];
+	assign oPREVIOUS_MMUPS = iSYSREG_PSR[9:7];
 	assign oPREVIOUS_FETCH_ADDR	= b_pc;
 
 	
@@ -253,8 +252,7 @@ module fetch(
 		if(!inRESET)begin
 			b_next_inst <= {32{1'b0}};
 			b_next_inst_valid <= 1'b0;
-			b_next_pagefault <= 1'b0;
-			b_next_mmu_flags <= 14'h0;
+			b_next_mmu_flags <= 12'h0;
 			b_next_paging_ena <= 1'b0;
 			b_next_kernel_access <= 1'b0;
 			b_pc_out <= {32{1'b0}};
@@ -262,8 +260,7 @@ module fetch(
 		else if(iEXCEPTION_EVENT || branch_predictor_flush)begin
 			b_next_inst <= {32{1'b0}};
 			b_next_inst_valid <= 1'b0;
-			b_next_pagefault <= 1'b0;
-			b_next_mmu_flags <= 14'h0;
+			b_next_mmu_flags <= 12'h0;
 			b_next_paging_ena <= 1'b0;
 			b_next_kernel_access <= 1'b0;
 			b_pc_out <= {32{1'b0}};
@@ -272,7 +269,6 @@ module fetch(
 			if(!iNEXT_LOCK)begin
 				b_next_inst <= iPREVIOUS_INST;
 				b_next_inst_valid <= iPREVIOUS_INST_VALID;
-				b_next_pagefault <= iPREVIOUS_PAGEFAULT;
 				b_next_mmu_flags <= iPREVIOUS_MMU_FLAGS;
 				b_next_paging_ena <= fetch_queue_paging_ena;
 				b_next_kernel_access <= fetch_queue_kernel_access;
@@ -283,7 +279,6 @@ module fetch(
 	
 	assign oNEXT_INST = b_next_inst;
 	assign oNEXT_INST_VALID = b_next_inst_valid;
-	assign oNEXT_PAGEFAULT = b_next_pagefault;
 	assign oNEXT_MMU_FLAGS = b_next_mmu_flags;
 	assign oNEXT_PAGING_ENA = b_next_paging_ena;
 	assign oNEXT_KERNEL_ACCESS = b_next_kernel_access;

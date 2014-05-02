@@ -1,1 +1,0 @@
-VERITAK2 --F --R --C0 --M3 --w --a --ST --W "C:\Users\FPGA_PC0\Desktop\MIST32_BS0\system\mist1032sa_de2115\source\processor\mmu\simulation"  "mmu_test.v" "../mmu.v" "../tlb.v" --i "../../../include" "../../../lib/arbiter_matching_bridge.v"

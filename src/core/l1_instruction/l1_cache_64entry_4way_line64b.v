@@ -30,16 +30,7 @@ module l1_cache_64entry_4way_line64b_bus_8b_damy(
 		output wire oRD_HIT,
 		input wire iRD_BUSY,		
 		output wire [63:0] oRD_DATA,
-		output wire [27:0] oRD_MMU_FLAGS,	
-		/********************************
-		Upload
-		********************************/
-		input wire iUP_REQ,
-		output wire oUP_BUSY,
-		input wire [1:0] iUP_ORDER,
-		input wire [31:0] iUP_ADDR,				
-		input wire [31:0] iUP_DATA,
-		//input	[5:0] iUP_MMU_FLAGS,
+		output wire [23:0] oRD_MMU_FLAGS,
 		/********************************
 		Write Request
 		********************************/
@@ -68,8 +59,7 @@ module l1_cache_64entry_4way_line64b_bus_8b_damy(
 	assign oRD_VALID = b_req_valid;
 	assign oRD_HIT = 1'b0;
 	assign oRD_DATA = 64'h0;
-	assign oRD_MMU_FLAGS = 28'h0;
-	assign oUP_BUSY = 1'b0;
+	assign oRD_MMU_FLAGS = 23'h0;
 	assign oWR_BUSY = 1'b0;
 	
 endmodule
@@ -96,15 +86,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 		output wire oRD_HIT,
 		input wire iRD_BUSY,		
 		output wire [63:0] oRD_DATA,
-		output wire [27:0] oRD_MMU_FLAGS,	
-		/********************************
-		Upload
-		********************************/
-		input wire iUP_REQ,
-		output wire oUP_BUSY,
-		input wire [1:0] iUP_ORDER,
-		input wire [31:0] iUP_ADDR,				
-		input wire [31:0] iUP_DATA,
+		output wire [23:0] oRD_MMU_FLAGS,	
 		/********************************
 		Write Request
 		********************************/
@@ -128,9 +110,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	reg b_rd_hit;
 	reg [6:0] b_rd_way;
 	reg [31:0] b_rd_addr;
-	//Cache Control
-	wire upload_need;		
-	wire [1:0] upload_way;
+	//Cache Control	
 	wire [3:0] upload_pointer;
 	wire [3:0] read_pointer;
 	wire read_hit;
@@ -169,7 +149,7 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	Lock
 	**********************************************/
 	assign this_read_lock = iRD_BUSY;
-	assign this_write_lock = iUP_REQ;
+	assign this_write_lock = 1'b0;
 		
 	/********************************************
 	LRU Control - Timer
@@ -196,8 +176,6 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	/********************************************
 	Control
 	********************************************/
-	assign {upload_need, upload_way} = func_upload_check(iUP_ADDR[31:10], tag0[upload_pointer], tag1[upload_pointer], tag2[upload_pointer], tag3[upload_pointer]);
-	assign upload_pointer = iUP_ADDR[9:6];
 	assign read_pointer = iRD_ADDR[9:6];
 	assign {read_hit, read_way} = func_hit_check(iRD_ADDR[31:10], tag0[read_pointer], tag1[read_pointer], tag2[read_pointer], tag3[read_pointer]);
 	assign write_pointer = iWR_ADDR[9:6];
@@ -216,23 +194,23 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 	/********************************************
 	Data Memory Block
 	********************************************/	
-	assign memory_write_way0_condition = (!this_write_lock && iWR_REQ && write_way == 2'h0) || (iUP_REQ && upload_need && upload_way == 2'h0);
-	assign memory_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
-	assign memory_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
-	assign memory_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
-	assign memory_write_byte_enable = (iUP_REQ)? func_upload_enable_byte_gen(iUP_ADDR[3:0], iUP_ORDER) : {64{1'b1}};
+	assign memory_write_way0_condition = (!this_write_lock && iWR_REQ && write_way == 2'h0);
+	assign memory_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1);
+	assign memory_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2);
+	assign memory_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3);
+	assign memory_write_byte_enable = {64{1'b1}};
 	
-	assign memory_write_data = (iUP_REQ)? {8{iUP_DATA}} : iWR_DATA;
+	assign memory_write_data = iWR_DATA;
 	
 	wire memory_mmuflag_write_way0_condition;
 	wire memory_mmuflag_write_way1_condition;
 	wire memory_mmuflag_write_way2_condition;
 	wire memory_mmuflag_write_way3_condition;
-	assign memory_mmuflag_write_way0_condition = (!this_write_lock && iWR_REQ && write_way == 2'h0) || (iUP_REQ && upload_need && upload_way == 2'h0);
-	assign memory_mmuflag_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1) || (iUP_REQ && upload_need && upload_way == 2'h1);
-	assign memory_mmuflag_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2) || (iUP_REQ && upload_need && upload_way == 2'h2);
-	assign memory_mmuflag_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3) || (iUP_REQ && upload_need && upload_way == 2'h3);
-	assign memory_mmuflag_write_byte_enable = (iUP_REQ)? {32{1'b0}} : {32{1'b1}};
+	assign memory_mmuflag_write_way0_condition = (!this_write_lock && iWR_REQ && write_way == 2'h0);
+	assign memory_mmuflag_write_way1_condition = (!this_write_lock && iWR_REQ && write_way == 2'h1);
+	assign memory_mmuflag_write_way2_condition = (!this_write_lock && iWR_REQ && write_way == 2'h2);
+	assign memory_mmuflag_write_way3_condition = (!this_write_lock && iWR_REQ && write_way == 2'h3);
+	assign memory_mmuflag_write_byte_enable = {32{1'b1}};
 	assign memory_mmuflag_write_data = iWR_MMU_FLAGS;
 	
 	
@@ -594,19 +572,19 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 		end
 	endfunction
 	
-	function [27:0] func_mmu_flags_selector;
+	function [23:0] func_mmu_flags_selector;
 		input [2:0] func_select;
 		input [255:0] func_data;
 		begin
 			case(func_select)
-				3'h0 : func_mmu_flags_selector = {func_data[29:16], func_data[13:0]};
-				3'h1 : func_mmu_flags_selector = {func_data[61:48], func_data[45:32]};
-				3'h2 : func_mmu_flags_selector = {func_data[93:80], func_data[77:64]};
-				3'h3 : func_mmu_flags_selector = {func_data[125:112], func_data[109:96]};
-				3'h4 : func_mmu_flags_selector = {func_data[157:144], func_data[141:128]};
-				3'h5 : func_mmu_flags_selector = {func_data[189:176], func_data[173:160]};
-				3'h6 : func_mmu_flags_selector = {func_data[221:208], func_data[205:192]};
-				3'h7 : func_mmu_flags_selector = {func_data[253:240], func_data[237:224]};
+				3'h0 : func_mmu_flags_selector = {func_data[27:16], func_data[11:0]};
+				3'h1 : func_mmu_flags_selector = {func_data[59:48], func_data[43:32]};
+				3'h2 : func_mmu_flags_selector = {func_data[91:80], func_data[75:64]};
+				3'h3 : func_mmu_flags_selector = {func_data[123:112], func_data[107:96]};
+				3'h4 : func_mmu_flags_selector = {func_data[155:144], func_data[139:128]};
+				3'h5 : func_mmu_flags_selector = {func_data[187:176], func_data[171:160]};
+				3'h6 : func_mmu_flags_selector = {func_data[219:208], func_data[203:192]};
+				3'h7 : func_mmu_flags_selector = {func_data[251:240], func_data[235:224]};
 			endcase
 		end
 	endfunction
@@ -667,20 +645,8 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 			if(!this_read_lock)begin
 				b_load_req_valid			<=	iRD_REQ;
 			end
-			
-			//Upload
-			if(iUP_REQ)begin
-				if(upload_need)begin
-					case(upload_way)
-						2'h0:	tag0[write_pointer] <=	{((func_get_status_tag(tag0[upload_pointer]) != 2'b11)? func_get_status_tag(tag0[upload_pointer]) + 2'h1 : func_get_status_tag(tag0[upload_pointer])), func_get_address_tag(tag0[upload_pointer])};
-						2'h1:	tag1[write_pointer] <=	{((func_get_status_tag(tag1[upload_pointer]) != 2'b11)? func_get_status_tag(tag1[upload_pointer]) + 2'h1 : func_get_status_tag(tag1[upload_pointer])), func_get_address_tag(tag1[upload_pointer])};
-						2'h2:	tag2[write_pointer] <=	{((func_get_status_tag(tag2[upload_pointer]) != 2'b11)? func_get_status_tag(tag2[upload_pointer]) + 2'h1 : func_get_status_tag(tag2[upload_pointer])), func_get_address_tag(tag2[upload_pointer])};
-						2'h3:	tag3[write_pointer] <=	{((func_get_status_tag(tag3[upload_pointer]) != 2'b11)? func_get_status_tag(tag3[upload_pointer]) + 2'h1 : func_get_status_tag(tag3[upload_pointer])), func_get_address_tag(tag3[upload_pointer])};
-					endcase
-				end
-			end
 			//Write
-			else if(iWR_REQ)begin
+			if(iWR_REQ)begin
 				case(write_way)		
 					2'h0:	tag0[write_pointer] <=	{2'b11, iWR_ADDR[31:10]};
 					2'h1:	tag1[write_pointer] <=	{2'b11, iWR_ADDR[31:10]};
@@ -826,8 +792,6 @@ module l1_cache_64entry_4way_line64b_bus_8b(
 								)
 							) : 12'h0;
 	assign oWR_BUSY = this_write_lock;
-	
-	assign oUP_BUSY = iWR_REQ;
 	
 				
 	

@@ -9,8 +9,7 @@ module instruction_buffer(
 		input wire iFREE_REFRESH,
 		//Prev
 		input wire iPREVIOUS_INST_VALID,
-		input wire iPREVIOUS_PAGEFAULT,
-		input wire [13:0] iPREVIOUS_MMU_FLAGS,
+		input wire [11:0] iPREVIOUS_MMU_FLAGS,
 		input wire iPREVIOUS_PAGING_ENA,
 		input wire iPREVIOUS_KERNEL_ACCESS,
 		input wire iPREVIOUS_BRANCH_PREDICT,
@@ -38,8 +37,7 @@ module instruction_buffer(
 	wire fifo_empty;
 	wire [4:0] fifo_count;
 	//Fault
-	wire [2:0] fault = iPREVIOUS_PAGEFAULT |
-						func_mmu_flags_fault_check(iPREVIOUS_PAGING_ENA, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_MMU_FLAGS[5:0]) |
+	wire [2:0] fault = func_mmu_flags_fault_check(iPREVIOUS_PAGING_ENA, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_MMU_FLAGS[5:0]) |
 						(func_instruction_fault_check(iPREVIOUS_INST, iPREVIOUS_KERNEL_ACCESS, iPREVIOUS_MMU_FLAGS[5:0]) << 1'b1);
 	
 	/*************************************************

@@ -32,15 +32,14 @@ module core_pipeline
 		output wire oINST_FETCH_REQ,
 		input wire iINST_FETCH_BUSY,
 		output wire [1:0] oINST_FETCH_MMUMOD,
+		output wire [2:0] oINST_FETCH_MMUPS,
 		output wire [31:0] oINST_FETCH_PDT,
 		output wire [31:0] oINST_FETCH_ADDR,
 		//Memory Instruction-Get
 		input wire iINST_VALID,
 		output wire oINST_BUSY,
-		input wire iINST_PAGEFAULT,
-		input wire iINST_QUEUE_FLUSH,
 		input wire [63:0] iINST_DATA,
-		input wire [27:0] iINST_MMU_FLAGS,
+		input wire [23:0] iINST_MMU_FLAGS,
 		/****************************************
 		Data Memory
 		****************************************/
@@ -52,15 +51,15 @@ module core_pipeline
 		output wire oDATA_RW,		//0=Write 1=Read
 		output wire [13:0] oDATA_TID,
 		output wire [1:0] oDATA_MMUMOD,
+		output wire [2:0] oDATA_MMUPS,
 		output wire [31:0] oDATA_PDT,
 		output wire [31:0] oDATA_ADDR,
 		//This -> Data RAM
 		output wire [31:0] oDATA_DATA,
 		//Data RAM -> This
 		input wire iDATA_VALID,
-		input wire iDATA_PAGEFAULT,	
 		input wire [63:0] iDATA_DATA,
-		input wire [27:0] iDATA_MMU_FLAGS,
+		input wire [23:0] iDATA_MMU_FLAGS,
 		/****************************************
 		IO
 		****************************************/
@@ -107,12 +106,12 @@ module core_pipeline
 	
 	//Cache
 	wire icache2fetch_valid;
-	wire icache2fetch_pagefault;
 	wire [31:0] icache2fetch_inst;
-	wire [13:0] icache2fetch_mmu_flags;
+	wire [11:0] icache2fetch_mmu_flags;
 	wire fetch2icache_lock;
 	wire fetch2icache_req;
 	wire [1:0] fetch2icache_mmumod;
+	wire [2:0] fetch2icache_mmups;
 	wire [31:0] fetch2icache_addr;
 	wire icache2fetch_lock;
 	wire cache_flash;
@@ -135,8 +134,7 @@ module core_pipeline
 	wire [31:0] free_new_spr;		
 	//Fetch
 	wire fetch2lbuffer_inst_valid;
-	wire fetch2lbuffer_pagefault;
-	wire [13:0] fetch2lbuffer_mmu_flags;
+	wire [11:0] fetch2lbuffer_mmu_flags;
 	wire fetch2lbuffer_paging_ena;
 	wire fetch2lbuffer_kernel_access;
 	wire fetch2lbuffer_branch_predict;
@@ -260,13 +258,13 @@ module core_pipeline
 	wire execution2ldst_ldst_rw;
 	wire [13:0] execution2ldst_ldst_tid;
 	wire [1:0] execution2ldst_ldst_mmumod;
+	wire [2:0] execution2ldst_ldst_mmups;
 	wire [31:0] execution2ldst_ldst_pdt;
 	wire [31:0] execution2ldst_ldst_addr;
 	wire [31:0] execution2ldst_ldst_data;
 	wire ldst2execution_ldst_busy;
 	wire ldst2execution_ldst_req;
-	wire ldst2execution_ldst_pagefault;
-	wire [13:0] ldst2execution_ldst_mmu_flags;
+	wire [11:0] ldst2execution_ldst_mmu_flags;
 	wire [31:0] ldst2execution_ldst_data;
 	
 	//System Register
@@ -510,11 +508,11 @@ module core_pipeline
 		.oINST_REQ(oINST_FETCH_REQ),
 		.iINST_LOCK(iINST_FETCH_BUSY),
 		.oINST_MMUMOD(oINST_FETCH_MMUMOD),
+		.oINST_MMUPS(oINST_FETCH_MMUPS),
 		.oINST_ADDR(oINST_FETCH_ADDR),
 		//Mem
 		.iINST_VALID(iINST_VALID),
 		.oINST_BUSY(oINST_BUSY),
-		.iINST_PAGEFAULT(iINST_PAGEFAULT),
 		.iINST_DATA(iINST_DATA),
 		.iINST_MMU_FLAGS(iINST_MMU_FLAGS),
 		/****************************************
@@ -524,14 +522,13 @@ module core_pipeline
 		.iNEXT_FETCH_REQ(fetch2icache_req),
 		.oNEXT_FETCH_LOCK(icache2fetch_lock),
 		.iNEXT_MMUMOD(fetch2icache_mmumod),
+		.iNEXT_MMUPS(fetch2icache_mmups),
 		.iNEXT_FETCH_ADDR(fetch2icache_addr),
 		//To Fetch
 		.oNEXT_0_INST_VALID(icache2fetch_valid),
-		.oNEXT_0_PAGEFAULT(icache2fetch_pagefault),
 		.oNEXT_0_MMU_FLAGS(icache2fetch_mmu_flags),
 		.oNEXT_0_INST(icache2fetch_inst),
 		.oNEXT_1_INST_VALID(),
-		.oNEXT_1_PAGEFAULT(),
 		.oNEXT_1_MMU_FLAGS(),
 		.oNEXT_1_INST(),
 		.iNEXT_LOCK(fetch2icache_lock)
@@ -558,18 +555,17 @@ module core_pipeline
 		.iBRANCH_PREDICT_RESULT_INST_ADDR(branch_predict_result_inst_addr),
 		//Previous
 		.iPREVIOUS_INST_VALID(icache2fetch_valid),
-		.iPREVIOUS_PAGEFAULT(icache2fetch_pagefault),
 		.iPREVIOUS_MMU_FLAGS(icache2fetch_mmu_flags),
 		.iPREVIOUS_INST(icache2fetch_inst),
 		.oPREVIOUS_LOCK(fetch2icache_lock),
 		//Fetch
 		.oPREVIOUS_FETCH_REQ(fetch2icache_req),
 		.oPREVIOUS_MMUMOD(fetch2icache_mmumod),
+		.oPREVIOUS_MMUPS(fetch2icache_mmups),
 		.oPREVIOUS_FETCH_ADDR(fetch2icache_addr),
 		.iPREVIOUS_FETCH_LOCK(icache2fetch_lock),
 		//Next
 		.oNEXT_INST_VALID(fetch2lbuffer_inst_valid),
-		.oNEXT_PAGEFAULT(fetch2lbuffer_pagefault),
 		.oNEXT_MMU_FLAGS(fetch2lbuffer_mmu_flags),
 		.oNEXT_PAGING_ENA(fetch2lbuffer_paging_ena),
 		.oNEXT_KERNEL_ACCESS(fetch2lbuffer_kernel_access),
@@ -590,7 +586,6 @@ module core_pipeline
 		.iFREE_REFRESH(free_pipeline_flush),
 		//Prev
 		.iPREVIOUS_INST_VALID(fetch2lbuffer_inst_valid),
-		.iPREVIOUS_PAGEFAULT(fetch2lbuffer_pagefault),
 		.iPREVIOUS_MMU_FLAGS(fetch2lbuffer_mmu_flags),
 		.iPREVIOUS_PAGING_ENA(fetch2lbuffer_paging_ena),
 		.iPREVIOUS_KERNEL_ACCESS(fetch2lbuffer_kernel_access),
@@ -898,11 +893,11 @@ module core_pipeline
 		.oDATAIO_RW(execution2ldst_ldst_rw),		//0=Read 1=Write
 		.oDATAIO_TID(execution2ldst_ldst_tid),
 		.oDATAIO_MMUMOD(execution2ldst_ldst_mmumod),
+		.oDATAIO_MMUPS(execution2ldst_ldst_mmups),
 		.oDATAIO_PDT(execution2ldst_ldst_pdt),
 		.oDATAIO_ADDR(execution2ldst_ldst_addr),
 		.oDATAIO_DATA(execution2ldst_ldst_data),
 		.iDATAIO_REQ(ldst2execution_ldst_req),
-		.iDATAIO_PAGEFAULT(ldst2execution_ldst_pagefault),
 		.iDATAIO_MMU_FLAGS(ldst2execution_ldst_mmu_flags),
 		.iDATAIO_DATA(ldst2execution_ldst_data),
 		//Next
@@ -949,18 +944,18 @@ module core_pipeline
 	wire [1:0] ldst_arbiter2d_cache_order;
 	wire [3:0] ldst_arbiter2d_cache_mask;
 	wire ldst_arbiter2d_cache_rw;
-	wire [31:0] ldst_arbiter2d_cache_tid;
+	wire [13:0] ldst_arbiter2d_cache_tid;
 	wire [1:0] ldst_arbiter2d_cache_mmumod;
+	wire [2:0] ldst_arbiter2d_cache_mmups;
 	wire [31:0] ldst_arbiter2d_cache_pdt;
 	wire [31:0] ldst_arbiter2d_cache_addr;
 	wire [31:0] ldst_arbiter2d_cache_data;
 	wire d_cache2ldst_arbiter_valid;
-	wire d_cache2ldst_arbiter_pagefault;
-	wire [13:0] d_cache2ldst_arbiter_mmu_flags;
+	wire [11:0] d_cache2ldst_arbiter_mmu_flags;
 	wire [31:0] d_cache2ldst_arbiter_data;
 	
 	
-	losd_store_pipe_arbiter LDST_PIPE_ARBITOR(
+	load_store_pipe_arbiter LDST_PIPE_ARBITOR(
 		.oLDST_REQ(ldst_arbiter2d_cache_req),
 		.iLDST_BUSY(d_cache2ldst_arbiter_busy),	
 		.oLDST_ORDER(ldst_arbiter2d_cache_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
@@ -968,11 +963,11 @@ module core_pipeline
 		.oLDST_RW(ldst_arbiter2d_cache_rw),		//0=Read 1=Write
 		.oLDST_TID(ldst_arbiter2d_cache_tid),
 		.oLDST_MMUMOD(ldst_arbiter2d_cache_mmumod),
+		.oLDST_MMUPS(ldst_arbiter2d_cache_mmups),
 		.oLDST_PDT(ldst_arbiter2d_cache_pdt),	
 		.oLDST_ADDR(ldst_arbiter2d_cache_addr),
 		.oLDST_DATA(ldst_arbiter2d_cache_data),
 		.iLDST_VALID(d_cache2ldst_arbiter_valid),
-		.iLDST_PAGEFAULT(d_cache2ldst_arbiter_pagefault),
 		.iLDST_MMU_FLAGS(d_cache2ldst_arbiter_mmu_flags),
 		.iLDST_DATA(d_cache2ldst_arbiter_data),
 		//Selector
@@ -985,11 +980,11 @@ module core_pipeline
 		.iEXE_RW(execution2ldst_ldst_rw),		//0=Read 1=Write
 		.iEXE_TID(execution2ldst_ldst_tid),
 		.iEXE_MMUMOD(execution2ldst_ldst_mmumod),
+		.iEXE_MMUPS(execution2ldst_ldst_mmups),
 		.iEXE_PDT(execution2ldst_ldst_pdt),
 		.iEXE_ADDR(execution2ldst_ldst_addr),
 		.iEXE_DATA(execution2ldst_ldst_data),
 		.oEXE_REQ(ldst2execution_ldst_req),
-		.oEXE_PAGEFAULT(ldst2execution_ldst_pagefault),
 		.oEXE_MMU_FLAGS(ldst2execution_ldst_mmu_flags),
 		.oEXE_DATA(ldst2execution_ldst_data),
 		//Exception Module
@@ -999,6 +994,7 @@ module core_pipeline
 		.iEXCEPT_RW(exception2ldst_ldst_rw),		//0=Read 1=Write
 		.iEXCEPT_TID(exception2ldst_ldst_tid),
 		.iEXCEPT_MMUMOD(exception2ldst_ldst_mmumod),
+		.iEXCEPT_MMUPS(3'h0),
 		.iEXCEPT_PDT(exception2ldst_ldst_pdt),
 		.iEXCEPT_ADDR(exception2ldst_ldst_addr),
 		.iEXCEPT_DATA(exception2ldst_ldst_data),
@@ -1027,13 +1023,13 @@ module core_pipeline
 		.iLDST_RW(ldst_arbiter2d_cache_rw),
 		.iLDST_TID(ldst_arbiter2d_cache_tid),
 		.iLDST_MMUMOD(ldst_arbiter2d_cache_mmumod),
+		.iLDST_MMUPS(ldst_arbiter2d_cache_mmups),
 		.iLDST_PDT(ldst_arbiter2d_cache_pdt),
 		.iLDST_ADDR(ldst_arbiter2d_cache_addr),
 		.iLDST_DATA(ldst_arbiter2d_cache_data),
 		//Cache -> Load Store
 		.oLDST_VALID(d_cache2ldst_arbiter_valid),
-		.oLDST_PAGEFAULT(d_cache2ldst_arbiter_pagefault),////////////////////////////////
-		.oLDST_MMU_FLAGS(d_cache2ldst_arbiter_mmu_flags),////////////////////////////////
+		.oLDST_MMU_FLAGS(d_cache2ldst_arbiter_mmu_flags),
 		.oLDST_DATA(d_cache2ldst_arbiter_data),
 		/****************************************
 		Data Memory
@@ -1046,13 +1042,13 @@ module core_pipeline
 		.oDATA_RW(oDATA_RW),		//0=Write 1=Read
 		.oDATA_TID(oDATA_TID),
 		.oDATA_MMUMOD(oDATA_MMUMOD),
+		.oDATA_MMUPS(oDATA_MMUPS),
 		.oDATA_PDT(oDATA_PDT),
 		.oDATA_ADDR(oDATA_ADDR),
 		//This -> Data RAM
 		.oDATA_DATA(oDATA_DATA),
 		//Data RAM -> This
 		.iDATA_VALID(iDATA_VALID),
-		.iDATA_PAGEFAULT(iDATA_PAGEFAULT),
 		.iDATA_MMU_FLAGS(iDATA_MMU_FLAGS),
 		.iDATA_DATA(iDATA_DATA),
 		/****************************************  

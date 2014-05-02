@@ -20,7 +20,9 @@ module mmu_table_load(
 		input wire [63:0] iMEM_DATA,
 		//DONE
 		output wire oDONE_VALID,
-		output wire [31:0] oDONE_DATA
+		output wire [31:0] oDONE_DATA,
+		output wire [11:0] oDONE_FLAG0,
+		output wire [11:0] oDONE_FLAG1
 	);
 
 	reg [1:0] b_main_state;
@@ -94,6 +96,8 @@ module mmu_table_load(
 	//DONE
 	assign oDONE_VALID = (b_main_state == PL_MAIN_STT_WAITING) && iMEM_VALID;
 	assign oDONE_DATA = (b_req_addr[2])? iMEM_DATA[63:32] : iMEM_DATA[31:0];
+	assign oDONE_FLAG0 = iMEM_DATA[11:0];
+	assign oDONE_FLAG1 = iMEM_DATA[43:32];
 
 endmodule
 

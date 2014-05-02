@@ -35,15 +35,14 @@ module core
 		output wire oINST_REQ,
 		input wire iINST_LOCK,
 		output wire [1:0] oINST_MMUMOD,
+		output wire [2:0] oINST_MMUPS,
 		output wire [31:0] oINST_PDT,
 		output wire [31:0] oINST_ADDR,
 		//RAM -> This
 		input wire iINST_VALID,
 		output wire oINST_BUSY,
-		input wire iINST_PAGEFAULT,
-		input wire iINST_QUEUE_FLUSH,
 		input wire [63:0] iINST_DATA,
-		input wire [27:0] iINST_MMU_FLAGS,
+		input wire [23:0] iINST_MMU_FLAGS,
 		/****************************************
 		Data Memory
 		****************************************/
@@ -55,15 +54,15 @@ module core
 		output wire oDATA_RW,		//0=Write 1=Read
 		output wire [13:0] oDATA_TID,
 		output wire [1:0] oDATA_MMUMOD,
+		output wire [2:0] oDATA_MMUPS,
 		output wire [31:0] oDATA_PDT,
 		output wire [31:0] oDATA_ADDR,
 		//This -> Data RAM
 		output wire [31:0] oDATA_DATA,
 		//Data RAM -> This
 		input wire iDATA_VALID,
-		input wire iDATA_PAGEFAULT,
 		input wire [63:0] iDATA_DATA,
-		input wire [27:0] iDATA_MMU_FLAGS,
+		input wire [23:0] iDATA_MMU_FLAGS,
 		/****************************************
 		IO
 		****************************************/
@@ -130,12 +129,11 @@ module core
 		.oINST_FETCH_REQ(oINST_REQ),
 		.iINST_FETCH_BUSY(iINST_LOCK),
 		.oINST_FETCH_MMUMOD(oINST_MMUMOD),
+		.oINST_FETCH_MMUPS(oINST_MMUPS),
 		.oINST_FETCH_PDT(oINST_PDT),
 		.oINST_FETCH_ADDR(oINST_ADDR),
 		.iINST_VALID(iINST_VALID),
 		.oINST_BUSY(oINST_BUSY),
-		.iINST_PAGEFAULT(iINST_PAGEFAULT),
-		.iINST_QUEUE_FLUSH(iINST_QUEUE_FLUSH),
 		.iINST_DATA(iINST_DATA),
 		.iINST_MMU_FLAGS(iINST_MMU_FLAGS),
 		/****************************************
@@ -149,13 +147,13 @@ module core
 		.oDATA_RW(oDATA_RW),			//1=Write 0=Read
 		.oDATA_TID(oDATA_TID),
 		.oDATA_MMUMOD(oDATA_MMUMOD),
+		.oDATA_MMUPS(oDATA_MMUPS),
 		.oDATA_PDT(oDATA_PDT),
 		.oDATA_ADDR(oDATA_ADDR),
 		//This -> Data RAM
 		.oDATA_DATA(oDATA_DATA),
 		//Data RAM -> This
 		.iDATA_VALID(iDATA_VALID),
-		.iDATA_PAGEFAULT(iDATA_PAGEFAULT),
 		.iDATA_DATA(iDATA_DATA),
 		.iDATA_MMU_FLAGS(iDATA_MMU_FLAGS),
 		/****************************************

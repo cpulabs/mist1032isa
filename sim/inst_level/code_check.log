@@ -137,10 +137,10 @@
 # Top level modules:
 # 	altera_primitive_sync_fifo_8in_8out_16depth
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
-# -- Compiling module altera_primitive_sync_fifo_28in_28out_16depth
+# -- Compiling module altera_primitive_sync_fifo_24in_24out_16depth
 # 
 # Top level modules:
-# 	altera_primitive_sync_fifo_28in_28out_16depth
+# 	altera_primitive_sync_fifo_24in_24out_16depth
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module altera_primitive_sync_fifo_34in_34out_8depth
 # 
@@ -154,7 +154,6 @@
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module endian_controller
 # -- Compiling module memory_pipe_arbiter
-# ** Warning: ../../src/memory_pipe_arbiter.v(167): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
 # -- Compiling module mist1032isa
 # 
 # Top level modules:
@@ -199,7 +198,8 @@
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module mmu
 # -- Compiling module mmu_if
-# -- Compiling module tlb
+# -- Compiling module mmu_table_load
+# -- Compiling module mmu_tlb
 # 
 # Top level modules:
 # 	mmu_if
@@ -224,7 +224,7 @@
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module core
 # -- Compiling module core_pipeline
-# -- Compiling module losd_store_pipe_arbiter
+# -- Compiling module load_store_pipe_arbiter
 # 
 # Top level modules:
 # 	core

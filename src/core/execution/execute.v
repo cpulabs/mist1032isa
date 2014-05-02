@@ -68,12 +68,12 @@ module execute(
 		output wire oDATAIO_RW,				//0=Read 1=Write
 		output wire [13:0] oDATAIO_TID,
 		output wire [1:0] oDATAIO_MMUMOD,
+		output wire [2:0] oDATAIO_MMUPS,
 		output wire [31:0] oDATAIO_PDT,
 		output wire [31:0] oDATAIO_ADDR,
 		output wire [31:0] oDATAIO_DATA,
 		input wire iDATAIO_REQ,
-		input wire iDATAIO_PAGEFAULT,
-		input wire [13:0] iDATAIO_MMU_FLAGS,
+		input wire [11:0] iDATAIO_MMU_FLAGS,
 		input wire [31:0] iDATAIO_DATA,
 		//Writeback
 		output wire oNEXT_VALID,
@@ -600,7 +600,7 @@ module execute(
 		.iSOURCE0(ex_module_source0),
 		.iSOURCE1(ex_module_source1),
 		.iADV_ACTIVE(iPREVIOUS_ADV_ACTIVE),
-		.iADV_DATA(iPREVIOUS_ADV_DATA),
+		.iADV_DATA({26'h0, iPREVIOUS_ADV_DATA}),
 		.iSPR(ex_module_spr),
 		.iPC(iPREVIOUS_PC - 32'h4),
 		//Output - Writeback
@@ -1199,15 +1199,8 @@ module execute(
 						end
 						
 						if(iDATAIO_REQ)begin
-							//Pagefault
-							if(iDATAIO_PAGEFAULT)begin
-								b_state <= L_PARAM_STT_EXCEPTION;
-								b_exception_valid <= 1'b1;
-								b_exception_num <= `INT_NUM_PAGEFAULT;
-								b_exception_fi0r <= b_pc - 32'h4;
-							end
-							//Exception Check(Load)
-							else if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b0, iDATAIO_MMU_FLAGS))begin
+							//Pagefault || Exception Check(Load)
+							if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b0, iDATAIO_MMU_FLAGS))begin
 								b_state <= L_PARAM_STT_EXCEPTION;
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
@@ -1234,14 +1227,8 @@ module execute(
 						
 						if(iDATAIO_REQ)begin
 							//Pagefault
-							if(iDATAIO_PAGEFAULT)begin
-								b_state <= L_PARAM_STT_EXCEPTION;
-								b_exception_valid <= 1'b1;
-								b_exception_num <= `INT_NUM_PAGEFAULT;
-								b_exception_fi0r <= b_pc - 32'h4;
-							end
 							//Exception Check(Load)
-							else if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b1, iDATAIO_MMU_FLAGS))begin
+							if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b1, iDATAIO_MMU_FLAGS))begin
 								b_state <= L_PARAM_STT_EXCEPTION;
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
@@ -1461,10 +1448,10 @@ module execute(
 	assign oDATAIO_RW = (b_state == L_PARAM_STT_STORE)? 1'b1 : 1'b0;
 	assign oDATAIO_TID = b_sysreg_tidr[13:0];
 	assign oDATAIO_MMUMOD = b_sysreg_psr[1:0];
+	assign oDATAIO_MMUPS = b_sysreg_psr[9:7];
 	assign oDATAIO_PDT = b_sysreg_pdtr;
 	assign oDATAIO_ADDR = b_ldst_pipe_addr;
 	assign oDATAIO_DATA = b_ldst_pipe_data;
-	
 	
 	//Exception
 	assign oBRANCH_ADDR = b_branch_addr;

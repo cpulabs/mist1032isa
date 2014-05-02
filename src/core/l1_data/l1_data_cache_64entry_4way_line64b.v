@@ -34,7 +34,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b_damy(
 		output wire oRD_HIT,
 		input wire iRD_BUSY,		
 		output wire [31:0] oRD_DATA,
-		output wire [13:0] oRD_MMU_FLAGS,
+		output wire [11:0] oRD_MMU_FLAGS,
 		/********************************
 		Upload
 		********************************/
@@ -55,7 +55,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b_damy(
 	);
 			
 	assign oRD_BUSY = 1'b0;
-	assign oRD_MMU_FLAGS = 14'h0;
+	assign oRD_MMU_FLAGS = 11'h0;
 	
 	reg b_req_valid;
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -100,7 +100,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		output wire oRD_HIT,
 		input wire iRD_BUSY,		
 		output wire [31:0] oRD_DATA,	
-		output wire [13:0] oRD_MMU_FLAGS,
+		output wire [11:0] oRD_MMU_FLAGS,
 		/********************************
 		Upload
 		********************************/
@@ -622,27 +622,27 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		end
 	endfunction
 	
-	function [13:0] func_mmu_flags_selector;
+	function [11:0] func_mmu_flags_selector;
 		input [3:0] func_select;
 		input [255:0] func_data;
 		begin
 			case(func_select)
-				4'h0 : func_mmu_flags_selector = func_data[13:0];
-				4'h1 : func_mmu_flags_selector = func_data[29:16];
-				4'h2 : func_mmu_flags_selector = func_data[45:32];
-				4'h3 : func_mmu_flags_selector = func_data[61:48];
-				4'h4 : func_mmu_flags_selector = func_data[77:64];
-				4'h5 : func_mmu_flags_selector = func_data[93:80];
-				4'h6 : func_mmu_flags_selector = func_data[109:96];
-				4'h7 : func_mmu_flags_selector = func_data[125:112];
-				4'h8 : func_mmu_flags_selector = func_data[141:128];
-				4'h9 : func_mmu_flags_selector = func_data[157:144];
-				4'ha : func_mmu_flags_selector = func_data[173:160];
-				4'hb : func_mmu_flags_selector = func_data[189:176];
-				4'hc : func_mmu_flags_selector = func_data[205:192];
-				4'hd : func_mmu_flags_selector = func_data[221:208];
-				4'he : func_mmu_flags_selector = func_data[237:224];
-				4'hf : func_mmu_flags_selector = func_data[253:240];
+				4'h0 : func_mmu_flags_selector = func_data[11:0];
+				4'h1 : func_mmu_flags_selector = func_data[27:16];
+				4'h2 : func_mmu_flags_selector = func_data[43:32];
+				4'h3 : func_mmu_flags_selector = func_data[69:48];
+				4'h4 : func_mmu_flags_selector = func_data[75:64];
+				4'h5 : func_mmu_flags_selector = func_data[91:80];
+				4'h6 : func_mmu_flags_selector = func_data[107:96];
+				4'h7 : func_mmu_flags_selector = func_data[123:112];
+				4'h8 : func_mmu_flags_selector = func_data[149:128];
+				4'h9 : func_mmu_flags_selector = func_data[155:144];
+				4'ha : func_mmu_flags_selector = func_data[171:160];
+				4'hb : func_mmu_flags_selector = func_data[187:176];
+				4'hc : func_mmu_flags_selector = func_data[203:192];
+				4'hd : func_mmu_flags_selector = func_data[219:208];
+				4'he : func_mmu_flags_selector = func_data[235:224];
+				4'hf : func_mmu_flags_selector = func_data[251:240];
 			endcase
 		end
 	endfunction

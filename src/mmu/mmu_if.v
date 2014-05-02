@@ -14,7 +14,8 @@ module mmu_if(
 		input wire iCORE_REQ,
 		output wire oCORE_LOCK,
 		input wire iCORE_DATA_STORE_ACK,
-		input wire [1:0] iCORE_MMU_MODE,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		input wire [1:0] iCORE_MMUMOD,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		input wire [2:0] iCORE_MMUPS,
 		input wire [31:0] iCORE_PDT,			//Page Table Register
 		input wire [1:0] iCORE_ORDER,
 		input wire [3:0] iCORE_MASK,
@@ -25,10 +26,8 @@ module mmu_if(
 		output wire oCORE_REQ,
 		input wire iCORE_LOCK,
 		output wire oCORE_STORE_ACK,
-		output wire oCORE_PAGE_FAULT,	
-		output wire oCORE_QUEUE_FLUSH,	
 		output wire [63:0] oCORE_DATA,
-		output wire [27:0] oCORE_MMU_FLAGS,
+		output wire [23:0] oCORE_MMU_FLAGS,
 		/************************
 		To Memory
 		************************/
@@ -66,40 +65,39 @@ module mmu_if(
 	//MMU Flags
 	wire mmu2mmufifo_req;
 	wire mmufifo2mmu_lock;
-	wire [27:0] mmu2mmufifo_flags;
-	wire [27:0] mmufifo2coreout_flags;
-	//Page Fault
-	wire mmu2core_pagefault;
-	reg [1:0] b_pagefault_state;
+	wire [23:0] mmu2mmufifo_flags;
+	wire [23:0] mmufifo2coreout_flags;
 	//Core Output Latch
 	reg b_coreout_req;
 	reg [63:0] b_coreout_data;
-	reg [27:0] b_coreout_mmu_flags;
+	reg [23:0] b_coreout_mmu_flags;
 
 
 	//Condition
 	wire mmu2core_data_write_ack_condition = mmu2memory_req && mmu2memory_data_store_ack && !iMEMORY_LOCK;
 	wire mmu2memory_req_condition = mmu2memory_req && !iMEMORY_LOCK && !matching2mmu_full && !mmufifo2mmu_lock;
 	
-	wire memory2mmu_lock_condition = iMEMORY_LOCK || matching2mmu_full || mmufifo2mmu_lock || (b_pagefault_state == L_PARAM_STT_PFAULT_QUEUEWAIT);
+	wire memory2mmu_lock_condition = iMEMORY_LOCK || matching2mmu_full || mmufifo2mmu_lock;
 	
 	/********************************************************************************
 	Memory Management Unit
 		Dorect, 1level, 2level Address Convertion
 	********************************************************************************/
 	//MMU
-	mmu mmu(
+	mmu MMU(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
 		//TLB Flash
-		.iTLB_FLASH(iFREE_TLB_FLUSH),
+		.iTLB_FLUSH(iFREE_TLB_FLUSH),
 		/***********************
 		Logic Addres Request
 		***********************/
 		.iLOGIC_REQ(iCORE_REQ),
 		.oLOGIC_LOCK(oCORE_LOCK),
 		.iLOGIC_DATA_STORE_ACK(iCORE_DATA_STORE_ACK),
-		.iLOGIC_MODE(iCORE_MMU_MODE),					//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		.iLOGIC_MMUMOD(iCORE_MMUMOD),					//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
+		.iLOGIC_MMUPS(iCORE_MMUPS),
 		.iLOGIC_PDT(iCORE_PDT),							//Page Directory Table 
 		.iLOGIC_ORDER(iCORE_ORDER),
 		.iLOGIC_MASK(iCORE_MASK),
@@ -112,10 +110,6 @@ module mmu_if(
 		.oMMUFLAGS_REQ(mmu2mmufifo_req),
 		.iMMUFLAGS_LOCK(mmufifo2mmu_lock),
 		.oMMUFLAGS_FLAGS(mmu2mmufifo_flags),
-		/***********************
-		Page Fault
-		***********************/
-		.oPAGEFAULT_VALID(mmu2core_pagefault),
 		/***********************
 		To Memory
 		***********************/
@@ -134,38 +128,6 @@ module mmu_if(
 		.oMEMORY_LOCK(mmu2memory_lock),
 		.iMEMORY_DATA(iMEMORY_DATA)
 	);
-	
-	/********************************************************************************
-	Page Fault
-	********************************************************************************/
-	wire pagefault_condition = (b_pagefault_state == L_PARAM_STT_PFAULT_TOCORE);
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_pagefault_state <= L_PARAM_STT_PFAULT_IDLE;
-		end
-		else begin
-			case(b_pagefault_state)
-				L_PARAM_STT_PFAULT_IDLE:
-					begin
-						if(mmu2core_pagefault)begin
-							b_pagefault_state <= L_PARAM_STT_PFAULT_QUEUEWAIT;
-						end
-					end
-				L_PARAM_STT_PFAULT_QUEUEWAIT:
-					begin
-						if(matching2mmu_empty)begin
-							b_pagefault_state <= L_PARAM_STT_PFAULT_TOCORE;
-						end
-					end
-				L_PARAM_STT_PFAULT_TOCORE:
-					begin
-						if(!iCORE_LOCK)begin
-							b_pagefault_state <= L_PARAM_STT_PFAULT_IDLE;
-						end
-					end
-			endcase
-		end
-	end
 
 
 	/********************************************************************************
@@ -178,7 +140,7 @@ module mmu_if(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Flash
-		.iFLASH(pagefault_condition),
+		.iFLASH(1'b0),
 		//Write
 		.iWR_REQ(mmu2memory_req_condition && !mmu2memory_data_store_ack),
 		.iWR_FLAG(mmu2matching_type),
@@ -196,23 +158,23 @@ module mmu_if(
 	********************************************************************************/
 	`ifdef MIST1032ISA_ALTERA_PRIMITIVE
 		//FIFO Mode				: Show Ahead Synchronous FIFO Mode
-		//Width					: 8bit
+		//Width					: 24bit
 		//Depth					: 16Word
 		//Asynchronous Reset	: Use
 		//Synchronous Reset		: Use
 		//Usedw					: Use
 		//Full					: Use
 		//Empty					: Use
-		//Almost Full			: Use(Value=2)
-		//Almost Empty			: Use(Value=14)
+		//Almost Full			: Use(Value=14)
+		//Almost Empty			: Use(Value=2)
 		//Overflow Checking		: Disable
 		//Undesflow Checking	: Disable
-		altera_primitive_sync_fifo_28in_28out_16depth MMUFLAGS_QUEUE(
+		altera_primitive_sync_fifo_24in_24out_16depth MMUFLAGS_QUEUE(
 			.aclr(!inRESET),				//Asynchronous Reset
 			.clock(iCLOCK),				//Clock
 			.data(mmu2mmufifo_flags),				//Data-In
 			.rdreq(iMEMORY_REQ && matching2coreout_type && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition),				//Read Data Request
-			.sclr(pagefault_condition),				//Synchthronous Reset
+			.sclr(1'b0),				//Synchthronous Reset
 			.wrreq(mmu2mmufifo_req && !memory2mmu_lock_condition),				//Write Req
 			.almost_empty(),		
 			.almost_full(),
@@ -224,10 +186,10 @@ module mmu_if(
 	`elsif MIST1032ISA_XILINX_PRIMITIVE
 
 	`else
-		mist1032isa_sync_fifo #(28, 16, 4) MMUFLAGS_QUEUE(
+		mist1032isa_sync_fifo #(24, 16, 4) MMUFLAGS_QUEUE(
 			.iCLOCK(iCLOCK), 
 			.inRESET(inRESET), 
-			.iREMOVE(pagefault_condition), 
+			.iREMOVE(1'b0), 
 			.oCOUNT(), 	
 			.iWR_EN(mmu2mmufifo_req && !memory2mmu_lock_condition), 
 			.iWR_DATA(mmu2mmufifo_flags), 
@@ -246,13 +208,7 @@ module mmu_if(
 		if(!inRESET)begin
 			b_coreout_req <= 1'b0;
 			b_coreout_data <= {64{1'b0}};
-			b_coreout_mmu_flags <= {28{1'b0}};
-		end
-		//Page Fault
-		else if(pagefault_condition)begin
-			b_coreout_req <= 1'b0;
-			b_coreout_data <= {64{1'b0}};
-			b_coreout_mmu_flags <= {28{1'b0}};
+			b_coreout_mmu_flags <= {24{1'b0}};
 		end
 		else begin
 			if(!iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition)begin
@@ -267,10 +223,8 @@ module mmu_if(
 	/********************************************************************************
 	Assign
 	********************************************************************************/
-	assign oCORE_REQ = b_coreout_req || mmu2core_data_write_ack_condition || pagefault_condition;
+	assign oCORE_REQ = b_coreout_req || mmu2core_data_write_ack_condition;
 	assign oCORE_STORE_ACK = mmu2core_data_write_ack_condition;
-	assign oCORE_PAGE_FAULT = pagefault_condition;
-	assign oCORE_QUEUE_FLUSH = pagefault_condition;
 	assign oCORE_DATA = b_coreout_data;
 	assign oCORE_MMU_FLAGS = b_coreout_mmu_flags;
 	

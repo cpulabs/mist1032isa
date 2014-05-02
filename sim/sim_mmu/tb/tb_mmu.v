@@ -57,7 +57,20 @@ module tb_mmu;
 	localparam PL_PAGING_LEVEL_OFF = 2'h0;
 	localparam PL_PAGING_LEVEL_1 = 2'h1;
 	localparam PL_PAGING_LEVEL_2 = 2'h2;
+
+	localparam PL_PAGING_LEVEL2_PAGESIZE_4K = 3'h1;
+	localparam PL_PAGING_LEVEL2_PAGESIZE_8K = 3'h2;
+	localparam PL_PAGING_LEVEL2_PAGESIZE_16K = 3'h3;
+	localparam PL_PAGING_LEVEL2_PAGESIZE_32K = 3'h4;
+	localparam PL_PAGING_LEVEL2_PAGESIZE_64K = 3'h5;
 	
+	localparam PL_PAGING_LEVEL1_PAGESIZE_128K = 3'h1;
+	localparam PL_PAGING_LEVEL1_PAGESIZE_256K = 3'h2;
+	localparam PL_PAGING_LEVEL1_PAGESIZE_512K = 3'h3;
+	localparam PL_PAGING_LEVEL1_PAGESIZE_1024K = 3'h4;
+	localparam PL_PAGING_LEVEL1_PAGESIZE_2048K = 3'h5;
+
+
 	mmu TARGET(
 		//System
 		.iCLOCK(iCLOCK),
@@ -171,8 +184,30 @@ module tb_mmu;
 		end
 	end
 
+	task task_req_access;
+		input [1:0] task_mod;
+		input [2:0] task_psize;
+		input [31:0] task_addr;
+		begin
+			iLOGIC_REQ = 1'b1;
+			iLOGIC_ADDR = task_addr;
+			iLOGIC_MMUPS = task_psize;
+			iLOGIC_MOD = task_mod;
+			while(oLOGIC_LOCK)begin
+				#(PL_CYCLE);
+			end
+			#(PL_CYCLE);
+			iLOGIC_REQ = 1'b0;
+			#(PL_CYCLE);
+		end
+	endtask
+
+
+
+
 	initial begin
-		//Read LogicAddr:0
+		/*
+		//Read LogicAddr:0x0
 		#(PL_CYCLE+1) begin
 			iLOGIC_REQ = 1'b1;
 			iLOGIC_ADDR = {32{1'b0}};
@@ -182,9 +217,7 @@ module tb_mmu;
 			iLOGIC_REQ = 1'b0;
 			iLOGIC_MOD = PL_PAGING_LEVEL_OFF;
 		end
-		
-
-		//Read LogicAddr:1
+		//Read LogicAddr:0x8
 		#(PL_CYCLE) begin
 			iLOGIC_REQ = 1'b1;
 			iLOGIC_ADDR = 32'h00000008;
@@ -194,29 +227,34 @@ module tb_mmu;
 			iLOGIC_ADDR = 32'h00000008;
 			iLOGIC_MOD = PL_PAGING_LEVEL_OFF;
 		end
+		*/
+
+		#(PL_CYCLE*10+1);
+		task_req_access(PL_PAGING_LEVEL_2, PL_PAGING_LEVEL2_PAGESIZE_4K, 32'h16);
+		task_req_access(PL_PAGING_LEVEL_2, PL_PAGING_LEVEL2_PAGESIZE_4K, 32'h32);
+		task_req_access(PL_PAGING_LEVEL_2, PL_PAGING_LEVEL2_PAGESIZE_4K, 32'h64);
+		task_req_access(PL_PAGING_LEVEL_2, PL_PAGING_LEVEL2_PAGESIZE_4K, 32'h128);
 
 		/*
-
-		//Read LogicAddr:3
+		//Read LogicAddr:0x16
 		#(PL_CYCLE) begin
 			iLOGIC_REQ = 1'b1;
-			iLOGIC_ADDR = 32'h00000003;
-			iLOGIC_MOD = PL_PAGING_LEVEL_OFF;
-		end
-		//Read LogicAddr:4
-		#(PL_CYCLE) begin
-			iLOGIC_REQ = 1'b1;
-			iLOGIC_ADDR = 32'h00000004;
+			iLOGIC_ADDR = 32'h000000016;
 			iLOGIC_MOD = PL_PAGING_LEVEL_2;
 		end
-		//Read LogicAddr:16384
+		//Read LogicAddr:0x32
+		#(PL_CYCLE) begin
+			iLOGIC_REQ = 1'b1;
+			iLOGIC_ADDR = 32'h000000032;
+			iLOGIC_MOD = PL_PAGING_LEVEL_2;
+		end
+		//Read LogicAddr:0x4000
 		#(PL_CYCLE * 10) begin
 			iLOGIC_REQ = 1'b1;
 			iLOGIC_ADDR = 32'h4000;
 			iLOGIC_MOD = PL_PAGING_LEVEL_2;
 		end
 		*/
-
 		//STOP
 		#(PL_CYCLE) begin
 			iLOGIC_REQ = 1'b0;

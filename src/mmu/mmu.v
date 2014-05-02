@@ -19,7 +19,7 @@ module mmu(
 		input wire iLOGIC_REQ,
 		output wire oLOGIC_LOCK,
 		input wire iLOGIC_DATA_STORE_ACK,
-		input wire [1:0] iLOGIC_MOD,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion		<New Name>
+		input wire [1:0] iLOGIC_MMUMOD,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion		<New Name>
 		input wire [2:0] iLOGIC_MMUPS,		//MMU Page Size														<New Port>
 		input wire [31:0] iLOGIC_PDT,		//Page Directory Table 
 		input wire [1:0] iLOGIC_ORDER,
@@ -32,11 +32,7 @@ module mmu(
 		***********************/
 		output wire oMMUFLAGS_REQ,
 		input wire iMMUFLAGS_LOCK,
-		output wire [27:0] oMMUFLAGS_FLAGS,		
-		/***********************
-		Page Fault
-		***********************/
-		output wire oPAGEFAULT_VALID,
+		output wire [23:0] oMMUFLAGS_FLAGS,
 		/***********************
 		To Memory
 		***********************/
@@ -66,7 +62,7 @@ module mmu(
 	localparam PL_MAIN_STT_TLB = 3'h0;
 	localparam PL_MAIN_STT_PAGE1_REQ = 3'h1;
 	localparam PL_MAIN_STT_PAGE1_WAIT = 3'h2;
-	localparam PL_MAIN_STT_PAGE2_REQ = 3'h1;
+	localparam PL_MAIN_STT_PAGE2_REQ = 3'h3;
 	localparam PL_MAIN_STT_PAGE2_WAIT = 3'h4;
 	localparam PL_MAIN_STT_ACCESS = 3'h5;
 	
@@ -89,12 +85,15 @@ module mmu(
 	//Table Load
 	wire table_load_done_valid;
 	wire [31:0] table_load_done_data;
+	wire [11:0] table_load_done_flag0;
+	wire [11:0] table_load_done_flag1;
 	wire table_mem_req;
 	wire [31:0] table_mem_addr;
 	//TLB
+	wire tlb_rd_busy;
 	wire tlb_rd_valid;
 	wire tlb_rd_hit;
-	wire tlb_rd_flags;
+	wire [23:0] tlb_rd_flags;
 	wire [31:0] tlb_rd_physical_addr;
 	//Reservation Table
 	wire res_table_wr_full;
@@ -104,10 +103,11 @@ module mmu(
 	/************************************************************
 	Condition
 	************************************************************/
-	wire mmu_prev_busy = (b_main_state != PL_MAIN_STT_TLB) || iMEMORY_LOCK;
+	wire mmu_prev_busy = (b_main_state != PL_MAIN_STT_TLB) || iMEMORY_LOCK || tlb_rd_busy;
 	wire mmu_prev_req_valid_condition = !mmu_prev_busy && iLOGIC_REQ;
 
 	wire tlb_misshit_condition = tlb_rd_valid && !tlb_rd_hit && (b_logic_mode != PL_PAGING_LEVEL_OFF);
+	wire tlb_hit_condition = tlb_rd_valid && tlb_rd_hit && (b_logic_mode != PL_PAGING_LEVEL_OFF);
 
 	
 	/************************************************************
@@ -146,7 +146,7 @@ module mmu(
 				b_logic_order <= iLOGIC_ORDER;
 				b_logic_mask <= iLOGIC_MASK;
 				b_logic_rw <= iLOGIC_RW;
-				b_logic_mode <= iLOGIC_MOD;
+				b_logic_mode <= iLOGIC_MMUMOD;
 				b_logic_mmups <= iLOGIC_MMUPS;
 				b_logic_pdt <= iLOGIC_PDT;
 				b_logic_addr <= iLOGIC_ADDR;
@@ -161,9 +161,6 @@ module mmu(
 	************************************************************/	
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_main_state <= PL_MAIN_STT_TLB;
-		end
-		else if(!inRESET)begin
 			b_main_state <= PL_MAIN_STT_TLB;
 		end
 		else if(iRESET_SYNC)begin
@@ -212,10 +209,15 @@ module mmu(
 		end
 	end
 
+
 	/************************************************************
 	TABLE Load
 	************************************************************/
 	reg [31:0] table_load_ld_addr;
+	reg [31:0] b_table_load_buffer;
+	reg [11:0] b_table_load_buffer_flags0;
+	reg [11:0] b_table_load_buffer_flags1;
+
 	always @* begin
 		case(b_main_state)
 			PL_MAIN_STT_TLB : 
@@ -229,15 +231,15 @@ module mmu(
 				end
 			PL_MAIN_STT_PAGE1_REQ : 
 				begin
-					table_load_ld_addr = func_table_get_addr(table_load_done_data) + func_table_level2_index2(b_logic_mmups, b_logic_addr);
+					table_load_ld_addr = func_table_get_addr(b_table_load_buffer) + func_table_level2_index2(b_logic_mmups, b_logic_addr);
 				end
 			PL_MAIN_STT_PAGE2_REQ : 
 				begin
 					if(b_logic_mode == PL_PAGING_LEVEL_1)begin
-						table_load_ld_addr = func_table_get_addr(table_load_done_data) + func_table_level1_offset(b_logic_mmups, b_logic_addr);
+						table_load_ld_addr = func_table_get_addr(b_table_load_buffer) + func_table_level1_offset(b_logic_mmups, b_logic_addr);
 					end
 					else begin
-						table_load_ld_addr = func_table_get_addr(table_load_done_data) + func_table_level2_offset(b_logic_mmups, b_logic_addr);
+						table_load_ld_addr = func_table_get_addr(b_table_load_buffer) + func_table_level2_offset(b_logic_mmups, b_logic_addr);
 					end
 				end
 			default : 
@@ -264,8 +266,30 @@ module mmu(
 		.iMEM_DATA(iMEMORY_DATA),
 		//DONE
 		.oDONE_VALID(table_load_done_valid),
-		.oDONE_DATA(table_load_done_data)
+		.oDONE_DATA(table_load_done_data),
+		.oDONE_FLAG0(table_load_done_flag0),
+		.oDONE_FLAG1(table_load_done_flag1)
 	);
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_table_load_buffer <= 32'h0;
+			b_table_load_buffer_flags0 <= 12'h0;
+			b_table_load_buffer_flags1 <= 12'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_table_load_buffer <= 32'h0;
+			b_table_load_buffer_flags0 <= 12'h0;
+			b_table_load_buffer_flags1 <= 12'h0;
+		end
+		else begin
+			if(table_load_done_valid)begin
+				b_table_load_buffer <= table_load_done_data;
+				b_table_load_buffer_flags0 <= table_load_done_flag0;
+				b_table_load_buffer_flags1 <= table_load_done_flag1;
+			end
+		end
+	end
 
 	/************************************************************
 	Load Address
@@ -400,14 +424,36 @@ module mmu(
 			PL_PAGING_LEVEL_1,
 			PL_PAGING_LEVEL_2:
 				begin
-					mem_out_req = table_mem_req && !res_table_wr_full && !iMEMORY_LOCK;
-					mem_out_data_store_ack = 1'b0;
-					mem_out_mmu_use = 1'b1;
-					mem_out_order = 2'h2;
-					mem_out_mask = 4'h0;
-					mem_out_rw = 1'b0;
-					mem_out_addr = table_mem_addr;
-					mem_out_data = 32'h0;
+					if(tlb_hit_condition)begin
+						mem_out_req = 1'b1;
+						mem_out_data_store_ack = b_logic_data_store_ack;
+						mem_out_mmu_use = 1'b0;
+						mem_out_order = b_logic_order;
+						mem_out_mask = b_logic_mask;
+						mem_out_rw = b_logic_rw;
+						mem_out_addr = tlb_rd_physical_addr;
+						mem_out_data = b_logic_data;
+					end
+					else if(b_main_state == PL_MAIN_STT_ACCESS)begin
+						mem_out_req = 1'b1;
+						mem_out_data_store_ack = b_logic_data_store_ack;
+						mem_out_mmu_use = 1'b0;
+						mem_out_order = b_logic_order;
+						mem_out_mask = b_logic_mask;
+						mem_out_rw = b_logic_rw;
+						mem_out_addr = table_mem_addr;
+						mem_out_data = b_logic_data;
+					end
+					else begin
+						mem_out_req = table_mem_req && !res_table_wr_full && !iMEMORY_LOCK;
+						mem_out_data_store_ack = 1'b0;
+						mem_out_mmu_use = 1'b1;
+						mem_out_order = 2'h2;
+						mem_out_mask = 4'h0;
+						mem_out_rw = 1'b0;
+						mem_out_addr = table_mem_addr;
+						mem_out_data = 32'h0;
+					end
 				end
 			default:
 				begin
@@ -423,6 +469,12 @@ module mmu(
 		endcase
 	end
 
+	assign oMMUFLAGS_REQ = (b_logic_mode == PL_PAGING_LEVEL_1 || b_logic_mode == PL_PAGING_LEVEL_2) && (tlb_hit_condition || b_main_state == PL_MAIN_STT_ACCESS);
+	//input wire iMMUFLAGS_LOCK,
+	assign oMMUFLAGS_FLAGS = (tlb_hit_condition)? tlb_rd_flags : {b_table_load_buffer_flags1, b_table_load_buffer_flags0};
+
+
+
 
 	/************************************************************
 	TLB Check
@@ -432,8 +484,7 @@ module mmu(
 		(b_main_state == PL_MAIN_STT_PAGE2_WAIT && b_logic_mode == PL_PAGING_LEVEL_2)
 	);
 
-
-	mmu_tlb #(/*LRU Timing N*/10) TLB(
+	mmu_tlb TLB(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -441,17 +492,24 @@ module mmu(
 		.iREMOVE(iTLB_FLUSH || iRESET_SYNC), //context switch			
 		//Read
 		.iRD_REQ(mmu_prev_req_valid_condition),
+		.oRD_BUSY(tlb_rd_busy),
+		.iRD_MOD(iLOGIC_MMUMOD),
+		.iRD_PS(iLOGIC_MMUPS),
 		.iRD_ADDR(iLOGIC_ADDR),	
 		.oRD_VALID(tlb_rd_valid),
+		.iRD_BUSY(iMEMORY_LOCK),
 		.oRD_HIT(tlb_rd_hit),
 		.oRD_FLAGS(tlb_rd_flags),
 		.oRD_PHYS_ADDR(tlb_rd_physical_addr),
 		//Write
 		.iWR_REQ(tlb_write_condition),
+		.iWR_MOD(b_logic_mode),
+		.iWR_PS(b_logic_mmups),
 		.iWR_ADDR({b_logic_addr[31:3], 3'h0}),
-		.iWR_FLAGS({iMEMORY_DATA[45:32], iMEMORY_DATA[13:0]}),
+		//.iWR_FLAGS({iMEMORY_DATA[45:32], iMEMORY_DATA[13:0]}),
 		.iWR_PHYS_ADDR(iMEMORY_DATA[63:0])	
 	);
+
 
 
 	/************************************************************
@@ -484,8 +542,8 @@ module mmu(
 		.oRD_EMPTY(/* Not Use */)
 	);
 	
-	assign oPAGEFAULT_VALID = 1'b0; //Check
 	assign oLOGIC_LOCK = mmu_prev_busy;
+
 endmodule
 
 `default_nettype wire

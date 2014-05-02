@@ -1,0 +1,66 @@
+library verilog;
+use verilog.vl_types.all;
+entity core is
+    generic(
+        CORE_ID         : integer := 0
+    );
+    port(
+        iCLOCK          : in     vl_logic;
+        inRESET         : in     vl_logic;
+        oFREE_TLB_FLUSH : out    vl_logic;
+        oIO_IRQ_CONFIG_TABLE_REQ: out    vl_logic;
+        oIO_IRQ_CONFIG_TABLE_ENTRY: out    vl_logic_vector(5 downto 0);
+        oIO_IRQ_CONFIG_TABLE_FLAG_MASK: out    vl_logic;
+        oIO_IRQ_CONFIG_TABLE_FLAG_VALID: out    vl_logic;
+        oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL: out    vl_logic_vector(1 downto 0);
+        oINST_REQ       : out    vl_logic;
+        iINST_LOCK      : in     vl_logic;
+        oINST_MMUMOD    : out    vl_logic_vector(1 downto 0);
+        oINST_MMUPS     : out    vl_logic_vector(2 downto 0);
+        oINST_PDT       : out    vl_logic_vector(31 downto 0);
+        oINST_ADDR      : out    vl_logic_vector(31 downto 0);
+        iINST_VALID     : in     vl_logic;
+        oINST_BUSY      : out    vl_logic;
+        iINST_DATA      : in     vl_logic_vector(63 downto 0);
+        iINST_MMU_FLAGS : in     vl_logic_vector(23 downto 0);
+        oDATA_REQ       : out    vl_logic;
+        iDATA_LOCK      : in     vl_logic;
+        oDATA_ORDER     : out    vl_logic_vector(1 downto 0);
+        oDATA_MASK      : out    vl_logic_vector(3 downto 0);
+        oDATA_RW        : out    vl_logic;
+        oDATA_TID       : out    vl_logic_vector(13 downto 0);
+        oDATA_MMUMOD    : out    vl_logic_vector(1 downto 0);
+        oDATA_MMUPS     : out    vl_logic_vector(2 downto 0);
+        oDATA_PDT       : out    vl_logic_vector(31 downto 0);
+        oDATA_ADDR      : out    vl_logic_vector(31 downto 0);
+        oDATA_DATA      : out    vl_logic_vector(31 downto 0);
+        iDATA_VALID     : in     vl_logic;
+        iDATA_DATA      : in     vl_logic_vector(63 downto 0);
+        iDATA_MMU_FLAGS : in     vl_logic_vector(23 downto 0);
+        oIO_REQ         : out    vl_logic;
+        iIO_BUSY        : in     vl_logic;
+        oIO_ORDER       : out    vl_logic_vector(1 downto 0);
+        oIO_RW          : out    vl_logic;
+        oIO_ADDR        : out    vl_logic_vector(31 downto 0);
+        oIO_DATA        : out    vl_logic_vector(31 downto 0);
+        iIO_VALID       : in     vl_logic;
+        iIO_DATA        : in     vl_logic_vector(31 downto 0);
+        iINTERRUPT_VALID: in     vl_logic;
+        oINTERRUPT_ACK  : out    vl_logic;
+        iINTERRUPT_NUM  : in     vl_logic_vector(5 downto 0);
+        iSYSINFO_IOSR_VALID: in     vl_logic;
+        iSYSINFO_IOSR   : in     vl_logic_vector(31 downto 0);
+        oDEBUG_PC       : out    vl_logic_vector(31 downto 0);
+        oDEBUG0         : out    vl_logic_vector(31 downto 0);
+        iDEBUG_CMD_REQ  : in     vl_logic;
+        oDEBUG_CMD_BUSY : out    vl_logic;
+        iDEBUG_CMD_COMMAND: in     vl_logic_vector(3 downto 0);
+        iDEBUG_CMD_TARGET: in     vl_logic_vector(7 downto 0);
+        iDEBUG_CMD_DATA : in     vl_logic_vector(31 downto 0);
+        oDEBUG_CMD_VALID: out    vl_logic;
+        oDEBUG_CMD_ERROR: out    vl_logic;
+        oDEBUG_CMD_DATA : out    vl_logic_vector(31 downto 0)
+    );
+    attribute mti_svvh_generic_type : integer;
+    attribute mti_svvh_generic_type of CORE_ID : constant is 1;
+end core;
