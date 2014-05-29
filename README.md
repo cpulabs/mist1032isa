@@ -57,3 +57,22 @@ Macro Option(Sim-only)
   MIST1032ISA_SVA_ASSERTION			:	Simulation Only, System Verilog Assertion Enable
   
   MIST1032ISA_FIRST_SIM				:	Simulation Only, Use Function ROM. First Simulate.
+
+  
+Tool
+---
+We have validated the correctness of this design in the following tools.
+
+Simulator
+--
+Riviera-Pro(Aldec)
+ 
+Lint
+--
+ALINT(Aldec)
+
+Synthesis
+--
+Quartus II(Altera)
+
+
