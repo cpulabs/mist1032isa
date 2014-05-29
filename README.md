@@ -63,16 +63,16 @@ Tool
 ---
 We have validated the correctness of this design in the following tools.
 
-Simulator
---
+***Simulator***
+
 Riviera-Pro(Aldec)
  
-Lint
---
+***Lint***
+
 ALINT(Aldec)
 
-Synthesis
---
+***Synthesis***
+
 Quartus II(Altera)
 
 
