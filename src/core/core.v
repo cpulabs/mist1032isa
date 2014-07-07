@@ -13,7 +13,7 @@ module core
 		System
 		****************************************/
 		input wire iCLOCK,
-		input wire inRESET,	
+		input wire inRESET,
 		/****************************************
 		Core
 		****************************************/
@@ -27,7 +27,7 @@ module core
 		output wire [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
 		output wire oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
 		output wire oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
-		output wire [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,		
+		output wire [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,
 		/****************************************
 		Instruction Memory
 		****************************************/
@@ -37,6 +37,7 @@ module core
 		output wire [1:0] oINST_MMUMOD,
 		output wire [2:0] oINST_MMUPS,
 		output wire [31:0] oINST_PDT,
+		output wire [13:0] oINST_TID,			//////////////
 		output wire [31:0] oINST_ADDR,
 		//RAM -> This
 		input wire iINST_VALID,
@@ -102,16 +103,16 @@ module core
 		output wire oDEBUG_CMD_ERROR,
 		output wire [31:0] oDEBUG_CMD_DATA
 	);
-		
-	
+
+
 	/************************************************************************************
 	Wire and Register
-	************************************************************************************/		
+	************************************************************************************/
 	wire [31:0] debug0;
-	
+
 	/************************************************************************************
 	Core - Main Pipeline
-	************************************************************************************/	
+	************************************************************************************/
 	core_pipeline #(CORE_ID) CORE_PIPELINE(
 		//System
 		.iCLOCK(iCLOCK),
@@ -131,6 +132,7 @@ module core
 		.oINST_FETCH_MMUMOD(oINST_MMUMOD),
 		.oINST_FETCH_MMUPS(oINST_MMUPS),
 		.oINST_FETCH_PDT(oINST_PDT),
+		.oINST_FETCH_TID(oINST_TID),
 		.oINST_FETCH_ADDR(oINST_ADDR),
 		.iINST_VALID(iINST_VALID),
 		.oINST_BUSY(oINST_BUSY),
@@ -169,7 +171,7 @@ module core
 		.oIO_DATA(oIO_DATA),
 		//Rec
 		.iIO_VALID(iIO_VALID),
-		.iIO_DATA(iIO_DATA),	
+		.iIO_DATA(iIO_DATA),
 		//Interrupt
 		.iINTERRUPT_VALID(iINTERRUPT_VALID),
 		.oINTERRUPT_ACK(oINTERRUPT_ACK),
@@ -190,14 +192,13 @@ module core
 		.oDEBUG_CMD_ERROR(oDEBUG_CMD_ERROR),
 		.oDEBUG_CMD_DATA(oDEBUG_CMD_DATA)
 	);
-	
-	
-	
+
+
+
 	assign oDEBUG0 = debug0;
-	
+
 endmodule
 
 
 `default_nettype wire
-			
-			
+

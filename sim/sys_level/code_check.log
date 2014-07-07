@@ -1,3 +1,4 @@
+# ** Warning: (vlib-34) Library already exists at "work".
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module tb_sys_level
 # 
@@ -136,10 +137,10 @@
 # Top level modules:
 # 	altera_primitive_sync_fifo_8in_8out_16depth
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
-# -- Compiling module altera_primitive_sync_fifo_28in_28out_16depth
+# -- Compiling module altera_primitive_sync_fifo_24in_24out_16depth
 # 
 # Top level modules:
-# 	altera_primitive_sync_fifo_28in_28out_16depth
+# 	altera_primitive_sync_fifo_24in_24out_16depth
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module altera_primitive_sync_fifo_34in_34out_8depth
 # 
@@ -199,11 +200,9 @@
 # -- Compiling module mmu_if
 # -- Compiling module mmu_table_load
 # -- Compiling module mmu_tlb
-# -- Compiling module tlb
 # 
 # Top level modules:
 # 	mmu_if
-# 	tlb
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module mist1032isa_arbiter_matching_queue
 # -- Compiling module mist1032isa_async_fifo

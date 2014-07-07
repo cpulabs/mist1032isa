@@ -1,18 +1,22 @@
 /****************************************************
 SIM Memory Model
 	with byte & half_word access controller
-	
-	
+
+Version : 1.0.0
+
+1.0.0 : 2014/07/05 Basic Mode
+
+
 Memory Model
 	Little Endian
 	Ex :
 		data = 0x01234567
-		
+
 		-Load
 		load_word[0] = 0x01234567
 		load_hf_word[0] = 0x0123
 		load_byte[0] = 0x01
-	
+
 		-Store
 		store_word[0], 0x89abcdef = 0x89abcdef
 		store_hf_word[0], 0x89ab = 0x89ab4567
@@ -38,26 +42,26 @@ module sim_memory_model(
 		input wire iMEMORY_LOCK,
 		output wire [63:0] oMEMORY_DATA
 	);
-	
-	parameter P_MEM_INIT_LOAD = 1;		//0:not load | 1:load | 2:addr=data
+
+	parameter P_MEM_INIT_LOAD = 1;		//0:not load | 1:load | 2:addr=data(Double Word Order) | 3:addr=data(Word Order) | 5:addr=data(Byte Order) | 7:Addr(Word)=Data(Word)
 	parameter P_MEM_INIT_LOAD_FIEL = "binary_file.bin";
 	parameter P_MEM_SIZE = 134217728/8;
-	parameter P_DISP_WRITE = 0;
-	parameter P_DISP_READ = 0;
-	
+	parameter P_DISP_WRITE = 0;			//0:No Display | 1:Display | 2:Display with endian convert
+	parameter P_DISP_READ = 0;			//0:No Display | 1:Display | 2:Display with endian convert
+
 	wire fifo_write_full;
 	wire fifo_read_empty;
 	wire [63:0] fifo_read_data;
-	
+
 	reg [63:0] b_mem_data[0:P_MEM_SIZE-1];
-	
+
 	integer i;
 
 	wire system_busy = fifo_write_full;
 	wire system_read_condition = iMEMORY_REQ && !iMEMORY_RW && !system_busy && !fifo_write_full;
 	wire system_write_condition = iMEMORY_REQ && iMEMORY_RW && !system_busy;
-						
-	
+
+
 	function [63:0] func_data_mask;
 		input func_word_select; //0
 		input [3:0] func_byte_enable;	//1111
@@ -82,12 +86,12 @@ module sim_memory_model(
 			func_data_mask = func_private_data;
 		end
 	endfunction
-	
+
 	//Memory Write Block
 	wire [63:0] write_data = func_data_mask(
 		iMEMORY_ADDR[2],
-		iMEMORY_MASK, 
-		iMEMORY_DATA, 
+		iMEMORY_MASK,
+		iMEMORY_DATA,
 		b_mem_data[iMEMORY_ADDR[25:3]]
 	);
 
@@ -96,8 +100,8 @@ module sim_memory_model(
 			b_mem_data[iMEMORY_ADDR[25:3]] <= write_data;
 		end
 	end
-	
-	
+
+
 	//Memory
 	initial begin
 		#0 begin
@@ -111,9 +115,48 @@ module sim_memory_model(
 				end
 				$display("[INF][sim_memory_model.v]Mem[0]->%x", b_mem_data[0]);
 			end
+			//Double Word Order
 			else if(P_MEM_INIT_LOAD == 2)begin
 				for(i = 0; i < P_MEM_SIZE; i = i + 1)begin
-					b_mem_data[i] = i;
+					b_mem_data[i] = func_endian_convert(i);
+				end
+			end
+			//Word Order
+			else if(P_MEM_INIT_LOAD == 3)begin
+				for(i = 0; i < P_MEM_SIZE; i = i + 1)begin
+					b_mem_data[i] = func_endian_convert({func_32bit(i*2+1), func_32bit(i*2)});
+				end
+			end
+			//Byte Order
+			else if(P_MEM_INIT_LOAD == 5)begin
+				for(i = 0; i < P_MEM_SIZE; i = i + 1)begin
+					b_mem_data[i] = func_endian_convert(
+						{
+							func_8bit(i*8+7),
+							func_8bit(i*8+6),
+							func_8bit(i*8+5),
+							func_8bit(i*8+4),
+							func_8bit(i*8+3),
+							func_8bit(i*8+2),
+							func_8bit(i*8+1),
+							func_8bit(i*8)
+						}
+					);
+				end
+			end
+			//Word Order(Addr=Data)
+			else if(P_MEM_INIT_LOAD == 7)begin
+				for(i = 0; i < P_MEM_SIZE; i = i + 1)begin
+					b_mem_data[i] = func_endian_convert({func_32bit({i*2+1, 2'h0}), func_32bit({i*2, 2'h0})});
+				end
+			end
+			//Half Word Order(Addr=Data)
+			//Byte Order(Addr=Data)
+			//Double Word Order(Addr=Data*2)
+			//Word Order(Addr=Data*2)
+			else if(P_MEM_INIT_LOAD == 11)begin
+				for(i = 0; i < P_MEM_SIZE; i = i + 1)begin
+					b_mem_data[i] = func_endian_convert({func_32bit({i*4+2, 2'h0}), func_32bit({i*4, 2'h0})});
 				end
 			end
 		end
@@ -123,15 +166,21 @@ module sim_memory_model(
 	//Read Write Display
 	always@(posedge iCLOCK)begin
 		//Write
-		if(system_write_condition && P_DISP_WRITE != 0)begin
-			$display("[INFO][sim_memory_model.v] : Write Memory[%x] = %x", {iMEMORY_ADDR[25:3], 3'h0}, write_data);
+		if(system_write_condition && P_DISP_WRITE == 1)begin
+			$display("[INFO][sim_memory_model.v] : Write Memory[%x(Byte)] = %x", iMEMORY_ADDR[25:0], write_data);
+		end
+		else if(system_write_condition && P_DISP_WRITE == 2)begin
+			$display("[INFO][sim_memory_model.v][EC-Display] : Write Memory[%x(Byte)] = %x", iMEMORY_ADDR[25:0], func_endian_convert(write_data));
 		end
 		//Read
-		if(system_read_condition && P_DISP_READ != 0)begin
-			$display("[INFO][sim_memory_model.v] : Read Memory[%x] = %x", {iMEMORY_ADDR[25:3], 3'h0}, b_mem_data[iMEMORY_ADDR[25:3]]);
+		if(system_read_condition && P_DISP_READ == 1)begin
+			$display("[INFO][sim_memory_model.v] : Read Memory[%x(Byte)] = %x", iMEMORY_ADDR[25:0], b_mem_data[iMEMORY_ADDR[25:3]]);
+		end
+		else if(system_read_condition && P_DISP_READ == 2)begin
+			$display("[INFO][sim_memory_model.v][EC-Display] : Read Memory[%x(Byte)] = %x", iMEMORY_ADDR[25:0], func_endian_convert(b_mem_data[iMEMORY_ADDR[25:3]]));
 		end
 	end
-	
+
 	function [63:0] func_endian_convert;
 		input [63:0] func_data;
 		reg [31:0] func_tmp;
@@ -144,7 +193,20 @@ module sim_memory_model(
 		end
 	endfunction
 
-	
+	function [31:0] func_32bit;
+		input [31:0] func_data;
+		begin
+			func_32bit = func_data;
+		end
+	endfunction
+
+	function [7:0] func_8bit;
+		input [7:0] func_data;
+		begin
+			func_8bit = func_data;
+		end
+	endfunction
+
 	mist1032isa_sync_fifo #(64, 8, 3) OUT_FIFO(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -156,11 +218,11 @@ module sim_memory_model(
 		.oRD_DATA(fifo_read_data),
 		.oRD_EMPTY(fifo_read_empty)
 	);
-	
+
 	assign oMEMORY_VALID = !iMEMORY_LOCK  && !fifo_read_empty;
 	assign oMEMORY_DATA = fifo_read_data;
 	assign oMEMORY_LOCK = fifo_write_full;
-	
+
 endmodule
 
 

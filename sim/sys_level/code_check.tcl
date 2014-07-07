@@ -7,7 +7,7 @@ vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../model/altera/altera_mf.v
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/primitive/altera/sync_fifo_8in_8out_16depth/altera_primitive_sync_fifo_8in_8out_16depth.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/primitive/altera/sync_fifo_28in_28out_16depth/altera_primitive_sync_fifo_28in_28out_16depth.v
+vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/primitive/altera/sync_fifo_24in_24out_16depth/altera_primitive_sync_fifo_24in_24out_16depth.v
 
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/primitive/altera/sync_fifo_34in_34out_8depth/altera_primitive_sync_fifo_34in_34out_8depth.v
 

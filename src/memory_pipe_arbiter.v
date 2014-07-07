@@ -27,6 +27,7 @@ module memory_pipe_arbiter(
 		input wire [1:0] iINST_MMUMOD,
 		input wire [2:0] iINST_MMUPS,
 		input wire [31:0] iINST_PDT,
+		input wire [13:0] iINST_TID,		//
 		input wire [31:0] iINST_ADDR,
 		//Inst(Memory -> Core)
 		output wire oINST_REQ,
@@ -38,8 +39,9 @@ module memory_pipe_arbiter(
 		input wire iMEMORY_LOCK,
 		output wire oMEMORY_DATA_STORE_ACK,			//1:Data Access && Store(MMUFlag read only. Not Memory access.)
 		output wire [1:0] oMEMORY_MMU_MODE,
-		output wire [2:0] oMEMORY_MMU_PS,		
+		output wire [2:0] oMEMORY_MMU_PS,
 		output wire [31:0] oMEMORY_PDT,
+		output wire [13:0] oMEMORY_TID,				//
 		output wire [1:0] oMEMORY_ORDER,
 		output wire [3:0] oMEMORY_MASK,
 		output wire oMEMORY_RW,
@@ -52,8 +54,8 @@ module memory_pipe_arbiter(
 		input wire [63:0] iMEMORY_DATA,
 		input wire [23:0] iMEMORY_MMU_FLAGS
 	);
-				
-	
+
+
 	/*********************************************************
 	Wire and Register
 	*********************************************************/
@@ -75,6 +77,7 @@ module memory_pipe_arbiter(
 	reg [1:0] b_core2mem_mmumod;
 	reg [2:0] b_core2mem_mmups;
 	reg [31:0] b_core2mem_pdt;
+	reg [13:0] b_core2mem_tid;
 	reg [31:0] b_core2mem_addr;
 	reg [31:0] b_core2mem_data;
 	//Memory -> Core
@@ -83,16 +86,16 @@ module memory_pipe_arbiter(
 	reg [23:0] b_mem2core_inst_mmu_flags;
 	reg b_mem2core_data_valid;
 	reg [63:0] b_mem2core_data_data;
-	reg [23:0] b_mem2core_data_mmu_flags;	
+	reg [23:0] b_mem2core_data_mmu_flags;
 
 	//Condition
 	wire mem2core_common_lock = matching_bridfe_wr_full || iMEMORY_LOCK;
 	wire core2mem_data_write_ack_condition = iDATA_RW && core2mem_data_condition;
 	wire core2mem_normal_memory_access_condition = (!iDATA_RW && core2mem_data_condition) || core2mem_inst_condition;
-	
+
 	/*********************************************************
 	Memory Matching Controal
-	*********************************************************/	
+	*********************************************************/
 	mist1032isa_arbiter_matching_queue #(16, 4, 1) MEM_MATCHING_BRIDGE(	//Queue deep : 16, Queue deep_n : 4, Flag_n : 1
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -109,8 +112,8 @@ module memory_pipe_arbiter(
 		.oRD_EMPTY()
 	);
 
-	
-	
+
+
 	/*********************************************************
 	Buffer & Assign(Core -> Memory)
 	*********************************************************/
@@ -130,6 +133,7 @@ module memory_pipe_arbiter(
 			b_core2mem_mmumod <= 2'h0;
 			b_core2mem_mmups <= 3'h0;
 			b_core2mem_pdt <= {32{1'b0}};
+			b_core2mem_tid <= 14'h0;
 			b_core2mem_addr <= {32{1'b0}};
 			b_core2mem_data <= {32{1'b0}};
 		end
@@ -145,6 +149,7 @@ module memory_pipe_arbiter(
 					b_core2mem_mmumod <= iDATA_MMUMOD;
 					b_core2mem_mmups <= iDATA_MMUPS;
 					b_core2mem_pdt <= iDATA_PDT;
+					b_core2mem_tid <= iDATA_TID;
 					b_core2mem_addr <= iDATA_ADDR;
 					b_core2mem_data <= iDATA_DATA;
 				end
@@ -157,6 +162,7 @@ module memory_pipe_arbiter(
 					b_core2mem_mmumod <= iINST_MMUMOD;
 					b_core2mem_mmups <= iINST_MMUPS;
 					b_core2mem_pdt <= iINST_PDT;
+					b_core2mem_tid <= iINST_TID;
 					b_core2mem_addr <= iINST_ADDR;
 					b_core2mem_data <= {32{1'b0}};
 				end
@@ -166,12 +172,12 @@ module memory_pipe_arbiter(
 			end
 		end
 	end
-	
-	
-	
+
+
+
 	/*********************************************************
 	Inst Data Selector & Buffer & assign (Memory -> Core)
-	*********************************************************/	
+	*********************************************************/
 	//Inst
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -187,7 +193,7 @@ module memory_pipe_arbiter(
 			end
 		end
 	end
-	
+
 	//Data
 	assign core2mem_data_lock = 1'b0;
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -204,37 +210,38 @@ module memory_pipe_arbiter(
 			end
 		end
 	end
-	
 
-	
-	
+
+
+
 	/*********************************************************
 	Assign
 	*********************************************************/
 	assign oDATA_LOCK = mem2core_data_lock;
 	assign oINST_LOCK = mem2core_inst_lock;
-	
+
 	assign oMEMORY_REQ = b_core2mem_req;
 	assign oMEMORY_DATA_STORE_ACK = b_core2mem_data_store_ack;
 	assign oMEMORY_MMU_MODE = b_core2mem_mmumod;
 	assign oMEMORY_MMU_PS = b_core2mem_mmups;
 	assign oMEMORY_PDT = b_core2mem_pdt;
+	assign oMEMORY_TID = b_core2mem_tid;
 	assign oMEMORY_ORDER = b_core2mem_order;
 	assign oMEMORY_MASK = b_core2mem_mask;
 	assign oMEMORY_RW = b_core2mem_rw;
 	assign oMEMORY_ADDR = b_core2mem_addr;
 	assign oMEMORY_DATA = b_core2mem_data;
-	
+
 	assign oMEMORY_BUSY = iDATA_BUSY || iINST_BUSY;
-	
+
 	assign oDATA_REQ = b_mem2core_data_valid && !core2mem_data_lock;
 	assign oDATA_DATA = b_mem2core_data_data;
 	assign oDATA_MMU_FLAGS = b_mem2core_data_mmu_flags;
-	
+
 	assign oINST_REQ = b_mem2core_inst_valid && !iINST_BUSY;
 	assign oINST_DATA = b_mem2core_inst_data;
 	assign oINST_MMU_FLAGS = b_mem2core_inst_mmu_flags;
-	
+
 endmodule
 
 

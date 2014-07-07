@@ -1,10 +1,28 @@
 /sim/inst_level/sim
 /sim/inst_level/work
+/sim/inst_level/coverage
+
 /sim/func_level/sim
 /sim/func_level/work
-/sim/modelsim/work
+/sim/func_level/coverage
+
+/sim/sys_level/work
+/sim/sys_level/transcript
+/sim/sys_level/coverage
+/sim/sys_level/compile
+/sim/sys_level/work
+
+
 /sim/sim_mmu/work
 /sim/sim_mmu/transcript
+/sim/sim_mmu/coverage
+
+
+
+/sim/modelsim/work
+
+
+
 
 #For modelsim and riviera-pro
 *.wlf

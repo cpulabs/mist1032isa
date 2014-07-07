@@ -89,18 +89,43 @@ module mmu_table_load(
 		end
 	end
 
+	/*
+	reg b_buff_valid;
+	reg [31:0] b_buff_data;
+	reg [11:0] b_buff_flag0;
+	reg [11:0] b_buff_flag1;
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		b_buff_valid <= (b_main_state == PL_MAIN_STT_WAITING) && iMEM_VALID;
+	end
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		b_buff_data <= (b_req_addr[2])? iMEM_DATA[63:32] : iMEM_DATA[31:0];
+		b_buff_flag0 <= iMEM_DATA[11:0];
+		b_buff_flag1 <= iMEM_DATA[43:32];
+	end
+	*/
+
 	assign oLD_BUSY = (b_main_state != PL_MAIN_STT_IDLE);
 	//Memory Pipe - REQ
 	assign oMEM_REQ = (b_main_state == PL_MAIN_STT_REQ) || latch_condition;
 	assign oMEM_ADDR = (b_main_state == PL_MAIN_STT_REQ)? b_req_addr : iLD_ADDR;
 	//DONE
+
 	assign oDONE_VALID = (b_main_state == PL_MAIN_STT_WAITING) && iMEM_VALID;
 	assign oDONE_DATA = (b_req_addr[2])? iMEM_DATA[63:32] : iMEM_DATA[31:0];
 	assign oDONE_FLAG0 = iMEM_DATA[11:0];
 	assign oDONE_FLAG1 = iMEM_DATA[43:32];
+	/*
+	assign oDONE_VALID = b_buff_valid;
+	assign oDONE_DATA = b_buff_data;
+	assign oDONE_FLAG0 = b_buff_flag0;
+	assign oDONE_FLAG1 = b_buff_flag1;
+	*/
+
 
 endmodule
 
-`default_nettype wire 
+`default_nettype wire
 
 

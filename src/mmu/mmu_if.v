@@ -16,7 +16,8 @@ module mmu_if(
 		input wire iCORE_DATA_STORE_ACK,
 		input wire [1:0] iCORE_MMUMOD,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		input wire [2:0] iCORE_MMUPS,
-		input wire [31:0] iCORE_PDT,			//Page Table Register
+		input wire [31:0] iCORE_PDT,		//Page Table Register
+		input wire [13:0] iCORE_TID,		///
 		input wire [1:0] iCORE_ORDER,
 		input wire [3:0] iCORE_MASK,
 		input wire iCORE_RW,
@@ -44,11 +45,11 @@ module mmu_if(
 		output wire oMEMORY_LOCK,
 		input wire [63:0] iMEMORY_DATA
 	);
-	
+
 	localparam L_PARAM_STT_PFAULT_IDLE = 2'h0;
 	localparam L_PARAM_STT_PFAULT_QUEUEWAIT = 2'h1;
 	localparam L_PARAM_STT_PFAULT_TOCORE = 2'h2;
-	
+
 	/********************************************************************************
 	Wire and Register
 	********************************************************************************/
@@ -76,9 +77,9 @@ module mmu_if(
 	//Condition
 	wire mmu2core_data_write_ack_condition = mmu2memory_req && mmu2memory_data_store_ack && !iMEMORY_LOCK;
 	wire mmu2memory_req_condition = mmu2memory_req && !iMEMORY_LOCK && !matching2mmu_full && !mmufifo2mmu_lock;
-	
+
 	wire memory2mmu_lock_condition = iMEMORY_LOCK || matching2mmu_full || mmufifo2mmu_lock;
-	
+
 	/********************************************************************************
 	Memory Management Unit
 		Dorect, 1level, 2level Address Convertion
@@ -98,7 +99,8 @@ module mmu_if(
 		.iLOGIC_DATA_STORE_ACK(iCORE_DATA_STORE_ACK),
 		.iLOGIC_MMUMOD(iCORE_MMUMOD),					//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		.iLOGIC_MMUPS(iCORE_MMUPS),
-		.iLOGIC_PDT(iCORE_PDT),							//Page Directory Table 
+		.iLOGIC_PDT(iCORE_PDT),							//Page Directory Table
+		.iLOGIC_TID(iCORE_TID),						//Task ID
 		.iLOGIC_ORDER(iCORE_ORDER),
 		.iLOGIC_MASK(iCORE_MASK),
 		.iLOGIC_RW(iCORE_RW),							//0=Read 1=Write
@@ -151,8 +153,8 @@ module mmu_if(
 		.oRD_FLAG(matching2coreout_type),
 		.oRD_EMPTY(matching2mmu_empty)
 	);
-	
-	
+
+
 	/********************************************************************************
 	MMU Flags Queue
 	********************************************************************************/
@@ -176,7 +178,7 @@ module mmu_if(
 			.rdreq(iMEMORY_REQ && matching2coreout_type && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition),				//Read Data Request
 			.sclr(1'b0),				//Synchthronous Reset
 			.wrreq(mmu2mmufifo_req && !memory2mmu_lock_condition),				//Write Req
-			.almost_empty(),		
+			.almost_empty(),
 			.almost_full(),
 			.empty(),
 			.full(mmufifo2mmu_lock),
@@ -187,20 +189,20 @@ module mmu_if(
 
 	`else
 		mist1032isa_sync_fifo #(24, 16, 4) MMUFLAGS_QUEUE(
-			.iCLOCK(iCLOCK), 
-			.inRESET(inRESET), 
-			.iREMOVE(1'b0), 
-			.oCOUNT(), 	
-			.iWR_EN(mmu2mmufifo_req && !memory2mmu_lock_condition), 
-			.iWR_DATA(mmu2mmufifo_flags), 
+			.iCLOCK(iCLOCK),
+			.inRESET(inRESET),
+			.iREMOVE(1'b0),
+			.oCOUNT(),
+			.iWR_EN(mmu2mmufifo_req && !memory2mmu_lock_condition),
+			.iWR_DATA(mmu2mmufifo_flags),
 			.oWR_FULL(mmufifo2mmu_lock),
-			.iRD_EN(iMEMORY_REQ && matching2coreout_type && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition), 
-			.oRD_DATA(mmufifo2coreout_flags), 
+			.iRD_EN(iMEMORY_REQ && matching2coreout_type && !iCORE_LOCK && !mmu2memory_lock && !mmu2core_data_write_ack_condition),
+			.oRD_DATA(mmufifo2coreout_flags),
 			.oRD_EMPTY()
 		);
 	`endif
-	
-	
+
+
 	/********************************************************************************
 	Core Output Latch
 	********************************************************************************/
@@ -218,8 +220,8 @@ module mmu_if(
 			end
 		end
 	end
-	
-	
+
+
 	/********************************************************************************
 	Assign
 	********************************************************************************/
@@ -227,12 +229,12 @@ module mmu_if(
 	assign oCORE_STORE_ACK = mmu2core_data_write_ack_condition;
 	assign oCORE_DATA = b_coreout_data;
 	assign oCORE_MMU_FLAGS = b_coreout_mmu_flags;
-	
+
 	assign oMEMORY_REQ = mmu2memory_req_condition;
 	assign oMEMORY_RW = mmu2memory_rw;
-	
+
 	assign oMEMORY_LOCK = iCORE_LOCK || mmu2memory_lock || mmu2core_data_write_ack_condition;
-	
+
 endmodule
 
 `default_nettype wire

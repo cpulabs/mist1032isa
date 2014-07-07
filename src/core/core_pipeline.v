@@ -1,6 +1,6 @@
 /****************************************
 	MIST1032 - Core-Main Pipeline
-	
+
 	Make	:	2012/02/18
 ****************************************/
 `default_nettype none
@@ -24,16 +24,17 @@ module core_pipeline
 		output wire [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
 		output wire oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
 		output wire oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
-		output wire [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,	
+		output wire [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,
 		/****************************************
 		Instrution Memory
-		****************************************/				
+		****************************************/
 		//Memory Instruction-Request
 		output wire oINST_FETCH_REQ,
 		input wire iINST_FETCH_BUSY,
 		output wire [1:0] oINST_FETCH_MMUMOD,
 		output wire [2:0] oINST_FETCH_MMUPS,
 		output wire [31:0] oINST_FETCH_PDT,
+		output wire [13:0] oINST_FETCH_TID,
 		output wire [31:0] oINST_FETCH_ADDR,
 		//Memory Instruction-Get
 		input wire iINST_VALID,
@@ -84,7 +85,7 @@ module core_pipeline
 		System Infomation
 		****************************************/
 		//IOSR(Input Output Status Register)
-		input wire iSYSINFO_IOSR_VALID,	
+		input wire iSYSINFO_IOSR_VALID,
 		input wire [31:0] iSYSINFO_IOSR,
 		output wire [31:0] oDEBUG_PC,
 		output wire [31:0] oDEBUG0,
@@ -100,10 +101,10 @@ module core_pipeline
 		output wire oDEBUG_CMD_ERROR,
 		output wire [31:0] oDEBUG_CMD_DATA
 	);
-	
-	
-	
-	
+
+
+
+
 	//Cache
 	wire icache2fetch_valid;
 	wire [31:0] icache2fetch_inst;
@@ -112,6 +113,8 @@ module core_pipeline
 	wire fetch2icache_req;
 	wire [1:0] fetch2icache_mmumod;
 	wire [2:0] fetch2icache_mmups;
+	wire [13:0] fetch2icache_tid;
+	wire [31:0] fetch2icache_pdt;
 	wire [31:0] fetch2icache_addr;
 	wire icache2fetch_lock;
 	wire cache_flash;
@@ -131,7 +134,7 @@ module core_pipeline
 	wire free_cache_flush;
 	wire free_tlb_flush;
 	wire free_new_spr_valid;
-	wire [31:0] free_new_spr;		
+	wire [31:0] free_new_spr;
 	//Fetch
 	wire fetch2lbuffer_inst_valid;
 	wire [11:0] fetch2lbuffer_mmu_flags;
@@ -142,7 +145,7 @@ module core_pipeline
 	wire [31:0] fetch2lbuffer_inst;
 	wire [31:0] fetch2lbuffer_pc;
 	wire lbuffer2fetch_fetch_stop;
-	wire lbuffer2fetch_fetch_lock;	
+	wire lbuffer2fetch_fetch_lock;
 	//Decoder
 	wire lbuffer2decoder_inst_valid;
 	wire lbuffer2decoder_fault_pagefault;
@@ -240,7 +243,7 @@ module core_pipeline
 	wire execution2dispatch_destination_sysreg;
 	wire execution2dispatch_writeback;
 	wire execution2dispatch_spr_writeback;
-	wire [31:0] execution2dispatch_spr;		
+	wire [31:0] execution2dispatch_spr;
 	wire [31:0] execution2dispatch_pc;
 	wire execution2dispatch_branch;
 	wire [31:0] execution2dispatch_branch_pc;
@@ -251,7 +254,7 @@ module core_pipeline
 	wire branch_predict_result_jump;
 	wire [31:0] branch_predict_result_jump_addr;
 	wire [31:0] branch_predict_result_inst_addr;
-	//Load Store 
+	//Load Store
 	wire execution2ldst_ldst_req;
 	wire [1:0] execution2ldst_ldst_order;
 	wire [3:0] execution2ldst_ldst_mask;
@@ -266,7 +269,7 @@ module core_pipeline
 	wire ldst2execution_ldst_req;
 	wire [11:0] ldst2execution_ldst_mmu_flags;
 	wire [31:0] ldst2execution_ldst_data;
-	
+
 	//System Register
 	wire [31:0] sysreg_flagr;
 	wire [31:0] sysreg_spr;
@@ -277,13 +280,14 @@ module core_pipeline
 	wire [31:0] sysreg_ppsr;
 	wire [31:0] sysreg_pcr;
 	wire [31:0] sysreg_ppcr;
-	
+	wire [31:0] sysreg_pdtr;
+
 	//Interrupt Lock
 	wire interrupt_lock;
 	wire interrupt_ldst_lock;
 	wire dispatch_exception_lock;
 	wire execute_exception_lock;
-	
+
 	//Exception Manager
 	wire exception2ldst_ldst_use;
 	wire exception2ldst_ldst_req;
@@ -306,8 +310,8 @@ module core_pipeline
 	wire exception2cim_ict_conf_mask;
 	wire exception2cim_ict_conf_valid;
 	wire [1:0] exception2cim_ict_conf_level;
-	
-	wire exception2cim_irq_lock;	
+
+	wire exception2cim_irq_lock;
 	wire cim2exception_irq_req;
 	wire [6:0] cim2exception_irq_num;
 	wire [31:0] cim2exception_irq_fi0r;
@@ -316,9 +320,9 @@ module core_pipeline
 	wire exception_fault_valid;
 	wire [6:0] exception_fault_num;
 	wire [31:0] exception_fault_fi0r;
-	
+
 	wire sysreg_write_pdtr;
-	
+
 	//Debug
 	wire [31:0] debug_register2debug_gr0;
 	wire [31:0] debug_register2debug_gr1;
@@ -355,14 +359,14 @@ module core_pipeline
 	wire [31:0] debug_register2debug_flagr;
 	wire [31:0] debug_register2debug_spr;
 	wire [31:0] debug_register2debug_pcr;
-	wire [31:0] debug_register2debug_ppcr;	
-	wire [31:0] debug_register2debug_psr;	
+	wire [31:0] debug_register2debug_ppcr;
+	wire [31:0] debug_register2debug_psr;
 	wire [31:0] debug_register2debug_ppsr;
 	wire debug_debug2corectrl_req;
 	wire debug_debug2corectrl_stop;
 	wire debug_debug2corectrl_start;
 	wire debug_corectrl2debug_ack;
-	
+
 	core_interrupt_manager CORE_INT_M(
 		//System
 		.iCLOCK(iCLOCK),
@@ -373,8 +377,8 @@ module core_pipeline
 		.iICT_VALID(exception2cim_ict_req),
 		.iICT_ENTRY(exception2cim_ict_entry),
 		.iICT_CONF_MASK(exception2cim_ict_conf_mask),
-		.iICT_CONF_VALID(exception2cim_ict_conf_valid),	
-		.iICT_CONF_LEVEL(exception2cim_ict_conf_level),	
+		.iICT_CONF_VALID(exception2cim_ict_conf_valid),
+		.iICT_CONF_LEVEL(exception2cim_ict_conf_level),
 		//Sysreg
 		.iSYSREGINFO_PSR(sysreg_psr),
 		//Interrupt Input
@@ -392,7 +396,7 @@ module core_pipeline
 		.oEXCEPTION_IRQ_FI0R(cim2exception_irq_fi0r),
 		.iEXCEPTION_IRQ_ACK(exception2cim_irq_ack)
 	);
-	
+
 	exception_manager CORE_IM(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -407,7 +411,7 @@ module core_pipeline
 		.oFREE_PC(free_pc),
 		.oFREE_PPCR_SET(free_ppcr_set),
 		.oFREE_PPCR(free_ppcr),
-		.oFREE_FI0R_SET(free_fi0r_set),	
+		.oFREE_FI0R_SET(free_fi0r_set),
 		.oFREE_FI0R(free_fi0r),
 		.oFREE_SET_IRQ_MODE(free_set_irq_mode),
 		.oFREE_CLR_IRQ_MODE(free_clr_irq_mode),
@@ -431,7 +435,7 @@ module core_pipeline
 		.iSYSREG_PPCR(sysreg_ppcr),
 		.iSYSREG_IDTR(sysreg_idtr),
 		//Write
-		.oSYSREG_SPR_WRITE(free_new_spr_valid),	
+		.oSYSREG_SPR_WRITE(free_new_spr_valid),
 		.oSYSREG_SPR(free_new_spr),
 		/************************************
 		Load Store
@@ -456,23 +460,23 @@ module core_pipeline
 		.oIO_IRQ_CONFIG_TABLE_REQ(oIO_IRQ_CONFIG_TABLE_REQ),
 		.oIO_IRQ_CONFIG_TABLE_ENTRY(oIO_IRQ_CONFIG_TABLE_ENTRY),
 		.oIO_IRQ_CONFIG_TABLE_FLAG_MASK(oIO_IRQ_CONFIG_TABLE_FLAG_MASK),
-		.oIO_IRQ_CONFIG_TABLE_FLAG_VALID(oIO_IRQ_CONFIG_TABLE_FLAG_VALID),	
-		.oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL(oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL),	
+		.oIO_IRQ_CONFIG_TABLE_FLAG_VALID(oIO_IRQ_CONFIG_TABLE_FLAG_VALID),
+		.oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL(oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL),
 		//Core Interrupt Configlation Table
 		.oICT_REQ(exception2cim_ict_req),
 		.oICT_ENTRY(exception2cim_ict_entry),
 		.oICT_CONF_MASK(exception2cim_ict_conf_mask),
-		.oICT_CONF_VALID(exception2cim_ict_conf_valid),	
-		.oICT_CONF_LEVEL(exception2cim_ict_conf_level),	
+		.oICT_CONF_VALID(exception2cim_ict_conf_valid),
+		.oICT_CONF_LEVEL(exception2cim_ict_conf_level),
 		/************************************
 		Exception Input
 		************************************/
 		//Core Branch
-		.iEXCEPT_JUMP(exception_jump_valid),					
+		.iEXCEPT_JUMP(exception_jump_valid),
 		.iEXCEPT_JUMP_ADDR(exception_branch_addr),
-		.iEXCEPT_IDTS(exception_idtset_valid),					
+		.iEXCEPT_IDTS(exception_idtset_valid),
 		.iEXCEPT_IDTS_ADDR(exception_branch_addr),
-		.iEXCEPT_IB(exception_intr_valid),					
+		.iEXCEPT_IB(exception_intr_valid),
 		.iEXCEPT_IB_ADDR(exception_branch_addr),
 		.iEXCEPT_PDTS(exception_pdts_valid),
 		//External Exception
@@ -484,16 +488,16 @@ module core_pipeline
 	);
 
 	assign interrupt_lock = execute_exception_lock || dispatch_exception_lock;
-	
-	
+
+
 	core_paging_support PAGING_SUPPORT(
 		.iSYSREG_PSR(sysreg_psr),
 		.iPDTR_WRITEBACK(sysreg_write_pdtr),
 		//Cache
 		.oCACHE_FLASH(cache_flash)
 	);
-	
-	
+
+
 	//Cache
 	l1_instruction_cache L1_INST_CACHE(
 		.iCLOCK(iCLOCK),
@@ -509,6 +513,8 @@ module core_pipeline
 		.iINST_LOCK(iINST_FETCH_BUSY),
 		.oINST_MMUMOD(oINST_FETCH_MMUMOD),
 		.oINST_MMUPS(oINST_FETCH_MMUPS),
+		.oINST_TID(oINST_FETCH_TID),
+		.oINST_PDT(oINST_FETCH_PDT),
 		.oINST_ADDR(oINST_FETCH_ADDR),
 		//Mem
 		.iINST_VALID(iINST_VALID),
@@ -523,6 +529,8 @@ module core_pipeline
 		.oNEXT_FETCH_LOCK(icache2fetch_lock),
 		.iNEXT_MMUMOD(fetch2icache_mmumod),
 		.iNEXT_MMUPS(fetch2icache_mmups),
+		.iNEXT_TID(fetch2icache_tid),
+		.iNEXT_PDT(fetch2icache_pdt),
 		.iNEXT_FETCH_ADDR(fetch2icache_addr),
 		//To Fetch
 		.oNEXT_0_INST_VALID(icache2fetch_valid),
@@ -533,14 +541,16 @@ module core_pipeline
 		.oNEXT_1_INST(),
 		.iNEXT_LOCK(fetch2icache_lock)
 	);
-	
-	
+
+
 	fetch FETCH(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Core
 		.iSYSREG_PSR(sysreg_psr),
+		.iSYSREG_PDTR(sysreg_pdtr),
+		.iSYSREG_TIDR(sysreg_tidr),
 		//Exception
 		.iEXCEPTION_EVENT(free_pipeline_flush),
 		.iEXCEPTION_ADDR_SET(free_pc_set),
@@ -562,6 +572,8 @@ module core_pipeline
 		.oPREVIOUS_FETCH_REQ(fetch2icache_req),
 		.oPREVIOUS_MMUMOD(fetch2icache_mmumod),
 		.oPREVIOUS_MMUPS(fetch2icache_mmups),
+		.oPREVIOUS_TID(fetch2icache_tid),
+		.oPREVIOUS_PDT(fetch2icache_pdt),
 		.oPREVIOUS_FETCH_ADDR(fetch2icache_addr),
 		.iPREVIOUS_FETCH_LOCK(icache2fetch_lock),
 		//Next
@@ -576,10 +588,10 @@ module core_pipeline
 		.iNEXT_FETCH_STOP(lbuffer2fetch_fetch_stop),
 		.iNEXT_LOCK(lbuffer2fetch_fetch_lock)
 	);
-	
-	
-			
-			
+
+
+
+
 	instruction_buffer LOOPBUFFER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -608,15 +620,15 @@ module core_pipeline
 		.oNEXT_PC(lbuffer2decoder_pc),
 		.iNEXT_LOCK(decoder2lbuffer_lock)
 	);
-					
-			
-			
+
+
+
 	decoder DECODER(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Free
-		.iFREE_DEFAULT(free_pipeline_flush),	
+		.iFREE_DEFAULT(free_pipeline_flush),
 		//Previous
 		.iPREVIOUS_INST_VALID(lbuffer2decoder_inst_valid),
 		.iPREVIOUS_FAULT_PAGEFAULT(lbuffer2decoder_fault_pagefault),
@@ -629,7 +641,7 @@ module core_pipeline
 		.iPREVIOUS_INST(lbuffer2decoder_inst),
 		.iPREVIOUS_PC(lbuffer2decoder_pc),
 		.oPREVIOUS_LOCK(decoder2lbuffer_lock),
-		//Next-0		
+		//Next-0
 		.oNEXT_VALID(decoder2dispatch_valid),
 		.oNEXT_FAULT_PAGEFAULT(decoder2dispatch_fault_pagefault),
 		.oNEXT_FAULT_PRIVILEGE_ERROR(decoder2dispatch_fault_privilege_error),
@@ -638,18 +650,18 @@ module core_pipeline
 		.oNEXT_KERNEL_ACCESS(decoder2dispatch_kernel_access),
 		.oNEXT_BRANCH_PREDICT(decoder2dispatch_branch_predict),
 		.oNEXT_BRANCH_PREDICT_ADDR(decoder2dispatch_branch_predict_addr),
-		.oNEXT_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
-		.oNEXT_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
-		.oNEXT_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
-		.oNEXT_SOURCE1_SYSREG(decoder2dispatch_source1_sysreg),		
-		.oNEXT_SOURCE0_SYSREG_RENAME(),		
-		.oNEXT_SOURCE1_SYSREG_RENAME(),		
+		.oNEXT_SOURCE0_ACTIVE(decoder2dispatch_source0_active),
+		.oNEXT_SOURCE1_ACTIVE(decoder2dispatch_source1_active),
+		.oNEXT_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),
+		.oNEXT_SOURCE1_SYSREG(decoder2dispatch_source1_sysreg),
+		.oNEXT_SOURCE0_SYSREG_RENAME(),
+		.oNEXT_SOURCE1_SYSREG_RENAME(),
 		.oNEXT_ADV_ACTIVE(decoder2dispatch_adv_active),
-		.oNEXT_DESTINATION_SYSREG(decoder2dispatch_destination_sysreg),	
-		.oNEXT_DEST_RENAME(),		
+		.oNEXT_DESTINATION_SYSREG(decoder2dispatch_destination_sysreg),
+		.oNEXT_DEST_RENAME(),
 		.oNEXT_WRITEBACK(decoder2dispatch_writeback),
 		.oNEXT_FLAGS_WRITEBACK(decoder2dispatch_flags_writeback),
-		.oNEXT_FRONT_COMMIT_WAIT(),				
+		.oNEXT_FRONT_COMMIT_WAIT(),
 		.oNEXT_CMD(decoder2dispatch_cmd),
 		.oNEXT_CC_AFE(decoder2dispatch_cc_afe),
 		.oNEXT_SOURCE0(decoder2dispatch_source0),
@@ -658,14 +670,14 @@ module core_pipeline
 		.oNEXT_SOURCE0_FLAGS(decoder2dispatch_source0_flags),
 		.oNEXT_SOURCE1_IMM(decoder2dispatch_source1_imm),
 		.oNEXT_DESTINATION(decoder2dispatch_destination),
-		.oNEXT_EX_SYS_REG(decoder2dispatch_ex_sys_reg),		
-		.oNEXT_EX_SYS_LDST(decoder2dispatch_ex_sys_ldst),		
+		.oNEXT_EX_SYS_REG(decoder2dispatch_ex_sys_reg),
+		.oNEXT_EX_SYS_LDST(decoder2dispatch_ex_sys_ldst),
 		.oNEXT_EX_LOGIC(decoder2dispatch_ex_logic),
 		.oNEXT_EX_SHIFT(decoder2dispatch_ex_shift),
 		.oNEXT_EX_ADDER(decoder2dispatch_ex_addr),
-		.oNEXT_EX_MUL(decoder2dispatch_ex_mul),				
-		.oNEXT_EX_SDIV(decoder2dispatch_ex_sdiv),		
-		.oNEXT_EX_UDIV(decoder2dispatch_ex_udiv),		
+		.oNEXT_EX_MUL(decoder2dispatch_ex_mul),
+		.oNEXT_EX_SDIV(decoder2dispatch_ex_sdiv),
+		.oNEXT_EX_UDIV(decoder2dispatch_ex_udiv),
 		.oNEXT_EX_LDST(decoder2dispatch_ex_ldst),
 		.oNEXT_EX_BRANCH(decoder2dispatch_ex_branch),
 		.oNEXT_PC(decoder2dispatch_pc),
@@ -673,9 +685,9 @@ module core_pipeline
 	);
 
 
-	
+
 	dispatch DISPATCH(
-		//System 
+		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Exception Protect
@@ -703,7 +715,8 @@ module core_pipeline
 		.oSYSREG_PPSR(sysreg_ppsr),
 		.oSYSREG_PPCR(sysreg_ppcr),
 		.oSYSREG_SPR(sysreg_spr),
-		//Pipeline 
+		.oSYSREG_PDTR(sysreg_pdtr),
+		//Pipeline
 		.iPREVIOUS_VALID(decoder2dispatch_valid),
 		.iPREVIOUS_FAULT_PAGEFAULT(decoder2dispatch_fault_pagefault),
 		.iPREVIOUS_FAULT_PRIVILEGE_ERROR(decoder2dispatch_fault_privilege_error),
@@ -712,24 +725,24 @@ module core_pipeline
 		.iPREVIOUS_KERNEL_ACCESS(decoder2dispatch_kernel_access),
 		.iPREVIOUS_BRANCH_PREDICT(decoder2dispatch_branch_predict),
 		.iPREVIOUS_BRANCH_PREDICT_ADDR(decoder2dispatch_branch_predict_addr),
-		.iPREVIOUS_SOURCE0_ACTIVE(decoder2dispatch_source0_active),			
-		.iPREVIOUS_SOURCE1_ACTIVE(decoder2dispatch_source1_active),		
-		.iPREVIOUS_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),		
-		.iPREVIOUS_SOURCE1_SYSREG(decoder2dispatch_source1_sysreg),	
+		.iPREVIOUS_SOURCE0_ACTIVE(decoder2dispatch_source0_active),
+		.iPREVIOUS_SOURCE1_ACTIVE(decoder2dispatch_source1_active),
+		.iPREVIOUS_SOURCE0_SYSREG(decoder2dispatch_source0_sysreg),
+		.iPREVIOUS_SOURCE1_SYSREG(decoder2dispatch_source1_sysreg),
 		.iPREVIOUS_ADV_ACTIVE(decoder2dispatch_adv_active),
 		.iPREVIOUS_DESTINATION_SYSREG(decoder2dispatch_destination_sysreg),
-		.iPREVIOUS_DESTINATION(decoder2dispatch_destination),			
-		.iPREVIOUS_WRITEBACK(decoder2dispatch_writeback),	
-		.iPREVIOUS_FLAGS_WRITEBACK(decoder2dispatch_flags_writeback),	
+		.iPREVIOUS_DESTINATION(decoder2dispatch_destination),
+		.iPREVIOUS_WRITEBACK(decoder2dispatch_writeback),
+		.iPREVIOUS_FLAGS_WRITEBACK(decoder2dispatch_flags_writeback),
 		.iPREVIOUS_CMD(decoder2dispatch_cmd),
-		.iPREVIOUS_CC_AFE(decoder2dispatch_cc_afe),		
+		.iPREVIOUS_CC_AFE(decoder2dispatch_cc_afe),
 		.iPREVIOUS_SOURCE0(decoder2dispatch_source0),
 		.iPREVIOUS_SOURCE1(decoder2dispatch_source1),
 		.iPREVIOUS_ADV_DATA(decoder2dispatch_adv_data),
 		.iPREVIOUS_SOURCE0_FLAGS(decoder2dispatch_source0_flags),
-		.iPREVIOUS_SOURCE1_IMM(decoder2dispatch_source1_imm),	
-		.iPREVIOUS_EX_SYS_REG(decoder2dispatch_ex_sys_reg),		
-		.iPREVIOUS_EX_SYS_LDST(decoder2dispatch_ex_sys_ldst),		
+		.iPREVIOUS_SOURCE1_IMM(decoder2dispatch_source1_imm),
+		.iPREVIOUS_EX_SYS_REG(decoder2dispatch_ex_sys_reg),
+		.iPREVIOUS_EX_SYS_LDST(decoder2dispatch_ex_sys_ldst),
 		.iPREVIOUS_EX_LOGIC(decoder2dispatch_ex_logic),
 		.iPREVIOUS_EX_SHIFT(decoder2dispatch_ex_shift),
 		.iPREVIOUS_EX_ADDER(decoder2dispatch_ex_addr),
@@ -741,7 +754,7 @@ module core_pipeline
 		.iPREVIOUS_PC(decoder2dispatch_pc),
 		.oPREVIOUS_LOCK(dispatch2decoder_lock),
 		//Next
-		.oNEXT_VALID(dispatch2execution_valid),	
+		.oNEXT_VALID(dispatch2execution_valid),
 		.oNEXT_FAULT_PAGEFAULT(dispatch2execution_fault_pagefault),
 		.oNEXT_FAULT_PRIVILEGE_ERROR(dispatch2execution_fault_privilege_error),
 		.oNEXT_FAULT_INVALID_INST(dispatch2execution_fault_invalid_inst),
@@ -753,9 +766,9 @@ module core_pipeline
 		.oNEXT_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.oNEXT_SYSREG_PDTR(dispatch2execution_sysreg_pdtr),
 		.oNEXT_DESTINATION_SYSREG(dispatch2execution_destination_sysreg),
-		.oNEXT_DESTINATION(dispatch2execution_destination),			
-		.oNEXT_WRITEBACK(dispatch2execution_writeback),	
-		.oNEXT_FLAGS_WRITEBACK(dispatch2execution_flags_writeback),	
+		.oNEXT_DESTINATION(dispatch2execution_destination),
+		.oNEXT_WRITEBACK(dispatch2execution_writeback),
+		.oNEXT_FLAGS_WRITEBACK(dispatch2execution_flags_writeback),
 		.oNEXT_CMD(dispatch2execution_cmd),
 		.oNEXT_CC_AFE(dispatch2execution_cc_afe),
 		.oNEXT_SPR(dispatch2execution_spr),
@@ -769,8 +782,8 @@ module core_pipeline
 		.oNEXT_SOURCE1_IMM(dispatch2execution_source1_imm),
 		.oNEXT_SOURCE0_FLAGS(dispatch2execution_source0_flags),
 		.oNEXT_ADV_ACTIVE(dispatch2execution_adv_active),
-		.oNEXT_EX_SYS_REG(dispatch2execution_ex_sys_reg),		
-		.oNEXT_EX_SYS_LDST(dispatch2execution_ex_sys_ldst),		
+		.oNEXT_EX_SYS_REG(dispatch2execution_ex_sys_reg),
+		.oNEXT_EX_SYS_LDST(dispatch2execution_ex_sys_ldst),
 		.oNEXT_EX_LOGIC(dispatch2execution_ex_logic),
 		.oNEXT_EX_SHIFT(dispatch2execution_ex_shift),
 		.oNEXT_EX_ADDER(dispatch2execution_ex_addr),
@@ -831,8 +844,8 @@ module core_pipeline
 		.oDEBUG_REG_OUT_PSR(debug_register2debug_psr),
 		.oDEBUG_REG_OUT_PPSR(debug_register2debug_ppsr)
 	);
-	
-	
+
+
 	execute EXECUTE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -844,8 +857,8 @@ module core_pipeline
 		.oEXCEPTION_LDST_LOCK(interrupt_ldst_lock),
 		//System Register
 		.oSYSREG_FLAGR(sysreg_flagr),
-		//Pipeline 
-		.iPREVIOUS_VALID(dispatch2execution_valid),	
+		//Pipeline
+		.iPREVIOUS_VALID(dispatch2execution_valid),
 		.iPREVIOUS_FAULT_PAGEFAULT(dispatch2execution_fault_pagefault),
 		.iPREVIOUS_FAULT_PRIVILEGE_ERROR(dispatch2execution_fault_privilege_error),
 		.iPREVIOUS_FAULT_INVALID_INST(dispatch2execution_fault_invalid_inst),
@@ -857,9 +870,9 @@ module core_pipeline
 		.iPREVIOUS_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.iPREVIOUS_SYSREG_PDTR(dispatch2execution_sysreg_tidr),
 		.iPREVIOUS_DESTINATION_SYSREG(dispatch2execution_destination_sysreg),
-		.iPREVIOUS_DESTINATION(dispatch2execution_destination),			
-		.iPREVIOUS_WRITEBACK(dispatch2execution_writeback),	
-		.iPREVIOUS_FLAGS_WRITEBACK(dispatch2execution_flags_writeback),	
+		.iPREVIOUS_DESTINATION(dispatch2execution_destination),
+		.iPREVIOUS_WRITEBACK(dispatch2execution_writeback),
+		.iPREVIOUS_FLAGS_WRITEBACK(dispatch2execution_flags_writeback),
 		.iPREVIOUS_CMD(dispatch2execution_cmd),
 		.iPREVIOUS_CC_AFE(dispatch2execution_cc_afe),
 		.iPREVIOUS_SPR(dispatch2execution_spr),
@@ -873,8 +886,8 @@ module core_pipeline
 		.iPREVIOUS_SOURCE1_IMM(dispatch2execution_source1_imm),
 		.iPREVIOUS_SOURCE0_FLAGS(dispatch2execution_source0_flags),
 		.iPREVIOUS_ADV_ACTIVE(dispatch2execution_adv_active),
-		.iPREVIOUS_EX_SYS_REG(dispatch2execution_ex_sys_reg),		
-		.iPREVIOUS_EX_SYS_LDST(dispatch2execution_ex_sys_ldst),		
+		.iPREVIOUS_EX_SYS_REG(dispatch2execution_ex_sys_reg),
+		.iPREVIOUS_EX_SYS_LDST(dispatch2execution_ex_sys_ldst),
 		.iPREVIOUS_EX_LOGIC(dispatch2execution_ex_logic),
 		.iPREVIOUS_EX_SHIFT(dispatch2execution_ex_shift),
 		.iPREVIOUS_EX_ADDER(dispatch2execution_ex_addr),
@@ -885,11 +898,11 @@ module core_pipeline
 		.iPREVIOUS_EX_BRANCH(dispatch2execution_ex_branch),
 		.iPREVIOUS_PC(dispatch2execution_pc),
 		.oPREVIOUS_LOCK(execution2dispatch_lock),
-		//Data Port		
+		//Data Port
 		.oDATAIO_REQ(execution2ldst_ldst_req),
 		.iDATAIO_BUSY(ldst2execution_ldst_busy),
 		.oDATAIO_ORDER(execution2ldst_ldst_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
-		.oDATAIO_MASK(execution2ldst_ldst_mask),//[0]=Byte0, [1]=Byte1... 
+		.oDATAIO_MASK(execution2ldst_ldst_mask),//[0]=Byte0, [1]=Byte1...
 		.oDATAIO_RW(execution2ldst_ldst_rw),		//0=Read 1=Write
 		.oDATAIO_TID(execution2ldst_ldst_tid),
 		.oDATAIO_MMUMOD(execution2ldst_ldst_mmumod),
@@ -936,9 +949,9 @@ module core_pipeline
 		.oDEBUG_REG_OUT_FLAGR(debug_register2debug_flagr)
 	);
 
-	
-	
-	
+
+
+
 	wire ldst_arbiter2d_cache_req;
 	wire d_cache2ldst_arbiter_busy;
 	wire [1:0] ldst_arbiter2d_cache_order;
@@ -953,18 +966,18 @@ module core_pipeline
 	wire d_cache2ldst_arbiter_valid;
 	wire [11:0] d_cache2ldst_arbiter_mmu_flags;
 	wire [31:0] d_cache2ldst_arbiter_data;
-	
-	
+
+
 	load_store_pipe_arbiter LDST_PIPE_ARBITOR(
 		.oLDST_REQ(ldst_arbiter2d_cache_req),
-		.iLDST_BUSY(d_cache2ldst_arbiter_busy),	
+		.iLDST_BUSY(d_cache2ldst_arbiter_busy),
 		.oLDST_ORDER(ldst_arbiter2d_cache_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		.oLDST_MASK(ldst_arbiter2d_cache_mask),
 		.oLDST_RW(ldst_arbiter2d_cache_rw),		//0=Read 1=Write
 		.oLDST_TID(ldst_arbiter2d_cache_tid),
 		.oLDST_MMUMOD(ldst_arbiter2d_cache_mmumod),
 		.oLDST_MMUPS(ldst_arbiter2d_cache_mmups),
-		.oLDST_PDT(ldst_arbiter2d_cache_pdt),	
+		.oLDST_PDT(ldst_arbiter2d_cache_pdt),
 		.oLDST_ADDR(ldst_arbiter2d_cache_addr),
 		.oLDST_DATA(ldst_arbiter2d_cache_data),
 		.iLDST_VALID(d_cache2ldst_arbiter_valid),
@@ -1002,7 +1015,7 @@ module core_pipeline
 		.oEXCEPT_DATA(ldst2exception_ldst_data)
 	);
 
-	
+
 	l1_data_cache L1_DATA_CACHE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -1014,7 +1027,7 @@ module core_pipeline
 		.iSYSINFO_IOSR(iSYSINFO_IOSR),
 		/****************************************
 		Load/Store Module
-		****************************************/		
+		****************************************/
 		//Load Store -> Cache
 		.iLDST_REQ(ldst_arbiter2d_cache_req),
 		.oLDST_BUSY(d_cache2ldst_arbiter_busy),
@@ -1051,7 +1064,7 @@ module core_pipeline
 		.iDATA_VALID(iDATA_VALID),
 		.iDATA_MMU_FLAGS(iDATA_MMU_FLAGS),
 		.iDATA_DATA(iDATA_DATA),
-		/****************************************  
+		/****************************************
 		IO
 		****************************************/
 		//Req
@@ -1066,8 +1079,8 @@ module core_pipeline
 		.iIO_VALID(iIO_VALID),
 		.iIO_DATA(iIO_DATA)
 	);
-	
-	
+
+
 	core_debug CORE_DEBUG_MODULE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -1118,7 +1131,7 @@ module core_pipeline
 		.iREG_R_GR28(debug_register2debug_gr28),
 		.iREG_R_GR29(debug_register2debug_gr29),
 		.iREG_R_GR30(debug_register2debug_gr30),
-		.iREG_R_GR31(debug_register2debug_gr31),	
+		.iREG_R_GR31(debug_register2debug_gr31),
 		.iREG_R_CPUIDR(32'h0),
 		.iREG_R_TIDR(32'h0),
 		.iREG_R_FLAGR(debug_register2debug_flagr),
@@ -1139,17 +1152,18 @@ module core_pipeline
 		.iREG_R_PPDTR(32'h0)
 	);
 
-				
+	/*
 	assign oINST_FETCH_PDT = {32{1'b0}};
-	
-	
+	assign oINST_FETCH_TID = 14'h0;
+	*/
+
 	//System
 	assign oFREE_TLB_FLUSH = 1'b0;//free_tlb_flush;
 
-	
+
 	assign oDEBUG0 = sysreg_ppcr;//{iINST_FETCH_BUSY, oINST_BUSY, icache2fetch_lock, fetch2icache_lock, lbuffer2fetch_fetch_lock, decoder2lbuffer_lock, dispatch2decoder_lock, execution2dispatch_lock, iLDST_BUSY, ldst2execution_ldst_busy, ldst2exception_ldst_busy};
 	assign oDEBUG_PC = debug_register2debug_pcr;
-	
+
 endmodule
 
 

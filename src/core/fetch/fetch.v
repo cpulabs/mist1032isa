@@ -1,10 +1,10 @@
 /****************************************
 	Fetch Unit
 	- 2 instruction multi fetch
-	
-	
+
+
 	Make	:	2010/09/23
-	Update	:	2010/10/03
+	Update	:	2014/07/07
 ****************************************/
 `default_nettype none
 `include "core.h"
@@ -17,6 +17,8 @@ module fetch(
 		input wire inRESET,
 		//System Register
 		input wire [31:0] iSYSREG_PSR,
+		input wire [31:0] iSYSREG_PDTR,
+		input wire [31:0] iSYSREG_TIDR,
 		//Exception
 		input wire iEXCEPTION_EVENT,
 		input wire iEXCEPTION_ADDR_SET,
@@ -39,20 +41,22 @@ module fetch(
 		input wire iPREVIOUS_FETCH_LOCK,
 		output wire [1:0] oPREVIOUS_MMUMOD,
 		output wire [2:0] oPREVIOUS_MMUPS,
+		output wire [13:0] oPREVIOUS_TID,			//
+		output wire [31:0] oPREVIOUS_PDT,			//
 		output wire [31:0] oPREVIOUS_FETCH_ADDR,
 		//Next
 		output wire oNEXT_INST_VALID,
 		output wire [11:0] oNEXT_MMU_FLAGS,
 		output wire oNEXT_PAGING_ENA,
 		output wire oNEXT_KERNEL_ACCESS,
-		output wire oNEXT_BRANCH_PREDICT,			
+		output wire oNEXT_BRANCH_PREDICT,
 		output wire [31:0] oNEXT_BRANCH_PREDICT_ADDR,
 		output wire [31:0] oNEXT_INST,
 		output wire [31:0] oNEXT_PC,
 		input wire iNEXT_FETCH_STOP,
 		input wire iNEXT_LOCK
 	);
-			
+
 
 	/****************************************
 	Register and Wire
@@ -73,7 +77,7 @@ module fetch(
 	reg b_next_paging_ena;
 	reg b_next_kernel_access;
 	reg [31:0] b_pc_out;
-	
+
 	/****************************************
 	Branch Predictor
 	****************************************/
@@ -89,18 +93,18 @@ module fetch(
 			endcase
 		end
 	endfunction
-	
+
 	wire branch_predictor_valid;
 	wire branch_predictor_predict_branch;
 	wire [31:0] branch_predictor_addr;
 	wire branch_predictor_flush;
-	
+
 	`ifdef MIST1032ISA_BRANCH_PREDICT
 		assign branch_predictor_flush = !iNEXT_LOCK && branch_predictor_valid && branch_predictor_predict_branch;		//Test
 	`else
 		assign branch_predictor_flush = 1'b0;
 	`endif
-	
+
 	branch_predictor BRANCH_PREDICTOR(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -118,10 +122,10 @@ module fetch(
 		//Jump
 		.iJUMP_STB(iBRANCH_PREDICT_RESULT_JUMP),
 		.iJUMP_HIT(iBRANCH_PREDICT_RESULT_HIT/* && iBRANCH_PREDICT_RESULT_PREDICT*/),
-		.iJUMP_ADDR(iBRANCH_PREDICT_RESULT_JUMP_ADDR),		
+		.iJUMP_ADDR(iBRANCH_PREDICT_RESULT_JUMP_ADDR),
 		.iJUMP_INST_ADDR(iBRANCH_PREDICT_RESULT_INST_ADDR)	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
 	);
-	
+
 	/****************************************
 	Fetch Address & Flag Queue
 	****************************************/
@@ -143,22 +147,22 @@ module fetch(
 			.clock(iCLOCK),				//Clock
 			.data(
 				{
-					!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, 
-					(iSYSREG_PSR[1] || iSYSREG_PSR[0]), 
+					!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/,
+					(iSYSREG_PSR[1] || iSYSREG_PSR[0]),
 					b_pc
 				}
 			),				//Data-In
 			.rdreq(iPREVIOUS_INST_VALID),				//Read Data Request
 			.sclr(iEXCEPTION_EVENT || branch_predictor_flush),				//Synchthronous Reset
 			.wrreq(!iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),				//Write Req
-			.almost_empty(),		
+			.almost_empty(),
 			.almost_full(),
 			.empty(),
 			.full(fetch_queue_full),
 			.q(
 				{
-					fetch_queue_kernel_access, 
-					fetch_queue_paging_ena, 
+					fetch_queue_kernel_access,
+					fetch_queue_paging_ena,
 					fetch_queue_addr
 				}
 			),					//Dataout
@@ -168,19 +172,19 @@ module fetch(
 
 	`else
 		mist1032isa_sync_fifo #(34, 8, 3) FETCH_REQ_ADDR_QUEUE(
-			.iCLOCK(iCLOCK), 
-			.inRESET(inRESET), 
-			.iREMOVE(iEXCEPTION_EVENT || branch_predictor_flush), 
-			.oCOUNT(/* Not Use */), 	
-			.iWR_EN(!iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP), 
-			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_pc}), 
+			.iCLOCK(iCLOCK),
+			.inRESET(inRESET),
+			.iREMOVE(iEXCEPTION_EVENT || branch_predictor_flush),
+			.oCOUNT(/* Not Use */),
+			.iWR_EN(!iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),
+			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_pc}),
 			.oWR_FULL(fetch_queue_full),
-			.iRD_EN(iPREVIOUS_INST_VALID), 
-			.oRD_DATA({fetch_queue_kernel_access, fetch_queue_paging_ena, fetch_queue_addr}), 
+			.iRD_EN(iPREVIOUS_INST_VALID),
+			.oRD_DATA({fetch_queue_kernel_access, fetch_queue_paging_ena, fetch_queue_addr}),
 			.oRD_EMPTY(/* Not Use */)
 		);
 	`endif
-	
+
 	/****************************************
 	This -> Previous
 	****************************************/
@@ -188,12 +192,14 @@ module fetch(
 	assign oBRANCH_PREDICT_FETCH_FLUSH = branch_predictor_flush;
 	assign oPREVIOUS_LOCK = iNEXT_LOCK;
 
-	assign oPREVIOUS_FETCH_REQ = !iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP; 
+	assign oPREVIOUS_FETCH_REQ = !iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP;
 	assign oPREVIOUS_MMUMOD = iSYSREG_PSR[1:0];
 	assign oPREVIOUS_MMUPS = iSYSREG_PSR[9:7];
+	assign oPREVIOUS_TID = iSYSREG_TIDR[13:0];
+	assign oPREVIOUS_PDT = iSYSREG_PDTR;
 	assign oPREVIOUS_FETCH_ADDR	= b_pc;
 
-	
+
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_pc <= {32{1'b0}};
@@ -224,7 +230,7 @@ module fetch(
 					end
 				2'h1 : 		//Fetch State
 					begin
-						if(!iEXCEPTION_EVENT && !branch_predictor_flush && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP)begin	
+						if(!iEXCEPTION_EVENT && !branch_predictor_flush && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP)begin
 							b_pc <= b_pc + 32'h4;		//Single Pipeline
 							b_fetch_valid <= 1'b1;
 						end
@@ -240,11 +246,11 @@ module fetch(
 				default :
 					begin
 						b_pc <= b_pc;
-					end	
+					end
 			endcase
 		end
 	end //always
-	
+
 	/****************************************
 	Previous -> Next
 	****************************************/
@@ -276,13 +282,13 @@ module fetch(
 			end
 		end
 	end	//always
-	
+
 	assign oNEXT_INST = b_next_inst;
 	assign oNEXT_INST_VALID = b_next_inst_valid;
 	assign oNEXT_MMU_FLAGS = b_next_mmu_flags;
 	assign oNEXT_PAGING_ENA = b_next_paging_ena;
 	assign oNEXT_KERNEL_ACCESS = b_next_kernel_access;
-	
+
 	`ifdef MIST1032ISA_BRANCH_PREDICT
 		assign oNEXT_BRANCH_PREDICT = branch_predictor_valid && branch_predictor_predict_branch;
 		assign oNEXT_BRANCH_PREDICT_ADDR = branch_predictor_addr;
@@ -290,10 +296,10 @@ module fetch(
 		assign oNEXT_BRANCH_PREDICT = 1'b0;
 		assign oNEXT_BRANCH_PREDICT_ADDR = 32'h0;
 	`endif
-	
+
 	assign oNEXT_PC = b_pc_out;
 
-	
+
 endmodule
 
 

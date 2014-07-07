@@ -5,36 +5,43 @@
 */
 
 `include "mmu.h"
-`default_nettype none	
-	
-	
+`default_nettype none
+
+
 module mmu_tlb(
 		//System
 		input wire iCLOCK,
 		input wire inRESET,
 		//TLB FLush
-		input wire iREMOVE,			
+		input wire iREMOVE,
 		//Read
 		input wire iRD_REQ,
-		output wire oRD_BUSY,			//
-		input wire [1:0] iRD_MOD,		//
-		input wire [2:0] iRD_PS,		// 
+		output wire oRD_BUSY,
+		input wire [13:0] iRD_TID,
+		input wire [1:0] iRD_MOD,
+		input wire [2:0] iRD_PS,
 		input wire [31:0] iRD_ADDR,		//Tag([31:15]Address Tag | [14:13]Way | [12]Line:none) | [11:0]None
 		output wire oRD_VALID,
-		input wire iRD_BUSY,			//
+		input wire iRD_BUSY,
 		output wire oRD_HIT,
 		output wire [23:0] oRD_FLAGS,
 		output wire [31:0] oRD_PHYS_ADDR,
+		//Update
+		/*
+		input wire iUP_REQ,
+		input wire [31:0] iUP_ADDR,
+		*/
 		//Write
 		input wire iWR_REQ,
-		input wire [1:0] iWR_MOD,		//
-		input wire [2:0] iWR_PS,		// 
-		input wire [31:0] iWR_ADDR,		
-		//input wire [27:0] iWR_FLAGS,			
+		input wire [13:0] iWR_TID,
+		input wire [1:0] iWR_MOD,
+		input wire [2:0] iWR_PS,
+		input wire [31:0] iWR_ADDR,
+		//input wire [27:0] iWR_FLAGS,
 		input wire [63:0] iWR_PHYS_ADDR
 	);
-				
-				
+
+
 	/********************************************
 	Register and Wire
 	********************************************/
@@ -57,14 +64,12 @@ module mmu_tlb(
 	reg [1:0] b_status1[0:3];
 	reg [1:0] b_status2[0:3];
 	reg [1:0] b_status3[0:3];
-	/*
-	reg [33:0] b_tag0[0:3];	//AddressTag:15bit
-	reg [33:0] b_tag1[0:3];	
-	reg [33:0] b_tag2[0:3];
-	reg [33:0] b_tag3[0:3];
-	*/
+	reg [13:0] b_tid0[0:3];	//Task ID
+	reg [13:0] b_tid1[0:3];
+	reg [13:0] b_tid2[0:3];
+	reg [13:0] b_tid3[0:3];
 	reg [16:0] b_tag0[0:3];	//AddressTag:15bit
-	reg [16:0] b_tag1[0:3];	
+	reg [16:0] b_tag1[0:3];
 	reg [16:0] b_tag2[0:3];
 	reg [16:0] b_tag3[0:3];
 	reg [39:0] b_data0[0:3]; //Real Address Index(2Line)
@@ -76,8 +81,8 @@ module mmu_tlb(
 	reg [23:0] b_flags2[0:3];
 	reg [23:0] b_flags3[0:3];
 	//Memory Contoroll
-	reg b_load_req_valid;	
-	
+	reg b_load_req_valid;
+
 	/********************************************
 	Output Buffer
 	********************************************/
@@ -97,34 +102,39 @@ module mmu_tlb(
 			end
 		end
 	end
-	
-	
+
+
 	/********************************************
 	Controll Read
 	********************************************/
 	assign read_index = func_get_index(iRD_MOD, iRD_PS, iRD_ADDR);
 	assign {read_hit, read_way}	= func_hit_check(
 		func_get_tag(iRD_MOD, iRD_PS, iRD_ADDR),
+		iRD_TID,
 		b_status0[read_index],
 		b_status1[read_index],
 		b_status2[read_index],
 		b_status3[read_index],
+		b_tid0[read_index],
+		b_tid1[read_index],
+		b_tid2[read_index],
+		b_tid3[read_index],
 		b_tag0[read_index],
 		b_tag1[read_index],
 		b_tag2[read_index],
 		b_tag3[read_index]
 	);
-				
+
 	assign this_read_lock = iRD_BUSY;
-	
+
 	/********************************************
 	Controll Write
 	********************************************/
 	assign write_index = func_get_index(iWR_MOD, iWR_PS, iWR_ADDR);
 	assign write_way = func_write_way_search(
-		b_status0[write_index], 
-		b_status1[write_index], 
-		b_status2[write_index], 
+		b_status0[write_index],
+		b_status1[write_index],
+		b_status2[write_index],
 		b_status3[write_index]
 	);
 
@@ -134,25 +144,30 @@ module mmu_tlb(
 	//Hit Check
 	function [2:0] func_hit_check;	//[2]:Hit  |  [1:0] Hit Way
 		input [16:0] func_request_tag;
+		input [13:0] func_request_tid;
 		input [1:0] func_way0_status;
 		input [1:0] func_way1_status;
 		input [1:0] func_way2_status;
 		input [1:0] func_way3_status;
+		input [13:0] func_way0_tid;
+		input [13:0] func_way1_tid;
+		input [13:0] func_way2_tid;
+		input [13:0] func_way3_tid;
 		input [16:0] func_way0_tag;
 		input [16:0] func_way1_tag;
 		input [16:0] func_way2_tag;
 		input [16:0] func_way3_tag;
 		begin
-			if(func_way0_status != 2'h0 && func_way0_tag == func_request_tag)begin
+			if(func_way0_status != 2'h0 && func_way0_tag == func_request_tag && func_request_tid == func_way0_tid)begin
 				func_hit_check = {1'b1, 2'h0};
 			end
-			else if(func_way1_status != 2'h0 && func_way1_tag == func_request_tag)begin
+			else if(func_way1_status != 2'h0 && func_way1_tag == func_request_tag && func_request_tid == func_way1_tid)begin
 				func_hit_check = {1'b1, 2'h1};
 			end
-			else if(func_way2_status != 2'h0 && func_way2_tag == func_request_tag)begin
+			else if(func_way2_status != 2'h0 && func_way2_tag == func_request_tag && func_request_tid == func_way2_tid)begin
 				func_hit_check = {1'b1, 2'h2};
 			end
-			else if(func_way3_status != 2'h0 && func_way3_tag == func_request_tag)begin
+			else if(func_way3_status != 2'h0 && func_way3_tag == func_request_tag && func_request_tid == func_way3_tid)begin
 				func_hit_check = {1'b1, 2'h3};
 			end
 			else begin
@@ -160,8 +175,8 @@ module mmu_tlb(
 			end
 		end
 	endfunction
-		
-	
+
+
 	//Low Pryority Line Search
 	function [1:0] func_write_way_search;
 		input [1:0] way0_status;
@@ -318,8 +333,8 @@ module mmu_tlb(
 			end
 		end
 	endfunction
-	
-	
+
+
 	/********************************************
 	Tag Pryority & Tag Control
 	********************************************/
@@ -359,9 +374,10 @@ module mmu_tlb(
 			//Write
 			if(iWR_REQ)begin
 				case(write_way)
-					2'h0:	
+					2'h0:
 						begin
 							b_status0[write_index] <= 2'b11;
+							b_tid0[write_index] <= iWR_TID;
 							b_tag0[write_index] <= func_get_tag(iWR_MOD, iWR_PS, iWR_ADDR);
 							b_data0[write_index] <= {func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[63:32]), func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[31:0])};
 							b_flags0[write_index] <= {func_get_flags(iWR_PHYS_ADDR[63:32]), func_get_flags(iWR_PHYS_ADDR[31:0])};
@@ -369,20 +385,23 @@ module mmu_tlb(
 					2'h1:
 						begin
 							b_status1[write_index] <= 2'b11;
+							b_tid1[write_index] <= iWR_TID;
 							b_tag1[write_index] <= func_get_tag(iWR_MOD, iWR_PS, iWR_ADDR);
 							b_data1[write_index] <= {func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[63:32]), func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[31:0])};
 							b_flags1[write_index] <= {func_get_flags(iWR_PHYS_ADDR[63:32]), func_get_flags(iWR_PHYS_ADDR[31:0])};
 						end
-					2'h2:	
+					2'h2:
 						begin
 							b_status2[write_index] <= 2'b11;
+							b_tid2[write_index] <= iWR_TID;
 							b_tag2[write_index] <= func_get_tag(iWR_MOD, iWR_PS, iWR_ADDR);
 							b_data2[write_index] <= {func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[63:32]), func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[31:0])};
 							b_flags2[write_index] <= {func_get_flags(iWR_PHYS_ADDR[63:32]), func_get_flags(iWR_PHYS_ADDR[31:0])};
 						end
-					2'h3:	
+					2'h3:
 						begin
 							b_status3[write_index] <= 2'b11;
+							b_tid3[write_index] <= iWR_TID;
 							b_tag3[write_index] <= func_get_tag(iWR_MOD, iWR_PS, iWR_ADDR);
 							b_data3[write_index] <= {func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[63:32]), func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[31:0])};
 							b_flags3[write_index] <= {func_get_flags(iWR_PHYS_ADDR[63:32]), func_get_flags(iWR_PHYS_ADDR[31:0])};
@@ -434,7 +453,7 @@ module mmu_tlb(
 			end //End !Lock
 		end
 	end //always
-	
+
 
 	/********************************************
 	Assign
@@ -451,7 +470,7 @@ module mmu_tlb(
 			end
 		end
 	endfunction
-	
+
 
 	/*
 	function [63:0] func_line_data2output_data;
@@ -472,9 +491,9 @@ module mmu_tlb(
 								)
 							)
 						) : 24'h0;
-	
-	
-	assign oRD_PHYS_ADDR = 
+
+
+	assign oRD_PHYS_ADDR =
 						(b_load_req_valid && !this_read_lock && b_rd_hit)? (
 							(b_rd_way == 2'h0)? func_line_data2output_data(b_rd_line, b_data0[b_rd_index]) : (
 								(b_rd_way == 2'h1)? func_line_data2output_data(b_rd_line, b_data1[b_rd_index]) : (
@@ -483,7 +502,7 @@ module mmu_tlb(
 							)
 						) : 32'h0;
 	/*
-	assign oRD_PHYS_ADDR = 
+	assign oRD_PHYS_ADDR =
 						(b_load_req_valid && !this_read_lock && b_rd_hit)? (
 							(b_rd_way == 2'h0)? func_line_data2output_data(b_data0[b_rd_index]) : (
 								(b_rd_way == 2'h1)? func_line_data2output_data(b_data1[b_rd_index]) : (
@@ -494,10 +513,10 @@ module mmu_tlb(
 	*/
 
 
-	
+
 	assign oRD_BUSY = this_read_lock;
-	
-	
+
+
 endmodule
 
 

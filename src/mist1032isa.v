@@ -1,7 +1,7 @@
 /****************************************
 MIST1032ISA Processor
 ****************************************/
-`default_nettype none	
+`default_nettype none
 `include "processor.h"
 `include "common.h"
 
@@ -35,7 +35,7 @@ module mist1032isa(
 		//Data RAM -> This
 		input wire iMEMORY_VALID,
 		output wire oMEMORY_BUSY,
-		input wire [63:0] iMEMORY_DATA,	
+		input wire [63:0] iMEMORY_DATA,
 		/****************************************
 		GCI BUS
 		****************************************/
@@ -75,8 +75,8 @@ module mist1032isa(
 		output wire oDEBUG_PARA_ERROR,
 		output wire [31:0] oDEBUG_PARA_DATA
 	);
-			
-			
+
+
 	/****************************************
 	Register and Wire
 	****************************************/
@@ -88,6 +88,7 @@ module mist1032isa(
 	wire [1:0] core2mem_inst_mmumod;
 	wire [2:0] core2mem_inst_mmups;
 	wire [31:0] core2mem_inst_pdt;
+	wire [13:0] core2mem_inst_tid;
 	wire [31:0] core2mem_inst_addr;
 	wire mem2core_inst_valid;
 	wire core2mem_inst_lock;
@@ -95,7 +96,7 @@ module mist1032isa(
 	wire [23:0] mem2core_inst_mmu_flags;
 	wire core2mem_data_req;
 	wire mem2core_data_lock;
-	wire [1:0] core2mem_data_order;	
+	wire [1:0] core2mem_data_order;
 	wire [3:0] core2mem_data_mask;
 	wire core2mem_data_rw;		//0=Read | 1=Write
 	wire [13:0] core2mem_data_tid;
@@ -125,9 +126,9 @@ module mist1032isa(
 	//DPS
 	wire pic2dps_req;
 	wire dps2pic_busy;
-	wire pic2dps_rw;	
-	wire [31:0] pic2dps_addr;	
-	wire [31:0] pic2dps_data;	
+	wire pic2dps_rw;
+	wire [31:0] pic2dps_addr;
+	wire [31:0] pic2dps_data;
 	wire dps2pic_req;
 	wire [31:0] dps2pic_data;
 	wire dps2pic_irq_valid;
@@ -144,9 +145,9 @@ module mist1032isa(
 	wire memory2processor_req;
 	wire processor2memory_busy;
 	wire [63:0] memory2processor_data;
-	
+
 	wire mmu_lock = memory2processor_lock;
-	
+
 	wire debuger2processor_cmd_req;
 	wire processor2debuger_cmd_busy;
 	wire [3:0] debuger2processor_cmd_command;
@@ -155,22 +156,22 @@ module mist1032isa(
 	wire processor2debuger_cmd_valid;
 	wire processor2debuger_cmd_error;
 	wire [31:0] processor2debuger_cmd_data;
-	
+
 	reg b_io_write_ack;
-	
+
 
 	/********************************************************************************
 	Memory Mode
 	********************************************************************************/
 	`ifdef MIST1032ISA_FIRST_SIM
-		
+
 		assign oMEMORY_REQ = 1'b0;
 		assign oMEMORY_ORDER = 2'h0;
 		assign oMEMORY_RW = 1'b0;
 		assign oMEMORY_ADDR = 32'h0;
 		assign oMEMORY_DATA = 32'h0;
 		assign oMEMORY_BUSY = 1'b0;
-		
+
 		sim_memory_model SIM_MEMORY_MODEL(
 			.iCLOCK(iBUS_CLOCK),
 			.inRESET(inRESET),
@@ -202,12 +203,12 @@ module mist1032isa(
 		assign memory2processor_req = iMEMORY_VALID;
 		assign memory2processor_data = iMEMORY_DATA;
 	`endif
-	
-	
-	
-	
-	
-			
+
+
+
+
+
+
 	/********************************************************************************
 	Processor Core
 	********************************************************************************/
@@ -216,16 +217,16 @@ module mist1032isa(
 	wire core2io_irq_tables_flag_mask;
 	wire core2io_irq_tables_flag_valid;
 	wire [1:0] core2io_irq_tables_flag_level;
-	
-	
-	
-	
+
+
+
+
 	assign oIO_IRQ_CONFIG_TABLE_REQ = core2io_irq_tables_req;
 	assign oIO_IRQ_CONFIG_TABLE_ENTRY = core2io_irq_tables_entry;
 	assign oIO_IRQ_CONFIG_TABLE_FLAG_MASK = core2io_irq_tables_flag_mask;
 	assign oIO_IRQ_CONFIG_TABLE_FLAG_VALID = core2io_irq_tables_flag_valid;
 	assign oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL = core2io_irq_tables_flag_level;
-	
+
 	core #(32'h0) CORE(
 		/****************************************
 		System
@@ -234,11 +235,11 @@ module mist1032isa(
 		.inRESET(inRESET),
 		/****************************************
 		System
-		****************************************/	
+		****************************************/
 		.oFREE_TLB_FLUSH(free_tlb_flush),
 		/****************************************
 		GCI Controll
-		****************************************/	
+		****************************************/
 		//Interrupt Control
 		.oIO_IRQ_CONFIG_TABLE_REQ(core2io_irq_tables_req),
 		.oIO_IRQ_CONFIG_TABLE_ENTRY(core2io_irq_tables_entry),
@@ -254,6 +255,7 @@ module mist1032isa(
 		.oINST_MMUMOD(core2mem_inst_mmumod),
 		.oINST_MMUPS(core2mem_inst_mmups),
 		.oINST_PDT(core2mem_inst_pdt),
+		.oINST_TID(core2mem_inst_tid),			/////
 		.oINST_ADDR(core2mem_inst_addr),
 		//Data RAM -> This
 		.iINST_VALID(mem2core_inst_valid),
@@ -319,10 +321,10 @@ module mist1032isa(
 		.oDEBUG_CMD_ERROR(processor2debuger_cmd_error),
 		.oDEBUG_CMD_DATA(processor2debuger_cmd_data)
 	);
-	
+
 
 	sdi_debugger SDI_DEBUGGER(
-		//Clock 
+		//Clock
 		.iCLOCK(iCORE_CLOCK),
 		.inRESET(inRESET),
 		//To Core
@@ -346,8 +348,8 @@ module mist1032isa(
 		.oDEBUG_PARA_ERROR(oDEBUG_PARA_ERROR),
 		.oDEBUG_PARA_DATA(oDEBUG_PARA_DATA)
 	);
-	
-	
+
+
 	/********************************************************************************
 	Memory Interface
 	********************************************************************************/
@@ -358,6 +360,7 @@ module mist1032isa(
 	wire [1:0] m_arbiter2mmu_mmu_mode;
 	wire [2:0] m_arbiter2mmu_mmu_ps;
 	wire [31:0] m_arbiter2mmu_pdt;
+	wire [13:0] m_arbiter2mmu_tid;
 	wire [1:0] m_arbiter2mmu_order;
 	wire [3:0] m_arbiter2mmu_mask;
 	wire m_arbiter2mmu_rw;
@@ -396,6 +399,7 @@ module mist1032isa(
 		.iINST_MMUMOD(core2mem_inst_mmumod),
 		.iINST_MMUPS(core2mem_inst_mmups),
 		.iINST_PDT(core2mem_inst_pdt),
+		.iINST_TID(core2mem_inst_tid),
 		.iINST_ADDR(core2mem_inst_addr),
 		//Inst(Memory -> Core)
 		.oINST_REQ(mem2core_inst_valid),
@@ -409,6 +413,7 @@ module mist1032isa(
 		.oMEMORY_MMU_MODE(m_arbiter2mmu_mmu_mode),
 		.oMEMORY_MMU_PS(m_arbiter2mmu_mmu_ps),
 		.oMEMORY_PDT(m_arbiter2mmu_pdt),
+		.oMEMORY_TID(m_arbiter2mmu_tid),			////////////////////////////////////////
 		.oMEMORY_ORDER(m_arbiter2mmu_order),
 		.oMEMORY_MASK(m_arbiter2mmu_mask),
 		.oMEMORY_RW(m_arbiter2mmu_rw),
@@ -421,13 +426,13 @@ module mist1032isa(
 		.iMEMORY_DATA(mmu2m_arbiter_data),
 		.iMEMORY_MMU_FLAGS(mmu2m_arbiter_mmu_flags)
 	);
-	
+
 	//MMU
 	wire [3:0] processor2endian_mask;
 	wire [31:0] processor2endian_data;
-	
+
 	wire [63:0] endian2processor_data;
-	
+
 	mmu_if MMU_IF(
 		.iCLOCK(iBUS_CLOCK),
 		.inRESET(inRESET),
@@ -442,6 +447,7 @@ module mist1032isa(
 		.iCORE_MMUMOD(m_arbiter2mmu_mmu_mode),		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		.iCORE_MMUPS(m_arbiter2mmu_mmu_ps),
 		.iCORE_PDT(m_arbiter2mmu_pdt),					//Page Table Register
+		.iCORE_TID(m_arbiter2mmu_tid),
 		.iCORE_ORDER(m_arbiter2mmu_order),
 		.iCORE_MASK(m_arbiter2mmu_mask),
 		.iCORE_RW(m_arbiter2mmu_rw),
@@ -468,10 +474,10 @@ module mist1032isa(
 		.iMEMORY_REQ(memory2processor_req),
 		.oMEMORY_LOCK(processor2memory_busy),
 		.iMEMORY_DATA(endian2processor_data)
-	); 
-	
+	);
+
 	`ifdef MIST32_NEW_TEST
-	
+
 	//Endian Control
 	endian_controller ENDIAN_TO_MEM(
 		//Source
@@ -481,7 +487,7 @@ module mist1032isa(
 		.oDEST_MASK(processor2memory_mask),
 		.oDEST_DATA(processor2memory_data)
 	);
-	
+
 	endian_controller ENDIAN_TO_CPU_L(
 		//Source
 		.iSRC_MASK(4'hf),
@@ -490,7 +496,7 @@ module mist1032isa(
 		.oDEST_MASK(),
 		.oDEST_DATA(endian2processor_data[31:0])
 	);
-	
+
 	endian_controller ENDIAN_TO_CPU_H(
 		//Source
 		.iSRC_MASK(4'hf),
@@ -499,17 +505,17 @@ module mist1032isa(
 		.oDEST_MASK(),
 		.oDEST_DATA(endian2processor_data[63:32])
 	);
-	
+
 	`else
 	assign processor2memory_mask = processor2endian_mask;
 	assign processor2memory_data = processor2endian_data;
 	assign endian2processor_data = memory2processor_data;
-	
+
 	`endif
 
 	/********************************************************************************
 	IO Interface
-	********************************************************************************/		
+	********************************************************************************/
 	//Peripheral Interface Controller
 	pic PIC( //peripheral_interface_controller
 		/****************************************
@@ -550,39 +556,39 @@ module mist1032isa(
 		.oDPS_ADDR(pic2dps_addr),
 		.oDPS_DATA(pic2dps_data),
 		//Return
-		.iDPS_REQ(dps2pic_req),			
+		.iDPS_REQ(dps2pic_req),
 		.oDPS_BUSY(),
 		.iDPS_DATA(dps2pic_data),
 		//Interrupt
 		.iDPS_IRQ_REQ(dps2pic_irq_valid),
 		.iDPS_IRQ_NUM(dps2pic_irq_num),
-		.oDPS_IRQ_ACK(pic2dps_irq_ack),	
+		.oDPS_IRQ_ACK(pic2dps_irq_ack),
 		/****************************************
 		To GCI Connection
-		****************************************/						
+		****************************************/
 		//Request
-		.oGCI_REQ(oGCI_REQ),				
+		.oGCI_REQ(oGCI_REQ),
 		.iGCI_BUSY(iGCI_BUSY),
 		.oGCI_RW(oGCI_RW),				//0=Read : 1=Write
 		.oGCI_ADDR(oGCI_ADDR),
 		.oGCI_DATA(oGCI_DATA),
 		//Return
-		.iGCI_REQ(iGCI_REQ),				
+		.iGCI_REQ(iGCI_REQ),
 		.oGCI_BUSY(oGCI_BUSY),
 		.iGCI_DATA(iGCI_DATA),
 		//Interrupt
 		.iGCI_IRQ_REQ(iGCI_IRQ_REQ),
 		.iGCI_IRQ_NUM(iGCI_IRQ_NUM),
 		.oGCI_IRQ_ACK(oGCI_IRQ_ACK)
-	);	
-	
-	
-		
+	);
+
+
+
 	/********************************************************************************
 	DPS
 	********************************************************************************/
 	wire [5:0] core2dps_irq_tables_entry_dps = core2io_irq_tables_entry - 6'd36;
-	
+
 	dps DPS( //default_peripheral_system
 		.iCLOCK(iBUS_CLOCK),
 		.iDPS_BASE_CLOCK(iDPS_CLOCK),			//49.5120MHz
@@ -590,7 +596,7 @@ module mist1032isa(
 		/****************************************
 		IO
 		****************************************/
-		//IRQ Tables	
+		//IRQ Tables
 		.iDPS_IRQ_CONFIG_TABLE_REQ(core2io_irq_tables_req && (core2io_irq_tables_entry == 6'd36 || core2io_irq_tables_entry == 6'd37)),
 		.iDPS_IRQ_CONFIG_TABLE_ENTRY(core2dps_irq_tables_entry_dps[1:0]),
 		.iDPS_IRQ_CONFIG_TABLE_FLAG_MASK(core2io_irq_tables_flag_mask),
@@ -616,13 +622,13 @@ module mist1032isa(
 		****************************************/
 		.oSCI_TXD(oSCI_TXD),
 		.iSCI_RXD(iSCI_RXD)
-	);	
-	
+	);
 
-		
+
+
 	/*********************************************************
 	Write Ack(Data Pipe)
-	*********************************************************/	
+	*********************************************************/
 	//IO
 	always@(posedge iBUS_CLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -643,7 +649,7 @@ module mist1032isa(
 			endcase
 		end
 	end
-	
+
 endmodule
 
 
