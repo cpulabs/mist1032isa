@@ -1,4 +1,5 @@
-# ** Warning: (vlib-34) Library already exists at "work".
+# ** Error: (vlib-35) Failed to create directory "work".
+# File exists. (errno = EEXIST)
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module tb_inst_level
 # 

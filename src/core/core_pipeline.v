@@ -868,7 +868,7 @@ module core_pipeline
 		.iPREVIOUS_BRANCH_PREDICT_ADDR(dispatch2execution_branch_predict_addr),
 		.iPREVIOUS_SYSREG_PSR(dispatch2execution_sysreg_psr),
 		.iPREVIOUS_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
-		.iPREVIOUS_SYSREG_PDTR(dispatch2execution_sysreg_tidr),
+		.iPREVIOUS_SYSREG_PDTR(dispatch2execution_sysreg_pdtr),
 		.iPREVIOUS_DESTINATION_SYSREG(dispatch2execution_destination_sysreg),
 		.iPREVIOUS_DESTINATION(dispatch2execution_destination),
 		.iPREVIOUS_WRITEBACK(dispatch2execution_writeback),

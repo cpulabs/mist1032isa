@@ -567,12 +567,14 @@ module mmu(
 		//Flash
 		.iFLASH(iTLB_FLUSH || iRESET_SYNC),	//context switch
 		//Write
-		.iWR_REQ(mem_out_req),
+		//.iWR_REQ(mem_out_req),
+		.iWR_REQ(res_table_wr_condition),
 		//.iWR_FLAG(1'b0),
 		.iWR_FLAG(mem_out_mmu_use),
 		.oWR_FULL(res_table_wr_full),
 		//Read
-		.iRD_REQ(/*res_table_rd_condition*/iMEMORY_VALID),
+		.iRD_REQ(res_table_rd_condition),
+		//.iRD_REQ(iMEMORY_VALID),
 		.oRD_VALID(res_table_rd_valid),
 		.oRD_FLAG(res_table_rd_flag),
 		.oRD_EMPTY(/* Not Use */)

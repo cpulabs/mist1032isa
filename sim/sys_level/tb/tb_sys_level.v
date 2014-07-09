@@ -42,7 +42,7 @@ module tb_sys_level;
 	//Data RAM -> This
 	wire iMEMORY_VALID;
 	wire oMEMORY_BUSY;
-	wire [63:0] iMEMORY_DATA;	
+	wire [63:0] iMEMORY_DATA;
 	/****************************************
 	GCI BUS
 	****************************************/
@@ -115,7 +115,7 @@ module tb_sys_level;
 		//Data RAM -> This
 		.iMEMORY_VALID(iMEMORY_VALID),
 		.oMEMORY_BUSY(oMEMORY_BUSY),
-		.iMEMORY_DATA(iMEMORY_DATA),	
+		.iMEMORY_DATA(iMEMORY_DATA),
 		/****************************************
 		GCI BUS
 		****************************************/
@@ -171,7 +171,7 @@ module tb_sys_level;
 	always#(PL_DPS_CYCLE/2)begin
 		iDPS_CLOCK = !iDPS_CLOCK;
 	end
-	
+
 
 	/******************************************************
 	State
@@ -182,8 +182,8 @@ module tb_sys_level;
 		iCORE_CLOCK = 1'b0;
 		iBUS_CLOCK = 1'b0;
 		iDPS_CLOCK = 1'b0;
-		inRESET = 1'b0;		
-		iSCI_RXD = 1'b1;	
+		inRESET = 1'b0;
+		iSCI_RXD = 1'b1;
 		iGCI_BUSY = 1'b0;
 		iGCI_REQ = 1'b0;
 		iGCI_DATA = 32'h0;
@@ -237,14 +237,14 @@ module tb_sys_level;
 		.oMEMORY_DATA(iMEMORY_DATA)
 	);
 
-	
+
 	always@(posedge iCORE_CLOCK)begin
 		if(inRESET)begin
 			//task_disp_branch();
 			task_disp_loadstore();
 		end
 	end
-	
+
 
 	/******************************************************
 	Assertion
@@ -292,11 +292,11 @@ module tb_sys_level;
 			else if(oMEMORY_ADDR == 32'h0002_0014)begin
 				assert_expect = {oMEMORY_DATA[7:0], oMEMORY_DATA[15:8], oMEMORY_DATA[23:16], oMEMORY_DATA[31:24]};
 			end
-			
+
 		end
 	end
 	*/
-	
+
 
 endmodule
 

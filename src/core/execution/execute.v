@@ -19,28 +19,28 @@ module execute(
 		output wire oEXCEPTION_LDST_LOCK,
 		//System Register
 		output wire [31:0] oSYSREG_FLAGR,
-		//Pipeline 
-		input wire iPREVIOUS_VALID,	
+		//Pipeline
+		input wire iPREVIOUS_VALID,
 		input wire iPREVIOUS_FAULT_PAGEFAULT,
 		input wire iPREVIOUS_FAULT_PRIVILEGE_ERROR,
 		input wire iPREVIOUS_FAULT_INVALID_INST,
 		input wire iPREVIOUS_PAGING_ENA,
 		input wire iPREVIOUS_KERNEL_ACCESS,
 		input wire iPREVIOUS_BRANCH_PREDICT,
-		input wire [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,	
+		input wire [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
 		input wire [31:0] iPREVIOUS_SYSREG_PSR,
 		input wire [31:0] iPREVIOUS_SYSREG_TIDR,
 		input wire [31:0] iPREVIOUS_SYSREG_PDTR,
 		input wire iPREVIOUS_DESTINATION_SYSREG,
-		input wire [4:0] iPREVIOUS_DESTINATION,			
-		input wire iPREVIOUS_WRITEBACK,	
-		input wire iPREVIOUS_FLAGS_WRITEBACK,	
+		input wire [4:0] iPREVIOUS_DESTINATION,
+		input wire iPREVIOUS_WRITEBACK,
+		input wire iPREVIOUS_FLAGS_WRITEBACK,
 		input wire [4:0] iPREVIOUS_CMD,
-		input wire [3:0] iPREVIOUS_CC_AFE,	
+		input wire [3:0] iPREVIOUS_CC_AFE,
 		input wire [31:0] iPREVIOUS_SPR,
 		input wire [31:0] iPREVIOUS_SOURCE0,
 		input wire [31:0] iPREVIOUS_SOURCE1,
-		input wire [5:0] iPREVIOUS_ADV_DATA,	
+		input wire [5:0] iPREVIOUS_ADV_DATA,
 		input wire [4:0] iPREVIOUS_SOURCE0_POINTER,
 		input wire [4:0] iPREVIOUS_SOURCE1_POINTER,
 		input wire iPREVIOUS_SOURCE0_SYSREG,
@@ -48,8 +48,8 @@ module execute(
 		input wire iPREVIOUS_SOURCE1_IMM,
 		input wire iPREVIOUS_SOURCE0_FLAGS,
 		input wire iPREVIOUS_ADV_ACTIVE,
-		input wire iPREVIOUS_EX_SYS_REG,		
-		input wire iPREVIOUS_EX_SYS_LDST,		
+		input wire iPREVIOUS_EX_SYS_REG,
+		input wire iPREVIOUS_EX_SYS_LDST,
 		input wire iPREVIOUS_EX_LOGIC,
 		input wire iPREVIOUS_EX_SHIFT,
 		input wire iPREVIOUS_EX_ADDER,
@@ -64,7 +64,7 @@ module execute(
 		output wire oDATAIO_REQ,
 		input wire iDATAIO_BUSY,
 		output wire [1:0] oDATAIO_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
-		output wire [3:0] oDATAIO_MASK,		//[0]=Byte0, [1]=Byte1... 
+		output wire [3:0] oDATAIO_MASK,		//[0]=Byte0, [1]=Byte1...
 		output wire oDATAIO_RW,				//0=Read 1=Write
 		output wire [13:0] oDATAIO_TID,
 		output wire [1:0] oDATAIO_MMUMOD,
@@ -82,7 +82,7 @@ module execute(
 		output wire oNEXT_DESTINATION_SYSREG,
 		output wire oNEXT_WRITEBACK,
 		output wire oNEXT_SPR_WRITEBACK,
-		output wire [31:0] oNEXT_SPR, 
+		output wire [31:0] oNEXT_SPR,
 		output wire [31:0] oNEXT_PC,
 		output wire oNEXT_BRANCH,
 		output wire [31:0] oNEXT_BRANCH_PC,
@@ -95,9 +95,10 @@ module execute(
 		output wire oIDTSET_VALID,
 		output wire oPDTSET_VALID,
 		output wire oFAULT_VALID,
-		output wire [6:0] oFAULT_NUM,	
+		output wire [6:0] oFAULT_NUM,
 		output wire [31:0] oFAULT_FI0R,
-		//Branch Predictor			
+		output wire [31:0] oFAULT_FI1R,
+		//Branch Predictor
 		output wire oBPREDICT_PREDICT,				//Branch Guess
 		output wire oBPREDICT_HIT,					//Guess Hit!
 		output wire oBPREDICT_JUMP,					//Branch Active
@@ -118,7 +119,7 @@ module execute(
 	localparam L_PARAM_STT_BRANCH = 3'h4;
 	localparam L_PARAM_STT_EXCEPTION = 3'h5;
 	localparam L_PARAM_STT_HALT = 3'h6;
-	
+
 	//Debugger
 	reg [1:0] b_debug_state;
 	reg b_debug_stop;
@@ -149,12 +150,13 @@ module execute(
 	reg b_exception_valid;
 	reg [6:0] b_exception_num;
 	reg [31:0] b_exception_fi0r;
+	reg [31:0] b_exception_fi1r;
 	reg b_jump;
 	reg b_idts;
 	reg b_pdts;
 	reg b_ib;
 	reg [31:0] b_branch_addr;
-	reg b_branch_predict;	
+	reg b_branch_predict;
 	reg b_branch_predict_hit;
 	reg [31:0] b_branch_predict_addr;
 	reg [31:0] b_pc;
@@ -175,7 +177,7 @@ module execute(
 	reg b_div_q_r_condition;
 
 
-	
+
 	wire lock_condition = (b_state != L_PARAM_STT_NORMAL) || b_div_wait || b_debug_stop;// || iDATAIO_BUSY;
 	wire io_lock_condition = iDATAIO_BUSY;
 	assign oPREVIOUS_LOCK = lock_condition || iFREE_PIPELINE_STOP;
@@ -192,6 +194,9 @@ module execute(
 	wire forwarding_reg_spr_valid;
 	wire [31:0] forwarding_reg_spr_data;
 	wire [31:0] ex_module_spr;// = forwarding_reg_spr_data;
+	wire [31:0] ex_module_pdtr;
+	wire [31:0] ex_module_tidr;
+	wire [31:0] ex_module_psr;
 
 	//System Register
 	wire sys_reg_sf = 1'b0;
@@ -200,7 +205,7 @@ module execute(
 	wire sys_reg_pf = 1'b0;
 	wire sys_reg_zf = 1'b0;
 	wire [4:0] sys_reg_flags = {sys_reg_sf, sys_reg_of, sys_reg_cf, sys_reg_pf, sys_reg_zf};
-	wire [31:0] sys_reg_data;	
+	wire [31:0] sys_reg_data;
 	//Logic
 	wire logic_sf;
 	wire logic_of;
@@ -228,7 +233,7 @@ module execute(
 	wire mul_cf_h;
 	wire mul_of_h;
 	wire mul_pf_h;
-	wire mul_zf_h;	
+	wire mul_zf_h;
 	wire [4:0] mul_flags;
 	wire [31:0] mul_data;
 	//Div
@@ -243,7 +248,7 @@ module execute(
 	wire ldst_pipe_rw;
 	wire [31:0] ldst_pipe_addr;
 	wire [31:0] ldst_pipe_data;
-	wire [1:0] ldst_pipe_order;	
+	wire [1:0] ldst_pipe_order;
 	wire [1:0] load_pipe_shift;
 	wire [3:0] load_pipe_mask;
 	//Branch
@@ -255,7 +260,7 @@ module execute(
 	wire branch_halt_valid;
 
 	//AFE
-	wire [31:0] result_data_with_afe;	
+	wire [31:0] result_data_with_afe;
 
 	execute_forwarding_register FORWARDING_REGISTER(
 		.iCLOCK(iCLOCK),
@@ -273,7 +278,7 @@ module execute(
 		.iWB_AUTO_SPR_VALID(b_valid && b_destination_sysreg && b_writeback && b_destination == `SYSREG_SPR),
 		.iWB_AUTO_SPR_DATA(result_data_with_afe),
 		//Current -Stak Point Register
-		.iCUUR_SPR_DATA(iPREVIOUS_SPR),					//NEW
+		.iCUUR_SPR_DATA(iPREVIOUS_SPR),
 		//Fowerding Register Output
 		.oFDR_GR_VALID(forwarding_reg_gr_valid),
 		.oFDR_GR_DATA(forwarding_reg_gr_data),
@@ -311,10 +316,22 @@ module execute(
 		.iPREVIOUS_SOURCE_POINTER(iPREVIOUS_SOURCE0_POINTER),
 		.iPREVIOUS_SOURCE_IMM(1'b0/*iPREVIOUS_SOURCE0_IMM*/),
 		.iPREVIOUS_SOURCE_DATA(iPREVIOUS_SOURCE0),
+		.iPREVIOUS_SOURCE_PDTR(iPREVIOUS_SYSREG_PDTR),
+		.iPREVIOUS_SOURCE_TIDR(iPREVIOUS_SYSREG_TIDR),
+		.iPREVIOUS_SOURCE_PSR(iPREVIOUS_SYSREG_PSR),
 		//Output
 		.oNEXT_SOURCE_DATA(ex_module_source0),
-		.oNEXT_SOURCE_SPR(ex_module_spr)
+		.oNEXT_SOURCE_SPR(ex_module_spr),
+		.oNEXT_SOURCE_PDTR(ex_module_pdtr),
+		.oNEXT_SOURCE_TIDR(ex_module_tidr),
+		.oNEXT_SOURCE_PSR(ex_module_psr)
 	);
+
+	/*
+	assign ex_module_pdtr = iPREVIOUS_SYSREG_PDTR;
+	assign ex_module_tidr = iPREVIOUS_SYSREG_TIDR;
+	assign ex_module_psr = iPREVIOUS_SYSREG_PSR;
+	*/
 
 	execute_forwarding FORWARDING_RS1(
 		.iCLOCK(iCLOCK),
@@ -341,9 +358,15 @@ module execute(
 		.iPREVIOUS_SOURCE_POINTER(iPREVIOUS_SOURCE1_POINTER),
 		.iPREVIOUS_SOURCE_IMM(iPREVIOUS_SOURCE1_IMM),
 		.iPREVIOUS_SOURCE_DATA(iPREVIOUS_SOURCE1),
+		.iPREVIOUS_SOURCE_PDTR(iPREVIOUS_SYSREG_PDTR),
+		.iPREVIOUS_SOURCE_TIDR(iPREVIOUS_SYSREG_TIDR),
+		.iPREVIOUS_SOURCE_PSR(iPREVIOUS_SYSREG_PSR),
 		//Output
 		.oNEXT_SOURCE_DATA(ex_module_source1),
-		.oNEXT_SOURCE_SPR()
+		.oNEXT_SOURCE_SPR(),
+		.oNEXT_SOURCE_PDTR(),
+		.oNEXT_SOURCE_TIDR(),
+		.oNEXT_SOURCE_PSR()
 	);
 
 
@@ -372,49 +395,49 @@ module execute(
 					else if(iPREVIOUS_EX_MUL)begin
 						b_sysreg_flags <= mul_flags;
 					end
-					else if(iPREVIOUS_EX_LOGIC)begin	
+					else if(iPREVIOUS_EX_LOGIC)begin
 						b_sysreg_flags <= logic_flags;
 					end
 				end
 			end
 		end
 	end//General Register Write Back
-	
 
 
-	
+
+
 
 	/****************************************
 	System Register
-	****************************************/	
+	****************************************/
 	execute_sys_reg EXE_SYS_REG(
 		.iCMD(iPREVIOUS_CMD),
 		.iSOURCE0(ex_module_source0),
 		.iSOURCE1(ex_module_source1),
 		.oOUT(sys_reg_data)
 	);
-	
+
 	/****************************************
 	Logic
 	****************************************/
 	wire [4:0] logic_cmd = func_logic_select(iPREVIOUS_CMD);
-	
+
 	function [4:0] func_logic_select;
 		input [4:0] func_logic_select_cmd;
-		
+
 		begin
 			case(func_logic_select_cmd)
-				`EXE_LOGIC_BUFFER0	:	func_logic_select = 5'h00;	
+				`EXE_LOGIC_BUFFER0	:	func_logic_select = 5'h00;
 				`EXE_LOGIC_BUFFER1	:	func_logic_select = 5'h01;
-				`EXE_LOGIC_AND		:	func_logic_select = 5'h04;										
-				`EXE_LOGIC_OR		:	func_logic_select = 5'h05;								
-				`EXE_LOGIC_XOR		:	func_logic_select = 5'h06;							
-				`EXE_LOGIC_NOT		:	func_logic_select = 5'h02;										
-				`EXE_LOGIC_NAND		:	func_logic_select = 5'h07;									
-				`EXE_LOGIC_NOR		:	func_logic_select = 5'h08;								
-				`EXE_LOGIC_XNOR		:	func_logic_select = 5'h09;	
+				`EXE_LOGIC_AND		:	func_logic_select = 5'h04;
+				`EXE_LOGIC_OR		:	func_logic_select = 5'h05;
+				`EXE_LOGIC_XOR		:	func_logic_select = 5'h06;
+				`EXE_LOGIC_NOT		:	func_logic_select = 5'h02;
+				`EXE_LOGIC_NAND		:	func_logic_select = 5'h07;
+				`EXE_LOGIC_NOR		:	func_logic_select = 5'h08;
+				`EXE_LOGIC_XNOR		:	func_logic_select = 5'h09;
 				`EXE_LOGIC_TEST		:	func_logic_select = 5'h04;
-				`EXE_LOGIC_WBL		:	func_logic_select = 5'h10;													
+				`EXE_LOGIC_WBL		:	func_logic_select = 5'h10;
 				`EXE_LOGIC_WBH		:	func_logic_select = 5'h11;
 				`EXE_LOGIC_CLB		:	func_logic_select = 5'h0A;
 				`EXE_LOGIC_STB		:	func_logic_select = 5'h0B;
@@ -426,40 +449,40 @@ module execute(
 				`EXE_LOGIC_GETBYTE	:	func_logic_select = 5'h0F;
 				`EXE_LOGIC_LIL		:	func_logic_select = 5'h12;
 				`EXE_LOGIC_LIH		:	func_logic_select = 5'h01;
-				`EXE_LOGIC_ULIL		:	func_logic_select = 5'h14;	
+				`EXE_LOGIC_ULIL		:	func_logic_select = 5'h14;
 				default
 					begin
-						func_logic_select = 5'h00;	
+						func_logic_select = 5'h00;
 					end
 			endcase
 		end
 	endfunction
-				
-	
-	execute_logic #(32) EXE_LOGIC(	
+
+
+	execute_logic #(32) EXE_LOGIC(
 		.iCONTROL_CMD(logic_cmd),
-		.iDATA_0(ex_module_source0), 
+		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),
-		.oDATA(logic_data), 
-		.oSF(logic_sf), 
-		.oOF(logic_of), 
-		.oCF(logic_cf), 
-		.oPF(logic_pf), 
+		.oDATA(logic_data),
+		.oSF(logic_sf),
+		.oOF(logic_of),
+		.oCF(logic_cf),
+		.oPF(logic_pf),
 		.oZF(logic_zf)
 	);
-	
+
 	/****************************************
 	Shift
-	****************************************/	
-	execute_shift #(32) EXE_SHIFT(	
+	****************************************/
+	execute_shift #(32) EXE_SHIFT(
 		.iCONTROL_MODE(func_shift_select(iPREVIOUS_CMD)),
-		.iDATA_0(ex_module_source0), 
+		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),
-		.oDATA(shift_data), 
-		.oSF(shift_sf), 
-		.oOF(shift_of), 
-		.oCF(shift_cf), 
-		.oPF(shift_pf), 
+		.oDATA(shift_data),
+		.oSF(shift_sf),
+		.oOF(shift_of),
+		.oCF(shift_cf),
+		.oPF(shift_pf),
 		.oZF(shift_zf)
 	);
 
@@ -482,24 +505,24 @@ module execute(
 
 	/****************************************
 	Adder
-	****************************************/	
+	****************************************/
 	execute_adder	#(32) EXE_ADDER(
-		.iDATA_0(ex_module_source0), 
-		.iDATA_1(ex_module_source1), 
+		.iDATA_0(ex_module_source0),
+		.iDATA_1(ex_module_source1),
 		.iADDER_CMD(iPREVIOUS_CMD),
-		.oDATA(adder_data), 
-		.oSF(adder_sf), 
-		.oOF(adder_of), 
-		.oCF(adder_cf), 
-		.oPF(adder_pf), 
+		.oDATA(adder_data),
+		.oSF(adder_sf),
+		.oOF(adder_of),
+		.oCF(adder_cf),
+		.oPF(adder_pf),
 		.oZF(adder_zf)
 	);
 
-	
+
 	/****************************************
-	Mul 
-	****************************************/	
-	
+	Mul
+	****************************************/
+
 	assign mul_tmp = ex_module_source0 * ex_module_source1;
 	assign mul_sf_l = mul_tmp[31];
 	assign mul_cf_l = mul_tmp[32];
@@ -511,41 +534,41 @@ module execute(
 	assign mul_of_h = 1'b0;
 	assign mul_pf_h = mul_tmp[32];
 	assign mul_zf_h = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
-	
+
 	assign mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
 	assign mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? mul_tmp[63:32] : mul_tmp[31:0];
 
-	
-	
+
+
 	/*
 	wire [4:0] mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
 	wire [31:0] mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH)? mul_tmp[63:32] : mul_tmp[31:0];
-	
-	
+
+
 	execute_mul_booth32 EXE_MUL_BOOTH(
 		//iDATA
 		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),
 		//oDATA
 		.oDATA(mul_tmp),
-		.oHSF(mul_sf_h),				
+		.oHSF(mul_sf_h),
 		.oHCF(mul_cf_h),
 		.oHOF(mul_of_h),
 		.oHPF(mul_pf_h),
 		.oHZF(mul_zf_h),
-		.oLSF(mul_sf_l),				
+		.oLSF(mul_sf_l),
 		.oLCF(mul_cf_l),
 		.oLOF(mul_of_l),
 		.oLPF(mul_pf_l),
 		.oLZF(mul_zf_l)
 	);
 	*/
-	
+
 	/****************************************
 	Div
 	****************************************/
 	assign divider_condition = iPREVIOUS_VALID && (iPREVIOUS_EX_UDIV || iPREVIOUS_EX_SDIV) && !lock_condition;
-	
+
 	pipelined_div_radix2 EXE_DIV(
 		//System
 		.iCLOCK(iCLOCK),
@@ -588,11 +611,11 @@ module execute(
 		end
 	end
 
-	
-	
+
+
 	/****************************************
 	Load Store(Addr calculation)
-	****************************************/	
+	****************************************/
 	execute_load_store LDST(
 		//Prev
 		.iCMD(iPREVIOUS_CMD),
@@ -600,7 +623,8 @@ module execute(
 		.iSOURCE0(ex_module_source0),
 		.iSOURCE1(ex_module_source1),
 		.iADV_ACTIVE(iPREVIOUS_ADV_ACTIVE),
-		.iADV_DATA({26'h0, iPREVIOUS_ADV_DATA}),
+		//.iADV_DATA({26'h0, iPREVIOUS_ADV_DATA}),
+		.iADV_DATA({{26{iPREVIOUS_ADV_DATA[5]}}, iPREVIOUS_ADV_DATA}),
 		.iSPR(ex_module_spr),
 		.iPC(iPREVIOUS_PC - 32'h4),
 		//Output - Writeback
@@ -615,13 +639,13 @@ module execute(
 		.oLOAD_SHIFT(load_pipe_shift),
 		.oLOAD_MASK(load_pipe_mask)
 	);
-	
+
 	/****************************************
 	Branch
 	****************************************/
 	execute_branch EXE_BRANCH(
 		.iDATA_0(ex_module_source0),
-		.iDATA_1(ex_module_source1),		
+		.iDATA_1(ex_module_source1),
 		.iPC(iPREVIOUS_PC - 32'h4),
 		.iFLAG(b_sysreg_flags[4:0]),
 		.iCC(iPREVIOUS_CC_AFE),
@@ -633,7 +657,7 @@ module execute(
 		.oIDTS_VALID(branch_idts_valid),
 		.oHALT_VALID(branch_halt_valid)
 	);
-	
+
 
 	/****************************************
 	Load Data Mask
@@ -725,6 +749,7 @@ module execute(
 			b_exception_valid <= 1'b0;
 			b_exception_num <= 7'h0;
 			b_exception_fi0r <= 32'h0;
+			b_exception_fi1r <= 32'h0;
 			b_jump <= 1'b0;
 			b_idts <= 1'b0;
 			b_pdts <= 1'b0;
@@ -761,6 +786,7 @@ module execute(
 			b_exception_valid <= 1'b0;
 			b_exception_num <= 7'h0;
 			b_exception_fi0r <= 32'h0;
+			b_exception_fi1r <= 32'h0;
 			b_jump <= 1'b0;
 			b_idts <= 1'b0;
 			b_pdts <= 1'b0;
@@ -789,6 +815,7 @@ module execute(
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_PAGEFAULT;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_exception_fi1r <= {28'h0, 1'b1, !iPREVIOUS_KERNEL_ACCESS, 1'b0, 1'b1};
 								b_branch_predict <= 1'b0;
 								b_branch_predict_hit <= 1'b0;
 							end
@@ -797,6 +824,7 @@ module execute(
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_exception_fi1r <= 32'h0;
 								b_branch_predict <= 1'b0;
 								b_branch_predict_hit <= 1'b0;
 							end
@@ -805,6 +833,7 @@ module execute(
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_INSTRUCTION_INVALID;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_exception_fi1r <= iPREVIOUS_PC - 32'h4;
 								b_branch_predict <= 1'b0;
 								b_branch_predict_hit <= 1'b0;
 							end
@@ -813,6 +842,7 @@ module execute(
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_DIVIDER_ERROR;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_exception_fi1r <= 32'h0;
 								b_branch_predict <= 1'b0;
 								b_branch_predict_hit <= 1'b0;
 							end
@@ -832,19 +862,19 @@ module execute(
 									b_idts <= 1'b0;
 									b_pdts <= 1'b0;
 									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;	
+									b_branch_addr <= 32'h0;
 									b_branch_predict <= 1'b0;
 									b_branch_predict_hit <= 1'b0;
-								end		
+								end
 								//Load Store
-								else if(iPREVIOUS_EX_LDST)begin 								
+								else if(iPREVIOUS_EX_LDST)begin
 									b_load_store <= 1'b1;
 									if(!ldst_pipe_rw)begin
 										//Load
 										b_valid <= 1'b0;
-										b_sysreg_psr <= iPREVIOUS_SYSREG_PSR;
-										b_sysreg_tidr <= iPREVIOUS_SYSREG_TIDR;
-										b_sysreg_pdtr <= iPREVIOUS_SYSREG_PDTR;
+										b_sysreg_psr <= ex_module_psr;//iPREVIOUS_SYSREG_PSR;
+										b_sysreg_tidr <= ex_module_tidr;//iPREVIOUS_SYSREG_TIDR;
+										b_sysreg_pdtr <= ex_module_pdtr;//iPREVIOUS_SYSREG_PDTR;
 										b_writeback <= iPREVIOUS_WRITEBACK;
 										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
 										b_destination <= iPREVIOUS_DESTINATION;
@@ -862,10 +892,10 @@ module execute(
 										b_branch_predict_hit <= 1'b0;
 									end
 									else begin
-										//Store 
-										b_sysreg_psr <= iPREVIOUS_SYSREG_PSR;
-										b_sysreg_tidr <= iPREVIOUS_SYSREG_TIDR;
-										b_sysreg_pdtr <= iPREVIOUS_SYSREG_PDTR;
+										//Store
+										b_sysreg_psr <= ex_module_psr;//iPREVIOUS_SYSREG_PSR;
+										b_sysreg_tidr <= ex_module_tidr;//iPREVIOUS_SYSREG_TIDR;
+										b_sysreg_pdtr <= ex_module_pdtr;//iPREVIOUS_SYSREG_PDTR;
 										b_writeback <= iPREVIOUS_WRITEBACK;
 										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
 										b_destination <= 5'h0;
@@ -1197,7 +1227,7 @@ module execute(
 						if(!io_lock_condition)begin
 							b_ldst_pipe_valid <= 1'b0;
 						end
-						
+
 						if(iDATAIO_REQ)begin
 							//Pagefault || Exception Check(Load)
 							if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b0, iDATAIO_MMU_FLAGS))begin
@@ -1205,6 +1235,7 @@ module execute(
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_exception_fi1r <= {28'h0, 1'b0, !b_kernel_access, 1'b0, 1'b0};
 							end
 							//Non Error
 							else begin
@@ -1224,7 +1255,7 @@ module execute(
 						if(!io_lock_condition)begin
 							b_ldst_pipe_valid <= 1'b0;
 						end
-						
+
 						if(iDATAIO_REQ)begin
 							//Pagefault
 							//Exception Check(Load)
@@ -1233,6 +1264,7 @@ module execute(
 								b_exception_valid <= 1'b1;
 								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
 								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
+								b_exception_fi1r <= {28'h0, 1'b0, !b_kernel_access, 1'b0, 1'b0};
 							end
 							//Non Error
 							else begin
@@ -1249,7 +1281,7 @@ module execute(
 						b_state <= L_PARAM_STT_BRANCH;
 					end
 				L_PARAM_STT_EXCEPTION:
-					begin	
+					begin
 						b_exception_valid <= 1'b0;
 					end
 				L_PARAM_STT_HALT:
@@ -1259,7 +1291,7 @@ module execute(
 			endcase
 		end
 	end //state always
-	
+
 	/*****************************************************
 	MMU Flag Check
 	[0]	:	IRQ41 Privilege error.(Page)
@@ -1313,15 +1345,15 @@ module execute(
 			end
 		end
 	endfunction
-	
-	
+
+
 	/*****************************************************
 	Debug Module
 	*****************************************************/
 	localparam L_PARAM_DEBUG_IDLE = 2'h0;
 	localparam L_PARAM_DEBUG_START_REQ = 2'h1;
 	localparam L_PARAM_DEBUG_STOP_REQ = 2'h2;
-	
+
 	//Debug Module Enable
 	`ifdef MIST1032ISA_STANDARD_DEBUGGER
 		always@(posedge iCLOCK or negedge inRESET)begin
@@ -1383,7 +1415,7 @@ module execute(
 			end
 		end
 	`endif
-	
+
 	//Debug Module Enable
 	`ifdef MIST1032ISA_STANDARD_DEBUGGER
 		assign oDEBUG_CTRL_ACK = b_debug_cmd_ack;
@@ -1393,7 +1425,7 @@ module execute(
 		assign oDEBUG_CTRL_ACK = 32'h0;
 		assign oDEBUG_REG_OUT_FLAGR = 32'h0;
 	`endif
-	
+
 
 	/****************************************
 	AFE
@@ -1427,11 +1459,11 @@ module execute(
 
 		assign result_data_with_afe = func_afe_select(b_ex_kind_ldst, afe_ldst_data_result, b_r_data);
 
-	`else 
+	`else
 		assign result_data_with_afe = b_r_data;
 	`endif
-	
-	
+
+
 	//Writeback
 	assign oNEXT_VALID = b_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
 	assign oNEXT_DATA = result_data_with_afe;
@@ -1440,7 +1472,7 @@ module execute(
 	assign oNEXT_WRITEBACK = b_writeback;
 	assign oNEXT_SPR_WRITEBACK = b_spr_writeback;
 	assign oNEXT_SPR = b_r_spr;
-	
+
 	//Load Store Pipe
 	assign oDATAIO_REQ = (b_state == L_PARAM_STT_LOAD || b_state == L_PARAM_STT_STORE)? b_ldst_pipe_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK && !io_lock_condition : 1'b0;
 	assign oDATAIO_ORDER = b_ldst_pipe_order;
@@ -1452,57 +1484,58 @@ module execute(
 	assign oDATAIO_PDT = b_sysreg_pdtr;
 	assign oDATAIO_ADDR = b_ldst_pipe_addr;
 	assign oDATAIO_DATA = b_ldst_pipe_data;
-	
+
 	//Exception
 	assign oBRANCH_ADDR = b_branch_addr;
 	assign oJUMP_VALID = b_jump;
 	assign oIDTSET_VALID = b_idts;
 	assign oPDTSET_VALID = b_pdts;
 	assign oINTR_VALID = b_ib;
-	
+
 	//System Register Writeback
 	assign oPDTR_WRITEBACK = b_destination_sysreg && b_writeback && (b_destination == `SYSREG_PDTR);
-	
-	assign oEXCEPTION_LOCK = b_load_store || (b_state != L_PARAM_STT_NORMAL)? 1'b1 : 1'b0;	
+
+	assign oEXCEPTION_LOCK = b_load_store || (b_state != L_PARAM_STT_NORMAL)? 1'b1 : 1'b0;
 	assign oEXCEPTION_LDST_LOCK = b_load_store;
-	
+
 	assign oNEXT_PC = b_pc;
 	assign oNEXT_BRANCH = b_jump || b_idts || b_ib;
 	assign oNEXT_BRANCH_PC = b_branch_addr;
-		
+
 	assign oFAULT_VALID = b_exception_valid;
 	assign oFAULT_NUM = b_exception_num;
 	assign oFAULT_FI0R = b_exception_fi0r;
-	
+	assign oFAULT_FI1R = b_exception_fi1r;
+
 	assign oSYSREG_FLAGR = b_sysreg_flags;
-	
+
 	wire test_predict = b_branch_predict && b_valid;
 	wire test_hit = b_branch_predict_hit && b_valid;
 	wire test_miss_hit = b_jump && b_valid;
-	
-	
-	
+
+
+
 	assign oBPREDICT_PREDICT = b_branch_predict && b_valid;
 	assign oBPREDICT_HIT = (b_branch_predict_hit && b_valid/* && b_branch_predict && (b_branch_addr == b_branch_predict_addr)*/) || (!b_jump && !b_branch_predict && b_valid);
 	assign oBPREDICT_JUMP = b_jump;
 	assign oBPREDICT_JUMP_ADDR = b_branch_addr;
 	assign oBPREDICT_INST_ADDR = b_pc - 32'h00000004;
-	
-	
+
+
 	/*************************************************
 	Assertion - SVA
 	*************************************************/
 	//synthesis translate_off
 	`ifdef MIST1032ISA_SVA_ASSERTION
-	
+
 		property PRO_DATAPIPE_REQ_ACK;
 			@(posedge iCLOCK) disable iff (!inRESET || iFREE_REFRESH || iRESET_SYNC) (oDATAIO_REQ |-> ##[1:50] iDATAIO_REQ);
 		endproperty
-		
+
 		assert property(PRO_DATAPIPE_REQ_ACK);
 	`endif
 	//synthesis translate_on
-	
+
 	/*************************************************
 	Verilog Assertion
 	*************************************************/
@@ -1510,7 +1543,7 @@ module execute(
 	function [31:0] func_assert_write_data;
 		input [4:0] func_mask;
 		input [31:0] func_data;
-		begin  
+		begin
 			if(func_mask == 4'hf)begin
 				func_assert_write_data = func_data;
 			end
@@ -1537,21 +1570,20 @@ module execute(
 			end
 		end
 	endfunction
-	
+
 	//`ifdef MIST1032ISA_VLG_ASSERTION
 	localparam time_ena = 0;
 	/*
 	integer F_HANDLE;
 	initial F_HANDLE = $fopen("ldst_time_dump.log");
 	*/
-	
+
 	wire [31:0] for_assertion_store_real_data = func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA);
-	
-	always@(posedge iCLOCK)begin
 
+	//always@(posedge iCLOCK)begin
 
-		//Load
 		/*
+		//Load
 		if(inRESET && !iRESET_SYNC)begin
 			if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
 				if(time_ena == 1)begin
@@ -1579,16 +1611,17 @@ module execute(
 
 
 
-		
+
+
 /*
 --------------------------------
 [S], "PC", "spr", "addr", "data"
 [L], "PC", "spr", "addr", "data"
 --------------------------------
 */
-		
-		
-	end
+
+
+	//end
 	//`endif
 	//synthesis translate_on
 endmodule

@@ -30,3 +30,9 @@ wlf*
 transcript*
 *.asdb
 *.ucdb
+/sim/sys_level/bin
+
+/sim/sys_level/sim
+/sim/inst_level/coverage
+
+/sim/inst_level/compile

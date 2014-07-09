@@ -14,10 +14,10 @@ module execute_forwarding_register(
 		input wire iWB_SPR_VALID,
 		input wire [31:0] iWB_SPR_DATA,
 		//Writeback[AUTO] - Stack Point Register
-		input wire iWB_AUTO_SPR_VALID,			
-		input wire [31:0] iWB_AUTO_SPR_DATA, 	
+		input wire iWB_AUTO_SPR_VALID,
+		input wire [31:0] iWB_AUTO_SPR_DATA,
 		//Current - Stack Point Register
-		input wire [31:0] iCUUR_SPR_DATA,		
+		input wire [31:0] iCUUR_SPR_DATA,
 		//Fowerding Register Output
 		output wire oFDR_GR_VALID,
 		output wire [31:0] oFDR_GR_DATA,
@@ -68,7 +68,7 @@ module execute_forwarding_register(
 				//b_ex_history_pc <= iWB_PCR - 32'h00000004;
 			end
 		end
-	end		
+	end
 
 	//Stack Point Register
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -94,7 +94,8 @@ module execute_forwarding_register(
 				b_fwdng_spr <= iCUUR_SPR_DATA;
 			end
 		end
-	end		
+	end
+
 
 	/************************************************************************
 	Assign
