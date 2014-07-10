@@ -1,5 +1,5 @@
 /****************************************
-Exception Manager	
+Exception Manager
 ****************************************/
 
 `include "core.h"
@@ -15,14 +15,14 @@ module exception_manager(
 		output wire oFREE_RESTART,
 		output wire oFREE_PC_SET,
 		output wire [31:0] oFREE_PC,
-		output wire oFREE_PPCR_SET,	
+		output wire oFREE_PPCR_SET,
 		output wire [31:0] oFREE_PPCR,
-		output wire oFREE_FI0R_SET,	
-		output wire [31:0] oFREE_FI0R,	
+		output wire oFREE_FI0R_SET,
+		output wire [31:0] oFREE_FI0R,
 		output wire oFREE_SET_IRQ_MODE,
 		output wire oFREE_CLR_IRQ_MODE,
 		output wire oFREE_CACHE_FLUSH,
-		output wire oFREE_TLB_FLUSH,	
+		output wire oFREE_TLB_FLUSH,
 		//Interrupt Lock
 		input wire iINTERRUPT_LOCK,
 		input wire iINTERRUPT_LDST_LOCK,
@@ -44,7 +44,7 @@ module exception_manager(
 		input wire iLDST_BUSY,
 		output wire [1:0] oLDST_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		output wire oLDST_RW,		//0=Read 1=Write
-		output wire [13:0] oLDST_TID,
+		output wire [13:0] oLDST_ASID,
 		output wire [1:0] oLDST_MMUMOD,
 		output wire [31:0] oLDST_PDT,
 		output wire [31:0] oLDST_ADDR,
@@ -53,27 +53,28 @@ module exception_manager(
 		input wire [31:0] iLDST_DATA,
 		/*********************************
 		Interrupt Configlation
-		*********************************/	
+		*********************************/
 		//GCI Interrupt Configlation Table
 		output wire oIO_IRQ_CONFIG_TABLE_REQ,
 		output wire [5:0] oIO_IRQ_CONFIG_TABLE_ENTRY,
 		output wire oIO_IRQ_CONFIG_TABLE_FLAG_MASK,
-		output wire oIO_IRQ_CONFIG_TABLE_FLAG_VALID,	
-		output wire [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,	
+		output wire oIO_IRQ_CONFIG_TABLE_FLAG_VALID,
+		output wire [1:0] oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL,
 		//Interrupt Configlation Table
 		output wire oICT_REQ,
 		output wire [5:0] oICT_ENTRY,
 		output wire oICT_CONF_MASK,
-		output wire oICT_CONF_VALID,	
-		output wire [1:0] oICT_CONF_LEVEL,			
+		output wire oICT_CONF_VALID,
+		output wire [1:0] oICT_CONF_LEVEL,
 		//Core Branch
-		input wire iEXCEPT_JUMP,					
+		input wire iEXCEPT_JUMP,
 		input wire [31:0] iEXCEPT_JUMP_ADDR,
-		input wire iEXCEPT_IDTS,					
+		input wire iEXCEPT_IDTS,
 		input wire [31:0] iEXCEPT_IDTS_ADDR,
-		input wire iEXCEPT_IB,					
+		input wire iEXCEPT_IB,
 		input wire [31:0] iEXCEPT_IB_ADDR,
-		input wire iEXCEPT_PDTS,	
+		input wire iEXCEPT_PDTS,
+		input wire iEXCEPT_PSRS,
 		//External Exception
 		input wire iEXCEPT_IRQ_REQ,
 		input wire [6:0] iEXCEPT_IRQ_NUM,
@@ -83,7 +84,7 @@ module exception_manager(
 	);
 
 
-	
+
 	/************************************************************
 	Main State parameter
 	************************************************************/
@@ -94,7 +95,7 @@ module exception_manager(
 	localparam L_PARAM_MAINSTT_IRQ_RET = 3'h4;
 	localparam L_PARAM_MAINSTT_IDTS = 3'h5;
 	localparam L_PARAM_MAINSTT_PDTS = 3'h6;
-	
+
 	/************************************************************
 	Sub State parameter
 	************************************************************/
@@ -115,15 +116,15 @@ module exception_manager(
 	localparam L_PARAM_SRMODE_SET_IDTR_LOAD_IDT_REQ = 3'h0;
 	localparam L_PARAM_SRMODE_SET_IDTR_LOAD_IDT_GETWAIT = 3'h1;
 
-	
+
 	/************************************************************
 	System Register Function
 	************************************************************/
 	localparam L_PARAM_SRMODE_NONE = 2'h0;
 	localparam L_PARAM_SRMODE_IRQ_SET = 2'h1;
 	localparam L_PARAM_SRMODE_IRQ_CLR = 2'h2;
-	
-	
+
+
 	/************************************************************
 	Sub Always@ Register
 	************************************************************/
@@ -131,24 +132,24 @@ module exception_manager(
 	reg b_kspr_read;
 	reg b_kspr_readend;
 	reg [31:0] b_kspr_idt_data;
-	
+
 	reg b_uspr_read_state;
 	reg b_uspr_read;
 	reg b_uspr_readend;
 	reg [31:0] b_uspr_idt_data;
-	
+
 	reg b_inthundl_read_state;
 	reg b_inthundl_read;
 	reg b_inthundl_readend;
 	reg [31:0] b_inthundl_idt_data;
-	
+
 	reg b_idt_read_state;
 	reg [6:0] b_idt_read_counter;
 	reg [6:0] b_idt_get_counter;
 	reg b_idt_readend;
 	reg b_idt_idt_data_valid;
 	reg [31:0] b_idt_idt_data;
-	
+
 	/************************************************************
 	Main Always@ Register
 	************************************************************/
@@ -163,8 +164,8 @@ module exception_manager(
 	reg [31:0] b_branch_addr;
 	reg b_ppcr_set;
 	reg [31:0] b_ppcr;
-	
-	reg b_inthundl_read_req;	
+
+	reg b_inthundl_read_req;
 	reg b_spr_mem_write_req;
 	reg [31:0] b_spr_mem_write_addr;
 	reg [31:0] b_spr_mem_write_spr;
@@ -177,8 +178,8 @@ module exception_manager(
 	reg [1:0] b_sysreg_set_mode;
 	reg [6:0] b_irq_num;
 	reg [31:0] b_irq_fi0r;
-	
-	
+
+
 	reg [31:0] b_sysr_spr;
 	reg [31:0] b_sysr_tidr;
 	reg [31:0] b_sysr_tisr;
@@ -186,11 +187,11 @@ module exception_manager(
 	reg [31:0] b_sysr_ppsr;
 	reg [31:0] b_sysr_ppcr;
 	reg [31:0] b_sysr_idtr;
-	
+
 	wire interrupt_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LOCK && iSYSREG_PSR[2];
-	wire interrupt_and_branch_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LDST_LOCK && iSYSREG_PSR[2];		
+	wire interrupt_and_branch_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LDST_LOCK && iSYSREG_PSR[2];
 	reg b_irq_request_test;
-	
+
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_main_state <= L_PARAM_MAINSTT_IDLE;
@@ -203,7 +204,7 @@ module exception_manager(
 			b_branch_active <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_ppcr_set <= 1'b0;
-			b_ppcr <= 32'h0;		
+			b_ppcr <= 32'h0;
 			b_inthundl_read_req <= 1'b0;
 			b_spr_mem_write_req <= 1'b0;
 			b_spr_mem_write_addr <= 32'h0;
@@ -232,7 +233,7 @@ module exception_manager(
 						b_branch_active <= 1'b0;
 						b_sub_state <= 3'h0;
 						b_irq_ack <= 1'b0;
-						
+
 						b_sysr_spr <= iSYSREG_SPR;
 						b_sysr_tidr <= iSYSREG_TIDR;
 						b_sysr_tisr <= iSYSREG_TISR;
@@ -249,7 +250,7 @@ module exception_manager(
 							b_sysreg_set <= 1'b0;
 						end
 						//Interrupt
-						else if(interrupt_condition)begin 
+						else if(interrupt_condition)begin
 							b_ppcr_set <= 1'b1;
 							b_ppcr <= iSYSREG_PCR;
 							b_sysreg_set_mode <= L_PARAM_SRMODE_IRQ_SET;
@@ -261,8 +262,9 @@ module exception_manager(
 							b_irq_fi0r <= iEXCEPT_IRQ_FI0R;
 						end
 						//Page Directory Table Set
-						else if(iEXCEPT_PDTS && iSYSREG_PSR[1:0] != 2'h0)begin
-							b_main_state <= L_PARAM_MAINSTT_PDTS;
+						//else if(iEXCEPT_PDTS && iSYSREG_PSR[1:0] != 2'h0)begin
+						else if(iEXCEPT_PDTS || iEXCEPT_PSRS)begin
+							b_main_state <= L_PARAM_MAINSTT_PDTS;					//MMU Mode or PDRT Change, so nessesary instruction reload.
 							b_branch_addr <= iEXCEPT_JUMP_ADDR;
 							b_pipeline_flush_event <= 1'b1;
 							b_sysreg_set <= 1'b0;
@@ -323,13 +325,13 @@ module exception_manager(
 									b_sysreg_set <= 1'b0;
 									b_pipeline_flush_event <= 1'b0;
 									b_inthundl_read_req <= 1'b1;
-									b_sub_state <= L_PARAM_SUBSTT_SET_IRQ_VECTOR_LOAD_GETWAIT;	
+									b_sub_state <= L_PARAM_SUBSTT_SET_IRQ_VECTOR_LOAD_GETWAIT;
 								end
 							L_PARAM_SUBSTT_SET_IRQ_VECTOR_LOAD_GETWAIT:
 								begin
 									b_inthundl_read_req <= 1'b0;
 									//Next Condition Check
-									if(b_inthundl_readend)begin	
+									if(b_inthundl_readend)begin
 										b_branch_addr <= b_inthundl_idt_data;
 										if(b_sysr_psr[6:5] == `CORE_MODE_KERNEL)begin
 											//Hundler Jump
@@ -337,7 +339,7 @@ module exception_manager(
 										end
 										else begin
 											//Kernel SPR Read
-											b_sub_state <= L_PARAM_SUBSTT_SET_IRQ_USER_SPR_WRITE;	
+											b_sub_state <= L_PARAM_SUBSTT_SET_IRQ_USER_SPR_WRITE;
 										end
 									end
 								end
@@ -355,14 +357,14 @@ module exception_manager(
 									if(iLDST_REQ)begin
 										b_spr_mem_write_req <= 1'b0;
 										b_kspr_read_req <= 1'b1;
-										b_sub_state <= L_PARAM_SUBSTT_SET_IRQ_KERNEL_SPR_GETWAIT;	
+										b_sub_state <= L_PARAM_SUBSTT_SET_IRQ_KERNEL_SPR_GETWAIT;
 									end
 								end
 							L_PARAM_SUBSTT_SET_IRQ_KERNEL_SPR_GETWAIT:
 								begin
 									b_kspr_read_req <= 1'b0;
 									if(b_kspr_readend)begin
-										b_sub_state <= L_PARAM_SUBSTT_SET_IRQ_JUMP_HUNDLER;	
+										b_sub_state <= L_PARAM_SUBSTT_SET_IRQ_JUMP_HUNDLER;
 										b_new_spr_write_req <= 1'b1;
 										b_new_spr <= b_kspr_idt_data;
 									end
@@ -370,14 +372,14 @@ module exception_manager(
 							L_PARAM_SUBSTT_SET_IRQ_JUMP_HUNDLER:
 								begin
 									b_main_state <= L_PARAM_MAINSTT_IDLE;
-									b_sub_state <= 6'h0;	
+									b_sub_state <= 6'h0;
 									b_branch_active <= 1'b1;
 									b_irq_ack <= 1'b1;
 								end
 							default:
 								begin
 									b_main_state <= L_PARAM_MAINSTT_IDLE;
-									b_sub_state <= 6'h0;	
+									b_sub_state <= 6'h0;
 									b_branch_active <= 1'b1;
 									b_irq_ack <= 1'b1;
 								end
@@ -391,7 +393,7 @@ module exception_manager(
 									b_pipeline_flush_event <= 1'b0;
 									b_branch_addr			<=		b_sysr_ppcr;
 									if(b_sysr_ppsr[6:5] == `CORE_MODE_USER)begin
-										b_sub_state <= L_PARAM_SUBSTT_CLR_IRQ_KERNEL_SPR_WRITE;	
+										b_sub_state <= L_PARAM_SUBSTT_CLR_IRQ_KERNEL_SPR_WRITE;
 									end
 									else begin
 										b_sub_state <= L_PARAM_SUBSTT_CLR_IRQ_JUMP_PPCR;
@@ -412,14 +414,14 @@ module exception_manager(
 									if(iLDST_REQ)begin
 										b_spr_mem_write_req <= 1'b0;
 										b_uspr_read_req <= 1'b1;
-										b_sub_state <= L_PARAM_SUBSTT_CLR_IRQ_USER_SPR_GETWAIT;	
+										b_sub_state <= L_PARAM_SUBSTT_CLR_IRQ_USER_SPR_GETWAIT;
 									end
 								end
 							L_PARAM_SUBSTT_CLR_IRQ_USER_SPR_GETWAIT:
 								begin
 									b_uspr_read_req <= 1'b0;
 									if(b_uspr_readend)begin
-										b_sub_state <= L_PARAM_SUBSTT_CLR_IRQ_JUMP_PPCR;	
+										b_sub_state <= L_PARAM_SUBSTT_CLR_IRQ_JUMP_PPCR;
 										b_new_spr_write_req <= 1'b1;
 										b_new_spr <= b_uspr_idt_data;
 									end
@@ -427,7 +429,7 @@ module exception_manager(
 							L_PARAM_SUBSTT_CLR_IRQ_JUMP_PPCR:
 								begin
 									b_main_state <= L_PARAM_MAINSTT_IDLE;
-									b_sub_state <= 6'h0;	
+									b_sub_state <= 6'h0;
 									b_branch_active <= 1'b1;
 									b_sysreg_set_mode <= L_PARAM_SRMODE_IRQ_CLR;
 									b_sysreg_set <= 1'b1;
@@ -435,7 +437,7 @@ module exception_manager(
 							default:
 								begin
 									b_main_state <= L_PARAM_MAINSTT_IDLE;
-									b_sub_state <= 6'h0;	
+									b_sub_state <= 6'h0;
 									b_branch_active <= 1'b1;
 									b_sysreg_set_mode <= L_PARAM_SRMODE_IRQ_CLR;
 									b_sysreg_set <= 1'b1;
@@ -456,7 +458,7 @@ module exception_manager(
 									b_idt_read_req<= 1'b0;
 									if(b_idt_readend)begin
 										b_main_state <= L_PARAM_MAINSTT_IDLE;
-										b_sub_state <= 6'h0;	
+										b_sub_state <= 6'h0;
 										b_branch_active <= 1'b1;
 										b_sysreg_set_mode <= L_PARAM_SRMODE_NONE;
 										b_sysreg_set <= 1'b1;
@@ -472,7 +474,7 @@ module exception_manager(
 						b_tlb_flush <= 1'b0;
 						b_sysreg_set_mode <= L_PARAM_SRMODE_NONE;
 						b_main_state <= L_PARAM_MAINSTT_IDLE;
-						b_sysreg_set <= 1'b1;			
+						b_sysreg_set <= 1'b1;
 					end
 				default:
 					begin
@@ -481,18 +483,18 @@ module exception_manager(
 			endcase
 		end
 	end
-	
-	
-	
+
+
+
 	/****************************************
 	IDT Read
 	****************************************/
 	localparam L_PARAM_IDTREAD_STT_REQ_WAIT = 1'b0;
 	localparam L_PARAM_IDTREAD_STT_LOAD = 1'b1;
-	
+
 	wire idt_read_condition = (b_idt_read_state == L_PARAM_IDTREAD_STT_LOAD) && (b_idt_read_counter < (7'd64 + 7'h1)) && !iLDST_BUSY;
 	wire [31:0]	idt_read_addr = b_sysr_idtr + {b_idt_get_counter, 3'h0};
-	
+
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_idt_read_state <= L_PARAM_IDTREAD_STT_REQ_WAIT;
@@ -532,21 +534,21 @@ module exception_manager(
 							end
 						end
 						else begin
-							b_idt_readend <= 1'b1;		
+							b_idt_readend <= 1'b1;
 							b_idt_read_state <= L_PARAM_IDTREAD_STT_REQ_WAIT;
 						end
 					end
 			endcase
 		end
 	end
-	
+
 
 	/****************************************
 	Interrupt Hundler Get
-	****************************************/	
+	****************************************/
 	localparam L_PARAM_INTHUNDLE_STT_REQ_WAIT = 1'b0;
 	localparam L_PARAM_INTHUNDLE_STT_LOAD = 1'b1;
-	
+
 	wire [31:0] inthundle_read_addr = b_sysr_idtr + {b_irq_num, 3'h0} + 32'h4;
 
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -585,18 +587,18 @@ module exception_manager(
 			endcase
 		end
 	end
-	
-	
-	
-	
+
+
+
+
 	/****************************************
 	Kernel Spr Read
-	****************************************/	
-	localparam L_PARAM_KSPR_READ_WAIT = 1'b0;	
+	****************************************/
+	localparam L_PARAM_KSPR_READ_WAIT = 1'b0;
 	localparam L_PARAM_KSPR_READ_LOAD = 1'b1;
-	
+
 	wire [31:0] kspr_read_addr = b_sysr_tisr + {b_sysr_tidr[13:0], 8'h0} + `TST_KSPR;
-		
+
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_kspr_read_state <= L_PARAM_KSPR_READ_WAIT;
@@ -634,17 +636,17 @@ module exception_manager(
 			endcase
 		end
 	end
-	
 
-	
+
+
 	/****************************************
 	User Spr Read
-	****************************************/	
-	localparam L_PARAM_USPR_READ_WAIT = 1'b0;	
+	****************************************/
+	localparam L_PARAM_USPR_READ_WAIT = 1'b0;
 	localparam L_PARAM_USPR_READ_LOAD = 1'b1;
-	
+
 	wire [31:0] uspr_read_addr = b_sysr_tisr + {b_sysr_tidr[13:0], 8'h0} + `TST_USPR;
-	
+
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_uspr_read_state <= L_PARAM_USPR_READ_WAIT;
@@ -682,27 +684,27 @@ module exception_manager(
 			endcase
 		end
 	end
-	
+
 	assign oFREE_CACHE_FLUSH = b_cache_flush;
 	assign oFREE_TLB_FLUSH = b_tlb_flush;
-	
+
 	assign oFREE_REGISTER_LOCK = (b_main_state != L_PARAM_MAINSTT_IDLE) || (!iEXCEPT_JUMP && (iEXCEPT_IRQ_REQ && !iINTERRUPT_LOCK && iSYSREG_PSR[2])) || b_pipeline_flush_event || b_branch_active;
 	assign oFREE_PIPELINE_STOP = (b_main_state != L_PARAM_MAINSTT_IDLE || (!iEXCEPT_JUMP && (iEXCEPT_IRQ_REQ && !iINTERRUPT_LOCK && iSYSREG_PSR[2])))? 1'b1 : 1'b0;
 	assign oFREE_REFRESH = b_pipeline_flush_event;//(b_main_state != L_PARAM_MAINSTT_IDLE)? 1'b1 : 1'b0;//b_branch_active;
-	assign oFREE_RESTART = b_branch_active;	
+	assign oFREE_RESTART = b_branch_active;
 	assign oFREE_PC_SET = b_branch_active;
 	assign oFREE_PC = b_branch_addr;
-	
+
 	assign oFREE_PPCR_SET = b_ppcr_set;
 	assign oFREE_PPCR = b_ppcr;
-	
+
 	assign oFREE_FI0R_SET = (b_main_state == L_PARAM_MAINSTT_IRQ_SET) && (b_sub_state == L_PARAM_SUBSTT_SET_IRQ_JUMP_HUNDLER);
 	assign oFREE_FI0R = b_irq_fi0r;
-	
-	
+
+
 	assign oFREE_SET_IRQ_MODE = (b_sysreg_set_mode == L_PARAM_SRMODE_IRQ_SET)? b_sysreg_set : 1'b0;
 	assign oFREE_CLR_IRQ_MODE = (b_sysreg_set_mode == L_PARAM_SRMODE_IRQ_CLR)? b_sysreg_set : 1'b0;
-	
+
 	/********************************************************************
 	System Register Write
 	********************************************************************/
@@ -717,7 +719,7 @@ module exception_manager(
 	assign oIO_IRQ_CONFIG_TABLE_FLAG_MASK = b_idt_idt_data[1];
 	assign oIO_IRQ_CONFIG_TABLE_FLAG_VALID	= b_idt_idt_data[0];
 	assign oIO_IRQ_CONFIG_TABLE_FLAG_LEVEL	= b_idt_idt_data[17:16];
-	
+
 	/********************************************************************
 	Core-Interrupt Configlation Table
 	********************************************************************/
@@ -726,7 +728,7 @@ module exception_manager(
 	assign oICT_CONF_MASK = b_idt_idt_data[1];
 	assign oICT_CONF_VALID = b_idt_idt_data[0];
 	assign oICT_CONF_LEVEL = b_idt_idt_data[17:16];
-	
+
 	/********************************************************************
 	Load Store Pipe
 	********************************************************************/
@@ -734,7 +736,7 @@ module exception_manager(
 	assign oLDST_REQ = (b_main_state != L_PARAM_MAINSTT_IDLE) && (b_main_state != L_PARAM_MAINSTT_ALU_JUMP) && (b_main_state != L_PARAM_MAINSTT_PDTS) && !iLDST_BUSY && (b_uspr_read || b_kspr_read || b_inthundl_read || idt_read_condition || b_spr_mem_write_req);
 	assign oLDST_ORDER = 2'b10;//Word Order
 	assign oLDST_RW = b_spr_mem_write_req;
-	assign oLDST_TID = b_sysr_tidr[13:0];
+	assign oLDST_ASID = b_sysr_tidr[31:18];
 	assign oLDST_MMUMOD = 2'h0;
 	assign oLDST_PDT = 32'h0;
 	assign oLDST_ADDR = (b_uspr_read)? uspr_read_addr : (
@@ -744,15 +746,15 @@ module exception_manager(
 																)
 															)
 														);
-	assign oLDST_DATA = b_spr_mem_write_spr;	
+	assign oLDST_DATA = b_spr_mem_write_spr;
 
 	//Exception
 	assign oEXCEPT_IRQ_ACK = b_irq_ack;
-		
+
 	//IRQ Busy
 	assign oEXCEPT_IRQ_BUSY = 1'b0;
 
 
 endmodule
 
-`default_nettype wire 
+`default_nettype wire

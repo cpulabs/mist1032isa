@@ -17,7 +17,7 @@ module mmu_tlb(
 		//Read
 		input wire iRD_REQ,
 		output wire oRD_BUSY,
-		input wire [13:0] iRD_TID,
+		input wire [13:0] iRD_ASID,
 		input wire [1:0] iRD_MOD,
 		input wire [2:0] iRD_PS,
 		input wire [31:0] iRD_ADDR,		//Tag([31:15]Address Tag | [14:13]Way | [12]Line:none) | [11:0]None
@@ -33,7 +33,7 @@ module mmu_tlb(
 		*/
 		//Write
 		input wire iWR_REQ,
-		input wire [13:0] iWR_TID,
+		input wire [13:0] iWR_ASID,
 		input wire [1:0] iWR_MOD,
 		input wire [2:0] iWR_PS,
 		input wire [31:0] iWR_ADDR,
@@ -64,10 +64,10 @@ module mmu_tlb(
 	reg [1:0] b_status1[0:3];
 	reg [1:0] b_status2[0:3];
 	reg [1:0] b_status3[0:3];
-	reg [13:0] b_tid0[0:3];	//Task ID
-	reg [13:0] b_tid1[0:3];
-	reg [13:0] b_tid2[0:3];
-	reg [13:0] b_tid3[0:3];
+	reg [13:0] b_asid0[0:3];	//Task ID
+	reg [13:0] b_asid1[0:3];
+	reg [13:0] b_asid2[0:3];
+	reg [13:0] b_asid3[0:3];
 	reg [16:0] b_tag0[0:3];	//AddressTag:15bit
 	reg [16:0] b_tag1[0:3];
 	reg [16:0] b_tag2[0:3];
@@ -110,15 +110,15 @@ module mmu_tlb(
 	assign read_index = func_get_index(iRD_MOD, iRD_PS, iRD_ADDR);
 	assign {read_hit, read_way}	= func_hit_check(
 		func_get_tag(iRD_MOD, iRD_PS, iRD_ADDR),
-		iRD_TID,
+		iRD_ASID,
 		b_status0[read_index],
 		b_status1[read_index],
 		b_status2[read_index],
 		b_status3[read_index],
-		b_tid0[read_index],
-		b_tid1[read_index],
-		b_tid2[read_index],
-		b_tid3[read_index],
+		b_asid0[read_index],
+		b_asid1[read_index],
+		b_asid2[read_index],
+		b_asid3[read_index],
 		b_tag0[read_index],
 		b_tag1[read_index],
 		b_tag2[read_index],
@@ -144,30 +144,30 @@ module mmu_tlb(
 	//Hit Check
 	function [2:0] func_hit_check;	//[2]:Hit  |  [1:0] Hit Way
 		input [16:0] func_request_tag;
-		input [13:0] func_request_tid;
+		input [13:0] func_request_asid;
 		input [1:0] func_way0_status;
 		input [1:0] func_way1_status;
 		input [1:0] func_way2_status;
 		input [1:0] func_way3_status;
-		input [13:0] func_way0_tid;
-		input [13:0] func_way1_tid;
-		input [13:0] func_way2_tid;
-		input [13:0] func_way3_tid;
+		input [13:0] func_way0_asid;
+		input [13:0] func_way1_asid;
+		input [13:0] func_way2_asid;
+		input [13:0] func_way3_asid;
 		input [16:0] func_way0_tag;
 		input [16:0] func_way1_tag;
 		input [16:0] func_way2_tag;
 		input [16:0] func_way3_tag;
 		begin
-			if(func_way0_status != 2'h0 && func_way0_tag == func_request_tag && func_request_tid == func_way0_tid)begin
+			if(func_way0_status != 2'h0 && func_way0_tag == func_request_tag && func_request_asid == func_way0_asid)begin
 				func_hit_check = {1'b1, 2'h0};
 			end
-			else if(func_way1_status != 2'h0 && func_way1_tag == func_request_tag && func_request_tid == func_way1_tid)begin
+			else if(func_way1_status != 2'h0 && func_way1_tag == func_request_tag && func_request_asid == func_way1_asid)begin
 				func_hit_check = {1'b1, 2'h1};
 			end
-			else if(func_way2_status != 2'h0 && func_way2_tag == func_request_tag && func_request_tid == func_way2_tid)begin
+			else if(func_way2_status != 2'h0 && func_way2_tag == func_request_tag && func_request_asid == func_way2_asid)begin
 				func_hit_check = {1'b1, 2'h2};
 			end
-			else if(func_way3_status != 2'h0 && func_way3_tag == func_request_tag && func_request_tid == func_way3_tid)begin
+			else if(func_way3_status != 2'h0 && func_way3_tag == func_request_tag && func_request_asid == func_way3_asid)begin
 				func_hit_check = {1'b1, 2'h3};
 			end
 			else begin
@@ -377,7 +377,7 @@ module mmu_tlb(
 					2'h0:
 						begin
 							b_status0[write_index] <= 2'b11;
-							b_tid0[write_index] <= iWR_TID;
+							b_asid0[write_index] <= iWR_ASID;
 							b_tag0[write_index] <= func_get_tag(iWR_MOD, iWR_PS, iWR_ADDR);
 							b_data0[write_index] <= {func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[63:32]), func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[31:0])};
 							b_flags0[write_index] <= {func_get_flags(iWR_PHYS_ADDR[63:32]), func_get_flags(iWR_PHYS_ADDR[31:0])};
@@ -385,7 +385,7 @@ module mmu_tlb(
 					2'h1:
 						begin
 							b_status1[write_index] <= 2'b11;
-							b_tid1[write_index] <= iWR_TID;
+							b_asid1[write_index] <= iWR_ASID;
 							b_tag1[write_index] <= func_get_tag(iWR_MOD, iWR_PS, iWR_ADDR);
 							b_data1[write_index] <= {func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[63:32]), func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[31:0])};
 							b_flags1[write_index] <= {func_get_flags(iWR_PHYS_ADDR[63:32]), func_get_flags(iWR_PHYS_ADDR[31:0])};
@@ -393,7 +393,7 @@ module mmu_tlb(
 					2'h2:
 						begin
 							b_status2[write_index] <= 2'b11;
-							b_tid2[write_index] <= iWR_TID;
+							b_asid2[write_index] <= iWR_ASID;
 							b_tag2[write_index] <= func_get_tag(iWR_MOD, iWR_PS, iWR_ADDR);
 							b_data2[write_index] <= {func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[63:32]), func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[31:0])};
 							b_flags2[write_index] <= {func_get_flags(iWR_PHYS_ADDR[63:32]), func_get_flags(iWR_PHYS_ADDR[31:0])};
@@ -401,7 +401,7 @@ module mmu_tlb(
 					2'h3:
 						begin
 							b_status3[write_index] <= 2'b11;
-							b_tid3[write_index] <= iWR_TID;
+							b_asid3[write_index] <= iWR_ASID;
 							b_tag3[write_index] <= func_get_tag(iWR_MOD, iWR_PS, iWR_ADDR);
 							b_data3[write_index] <= {func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[63:32]), func_get_addr(iWR_MOD, iWR_PS, iWR_PHYS_ADDR[31:0])};
 							b_flags3[write_index] <= {func_get_flags(iWR_PHYS_ADDR[63:32]), func_get_flags(iWR_PHYS_ADDR[31:0])};

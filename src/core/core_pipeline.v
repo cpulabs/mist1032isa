@@ -34,7 +34,7 @@ module core_pipeline
 		output wire [1:0] oINST_FETCH_MMUMOD,
 		output wire [2:0] oINST_FETCH_MMUPS,
 		output wire [31:0] oINST_FETCH_PDT,
-		output wire [13:0] oINST_FETCH_TID,
+		output wire [13:0] oINST_FETCH_ASID,
 		output wire [31:0] oINST_FETCH_ADDR,
 		//Memory Instruction-Get
 		input wire iINST_VALID,
@@ -50,7 +50,7 @@ module core_pipeline
 		output wire [1:0] oDATA_ORDER,
 		output wire [3:0] oDATA_MASK,
 		output wire oDATA_RW,		//0=Write 1=Read
-		output wire [13:0] oDATA_TID,
+		output wire [13:0] oDATA_ASID,
 		output wire [1:0] oDATA_MMUMOD,
 		output wire [2:0] oDATA_MMUPS,
 		output wire [31:0] oDATA_PDT,
@@ -113,7 +113,7 @@ module core_pipeline
 	wire fetch2icache_req;
 	wire [1:0] fetch2icache_mmumod;
 	wire [2:0] fetch2icache_mmups;
-	wire [13:0] fetch2icache_tid;
+	wire [13:0] fetch2icache_asid;
 	wire [31:0] fetch2icache_pdt;
 	wire [31:0] fetch2icache_addr;
 	wire icache2fetch_lock;
@@ -259,7 +259,7 @@ module core_pipeline
 	wire [1:0] execution2ldst_ldst_order;
 	wire [3:0] execution2ldst_ldst_mask;
 	wire execution2ldst_ldst_rw;
-	wire [13:0] execution2ldst_ldst_tid;
+	wire [13:0] execution2ldst_ldst_asid;
 	wire [1:0] execution2ldst_ldst_mmumod;
 	wire [2:0] execution2ldst_ldst_mmups;
 	wire [31:0] execution2ldst_ldst_pdt;
@@ -294,7 +294,7 @@ module core_pipeline
 	wire ldst2exception_ldst_busy;
 	wire [1:0] exception2ldst_ldst_order;
 	wire exception2ldst_ldst_rw;
-	wire [13:0] exception2ldst_ldst_tid;
+	wire [13:0] exception2ldst_ldst_asid;
 	wire [1:0] exception2ldst_ldst_mmumod;
 	wire [31:0] exception2ldst_ldst_pdt;
 	wire [31:0] exception2ldst_ldst_addr;
@@ -305,6 +305,7 @@ module core_pipeline
 	wire [31:0] exception_branch_addr;
 	wire exception_intr_valid;
 	wire exception_pdts_valid;
+	wire exception_psr_valid;
 	wire exception2cim_ict_req;
 	wire [5:0] exception2cim_ict_entry;
 	wire exception2cim_ict_conf_mask;
@@ -446,7 +447,7 @@ module core_pipeline
 		.iLDST_BUSY(ldst2exception_ldst_busy),
 		.oLDST_ORDER(exception2ldst_ldst_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		.oLDST_RW(exception2ldst_ldst_rw),		//0=Read 1=Write
-		.oLDST_TID(exception2ldst_ldst_tid),
+		.oLDST_ASID(exception2ldst_ldst_asid),
 		.oLDST_MMUMOD(exception2ldst_ldst_mmumod),
 		.oLDST_PDT(exception2ldst_ldst_pdt),
 		.oLDST_ADDR(exception2ldst_ldst_addr),
@@ -479,6 +480,7 @@ module core_pipeline
 		.iEXCEPT_IB(exception_intr_valid),
 		.iEXCEPT_IB_ADDR(exception_branch_addr),
 		.iEXCEPT_PDTS(exception_pdts_valid),
+		.iEXCEPT_PSRS(exception_psr_valid),
 		//External Exception
 		.iEXCEPT_IRQ_REQ(cim2exception_irq_req),
 		.iEXCEPT_IRQ_NUM(cim2exception_irq_num),
@@ -513,7 +515,7 @@ module core_pipeline
 		.iINST_LOCK(iINST_FETCH_BUSY),
 		.oINST_MMUMOD(oINST_FETCH_MMUMOD),
 		.oINST_MMUPS(oINST_FETCH_MMUPS),
-		.oINST_TID(oINST_FETCH_TID),
+		.oINST_ASID(oINST_FETCH_ASID),
 		.oINST_PDT(oINST_FETCH_PDT),
 		.oINST_ADDR(oINST_FETCH_ADDR),
 		//Mem
@@ -529,7 +531,7 @@ module core_pipeline
 		.oNEXT_FETCH_LOCK(icache2fetch_lock),
 		.iNEXT_MMUMOD(fetch2icache_mmumod),
 		.iNEXT_MMUPS(fetch2icache_mmups),
-		.iNEXT_TID(fetch2icache_tid),
+		.iNEXT_ASID(fetch2icache_asid),
 		.iNEXT_PDT(fetch2icache_pdt),
 		.iNEXT_FETCH_ADDR(fetch2icache_addr),
 		//To Fetch
@@ -572,7 +574,7 @@ module core_pipeline
 		.oPREVIOUS_FETCH_REQ(fetch2icache_req),
 		.oPREVIOUS_MMUMOD(fetch2icache_mmumod),
 		.oPREVIOUS_MMUPS(fetch2icache_mmups),
-		.oPREVIOUS_TID(fetch2icache_tid),
+		.oPREVIOUS_ASID(fetch2icache_asid),
 		.oPREVIOUS_PDT(fetch2icache_pdt),
 		.oPREVIOUS_FETCH_ADDR(fetch2icache_addr),
 		.iPREVIOUS_FETCH_LOCK(icache2fetch_lock),
@@ -904,7 +906,7 @@ module core_pipeline
 		.oDATAIO_ORDER(execution2ldst_ldst_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		.oDATAIO_MASK(execution2ldst_ldst_mask),//[0]=Byte0, [1]=Byte1...
 		.oDATAIO_RW(execution2ldst_ldst_rw),		//0=Read 1=Write
-		.oDATAIO_TID(execution2ldst_ldst_tid),
+		.oDATAIO_ASID(execution2ldst_ldst_asid),
 		.oDATAIO_MMUMOD(execution2ldst_ldst_mmumod),
 		.oDATAIO_MMUPS(execution2ldst_ldst_mmups),
 		.oDATAIO_PDT(execution2ldst_ldst_pdt),
@@ -932,6 +934,7 @@ module core_pipeline
 		.oINTR_VALID(exception_intr_valid),
 		.oIDTSET_VALID(exception_idtset_valid),
 		.oPDTSET_VALID(exception_pdts_valid),
+		.oPSRSET_VALID(exception_psr_valid),
 		.oFAULT_VALID(exception_fault_valid),
 		.oFAULT_NUM(exception_fault_num),
 		.oFAULT_FI0R(exception_fault_fi0r),
@@ -957,7 +960,7 @@ module core_pipeline
 	wire [1:0] ldst_arbiter2d_cache_order;
 	wire [3:0] ldst_arbiter2d_cache_mask;
 	wire ldst_arbiter2d_cache_rw;
-	wire [13:0] ldst_arbiter2d_cache_tid;
+	wire [13:0] ldst_arbiter2d_cache_asid;
 	wire [1:0] ldst_arbiter2d_cache_mmumod;
 	wire [2:0] ldst_arbiter2d_cache_mmups;
 	wire [31:0] ldst_arbiter2d_cache_pdt;
@@ -974,7 +977,7 @@ module core_pipeline
 		.oLDST_ORDER(ldst_arbiter2d_cache_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		.oLDST_MASK(ldst_arbiter2d_cache_mask),
 		.oLDST_RW(ldst_arbiter2d_cache_rw),		//0=Read 1=Write
-		.oLDST_TID(ldst_arbiter2d_cache_tid),
+		.oLDST_ASID(ldst_arbiter2d_cache_asid),
 		.oLDST_MMUMOD(ldst_arbiter2d_cache_mmumod),
 		.oLDST_MMUPS(ldst_arbiter2d_cache_mmups),
 		.oLDST_PDT(ldst_arbiter2d_cache_pdt),
@@ -991,7 +994,7 @@ module core_pipeline
 		.iEXE_ORDER(execution2ldst_ldst_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		.iEXE_MASK(execution2ldst_ldst_mask),
 		.iEXE_RW(execution2ldst_ldst_rw),		//0=Read 1=Write
-		.iEXE_TID(execution2ldst_ldst_tid),
+		.iEXE_ASID(execution2ldst_ldst_asid),
 		.iEXE_MMUMOD(execution2ldst_ldst_mmumod),
 		.iEXE_MMUPS(execution2ldst_ldst_mmups),
 		.iEXE_PDT(execution2ldst_ldst_pdt),
@@ -1005,7 +1008,7 @@ module core_pipeline
 		.oEXCEPT_BUSY(ldst2exception_ldst_busy),
 		.iEXCEPT_ORDER(exception2ldst_ldst_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		.iEXCEPT_RW(exception2ldst_ldst_rw),		//0=Read 1=Write
-		.iEXCEPT_TID(exception2ldst_ldst_tid),
+		.iEXCEPT_ASID(exception2ldst_ldst_asid),
 		.iEXCEPT_MMUMOD(exception2ldst_ldst_mmumod),
 		.iEXCEPT_MMUPS(3'h0),
 		.iEXCEPT_PDT(exception2ldst_ldst_pdt),
@@ -1034,7 +1037,7 @@ module core_pipeline
 		.iLDST_ORDER(ldst_arbiter2d_cache_order),
 		.iLDST_MASK(ldst_arbiter2d_cache_mask),
 		.iLDST_RW(ldst_arbiter2d_cache_rw),
-		.iLDST_TID(ldst_arbiter2d_cache_tid),
+		.iLDST_ASID(ldst_arbiter2d_cache_asid),
 		.iLDST_MMUMOD(ldst_arbiter2d_cache_mmumod),
 		.iLDST_MMUPS(ldst_arbiter2d_cache_mmups),
 		.iLDST_PDT(ldst_arbiter2d_cache_pdt),
@@ -1053,7 +1056,7 @@ module core_pipeline
 		.oDATA_ORDER(oDATA_ORDER),
 		.oDATA_MASK(oDATA_MASK),
 		.oDATA_RW(oDATA_RW),		//0=Write 1=Read
-		.oDATA_TID(oDATA_TID),
+		.oDATA_ASID(oDATA_ASID),
 		.oDATA_MMUMOD(oDATA_MMUMOD),
 		.oDATA_MMUPS(oDATA_MMUPS),
 		.oDATA_PDT(oDATA_PDT),

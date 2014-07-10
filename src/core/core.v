@@ -37,7 +37,7 @@ module core
 		output wire [1:0] oINST_MMUMOD,
 		output wire [2:0] oINST_MMUPS,
 		output wire [31:0] oINST_PDT,
-		output wire [13:0] oINST_TID,			//////////////
+		output wire [13:0] oINST_ASID,
 		output wire [31:0] oINST_ADDR,
 		//RAM -> This
 		input wire iINST_VALID,
@@ -53,7 +53,7 @@ module core
 		output wire [1:0] oDATA_ORDER,
 		output wire [3:0] oDATA_MASK,
 		output wire oDATA_RW,		//0=Write 1=Read
-		output wire [13:0] oDATA_TID,
+		output wire [13:0] oDATA_ASID,
 		output wire [1:0] oDATA_MMUMOD,
 		output wire [2:0] oDATA_MMUPS,
 		output wire [31:0] oDATA_PDT,
@@ -132,7 +132,7 @@ module core
 		.oINST_FETCH_MMUMOD(oINST_MMUMOD),
 		.oINST_FETCH_MMUPS(oINST_MMUPS),
 		.oINST_FETCH_PDT(oINST_PDT),
-		.oINST_FETCH_TID(oINST_TID),
+		.oINST_FETCH_ASID(oINST_ASID),
 		.oINST_FETCH_ADDR(oINST_ADDR),
 		.iINST_VALID(iINST_VALID),
 		.oINST_BUSY(oINST_BUSY),
@@ -147,7 +147,7 @@ module core
 		.oDATA_ORDER(oDATA_ORDER),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		.oDATA_MASK(oDATA_MASK),
 		.oDATA_RW(oDATA_RW),			//1=Write 0=Read
-		.oDATA_TID(oDATA_TID),
+		.oDATA_ASID(oDATA_ASID),
 		.oDATA_MMUMOD(oDATA_MMUMOD),
 		.oDATA_MMUPS(oDATA_MMUPS),
 		.oDATA_PDT(oDATA_PDT),

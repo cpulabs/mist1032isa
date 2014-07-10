@@ -18,7 +18,7 @@ module l1_instruction_cache(
 		input wire iINST_LOCK,
 		output wire [1:0] oINST_MMUMOD,
 		output wire [2:0] oINST_MMUPS,
-		output wire [13:0] oINST_TID,
+		output wire [13:0] oINST_ASID,
 		output wire [31:0] oINST_PDT,
 		output wire [31:0] oINST_ADDR,
 		//Mem
@@ -34,8 +34,8 @@ module l1_instruction_cache(
 		output wire oNEXT_FETCH_LOCK,
 		input wire [1:0] iNEXT_MMUMOD,
 		input wire [2:0] iNEXT_MMUPS,
-		input wire [13:0] iNEXT_TID,		//----------
-		input wire [31:0] iNEXT_PDT,		//----------
+		input wire [13:0] iNEXT_ASID,
+		input wire [31:0] iNEXT_PDT,
 		input wire [31:0] iNEXT_FETCH_ADDR,
 		//To Fetch
 		output wire oNEXT_0_INST_VALID,
@@ -64,7 +64,7 @@ module l1_instruction_cache(
 	reg [1:0] b_req_mmumod;
 	reg [2:0] b_req_mmups;
 	reg [31:0] b_req_pdt;
-	reg [13:0] b_req_tid;
+	reg [13:0] b_req_asid;
 	reg b_mem_result_0_valid;
 	reg b_mem_result_1_valid;
 	reg [63:0] b_mem_result_data;
@@ -98,7 +98,7 @@ module l1_instruction_cache(
 			b_req_mmumod <= 2'h0;
 			b_req_mmups <= 3'h0;
 			b_req_pdt <= 32'h0;
-			b_req_tid <= 14'h0;
+			b_req_asid <= 14'h0;
 			b_mem_result_0_valid <= 1'b0;
 			b_mem_result_1_valid <= 1'b0;
 			b_mem_result_data <= 64'h0;
@@ -113,7 +113,7 @@ module l1_instruction_cache(
 				b_req_mmumod <= iNEXT_MMUMOD;
 				b_req_mmups <= iNEXT_MMUPS;
 				b_req_pdt <= iNEXT_PDT;
-				b_req_tid <= iNEXT_TID;
+				b_req_asid <= iNEXT_ASID;
 			end
 			//Memory State
 			case(b_req_main_state)
@@ -361,7 +361,7 @@ module l1_instruction_cache(
 	assign oINST_MMUMOD = b_req_mmumod;
 	assign oINST_MMUPS = b_req_mmups;
 	assign oINST_PDT = b_req_pdt;
-	assign oINST_TID = b_req_tid;
+	assign oINST_ASID = b_req_asid;
 
 	`ifdef MIST1032ISA_INST_L1_CACHE
 		assign oINST_ADDR = {b_req_addr[31:6], b_req_state[2:0], 3'h0};

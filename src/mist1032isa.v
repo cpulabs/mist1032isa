@@ -88,7 +88,7 @@ module mist1032isa(
 	wire [1:0] core2mem_inst_mmumod;
 	wire [2:0] core2mem_inst_mmups;
 	wire [31:0] core2mem_inst_pdt;
-	wire [13:0] core2mem_inst_tid;
+	wire [13:0] core2mem_inst_asid;
 	wire [31:0] core2mem_inst_addr;
 	wire mem2core_inst_valid;
 	wire core2mem_inst_lock;
@@ -99,7 +99,7 @@ module mist1032isa(
 	wire [1:0] core2mem_data_order;
 	wire [3:0] core2mem_data_mask;
 	wire core2mem_data_rw;		//0=Read | 1=Write
-	wire [13:0] core2mem_data_tid;
+	wire [13:0] core2mem_data_asid;
 	wire [1:0] core2mem_data_mmumod;
 	wire [2:0] core2mem_data_mmups;
 	wire [31:0] core2mem_data_pdt;
@@ -255,7 +255,7 @@ module mist1032isa(
 		.oINST_MMUMOD(core2mem_inst_mmumod),
 		.oINST_MMUPS(core2mem_inst_mmups),
 		.oINST_PDT(core2mem_inst_pdt),
-		.oINST_TID(core2mem_inst_tid),			/////
+		.oINST_ASID(core2mem_inst_asid),
 		.oINST_ADDR(core2mem_inst_addr),
 		//Data RAM -> This
 		.iINST_VALID(mem2core_inst_valid),
@@ -271,7 +271,7 @@ module mist1032isa(
 		.oDATA_ORDER(core2mem_data_order),	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		.oDATA_MASK(core2mem_data_mask),
 		.oDATA_RW(core2mem_data_rw),			//1=Write 0=Read
-		.oDATA_TID(core2mem_data_tid),
+		.oDATA_ASID(core2mem_data_asid),
 		.oDATA_MMUMOD(core2mem_data_mmumod),
 		.oDATA_MMUPS(core2mem_data_mmups),
 		.oDATA_PDT(core2mem_data_pdt),
@@ -360,7 +360,7 @@ module mist1032isa(
 	wire [1:0] m_arbiter2mmu_mmu_mode;
 	wire [2:0] m_arbiter2mmu_mmu_ps;
 	wire [31:0] m_arbiter2mmu_pdt;
-	wire [13:0] m_arbiter2mmu_tid;
+	wire [13:0] m_arbiter2mmu_asid;
 	wire [1:0] m_arbiter2mmu_order;
 	wire [3:0] m_arbiter2mmu_mask;
 	wire m_arbiter2mmu_rw;
@@ -382,7 +382,7 @@ module mist1032isa(
 		.iDATA_ORDER(core2mem_data_order),
 		.iDATA_MASK(core2mem_data_mask),
 		.iDATA_RW(core2mem_data_rw),
-		.iDATA_TID(core2mem_data_tid),
+		.iDATA_ASID(core2mem_data_asid),
 		.iDATA_MMUMOD(core2mem_data_mmumod),
 		.iDATA_MMUPS(core2mem_data_mmups),
 		.iDATA_PDT(core2mem_data_pdt),
@@ -399,7 +399,7 @@ module mist1032isa(
 		.iINST_MMUMOD(core2mem_inst_mmumod),
 		.iINST_MMUPS(core2mem_inst_mmups),
 		.iINST_PDT(core2mem_inst_pdt),
-		.iINST_TID(core2mem_inst_tid),
+		.iINST_ASID(core2mem_inst_asid),
 		.iINST_ADDR(core2mem_inst_addr),
 		//Inst(Memory -> Core)
 		.oINST_REQ(mem2core_inst_valid),
@@ -413,7 +413,7 @@ module mist1032isa(
 		.oMEMORY_MMU_MODE(m_arbiter2mmu_mmu_mode),
 		.oMEMORY_MMU_PS(m_arbiter2mmu_mmu_ps),
 		.oMEMORY_PDT(m_arbiter2mmu_pdt),
-		.oMEMORY_TID(m_arbiter2mmu_tid),			////////////////////////////////////////
+		.oMEMORY_ASID(m_arbiter2mmu_asid),
 		.oMEMORY_ORDER(m_arbiter2mmu_order),
 		.oMEMORY_MASK(m_arbiter2mmu_mask),
 		.oMEMORY_RW(m_arbiter2mmu_rw),
@@ -447,7 +447,7 @@ module mist1032isa(
 		.iCORE_MMUMOD(m_arbiter2mmu_mmu_mode),		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		.iCORE_MMUPS(m_arbiter2mmu_mmu_ps),
 		.iCORE_PDT(m_arbiter2mmu_pdt),					//Page Table Register
-		.iCORE_TID(m_arbiter2mmu_tid),
+		.iCORE_ASID(m_arbiter2mmu_asid),
 		.iCORE_ORDER(m_arbiter2mmu_order),
 		.iCORE_MASK(m_arbiter2mmu_mask),
 		.iCORE_RW(m_arbiter2mmu_rw),

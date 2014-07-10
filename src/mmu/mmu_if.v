@@ -17,7 +17,7 @@ module mmu_if(
 		input wire [1:0] iCORE_MMUMOD,		//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		input wire [2:0] iCORE_MMUPS,
 		input wire [31:0] iCORE_PDT,		//Page Table Register
-		input wire [13:0] iCORE_TID,		///
+		input wire [13:0] iCORE_ASID,
 		input wire [1:0] iCORE_ORDER,
 		input wire [3:0] iCORE_MASK,
 		input wire iCORE_RW,
@@ -100,7 +100,7 @@ module mmu_if(
 		.iLOGIC_MMUMOD(iCORE_MMUMOD),					//0=NoConvertion 1=none 2=1LevelConvertion 3=2LevelConvertion
 		.iLOGIC_MMUPS(iCORE_MMUPS),
 		.iLOGIC_PDT(iCORE_PDT),							//Page Directory Table
-		.iLOGIC_TID(iCORE_TID),						//Task ID
+		.iLOGIC_ASID(iCORE_ASID),						//Task ID
 		.iLOGIC_ORDER(iCORE_ORDER),
 		.iLOGIC_MASK(iCORE_MASK),
 		.iLOGIC_RW(iCORE_RW),							//0=Read 1=Write

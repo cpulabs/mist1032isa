@@ -10,7 +10,7 @@ module memory_pipe_arbiter(
 		input wire [1:0] iDATA_ORDER,
 		input wire [3:0] iDATA_MASK,
 		input wire iDATA_RW,
-		input wire [13:0] iDATA_TID,
+		input wire [13:0] iDATA_ASID,
 		input wire [1:0] iDATA_MMUMOD,
 		input wire [2:0] iDATA_MMUPS,
 		input wire [31:0] iDATA_PDT,
@@ -27,7 +27,7 @@ module memory_pipe_arbiter(
 		input wire [1:0] iINST_MMUMOD,
 		input wire [2:0] iINST_MMUPS,
 		input wire [31:0] iINST_PDT,
-		input wire [13:0] iINST_TID,		//
+		input wire [13:0] iINST_ASID,
 		input wire [31:0] iINST_ADDR,
 		//Inst(Memory -> Core)
 		output wire oINST_REQ,
@@ -41,7 +41,7 @@ module memory_pipe_arbiter(
 		output wire [1:0] oMEMORY_MMU_MODE,
 		output wire [2:0] oMEMORY_MMU_PS,
 		output wire [31:0] oMEMORY_PDT,
-		output wire [13:0] oMEMORY_TID,				//
+		output wire [13:0] oMEMORY_ASID,
 		output wire [1:0] oMEMORY_ORDER,
 		output wire [3:0] oMEMORY_MASK,
 		output wire oMEMORY_RW,
@@ -77,7 +77,7 @@ module memory_pipe_arbiter(
 	reg [1:0] b_core2mem_mmumod;
 	reg [2:0] b_core2mem_mmups;
 	reg [31:0] b_core2mem_pdt;
-	reg [13:0] b_core2mem_tid;
+	reg [13:0] b_core2mem_asid;
 	reg [31:0] b_core2mem_addr;
 	reg [31:0] b_core2mem_data;
 	//Memory -> Core
@@ -133,7 +133,7 @@ module memory_pipe_arbiter(
 			b_core2mem_mmumod <= 2'h0;
 			b_core2mem_mmups <= 3'h0;
 			b_core2mem_pdt <= {32{1'b0}};
-			b_core2mem_tid <= 14'h0;
+			b_core2mem_asid <= 14'h0;
 			b_core2mem_addr <= {32{1'b0}};
 			b_core2mem_data <= {32{1'b0}};
 		end
@@ -149,7 +149,7 @@ module memory_pipe_arbiter(
 					b_core2mem_mmumod <= iDATA_MMUMOD;
 					b_core2mem_mmups <= iDATA_MMUPS;
 					b_core2mem_pdt <= iDATA_PDT;
-					b_core2mem_tid <= iDATA_TID;
+					b_core2mem_asid <= iDATA_ASID;
 					b_core2mem_addr <= iDATA_ADDR;
 					b_core2mem_data <= iDATA_DATA;
 				end
@@ -162,7 +162,7 @@ module memory_pipe_arbiter(
 					b_core2mem_mmumod <= iINST_MMUMOD;
 					b_core2mem_mmups <= iINST_MMUPS;
 					b_core2mem_pdt <= iINST_PDT;
-					b_core2mem_tid <= iINST_TID;
+					b_core2mem_asid <= iINST_ASID;
 					b_core2mem_addr <= iINST_ADDR;
 					b_core2mem_data <= {32{1'b0}};
 				end
@@ -225,7 +225,7 @@ module memory_pipe_arbiter(
 	assign oMEMORY_MMU_MODE = b_core2mem_mmumod;
 	assign oMEMORY_MMU_PS = b_core2mem_mmups;
 	assign oMEMORY_PDT = b_core2mem_pdt;
-	assign oMEMORY_TID = b_core2mem_tid;
+	assign oMEMORY_ASID = b_core2mem_asid;
 	assign oMEMORY_ORDER = b_core2mem_order;
 	assign oMEMORY_MASK = b_core2mem_mask;
 	assign oMEMORY_RW = b_core2mem_rw;

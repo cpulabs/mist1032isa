@@ -41,7 +41,7 @@ module fetch(
 		input wire iPREVIOUS_FETCH_LOCK,
 		output wire [1:0] oPREVIOUS_MMUMOD,
 		output wire [2:0] oPREVIOUS_MMUPS,
-		output wire [13:0] oPREVIOUS_TID,			//
+		output wire [13:0] oPREVIOUS_ASID,			//
 		output wire [31:0] oPREVIOUS_PDT,			//
 		output wire [31:0] oPREVIOUS_FETCH_ADDR,
 		//Next
@@ -195,7 +195,7 @@ module fetch(
 	assign oPREVIOUS_FETCH_REQ = !iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP;
 	assign oPREVIOUS_MMUMOD = iSYSREG_PSR[1:0];
 	assign oPREVIOUS_MMUPS = iSYSREG_PSR[9:7];
-	assign oPREVIOUS_TID = iSYSREG_TIDR[13:0];
+	assign oPREVIOUS_ASID = iSYSREG_TIDR[31:18];
 	assign oPREVIOUS_PDT = iSYSREG_PDTR;
 	assign oPREVIOUS_FETCH_ADDR	= b_pc;
 

@@ -66,7 +66,7 @@ module execute(
 		output wire [1:0] oDATAIO_ORDER,	//00=Byte Order 01=2Byte Order 10= Word Order 11= None
 		output wire [3:0] oDATAIO_MASK,		//[0]=Byte0, [1]=Byte1...
 		output wire oDATAIO_RW,				//0=Read 1=Write
-		output wire [13:0] oDATAIO_TID,
+		output wire [13:0] oDATAIO_ASID,
 		output wire [1:0] oDATAIO_MMUMOD,
 		output wire [2:0] oDATAIO_MMUPS,
 		output wire [31:0] oDATAIO_PDT,
@@ -94,6 +94,7 @@ module execute(
 		output wire oINTR_VALID,
 		output wire oIDTSET_VALID,
 		output wire oPDTSET_VALID,
+		output wire oPSRSET_VALID,
 		output wire oFAULT_VALID,
 		output wire [6:0] oFAULT_NUM,
 		output wire [31:0] oFAULT_FI0R,
@@ -154,6 +155,7 @@ module execute(
 	reg b_jump;
 	reg b_idts;
 	reg b_pdts;
+	reg b_psr;
 	reg b_ib;
 	reg [31:0] b_branch_addr;
 	reg b_branch_predict;
@@ -753,6 +755,7 @@ module execute(
 			b_jump <= 1'b0;
 			b_idts <= 1'b0;
 			b_pdts <= 1'b0;
+			b_psr <= 1'b0;
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_branch_predict <= 1'b0;
@@ -790,6 +793,7 @@ module execute(
 			b_jump <= 1'b0;
 			b_idts <= 1'b0;
 			b_pdts <= 1'b0;
+			b_psr <= 1'b0;
 			b_ib <= 1'b0;
 			b_branch_addr <= 32'h0;
 			b_branch_predict <= 1'b0;
@@ -861,6 +865,7 @@ module execute(
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
 									b_pdts <= 1'b0;
+									b_psr <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 									b_branch_predict <= 1'b0;
@@ -911,6 +916,7 @@ module execute(
 										b_jump <= 1'b0;
 										b_idts <= 1'b0;
 										b_pdts <= 1'b0;
+										b_psr <= 1'b0;
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
 										b_state <= L_PARAM_STT_STORE;
@@ -932,6 +938,7 @@ module execute(
 										b_jump <= 1'b0;
 										b_idts <= 1'b0;
 										b_pdts <= 1'b0;
+										b_psr <= 1'b0;
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
 										b_branch_predict <= 1'b0;
@@ -950,6 +957,7 @@ module execute(
 										b_jump <= 1'b0;
 										b_idts <= 1'b0;
 										b_pdts <= 1'b0;
+										b_psr <= 1'b0;
 										b_ib <= 1'b0;
 										b_branch_addr <= 32'h0;
 										b_branch_predict <= 1'b0;
@@ -968,7 +976,8 @@ module execute(
 									b_ldst_pipe_valid <= 1'b0;
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
-									b_pdts <= iPREVIOUS_WRITEBACK && (iPREVIOUS_DESTINATION_SYSREG == `SYSREG_PDTR);
+									b_pdts <= iPREVIOUS_WRITEBACK && iPREVIOUS_DESTINATION_SYSREG && (iPREVIOUS_DESTINATION == `SYSREG_PDTR);
+									b_psr <= iPREVIOUS_WRITEBACK && iPREVIOUS_DESTINATION_SYSREG && (iPREVIOUS_DESTINATION == `SYSREG_PSR);
 									b_ib <= 1'b0;
 									b_branch_addr <= iPREVIOUS_PC;
 									b_branch_predict <= 1'b0;
@@ -987,6 +996,7 @@ module execute(
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
 									b_pdts <= 1'b0;
+									b_psr <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 									b_branch_predict <= 1'b0;
@@ -1005,6 +1015,7 @@ module execute(
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
 									b_pdts <= 1'b0;
+									b_psr <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 									b_branch_predict <= 1'b0;
@@ -1023,6 +1034,7 @@ module execute(
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
 									b_pdts <= 1'b0;
+									b_psr <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 									b_branch_predict <= 1'b0;
@@ -1041,6 +1053,7 @@ module execute(
 									b_jump <= 1'b0;
 									b_idts <= 1'b0;
 									b_pdts <= 1'b0;
+									b_psr <= 1'b0;
 									b_ib <= 1'b0;
 									b_branch_addr <= 32'h0;
 									b_branch_predict <= 1'b0;
@@ -1068,6 +1081,7 @@ module execute(
 												b_jump <= 1'b0;
 												b_idts <= 1'b0;
 												b_pdts <= 1'b0;
+												b_psr <= 1'b0;
 												b_ib <= 1'b0;
 												b_branch_addr <= branch_branch_addr;
 												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
@@ -1089,6 +1103,7 @@ module execute(
 												b_jump <= branch_jump_valid;
 												b_idts <= branch_idts_valid;
 												b_pdts <= 1'b0;
+												b_psr <= 1'b0;
 												b_ib <= branch_ib_valid;
 												b_branch_addr <= branch_branch_addr;
 												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
@@ -1109,6 +1124,7 @@ module execute(
 											b_jump <= branch_jump_valid;
 											b_idts <= branch_idts_valid;
 											b_pdts <= 1'b0;
+											b_psr <= 1'b0;
 											b_ib <= branch_ib_valid;
 											b_branch_addr <= branch_branch_addr;
 											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
@@ -1131,6 +1147,7 @@ module execute(
 										b_jump <= branch_jump_valid;
 										b_idts <= branch_idts_valid;
 										b_pdts <= 1'b0;
+										b_psr <= 1'b0;
 										b_ib <= branch_ib_valid;
 										b_branch_addr <= branch_branch_addr;
 										b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
@@ -1156,6 +1173,7 @@ module execute(
 												b_jump <= branch_not_jump_valid;	//
 												b_idts <= branch_idts_valid;
 												b_pdts <= 1'b0;
+												b_psr <= 1'b0;
 												b_ib <= branch_ib_valid;
 												b_branch_addr <= iPREVIOUS_PC;		//Re Fetch
 												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
@@ -1176,6 +1194,7 @@ module execute(
 												b_jump <= branch_jump_valid;
 												b_idts <= branch_idts_valid;
 												b_pdts <= 1'b0;
+												b_psr <= 1'b0;
 												b_ib <= branch_ib_valid;
 												b_branch_addr <= branch_branch_addr;
 												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
@@ -1196,6 +1215,7 @@ module execute(
 											b_jump <= branch_jump_valid;
 											b_idts <= branch_idts_valid;
 											b_pdts <= 1'b0;
+											b_psr <= 1'b0;
 											b_ib <= branch_ib_valid;
 											b_branch_addr <= branch_branch_addr;
 											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
@@ -1478,7 +1498,7 @@ module execute(
 	assign oDATAIO_ORDER = b_ldst_pipe_order;
 	assign oDATAIO_MASK = b_ldst_pipe_mask;
 	assign oDATAIO_RW = (b_state == L_PARAM_STT_STORE)? 1'b1 : 1'b0;
-	assign oDATAIO_TID = b_sysreg_tidr[13:0];
+	assign oDATAIO_ASID = b_sysreg_tidr[31:18];
 	assign oDATAIO_MMUMOD = b_sysreg_psr[1:0];
 	assign oDATAIO_MMUPS = b_sysreg_psr[9:7];
 	assign oDATAIO_PDT = b_sysreg_pdtr;
@@ -1490,6 +1510,7 @@ module execute(
 	assign oJUMP_VALID = b_jump;
 	assign oIDTSET_VALID = b_idts;
 	assign oPDTSET_VALID = b_pdts;
+	assign oPSRSET_VALID = b_psr;
 	assign oINTR_VALID = b_ib;
 
 	//System Register Writeback
