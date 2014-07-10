@@ -31,6 +31,7 @@ module execute(
 		input wire [31:0] iPREVIOUS_SYSREG_PSR,
 		input wire [31:0] iPREVIOUS_SYSREG_TIDR,
 		input wire [31:0] iPREVIOUS_SYSREG_PDTR,
+		input wire [31:0] iPREVIOUS_SYSREG_KPDTR,	///////////////////////
 		input wire iPREVIOUS_DESTINATION_SYSREG,
 		input wire [4:0] iPREVIOUS_DESTINATION,
 		input wire iPREVIOUS_WRITEBACK,
@@ -131,7 +132,7 @@ module execute(
 	reg b_kernel_access;
 	reg [31:0] b_sysreg_psr;
 	reg [31:0] b_sysreg_tidr;
-	reg [31:0] b_sysreg_pdtr;
+	reg [31:0] b_sysreg_pdt;
 	reg [2:0] b_state;
 	reg b_load_store;
 	reg b_writeback;
@@ -197,6 +198,7 @@ module execute(
 	wire [31:0] forwarding_reg_spr_data;
 	wire [31:0] ex_module_spr;// = forwarding_reg_spr_data;
 	wire [31:0] ex_module_pdtr;
+	wire [31:0] ex_module_kpdtr;
 	wire [31:0] ex_module_tidr;
 	wire [31:0] ex_module_psr;
 
@@ -249,6 +251,7 @@ module execute(
 	wire [31:0] ldst_data;
 	wire ldst_pipe_rw;
 	wire [31:0] ldst_pipe_addr;
+	wire [31:0] ldst_pipe_pdt;
 	wire [31:0] ldst_pipe_data;
 	wire [1:0] ldst_pipe_order;
 	wire [1:0] load_pipe_shift;
@@ -319,12 +322,14 @@ module execute(
 		.iPREVIOUS_SOURCE_IMM(1'b0/*iPREVIOUS_SOURCE0_IMM*/),
 		.iPREVIOUS_SOURCE_DATA(iPREVIOUS_SOURCE0),
 		.iPREVIOUS_SOURCE_PDTR(iPREVIOUS_SYSREG_PDTR),
+		.iPREVIOUS_SOURCE_KPDTR(iPREVIOUS_SYSREG_KPDTR),
 		.iPREVIOUS_SOURCE_TIDR(iPREVIOUS_SYSREG_TIDR),
 		.iPREVIOUS_SOURCE_PSR(iPREVIOUS_SYSREG_PSR),
 		//Output
 		.oNEXT_SOURCE_DATA(ex_module_source0),
 		.oNEXT_SOURCE_SPR(ex_module_spr),
 		.oNEXT_SOURCE_PDTR(ex_module_pdtr),
+		.oNEXT_SOURCE_KPDTR(ex_module_kpdtr),
 		.oNEXT_SOURCE_TIDR(ex_module_tidr),
 		.oNEXT_SOURCE_PSR(ex_module_psr)
 	);
@@ -361,12 +366,14 @@ module execute(
 		.iPREVIOUS_SOURCE_IMM(iPREVIOUS_SOURCE1_IMM),
 		.iPREVIOUS_SOURCE_DATA(iPREVIOUS_SOURCE1),
 		.iPREVIOUS_SOURCE_PDTR(iPREVIOUS_SYSREG_PDTR),
+		.iPREVIOUS_SOURCE_KPDTR(iPREVIOUS_SYSREG_KPDTR),
 		.iPREVIOUS_SOURCE_TIDR(iPREVIOUS_SYSREG_TIDR),
 		.iPREVIOUS_SOURCE_PSR(iPREVIOUS_SYSREG_PSR),
 		//Output
 		.oNEXT_SOURCE_DATA(ex_module_source1),
 		.oNEXT_SOURCE_SPR(),
 		.oNEXT_SOURCE_PDTR(),
+		.oNEXT_SOURCE_KPDTR(),
 		.oNEXT_SOURCE_TIDR(),
 		.oNEXT_SOURCE_PSR()
 	);
@@ -628,6 +635,9 @@ module execute(
 		//.iADV_DATA({26'h0, iPREVIOUS_ADV_DATA}),
 		.iADV_DATA({{26{iPREVIOUS_ADV_DATA[5]}}, iPREVIOUS_ADV_DATA}),
 		.iSPR(ex_module_spr),
+		.iPSR(ex_module_psr),
+		.iPDTR(ex_module_pdtr),
+		.iKPDTR(ex_module_kpdtr),
 		.iPC(iPREVIOUS_PC - 32'h4),
 		//Output - Writeback
 		.oOUT_SPR_VALID(ldst_spr_valid),
@@ -635,6 +645,7 @@ module execute(
 		.oOUT_DATA(ldst_data),
 		//Output - LDST Pipe
 		.oLDST_RW(ldst_pipe_rw),
+		.oLDST_PDT(ldst_pipe_pdt),
 		.oLDST_ADDR(ldst_pipe_addr),
 		.oLDST_DATA(ldst_pipe_data),
 		.oLDST_ORDER(ldst_pipe_order),
@@ -731,7 +742,7 @@ module execute(
 			b_kernel_access <= 1'b0;
 			b_sysreg_psr <= 32'h0;
 			b_sysreg_tidr <= 32'h0;
-			b_sysreg_pdtr <= 32'h0;
+			b_sysreg_pdt <= 32'h0;
 			b_state <= L_PARAM_STT_NORMAL;
 			b_load_store <= 1'b0;
 			b_writeback <= 1'b0;
@@ -769,7 +780,7 @@ module execute(
 			b_kernel_access <= 1'b0;
 			b_sysreg_psr <= 32'h0;
 			b_sysreg_tidr <= 32'h0;
-			b_sysreg_pdtr <= 32'h0;
+			b_sysreg_pdt <= 32'h0;
 			b_state <= L_PARAM_STT_NORMAL;
 			b_load_store <= 1'b0;
 			b_writeback <= 1'b0;
@@ -879,7 +890,7 @@ module execute(
 										b_valid <= 1'b0;
 										b_sysreg_psr <= ex_module_psr;//iPREVIOUS_SYSREG_PSR;
 										b_sysreg_tidr <= ex_module_tidr;//iPREVIOUS_SYSREG_TIDR;
-										b_sysreg_pdtr <= ex_module_pdtr;//iPREVIOUS_SYSREG_PDTR;
+										b_sysreg_pdt <= ldst_pipe_pdt;//iPREVIOUS_SYSREG_PDTR;
 										b_writeback <= iPREVIOUS_WRITEBACK;
 										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
 										b_destination <= iPREVIOUS_DESTINATION;
@@ -900,7 +911,7 @@ module execute(
 										//Store
 										b_sysreg_psr <= ex_module_psr;//iPREVIOUS_SYSREG_PSR;
 										b_sysreg_tidr <= ex_module_tidr;//iPREVIOUS_SYSREG_TIDR;
-										b_sysreg_pdtr <= ex_module_pdtr;//iPREVIOUS_SYSREG_PDTR;
+										b_sysreg_pdt <= ldst_pipe_pdt;//iPREVIOUS_SYSREG_PDTR;
 										b_writeback <= iPREVIOUS_WRITEBACK;
 										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
 										b_destination <= 5'h0;
@@ -1501,7 +1512,7 @@ module execute(
 	assign oDATAIO_ASID = b_sysreg_tidr[31:18];
 	assign oDATAIO_MMUMOD = b_sysreg_psr[1:0];
 	assign oDATAIO_MMUPS = b_sysreg_psr[9:7];
-	assign oDATAIO_PDT = b_sysreg_pdtr;
+	assign oDATAIO_PDT = b_sysreg_pdt;
 	assign oDATAIO_ADDR = b_ldst_pipe_addr;
 	assign oDATAIO_DATA = b_ldst_pipe_data;
 

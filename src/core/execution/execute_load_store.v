@@ -18,6 +18,9 @@ module execute_load_store(
 		input wire iADV_ACTIVE,
 		input wire [31:0] iADV_DATA,
 		input wire [31:0] iSPR,
+		input wire [31:0] iPSR,
+		input wire [31:0] iPDTR,
+		input wire [31:0] iKPDTR,
 		input wire [31:0] iPC,
 		//Output - Writeback
 		output wire oOUT_SPR_VALID,
@@ -25,19 +28,20 @@ module execute_load_store(
 		output wire [31:0] oOUT_DATA,
 		//Output - LDST Pipe
 		output wire oLDST_RW,
+		output wire [31:0] oLDST_PDT,
 		output wire [31:0] oLDST_ADDR,
 		output wire [31:0] oLDST_DATA,
 		output wire [1:0] oLDST_ORDER,
-		output wire [1:0] oLOAD_SHIFT,		
+		output wire [1:0] oLOAD_SHIFT,
 		output wire [3:0] oLOAD_MASK		//2bit -> 4bit
 	);
-	
+
 	function [3:0] func_bytemask;
 		input [1:0] func_order;
 		input [1:0] func_address;
 		begin
 			case(func_order)
-				2'h0 : 
+				2'h0 :
 					begin
 						if(func_address[1:0] == 2'h0)begin
 							func_bytemask = 4'b0001;
@@ -52,7 +56,7 @@ module execute_load_store(
 							func_bytemask = 4'b1000;
 						end
 					end
-				2'h1 : 	
+				2'h1 :
 					begin
 						if(func_address[1:0] == 2'h0)begin
 							func_bytemask = 4'b0011;
@@ -64,7 +68,7 @@ module execute_load_store(
 							func_bytemask = 4'b0000;
 						end
 					end
-				2'h2 : 
+				2'h2 :
 					begin
 						func_bytemask = 4'b1111;
 					end
@@ -75,7 +79,7 @@ module execute_load_store(
 			endcase
 		end
 	endfunction
-	
+
 	function [31:0] func_store_data8;
 		input [1:0] func_shift;
 		input [31:0] func_data;
@@ -88,8 +92,8 @@ module execute_load_store(
 			endcase
 		end
 	endfunction
-	
-	
+
+
 	function [31:0] func_store_data16;
 		input [1:0] func_shift;
 		input [31:0] func_data;
@@ -101,8 +105,31 @@ module execute_load_store(
 			endcase
 		end
 	endfunction
-	
-			
+
+
+
+	reg [31:0] ldst_pdt;
+	always @* begin
+		if(iLOADSTORE_MODE)begin
+			if(
+				iCMD == `EXE_LDSW_LD8U ||
+				iCMD == `EXE_LDSW_LD16U ||
+				iCMD == `EXE_LDSW_LD32U ||
+				iCMD == `EXE_LDSW_ST8U ||
+				iCMD == `EXE_LDSW_ST16U ||
+				iCMD == `EXE_LDSW_ST32U
+			)begin
+				ldst_pdt = iPDTR;
+			end
+			else begin
+				ldst_pdt = (iPSR[6:5] == 2'h0)? iKPDTR : iPDTR;
+			end
+		end
+		else begin
+			ldst_pdt = (iPSR[6:5] == 2'h0)? iKPDTR : iPDTR;
+		end
+	end
+
 
 	reg spr_valid;
 	reg [31:0] spr;
@@ -119,7 +146,7 @@ module execute_load_store(
 				`EXE_LDSW_LD8:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;	
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
 						ldst_data = iSOURCE0;
@@ -131,7 +158,7 @@ module execute_load_store(
 				`EXE_LDSW_LD16:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
 						ldst_data = iSOURCE0;
@@ -143,7 +170,7 @@ module execute_load_store(
 				`EXE_LDSW_LD32:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
 						ldst_data = iSOURCE0;
@@ -155,7 +182,7 @@ module execute_load_store(
 				`EXE_LDSW_ST8:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
 						ldst_data = func_store_data8(iSOURCE1[1:0], iSOURCE0);
@@ -167,7 +194,7 @@ module execute_load_store(
 				`EXE_LDSW_ST16:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
 						ldst_data = func_store_data16((iSOURCE1[1:0] == 2'h0)? 2'h0 : 2'h2, iSOURCE0);
@@ -179,7 +206,7 @@ module execute_load_store(
 				`EXE_LDSW_ST32:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
 						ldst_data = iSOURCE0;
@@ -191,7 +218,7 @@ module execute_load_store(
 				`EXE_LDSW_PUSH:
 					begin
 						spr_valid = 1'b1;
-						spr = iSPR - 32'h4;		
+						spr = iSPR - 32'h4;
 						data = 32'h0;
 						ldst_addr = iSPR - 32'h4;
 						ldst_data = iSOURCE0;
@@ -203,7 +230,7 @@ module execute_load_store(
 				`EXE_LDSW_PPUSH:
 					begin
 						spr_valid = 1'b1;
-						spr = iSPR - 32'h4;		
+						spr = iSPR - 32'h4;
 						data = 32'h0;
 						ldst_addr = iSPR - 32'h4;
 						ldst_data = iPC;
@@ -215,8 +242,8 @@ module execute_load_store(
 				`EXE_LDSW_POP:
 					begin
 						spr_valid = 1'b1;
-						spr = iSPR + 32'h4;	
-						data = 32'h0;	
+						spr = iSPR + 32'h4;
+						data = 32'h0;
 						ldst_addr = iSPR;
 						ldst_data = 32'h0;
 						ldst_rw = 1'b0;
@@ -227,7 +254,7 @@ module execute_load_store(
 				`EXE_LDSW_LDD8:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;	
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1 + iADV_DATA;
 						ldst_data = iSOURCE0;
@@ -239,7 +266,7 @@ module execute_load_store(
 				`EXE_LDSW_LDD16:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1 + {iADV_DATA, 1'b0};
 						ldst_data = iSOURCE0;
@@ -251,7 +278,7 @@ module execute_load_store(
 				`EXE_LDSW_LDD32:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1 + {iADV_DATA, 2'b00};
 						ldst_data = iSOURCE0;
@@ -263,7 +290,7 @@ module execute_load_store(
 				`EXE_LDSW_STD8:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1 + iADV_DATA;
 						ldst_data = func_store_data8(iSOURCE1[1:0] + iADV_DATA[1:0], iSOURCE0);//iSOURCE0;
@@ -275,7 +302,7 @@ module execute_load_store(
 				`EXE_LDSW_STD16:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1 + {iADV_DATA, 1'b0};
 						ldst_data = func_store_data16((iSOURCE1[1:0] + {iADV_DATA[0], 1'b0} == 2'h0)? 2'h0 : 2'h2, iSOURCE0);//iSOURCE0;
@@ -287,7 +314,7 @@ module execute_load_store(
 				`EXE_LDSW_STD32:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1 + {iADV_DATA, 2'b00};
 						ldst_data = iSOURCE0;
@@ -299,7 +326,7 @@ module execute_load_store(
 				default:
 					begin
 						spr_valid = 1'b0;
-						spr = iSPR;		
+						spr = iSPR;
 						data = 32'h0;
 						ldst_addr = iSOURCE1;
 						ldst_data = 32'h0;
@@ -316,7 +343,7 @@ module execute_load_store(
 				`EXE_SYS_LDST_READ_SPR:
 					begin
 						spr_valid = 1'b1;
-						spr = iSPR;		
+						spr = iSPR;
 						data = iSPR;
 						ldst_addr = iSOURCE1;
 						ldst_data = iSPR;
@@ -328,7 +355,7 @@ module execute_load_store(
 				`EXE_SYS_LDST_WRITE_SPR:
 					begin
 						spr_valid = 1'b1;
-						spr = iSOURCE0;			
+						spr = iSOURCE0;
 						data = 32'h0;
 						ldst_addr = iSOURCE0;
 						ldst_data = iSOURCE0;
@@ -340,7 +367,7 @@ module execute_load_store(
 				`EXE_SYS_LDST_ADD_SPR:
 					begin
 						spr_valid = 1'b1;
-						spr = iSOURCE0 + iSOURCE1;			
+						spr = iSOURCE0 + iSOURCE1;
 						data = 32'h0;
 						ldst_addr = iSOURCE0;
 						ldst_data = iSOURCE0;
@@ -352,7 +379,7 @@ module execute_load_store(
 				default:
 					begin
 						spr_valid = 1'b1;
-						spr = iSOURCE0 + iSOURCE1;			
+						spr = iSOURCE0 + iSOURCE1;
 						data = 32'h0;
 						ldst_addr = iSOURCE0;
 						ldst_data = iSOURCE0 + iSOURCE1;
@@ -364,20 +391,21 @@ module execute_load_store(
 			endcase
 		end
 	end
-	
-	
+
+
 	assign oOUT_SPR_VALID = spr_valid;
 	assign oOUT_SPR = spr;
 	assign oOUT_DATA = data;
 	//Output - LDST Pipe
 	assign oLDST_RW = ldst_rw;
+	assign oLDST_PDT = ldst_pdt;
 	assign oLDST_ADDR = ldst_addr;
 	assign oLDST_DATA = ldst_data;
 	assign oLDST_ORDER = ldst_order;
 	assign oLOAD_SHIFT = ldst_load_shift;
 	assign oLOAD_MASK = ldst_load_mask;
-	
-	
+
+
 endmodule
 
 `default_nettype wire

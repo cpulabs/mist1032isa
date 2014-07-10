@@ -1,5 +1,13 @@
+/****************************************
+MIST1032ISA & MIST1032SA Common Decoder
+Version 1.0.0
+****************************************/
+
+
 `default_nettype none
 `include "core.h"
+
+
 
 module decode_function(
 		//Input
@@ -2390,6 +2398,336 @@ module decode_function(
 							/* Execute Module Command */			`EXE_LDSW_PPUSH,
 							/* Execute Module */					`EXE_SELECT_LDST
 						};
+					end
+				`OC_LD8U :
+					begin
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							{5{1'b0}},
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},									//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b0,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_LDSW_LD8U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							{5{1'b0}},
+								/* Source1 */							{{21{1'b0}}, f_decode_inst[15:10], f_decode_inst[4:0]},				//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b0,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_LDSW_LD8U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+					end
+				`OC_LD16U :
+					begin
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							{5{1'b0}},
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},									//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b0,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_LDSW_LD16U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							{5{1'b0}},
+								/* Source1 */							{{20{1'b0}}, f_decode_inst[15:10], f_decode_inst[4:0], 1'b0},				//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b0,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_LDSW_LD16U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+					end
+				`OC_LD32U :
+					begin
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							{5{1'b0}},
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},									//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b0,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_LDSW_LD32U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							{5{1'b0}},
+								/* Source1 */							{{19{1'b0}}, f_decode_inst[15:10], f_decode_inst[4:0], 2'b00},				//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b0,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						f_decode_inst[9:5],
+								/* Write Back Enable */					1'b1,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b1,
+								/* Execute Module Command */			`EXE_LDSW_LD32U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+					end
+				`OC_ST8U :
+					begin
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],						//Rd
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},		//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						5'h00,		//Memory
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_LDSW_ST8U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],											//Rd
+								/* Source1 */							{{21{1'b0}}, f_decode_inst[15:10], f_decode_inst[4:0]},		//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						5'h00,		//Memory
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_LDSW_ST8U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+					end
+				`OC_ST16U :
+					begin
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],						//Rd
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},		//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						5'h00,		//Memory
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_LDSW_ST16U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],											//Rd
+								/* Source1 */							{{20{1'b0}}, f_decode_inst[15:10], f_decode_inst[4:0], 1'b0},		//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						5'h00,		//Memory
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_LDSW_ST16U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+					end
+				`OC_ST32U :
+					begin
+						if(!f_decode_inst[20])begin			//O2
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],						//Rd
+								/* Source1 */							{{27{1'b0}}, f_decode_inst[4:0]},		//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b0,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						5'h00,		//Memory
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_LDSW_ST32U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
+						else begin							//I11
+							f_decode	=	{
+								/* Decode Error */						1'b0,
+								/* Commit Wait Instruction */			1'b0,
+								/* Condition Code & AFE */				f_decode_inst[19:16],
+								/* Source0 */							f_decode_inst[9:5],											//Rd
+								/* Source1 */							{{19{1'b0}}, f_decode_inst[15:10], f_decode_inst[4:0], 2'b00},		//Rs
+								/* Source0 Use Flags*/					1'b0,
+								/* Source1-Immediate */					1'b1,
+								/* Source0 Active */					1'b1,
+								/* Source1 Active */					1'b1,
+								/* Source0 System Register */			1'b0,
+								/* Source1 System Register */			1'b0,
+								/* Source0 System Register Rename */	1'b0,
+								/* Source1 System Register Rename */	1'b0,
+								/* Displacement Data -> ADV */			6'h0,
+								/* Displacement Data -> ADV Enable */	1'b0,
+								/* Destination */						5'h00,		//Memory
+								/* Write Back Enable */					1'b0,
+								/* Make Flag Instruction */				1'b0,
+								/* Destination is System Register */	1'b0,
+								/* Destination Rename*/					1'b0,
+								/* Execute Module Command */			`EXE_LDSW_ST32U,
+								/* Execute Module */					`EXE_SELECT_LDST
+							};
+						end
 					end
 				`OC_POP :
 					begin									//O1

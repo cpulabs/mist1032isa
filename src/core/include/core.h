@@ -72,6 +72,12 @@ Instruction Set
 `define		OC_ST32		10'h085
 `define		OC_PUSH		10'h088
 `define		OC_PUSHPC	10'h089
+`define		OC_LD8U		10'h08A
+`define		OC_LD16U	10'h08B
+`define		OC_LD32U	10'h08C
+`define		OC_ST8U		10'h08D
+`define		OC_ST16U	10'h08E
+`define		OC_ST32U	10'h08F
 `define		OC_POP		10'h090
 `define		OC_LDD8		10'h09A		
 `define		OC_LDD16	10'h09B		
@@ -218,6 +224,12 @@ Execution CMD Set
 `define		EXE_LDSW_STD8			5'h0D
 `define		EXE_LDSW_STD16			5'h0E
 `define		EXE_LDSW_STD32			5'h0F
+`define		EXE_LDSW_LD8U			5'h11
+`define		EXE_LDSW_LD16U			5'h12
+`define		EXE_LDSW_LD32U			5'h13
+`define		EXE_LDSW_ST8U			5'h14
+`define		EXE_LDSW_ST16U			5'h15
+`define		EXE_LDSW_ST32U			5'h16
 
 //Branch Unit
 `define		EXE_BRANCH_BUR		5'h00

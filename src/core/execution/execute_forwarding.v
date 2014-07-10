@@ -28,12 +28,14 @@ module execute_forwarding(
 		input wire iPREVIOUS_SOURCE_IMM,
 		input wire [31:0] iPREVIOUS_SOURCE_DATA,
 		input wire [31:0] iPREVIOUS_SOURCE_PDTR,
+		input wire [31:0] iPREVIOUS_SOURCE_KPDTR,
 		input wire [31:0] iPREVIOUS_SOURCE_TIDR,
 		input wire [31:0] iPREVIOUS_SOURCE_PSR,
 		//Output
 		output wire [31:0] oNEXT_SOURCE_DATA,
 		output wire [31:0] oNEXT_SOURCE_SPR,
 		output wire [31:0] oNEXT_SOURCE_PDTR,
+		output wire [31:0] oNEXT_SOURCE_KPDTR,
 		output wire [31:0] oNEXT_SOURCE_TIDR,
 		output wire [31:0] oNEXT_SOURCE_PSR
 	);
@@ -174,6 +176,25 @@ module execute_forwarding(
 		iWB_GR_DATA
 	);
 
+	//KPDTR
+	wire [31:0] prev_forwarding_kpdtr = func_forwarding_rewrite_sysreg(
+		`SYSREG_KPDTR,
+		iPREVIOUS_SOURCE_KPDTR,
+		iWB_GR_VALID,
+		iWB_GR_DEST_SYSREG,
+		iWB_GR_DEST,
+		iWB_GR_DATA
+	);
+
+	wire [31:0] cuur_forwarding_kpdtr = func_forwarding_rewrite_sysreg(
+		`SYSREG_KPDTR,
+		prev_forwarding_kpdtr,
+		iWB_GR_VALID,
+		iWB_GR_DEST_SYSREG,
+		iWB_GR_DEST,
+		iWB_GR_DATA
+	);
+
 	//TIDR
 	wire [31:0] prev_forwarding_tidr = func_forwarding_rewrite_sysreg(
 		`SYSREG_TIDR,
@@ -219,6 +240,7 @@ module execute_forwarding(
 	assign oNEXT_SOURCE_SPR = cuur_forwarding_spr;
 
 	assign oNEXT_SOURCE_PDTR = cuur_forwarding_pdtr;
+	assign oNEXT_SOURCE_KPDTR = cuur_forwarding_kpdtr;
 	assign oNEXT_SOURCE_TIDR = cuur_forwarding_tidr;
 	assign oNEXT_SOURCE_PSR = cuur_forwarding_psr;
 

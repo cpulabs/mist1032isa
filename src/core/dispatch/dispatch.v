@@ -41,6 +41,7 @@ module dispatch
 		output wire [31:0] oSYSREG_PPCR,
 		output wire [31:0] oSYSREG_SPR,
 		output wire [31:0] oSYSREG_PDTR,
+		output wire [31:0] oSYSREG_KPDTR,
 		//Pipeline
 		input wire iPREVIOUS_VALID,
 		input wire iPREVIOUS_FAULT_PAGEFAULT,
@@ -90,6 +91,7 @@ module dispatch
 		output wire [31:0] oNEXT_SYSREG_PSR,
 		output wire [31:0] oNEXT_SYSREG_TIDR,
 		output wire [31:0] oNEXT_SYSREG_PDTR,
+		output wire [31:0] oNEXT_SYSREG_KPDTR,
 		output wire oNEXT_DESTINATION_SYSREG,
 		output wire [4:0] oNEXT_DESTINATION,
 		output wire oNEXT_WRITEBACK,
@@ -984,6 +986,7 @@ module dispatch
 	assign oNEXT_SYSREG_PSR = w_sysreg_psr_info_data;
 	assign oNEXT_SYSREG_TIDR = w_sysreg_tidr_info_data;
 	assign oNEXT_SYSREG_PDTR = w_sysreg_pdtr_info_data;
+	assign oNEXT_SYSREG_KPDTR = w_sysreg_kpdtr_info_data;
 	assign oNEXT_DESTINATION_SYSREG	= b_destination_sysreg;
 	assign oNEXT_DESTINATION = b_destination;
 	assign oNEXT_WRITEBACK = b_writeback;
@@ -1023,6 +1026,7 @@ module dispatch
 	assign oSYSREG_PPCR = w_sysreg_ppcr_info_data;
 	assign oSYSREG_SPR = w_sysreg_spr_info_data;
 	assign oSYSREG_PDTR = w_sysreg_pdtr_info_data;
+	assign oSYSREG_KPDTR = w_sysreg_kpdtr_info_data;
 
 	assign oPREVIOUS_LOCK = iNEXT_LOCK;//this_lock;
 

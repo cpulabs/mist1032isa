@@ -36,3 +36,4 @@ transcript*
 /sim/inst_level/coverage
 
 /sim/inst_level/compile
+/sim/func_level/compile

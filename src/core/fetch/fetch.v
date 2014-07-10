@@ -18,6 +18,7 @@ module fetch(
 		//System Register
 		input wire [31:0] iSYSREG_PSR,
 		input wire [31:0] iSYSREG_PDTR,
+		input wire [31:0] iSYSREG_KPDTR,		//
 		input wire [31:0] iSYSREG_TIDR,
 		//Exception
 		input wire iEXCEPTION_EVENT,
@@ -41,8 +42,8 @@ module fetch(
 		input wire iPREVIOUS_FETCH_LOCK,
 		output wire [1:0] oPREVIOUS_MMUMOD,
 		output wire [2:0] oPREVIOUS_MMUPS,
-		output wire [13:0] oPREVIOUS_ASID,			//
-		output wire [31:0] oPREVIOUS_PDT,			//
+		output wire [13:0] oPREVIOUS_ASID,
+		output wire [31:0] oPREVIOUS_PDT,
 		output wire [31:0] oPREVIOUS_FETCH_ADDR,
 		//Next
 		output wire oNEXT_INST_VALID,
@@ -196,7 +197,7 @@ module fetch(
 	assign oPREVIOUS_MMUMOD = iSYSREG_PSR[1:0];
 	assign oPREVIOUS_MMUPS = iSYSREG_PSR[9:7];
 	assign oPREVIOUS_ASID = iSYSREG_TIDR[31:18];
-	assign oPREVIOUS_PDT = iSYSREG_PDTR;
+	assign oPREVIOUS_PDT = (iSYSREG_PSR[6:5] == 2'h0)? iSYSREG_KPDTR : iSYSREG_PDTR;
 	assign oPREVIOUS_FETCH_ADDR	= b_pc;
 
 
