@@ -601,7 +601,7 @@ module execute(
 			b_div_wait <= 1'b0;
 			b_div_q_r_condition <= 1'b0;
 		end
-		if(iRESET_SYNC)begin
+		else if(iRESET_SYNC)begin
 			b_div_wait <= 1'b0;
 			b_div_q_r_condition <= 1'b0;
 		end
