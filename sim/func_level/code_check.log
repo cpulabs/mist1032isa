@@ -1,15 +1,16 @@
 # ** Warning: (vlib-34) Library already exists at "work".
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# 
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module tb_func_level
 # 
 # Top level modules:
 # 	tb_func_level
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module sim_memory_model
 # 
 # Top level modules:
 # 	sim_memory_model
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module lcell
 # -- Compiling module ALTERA_MF_MEMORY_INITIALIZATION
 # -- Compiling module ALTERA_MF_HINT_EVALUATION
@@ -131,51 +132,51 @@
 # 	altserial_flash_loader
 # 	sld_virtual_jtag_basic
 # 	altsource_probe
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module altera_primitive_sync_fifo_8in_8out_16depth
 # 
 # Top level modules:
 # 	altera_primitive_sync_fifo_8in_8out_16depth
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module altera_primitive_sync_fifo_24in_24out_16depth
 # 
 # Top level modules:
 # 	altera_primitive_sync_fifo_24in_24out_16depth
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module altera_primitive_sync_fifo_34in_34out_8depth
 # 
 # Top level modules:
 # 	altera_primitive_sync_fifo_34in_34out_8depth
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module altera_primitive_sync_fifo_102in_102out_32depth
 # 
 # Top level modules:
 # 	altera_primitive_sync_fifo_102in_102out_32depth
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module endian_controller
 # -- Compiling module memory_pipe_arbiter
 # -- Compiling module mist1032isa
 # 
 # Top level modules:
 # 	mist1032isa
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module sdi_debugger
 # -- Compiling module sdi_interface_control
 # 
 # Top level modules:
 # 	sdi_debugger
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module dps_mimsr
 # 
 # Top level modules:
 # 	dps_mimsr
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module dps_sci
 # -- Compiling module dps_uart
 # 
 # Top level modules:
 # 	dps_sci
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module dps_comparator_counter
 # -- Compiling module dps_main_counter
 # -- Compiling module dps_utim64
@@ -183,19 +184,19 @@
 # 
 # Top level modules:
 # 	dps_utim64
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module dps
 # -- Compiling module dps_irq
 # -- Compiling module dps_lsflags
 # 
 # Top level modules:
 # 	dps
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module pic
 # 
 # Top level modules:
 # 	pic
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module mmu
 # -- Compiling module mmu_if
 # -- Compiling module mmu_table_load
@@ -203,7 +204,7 @@
 # 
 # Top level modules:
 # 	mmu_if
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module mist1032isa_arbiter_matching_queue
 # -- Compiling module mist1032isa_async_fifo
 # -- Compiling module mist1032isa_async_fifo_double_flipflop
@@ -221,72 +222,76 @@
 # 	mist1032isa_sync_fifo
 # 	mist1032isa_uart_receiver
 # 	mist1032isa_uart_transmitter
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module core
 # -- Compiling module core_pipeline
 # -- Compiling module load_store_pipe_arbiter
 # 
 # Top level modules:
 # 	core
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module branch_cache
 # -- Compiling module branch_predictor
 # 
 # Top level modules:
 # 	branch_predictor
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module core_debug
 # 
 # Top level modules:
 # 	core_debug
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module decoder
 # -- Compiling module decode_function
 # 
 # Top level modules:
 # 	decoder
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module dispatch
 # -- Compiling module frcr_timer
 # -- Compiling module system_register
 # 
 # Top level modules:
 # 	dispatch
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module execute
 # -- Compiling module execute_adder
 # -- Compiling module execute_afe_load_store
 # -- Compiling module execute_branch
+# -- Compiling module execute_flag_register
 # -- Compiling module execute_forwarding
 # -- Compiling module execute_forwarding_register
 # -- Compiling module execute_load_data
 # -- Compiling module execute_load_store
 # -- Compiling module execute_logic
+# -- Compiling module execute_logic_decode
+# -- Compiling module execute_mul
 # -- Compiling module execute_mul_booth32
 # -- Compiling module execute_shift
+# -- Compiling module execute_shift_decode
 # -- Compiling module execute_sys_reg
 # 
 # Top level modules:
 # 	execute
 # 	execute_mul_booth32
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module div_pipelined_latch
 # -- Compiling module pipelined_div_radix2
 # -- Compiling module radix2_linediv
 # 
 # Top level modules:
 # 	pipelined_div_radix2
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module fetch
 # 
 # Top level modules:
 # 	fetch
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module instruction_buffer
 # 
 # Top level modules:
 # 	instruction_buffer
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module l1_data_cache
 # -- Compiling module l1_data_cache_64entry_4way_line64b_bus_8b_damy
 # -- Compiling module l1_data_cache_64entry_4way_line64b_bus_8b
@@ -296,9 +301,11 @@
 # 	l1_data_cache
 # 	l1_data_cache_64entry_4way_line64b_bus_8b
 # 	l1_data_cache_counter
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module l1_cache_64entry_4way_line64b_bus_8b_damy
 # -- Compiling module l1_cache_64entry_4way_line64b_bus_8b
+# ** Warning: ../../src/core/l1_instruction/l1_cache_64entry_4way_line64b.v(446): (vlog-2250) Function "func_upload_enable_byte_gen" has no return value assignment.
+# 
 # -- Compiling module l1_instruction_cache
 # -- Compiling module l1_instruction_cache_counter
 # 
@@ -306,7 +313,7 @@
 # 	l1_cache_64entry_4way_line64b_bus_8b
 # 	l1_instruction_cache
 # 	l1_instruction_cache_counter
-# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# Model Technology ModelSim ALTERA vlog 10.1e Compiler 2013.06 Jun 12 2013
 # -- Compiling module core_interrupt_manager
 # -- Compiling module core_paging_support
 # -- Compiling module exception_manager

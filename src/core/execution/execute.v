@@ -226,18 +226,7 @@ module execute(
 	wire [31:0] adder_data;
 	wire adder_sf, adder_of, adder_cf, adder_pf, adder_zf;
 	wire [4:0] adder_flags = {adder_sf, adder_of, adder_cf, adder_pf, adder_zf};
-	//MUL
-	wire [63:0]	mul_tmp;
-	wire mul_sf_l;
-	wire mul_cf_l;
-	wire mul_of_l;
-	wire mul_pf_l;
-	wire mul_zf_l;
-	wire mul_sf_h;
-	wire mul_cf_h;
-	wire mul_of_h;
-	wire mul_pf_h;
-	wire mul_zf_h;
+	//Mul
 	wire [4:0] mul_flags;
 	wire [31:0] mul_data;
 	//Div
@@ -379,42 +368,36 @@ module execute(
 	);
 
 
-	//Flags Register
-	reg [31:0] b_sysreg_flags;
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_sysreg_flags <= 32'h0;
-		end
-		else if(iRESET_SYNC)begin
-			b_sysreg_flags <= 32'h0;
-		end
-		else if(iFREE_PIPELINE_STOP || iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
-			b_sysreg_flags <= b_sysreg_flags;
-		end
-		else begin
-			if(!lock_condition && iPREVIOUS_VALID)begin
-				//Flag
-				if(iPREVIOUS_FLAGS_WRITEBACK)begin
-					if(iPREVIOUS_EX_SHIFT)begin
-						b_sysreg_flags <= shift_flags;
-					end
-					else if(iPREVIOUS_EX_ADDER)begin
-						b_sysreg_flags <= adder_flags;
-					end
-					else if(iPREVIOUS_EX_MUL)begin
-						b_sysreg_flags <= mul_flags;
-					end
-					else if(iPREVIOUS_EX_LOGIC)begin
-						b_sysreg_flags <= logic_flags;
-					end
-				end
-			end
-		end
-	end//General Register Write Back
+	/****************************************
+	Flag Register
+	****************************************/
+	wire [4:0] sysreg_flags_register;
 
-
-
-
+	execute_flag_register REG_FLAG(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
+		//Control
+		.iCTRL_HOLD(iFREE_PIPELINE_STOP || iFREE_REFRESH || iFREE_REGISTER_LOCK),
+		//Prev
+		.iPREV_INST_VALID(iPREVIOUS_VALID),
+		.iPREV_BUSY(lock_condition),
+		.iPREV_FLAG_WRITE(iPREVIOUS_FLAGS_WRITEBACK),
+		//Shift
+		.iSHIFT_VALID(iPREVIOUS_EX_SHIFT),
+		.iSHIFT_FLAG(shift_flags),
+		//Adder
+		.iADDER_VALID(iPREVIOUS_EX_ADDER),
+		.iADDER_FLAG(adder_flags),
+		//Mul
+		.iMUL_VALID(iPREVIOUS_EX_MUL),
+		.iMUL_FLAG(mul_flags),
+		//Logic
+		.iLOGIC_VALID(iPREVIOUS_EX_LOGIC),
+		.iLOGIC_FLAG(logic_flags),
+		//oUTPUT
+		.oFLAG(sysreg_flags_register)
+	);
 
 	/****************************************
 	System Register
@@ -429,44 +412,12 @@ module execute(
 	/****************************************
 	Logic
 	****************************************/
-	wire [4:0] logic_cmd = func_logic_select(iPREVIOUS_CMD);
+	wire [4:0] logic_cmd;
 
-	function [4:0] func_logic_select;
-		input [4:0] func_logic_select_cmd;
-
-		begin
-			case(func_logic_select_cmd)
-				`EXE_LOGIC_BUFFER0	:	func_logic_select = 5'h00;
-				`EXE_LOGIC_BUFFER1	:	func_logic_select = 5'h01;
-				`EXE_LOGIC_AND		:	func_logic_select = 5'h04;
-				`EXE_LOGIC_OR		:	func_logic_select = 5'h05;
-				`EXE_LOGIC_XOR		:	func_logic_select = 5'h06;
-				`EXE_LOGIC_NOT		:	func_logic_select = 5'h02;
-				`EXE_LOGIC_NAND		:	func_logic_select = 5'h07;
-				`EXE_LOGIC_NOR		:	func_logic_select = 5'h08;
-				`EXE_LOGIC_XNOR		:	func_logic_select = 5'h09;
-				`EXE_LOGIC_TEST		:	func_logic_select = 5'h04;
-				`EXE_LOGIC_WBL		:	func_logic_select = 5'h10;
-				`EXE_LOGIC_WBH		:	func_logic_select = 5'h11;
-				`EXE_LOGIC_CLB		:	func_logic_select = 5'h0A;
-				`EXE_LOGIC_STB		:	func_logic_select = 5'h0B;
-				`EXE_LOGIC_CLW		:	func_logic_select = 5'h15;
-				`EXE_LOGIC_STW		:	func_logic_select = 5'h16;
-				`EXE_LOGIC_BITREV	:	func_logic_select = 5'h0C;
-				`EXE_LOGIC_BYTEREV	:	func_logic_select = 5'h0D;
-				`EXE_LOGIC_GETBIT	:	func_logic_select = 5'h0E;
-				`EXE_LOGIC_GETBYTE	:	func_logic_select = 5'h0F;
-				`EXE_LOGIC_LIL		:	func_logic_select = 5'h12;
-				`EXE_LOGIC_LIH		:	func_logic_select = 5'h01;
-				`EXE_LOGIC_ULIL		:	func_logic_select = 5'h14;
-				default
-					begin
-						func_logic_select = 5'h00;
-					end
-			endcase
-		end
-	endfunction
-
+	execute_logic_decode EXE_LOGIC_DECODER(
+		.iPREV_INST(iPREVIOUS_CMD),
+		.oNEXT_INST(logic_cmd)
+	);
 
 	execute_logic #(32) EXE_LOGIC(
 		.iCONTROL_CMD(logic_cmd),
@@ -483,8 +434,15 @@ module execute(
 	/****************************************
 	Shift
 	****************************************/
+	wire [4:0] shift_cmd;
+
+	execute_shift_decode EXE_SHIFT_DECODER(
+		.iPREV_INST(iPREVIOUS_CMD),
+		.oNEXT_INST(shift_cmd)
+	);
+
 	execute_shift #(32) EXE_SHIFT(
-		.iCONTROL_MODE(func_shift_select(iPREVIOUS_CMD)),
+		.iCONTROL_MODE(shift_cmd),
 		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),
 		.oDATA(shift_data),
@@ -495,27 +453,10 @@ module execute(
 		.oZF(shift_zf)
 	);
 
-
-	function [2:0] func_shift_select;
-		input [4:0] func_shift_select_cmd;
-		begin
-			case(func_shift_select_cmd)
-				`EXE_SHIFT_BUFFER		:	func_shift_select = 3'h0;
-				`EXE_SHIFT_LOGICL		:	func_shift_select = 3'h1;
-				`EXE_SHIFT_LOGICR		:	func_shift_select = 3'h2;
-				`EXE_SHIFT_ALITHMETICR	:	func_shift_select = 3'h3;
-				`EXE_SHIFT_ROTATEL		:	func_shift_select = 3'h4;
-				`EXE_SHIFT_ROTATER		:	func_shift_select = 3'h5;
-				default					:	func_shift_select = 3'h0;
-			endcase
-		end
-	endfunction
-
-
 	/****************************************
 	Adder
 	****************************************/
-	execute_adder	#(32) EXE_ADDER(
+	execute_adder #(32) EXE_ADDER(
 		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),
 		.iADDER_CMD(iPREVIOUS_CMD),
@@ -531,22 +472,13 @@ module execute(
 	/****************************************
 	Mul
 	****************************************/
-
-	assign mul_tmp = ex_module_source0 * ex_module_source1;
-	assign mul_sf_l = mul_tmp[31];
-	assign mul_cf_l = mul_tmp[32];
-	assign mul_of_l = mul_tmp[31] ^ mul_tmp[32];
-	assign mul_pf_l = mul_tmp[0];
-	assign mul_zf_l = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
-	assign mul_sf_h = mul_tmp[63];
-	assign mul_cf_h = 1'b0;
-	assign mul_of_h = 1'b0;
-	assign mul_pf_h = mul_tmp[32];
-	assign mul_zf_h = (mul_tmp == {64{1'b0}})? 1'b1 : 1'b0;
-
-	assign mul_flags = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? {mul_sf_h, mul_of_h, mul_cf_h, mul_pf_h, mul_zf_h} : {mul_sf_l, mul_of_l, mul_cf_l, mul_pf_l, mul_zf_l};
-	assign mul_data = (iPREVIOUS_CMD == `EXE_MUL_MULH || iPREVIOUS_CMD == `EXE_MUL_UMULH)? mul_tmp[63:32] : mul_tmp[31:0];
-
+	execute_mul EXE_MUL(
+		.iCMD(iPREVIOUS_CMD),
+		.iDATA_0(ex_module_source0),
+		.iDATA_1(ex_module_source1),
+		.oDATA(mul_data),
+		.oFLAGS(mul_flags)
+	);
 
 
 	/*
@@ -660,7 +592,7 @@ module execute(
 		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),
 		.iPC(iPREVIOUS_PC - 32'h4),
-		.iFLAG(b_sysreg_flags[4:0]),
+		.iFLAG(sysreg_flags_register),
 		.iCC(iPREVIOUS_CC_AFE),
 		.iCMD(iPREVIOUS_CMD),
 		.oBRANCH_ADDR(branch_branch_addr),
@@ -1450,7 +1382,7 @@ module execute(
 	//Debug Module Enable
 	`ifdef MIST1032ISA_STANDARD_DEBUGGER
 		assign oDEBUG_CTRL_ACK = b_debug_cmd_ack;
-		assign oDEBUG_REG_OUT_FLAGR = b_sysreg_flags;
+		assign oDEBUG_REG_OUT_FLAGR = {27'h0, sysreg_flags_register};
 	`else
 	//Disable
 		assign oDEBUG_CTRL_ACK = 32'h0;
@@ -1539,7 +1471,7 @@ module execute(
 	assign oFAULT_FI0R = b_exception_fi0r;
 	assign oFAULT_FI1R = b_exception_fi1r;
 
-	assign oSYSREG_FLAGR = b_sysreg_flags;
+	assign oSYSREG_FLAGR = {27'h0, sysreg_flags_register};
 
 	wire test_predict = b_branch_predict && b_valid;
 	wire test_hit = b_branch_predict_hit && b_valid;
