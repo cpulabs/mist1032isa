@@ -16,8 +16,8 @@
 ../../src/core/core_debug/*.v
 ../../src/core/decode/*.v
 ../../src/core/dispatch/*.v
-../../src/core/execution/*.v
-../../src/core/execution/divider/*.v
+../../src/core/execute/*.v
+../../src/core/execute/divider/*.v
 ../../src/core/fetch/*.v
 ../../src/core/instruction_buffer/*.v
 ../../src/core/l1_data/*.v
