@@ -4,6 +4,7 @@
 module branch_predictor(
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		input wire iFLUSH,
 		//Search
 		input wire iSEARCH_STB,
@@ -33,6 +34,7 @@ module branch_predictor(
 	branch_cache #(16) BRANCH_CACHE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
 		.iFLUSH(iFLUSH),
 		//Search
 		.iSEARCH_STB(iSEARCH_STB),
@@ -50,6 +52,11 @@ module branch_predictor(
 
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
+			b_branch_cache_valid <= 1'b0;
+			b_branch_cache_predict_branch <= 1'b0; 
+			b_branch_cache_addr <= 32'h0;
+		end
+		else if(iRESET_SYNC)begin
 			b_branch_cache_valid <= 1'b0;
 			b_branch_cache_predict_branch <= 1'b0; 
 			b_branch_cache_addr <= 32'h0;

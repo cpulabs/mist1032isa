@@ -12,6 +12,11 @@ module dispatch
 		//System
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
+		//Event Control
+		input wire iEVENT_IRQ_FRONT2BACK,
+		input wire iEVENT_IRQ_BACK2FRONT,
+		//Legacy
 		input wire iFREE_REGISTER_LOCK,
 		input wire iFREE_PIPELINE_STOP,
 		input wire iFREE_REFRESH,
@@ -23,9 +28,6 @@ module dispatch
 		//System Register
 		input wire iFREE_SYSREG_SET_IRQ_MODE,
 		input wire iFREE_SYSREG_CLR_IRQ_MODE,
-		//PPCR Set
-		input wire iFREE_PPCR_SET,
-		input wire [31:0] iFREE_PPCR,
 		//FI0R Set
 		input wire iFREE_FI0R_SET,
 		input wire [31:0] iFREE_FI0R,
@@ -179,7 +181,9 @@ module dispatch
 
 	//PCR
 	system_register PCR	(
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_pcr_regist_valid),
 		.iREGIST_DATA(w_sysreg_pcr_regist_data),
 		.oINFO_DATA(w_sysreg_pcr_info_data)
@@ -192,7 +196,7 @@ module dispatch
 		if(!inRESET)begin
 			b_pcr_valid <= 1'b0;
 		end
-		else if(iFREE_REFRESH)begin
+		else if(iRESET_SYNC || iFREE_REFRESH)begin
 			b_pcr_valid <= 1'b0;
 		end
 		else begin
@@ -523,7 +527,7 @@ module dispatch
 			b_ex_branch <= 1'b0;
 			b_pc <= 32'h0;
 		end
-		else if(iFREE_REFRESH)begin
+		else if(iRESET_SYNC || iFREE_REFRESH)begin
 			b_valid <= 1'b0;
 			b_fault_pagefault <= 1'b0;
 			b_fault_privilege_error <= 1'b0;
@@ -683,6 +687,11 @@ module dispatch
 				b_gr_register [i] <= 32'h0;
 			end
 		end
+		else if(iRESET_SYNC)begin
+			for(i = 0; i < 32; i = i + 1)begin
+				b_gr_register [i] <= 32'h0;
+			end
+		end
 		else begin
 			if(iWB_VALID && !iWB_DESTINATION_SYSREG && iWB_WRITEBACK && !iFREE_PIPELINE_STOP)begin
 				b_gr_register [iWB_DESTINATION] <= iWB_DATA;
@@ -697,21 +706,27 @@ module dispatch
 	****************************************/
 	//CPUIDR : Processor ID Register
 	system_register CPUIDR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(1'b1), .iREGIST_DATA({`PROCESSOR_ID, `PROCESSOR_REVISION}),
 		.oINFO_DATA(w_sysreg_cpuidr_info_data)
 	);
 
 	//COREIDR : Core ID Register
 	system_register COREIDR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(1'b1), .iREGIST_DATA(CORE_ID),
 		.oINFO_DATA(w_sysreg_coreidr_info_data)
 	);
 
 	//TIDR : Task ID Register
 	system_register TIDR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_tidr_regist_valid), .iREGIST_DATA(w_sysreg_tidr_regist_data),
 		.oINFO_DATA(w_sysreg_tidr_info_data)
 	);
@@ -725,7 +740,9 @@ module dispatch
 
 	//PSR : Program Status Register
 	system_register PSR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_psr_regist_valid), .iREGIST_DATA(w_sysreg_psr_regist_data),
 		.oINFO_DATA(w_sysreg_psr_info_data)
 	);
@@ -736,7 +753,9 @@ module dispatch
 
 	//SPR
 	system_register SPR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_spr_regist_valid), .iREGIST_DATA(w_sysreg_spr_regist_data),
 		.oINFO_DATA(w_sysreg_spr_info_data)
 	);
@@ -746,7 +765,9 @@ module dispatch
 
 	//IDTR
 	system_register IDTR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_idtr_regist_valid), .iREGIST_DATA(w_sysreg_idtr_regist_data),
 		.oINFO_DATA(w_sysreg_idtr_info_data)
 	);
@@ -755,14 +776,18 @@ module dispatch
 
 	//FI0R
 	system_register FI0R (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(iFREE_FI0R_SET), .iREGIST_DATA(iFREE_FI0R),
 		.oINFO_DATA()
 	);
 
 	//PDTR : Page Directory Table Register
 	system_register PDTR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_pdtr_regist_valid), .iREGIST_DATA(w_sysreg_pdtr_regist_data),
 		.oINFO_DATA(w_sysreg_pdtr_info_data)
 	);
@@ -771,7 +796,9 @@ module dispatch
 
 	//TISR
 	system_register TISR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_tisr_regist_valid), .iREGIST_DATA(w_sysreg_tisr_regist_data),
 		.oINFO_DATA(w_sysreg_tisr_info_data)
 	);
@@ -780,7 +807,9 @@ module dispatch
 
 	//KPDTR
 	system_register KPDTR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_kpdtr_regist_valid), .iREGIST_DATA(w_sysreg_kpdtr_regist_data),
 		.oINFO_DATA(w_sysreg_kpdtr_info_data)
 	);
@@ -789,7 +818,9 @@ module dispatch
 
 	//IOSR
 	system_register IOSR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(iSYSREGINFO_IOSR_VALID), .iREGIST_DATA(iSYSREGINFO_IOSR),
 		.oINFO_DATA(w_sysreg_iosr_info_data)
 	);
@@ -797,7 +828,9 @@ module dispatch
 
 	//PPSR : Previous Program Status Register
 	system_register PPSR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_ppsr_regist_valid), .iREGIST_DATA(w_sysreg_ppsr_regist_data),
 		.oINFO_DATA(w_sysreg_ppsr_info_data)
 	);
@@ -807,18 +840,23 @@ module dispatch
 
 	//PPCR : Previous Program Counter
 	system_register PPCR(
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_ppcr_regist_valid), .iREGIST_DATA(w_sysreg_ppcr_regist_data),
 		.oINFO_DATA(w_sysreg_ppcr_info_data)
 	);
-	assign w_sysreg_ppcr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iFREE_PPCR_SET;
-	assign w_sysreg_ppcr_regist_data = (iFREE_PPCR_SET)? iFREE_PPCR : iWB_DATA;
+
+	assign w_sysreg_ppcr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iEVENT_IRQ_FRONT2BACK;
+	assign w_sysreg_ppcr_regist_data = (iEVENT_IRQ_FRONT2BACK)? w_sysreg_pcr_info_data : iWB_DATA;
+	
 
 
 	//PPDTR : Previous Page Directry Table Register
 	system_register PPDTR(
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_ppdtr_regist_valid), .iREGIST_DATA(w_sysreg_ppdtr_regist_data),
 		.oINFO_DATA(w_sysreg_ppdtr_info_data)
 	);
@@ -827,8 +865,9 @@ module dispatch
 
 	//PFLAGR : Previous Flag Register
 	system_register PFLAGR(
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_pflagr_regist_valid),
 		.iREGIST_DATA(w_sysreg_pflagr_regist_data),
 		.oINFO_DATA(w_sysreg_pflagr_info_data)
@@ -839,7 +878,9 @@ module dispatch
 
 	//PTIDR : Previous Task Id Register
 	system_register PTIDR (
-		.iCLOCK(iCLOCK), .inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_ptidr_regist_valid), .iREGIST_DATA(w_sysreg_ptidr_regist_data),
 		.oINFO_DATA(w_sysreg_ptidr_info_data)
 	);
@@ -856,6 +897,7 @@ module dispatch
 	frcr_timer FRCR(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
 		.iWR_ENA(frcr_64bit_write_condition),
 		.iRW_COUNTER({w_sysreg_frchr_info_data, w_sysreg_frclr_info_data}),
 		.oCOUNTER(frcr_64bit_timer)
@@ -864,8 +906,9 @@ module dispatch
 
 	//FRCLR
 	system_register FRCLR (
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_frclr_regist_valid),
 		.iREGIST_DATA(w_sysreg_frclr_regist_data),
 		.oINFO_DATA(w_sysreg_frclr_info_data)
@@ -878,8 +921,9 @@ module dispatch
 
 	//FRCHR
 	system_register FRCHR (
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
 		.iREGIST_DATA_VALID(w_sysreg_frchr_regist_valid),
 		.iREGIST_DATA(w_sysreg_frchr_regist_data),
 		.oINFO_DATA(w_sysreg_frchr_info_data)
@@ -1031,7 +1075,8 @@ module dispatch
 	assign oPREVIOUS_LOCK = iNEXT_LOCK;//this_lock;
 
 	assign oSYSREG_PCR = w_sysreg_pcr_info_data;
-	assign oEXCEPTION_LOCK = !b_pcr_valid || !b_valid || (b_valid && b_ex_branch);
+	//assign oEXCEPTION_LOCK = !b_pcr_valid || !b_valid || (b_valid && b_ex_branch);
+	assign oEXCEPTION_LOCK = !b_pcr_valid;	//new 20150526
 
 endmodule
 

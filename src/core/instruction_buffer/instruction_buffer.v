@@ -6,6 +6,7 @@
 module instruction_buffer(
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		input wire iFREE_REFRESH,
 		//Prev
 		input wire iPREVIOUS_INST_VALID,
@@ -144,7 +145,7 @@ module instruction_buffer(
 				}
 			),				//Data-In
 			.rdreq(!fifo_empty && !iNEXT_LOCK),				//Read Data Request
-			.sclr(iFREE_REFRESH),				//Synchthronous Reset
+			.sclr(iFREE_REFRESH || iRESET_SYNC),				//Synchthronous Reset
 			.wrreq(!fifo_full && iPREVIOUS_INST_VALID),				//Write Req
 			.almost_empty(),		
 			.almost_full(),
@@ -171,7 +172,7 @@ module instruction_buffer(
 		mist1032isa_sync_fifo #(102, 32, 5) INST_LOOPBUFFER(
 			.iCLOCK(iCLOCK), 
 			.inRESET(inRESET), 
-			.iREMOVE(iFREE_REFRESH), 
+			.iREMOVE(iFREE_REFRESH || iRESET_SYNC), 
 			.oCOUNT(fifo_count), 	
 			.iWR_EN(!fifo_full && iPREVIOUS_INST_VALID), 
 			.iWR_DATA(

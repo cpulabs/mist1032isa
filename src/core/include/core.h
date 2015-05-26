@@ -98,7 +98,7 @@ Instruction Set
 `define		OC_SRPDTR		10'h0C1
 `define		OC_SRPIDR		10'h0C2
 `define		OC_SRCIDR		10'h0C3
-`define		OC_MODER		10'h0C4
+`define		OC_SRMODER		10'h0C4
 `define		OC_SRIEIR		10'h0C5
 `define		OC_SRTISR		10'h0C8
 `define		OC_SRKPDTR		10'h0C9
@@ -231,14 +231,21 @@ Execution CMD Set
 `define		EXE_LDSW_ST16U			5'h15
 `define		EXE_LDSW_ST32U			5'h16
 
-//Branch Unit
+//Branch(Control) Unit
 `define		EXE_BRANCH_BUR		5'h00
 `define		EXE_BRANCH_BR		5'h01
 `define		EXE_BRANCH_B			5'h02
 `define		EXE_BRANCH_SWI			5'h03
 `define		EXE_BRANCH_INTB			5'h04
-`define		EXE_BRANCH_IDTS			5'h05	
-`define		EXE_BRANCH_HALT			5'h06
+`define		EXE_BRANCH_HALT			5'h05
+
+/*
+`define		EXE_BRANCH_IDTS			5'h06	
+`define		EXE_BRANCH_PDT			5'h07
+`define		EXE_BRANCH_PS			5'h08
+*/
+
+
 //Load / Store System Register
 `define		EXE_SYS_LDST_READ_SPR	5'h00
 `define		EXE_SYS_LDST_WRITE_SPR	5'h01
@@ -253,19 +260,23 @@ Execution CMD Set
 `define		EXE_SYS_REG_SR1_IM_W		5'h06
 `define		EXE_SYS_REG_SR1_CMOD_W		5'h07
 
+`define		EXE_SYS_REG_IDTS		5'h08			//new	
+`define		EXE_SYS_REG_PDT			5'h09			//new
+`define		EXE_SYS_REG_PS			5'h0a			//new
+
 
 /******************************
 Fault - User mode Prohibition
 ******************************/
-`define FAULT_INSTRUCTION_SRTISR 10'h0c8
-`define FAULT_INSTRUCTION_SRKPDTR 10'h0c9
-`define FAULT_INSTRUCTION_SRPDTW 10'h0e1
-`define FAULT_INSTRUCTION_SRIEIW 10'h0e5
-`define FAULT_INSTRUCTION_SRTISW 10'h0e8
-`define FAULT_INSTRUCTION_SRKPDTW 10'h0e9
-`define FAULT_INSTRUCTION_SRMMUW 10'h0ea
-`define FAULT_INSTRUCTION_HALT 10'h101
-`define FAULT_INSTRUCTION_IDTS 10'h122
+`define FAULT_INSTRUCTION_SRTISR	10'h0c8
+`define FAULT_INSTRUCTION_SRKPDTR	10'h0c9
+`define FAULT_INSTRUCTION_SRPDTW	10'h0e1
+`define FAULT_INSTRUCTION_SRIEIW	10'h0e5
+`define FAULT_INSTRUCTION_SRTISW	10'h0e8
+`define FAULT_INSTRUCTION_SRKPDTW	10'h0e9
+`define FAULT_INSTRUCTION_SRMMUW	10'h0ea
+`define FAULT_INSTRUCTION_HALT		10'h101
+`define FAULT_INSTRUCTION_IDTS		10'h122
 
 
 
@@ -331,10 +342,13 @@ System Register Set
 `define		SYSREG_PFLAGR		5'h15
 
 //Microcode Use System Register
+/*
 `define		SYSREG_SSR0			5'h1C
 `define		SYSREG_SSR1			5'h1D
 `define		SYSREG_SSR2			5'h1E
 `define		SYSREG_SSR3			5'h1F
+*/
+
 
 /******************************
 Execution Unit Select
@@ -347,8 +361,8 @@ Execution Unit Select
 `define		EXE_SELECT_ADDER		10'h020
 `define		EXE_SELECT_SHIFT		10'h040
 `define		EXE_SELECT_LOGIC		10'h080
-`define		EXE_SELECT_SYS_LDST		10'h100
-`define		EXE_SELECT_SYS_REG		10'h200
+`define		EXE_SELECT_SYS_LDST		10'h100			//Only for SPR(because the SPR in Load Store Module)
+`define		EXE_SELECT_SYS_REG		10'h200			
 /******************************
 Flags Select
 ******************************/

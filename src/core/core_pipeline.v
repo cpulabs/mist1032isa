@@ -118,11 +118,15 @@ module core_pipeline
 	wire [31:0] fetch2icache_addr;
 	wire icache2fetch_lock;
 	wire cache_flash;
-	//Free
+	//Event
+	wire core_event_hold;
+	wire core_event_start;
+	wire core_event_irq_front2back;
+	wire core_event_irq_back2front;
+	wire core_event_end;
+	//Free - Legacy
 	wire free_pc_set;
 	wire [31:0] free_pc;
-	wire free_ppcr_set;
-	wire [31:0] free_ppcr;
 	wire free_fi0r_set;
 	wire [31:0] free_fi0r;
 	wire free_register_lock;
@@ -404,7 +408,15 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		/************************************
-		Free
+		Core internal Event
+		************************************/
+		.oEVENT_HOLD(core_event_hold),
+		.oEVENT_START(core_event_start),
+		.oEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
+		.oEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
+		.oEVENT_END(core_event_end),
+		/************************************
+		Free - Legacy
 		************************************/
 		.oFREE_REGISTER_LOCK(free_register_lock),
 		.oFREE_PIPELINE_STOP(free_pipeline_stop),
@@ -412,8 +424,8 @@ module core_pipeline
 		.oFREE_RESTART(free_restart),
 		.oFREE_PC_SET(free_pc_set),
 		.oFREE_PC(free_pc),
-		.oFREE_PPCR_SET(free_ppcr_set),
-		.oFREE_PPCR(free_ppcr),
+		.oFREE_PPCR_SET(),
+		.oFREE_PPCR(),
 		.oFREE_FI0R_SET(free_fi0r_set),
 		.oFREE_FI0R(free_fi0r),
 		.oFREE_SET_IRQ_MODE(free_set_irq_mode),
@@ -551,6 +563,7 @@ module core_pipeline
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
 		//Core
 		.iSYSREG_PSR(sysreg_psr),
 		.iSYSREG_PDTR(sysreg_pdtr),
@@ -600,6 +613,7 @@ module core_pipeline
 	instruction_buffer LOOPBUFFER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
 		.iFREE_REFRESH(free_pipeline_flush),
 		//Prev
 		.iPREVIOUS_INST_VALID(fetch2lbuffer_inst_valid),
@@ -632,6 +646,7 @@ module core_pipeline
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
 		//Free
 		.iFREE_DEFAULT(free_pipeline_flush),
 		//Previous
@@ -695,6 +710,9 @@ module core_pipeline
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
+		.iEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
+		.iEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
 		//Exception Protect
 		.oEXCEPTION_LOCK(dispatch_exception_lock),
 		//IOSR
@@ -705,8 +723,6 @@ module core_pipeline
 		.iFREE_REFRESH(free_pipeline_flush),
 		.iFREE_SYSREG_SET_IRQ_MODE(free_set_irq_mode),
 		.iFREE_SYSREG_CLR_IRQ_MODE(free_clr_irq_mode),
-		.iFREE_PPCR_SET(free_ppcr_set),
-		.iFREE_PPCR(free_ppcr),
 		.iFREE_FI0R_SET(free_fi0r_set),
 		.iFREE_FI0R(free_fi0r),
 		//System Register Input
@@ -857,6 +873,13 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(1'b0),
+		//Event CTRL
+		.iEVENT_HOLD(core_event_hold),
+		.iEVENT_START(core_event_start),
+		.iEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
+		.iEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
+		.iEVENT_END(core_event_end),
+		//Legacy
 		.iFREE_REGISTER_LOCK(free_register_lock),
 		.iFREE_PIPELINE_STOP(free_pipeline_stop),
 		.iFREE_REFRESH(free_pipeline_flush),

@@ -5,7 +5,8 @@
 module system_register(
 		//System
 		input wire iCLOCK,
-		input wire inRESET,		
+		input wire inRESET,	
+		input wire iRESET_SYNC,	
 		//Regist
 		input wire iREGIST_DATA_VALID,
 		input wire [31:0] iREGIST_DATA,
@@ -19,6 +20,9 @@ module system_register(
 	always@(negedge inRESET or posedge iCLOCK)begin
 		if(!inRESET)begin	
 			b_data <= {32{1'b0}};
+		end
+		else if(iRESET_SYNC)begin
+			b_data <= 32'h0;
 		end
 		else begin
 			if(iREGIST_DATA_VALID)begin

@@ -3415,7 +3415,7 @@ module decode_function(
 							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
-				`OC_MODER :
+				`OC_SRMODER :
 					begin									//O1
 						f_decode	=	{
 							/* Decode Error */						1'b0,
@@ -3901,8 +3901,8 @@ module decode_function(
 							/* Make Flag Instruction */				1'b0,
 							/* Destination is System Register */	1'b1,
 							/* Destination Rename*/					1'b0,
-							/* Execute Module Command */			`EXE_SYS_REG_BUFFER0,
-							/* Execute Module */					`EXE_SELECT_SYS_LDST
+							/* Execute Module Command */			`EXE_SYS_REG_PDT,
+							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
 				`OC_SRIEIW :
@@ -4010,7 +4010,7 @@ module decode_function(
 							/* Make Flag Instruction */				1'b0,
 							/* Destination is System Register */	1'b1,
 							/* Destination Rename*/					1'b0,
-							/* Execute Module Command */			`EXE_SYS_REG_BUFFER0,
+							/* Execute Module Command */			`EXE_SYS_REG_PDT,
 							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
@@ -4227,7 +4227,7 @@ module decode_function(
 							/* Make Flag Instruction */				1'b0,
 							/* Destination is System Register */	1'b1,
 							/* Destination Rename*/					1'b0,
-							/* Execute Module Command */			`EXE_SYS_REG_BUFFER0,
+							/* Execute Module Command */			`EXE_SYS_REG_PS,
 							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
@@ -4532,8 +4532,8 @@ module decode_function(
 							/* Make Flag Instruction */				1'b0,
 							/* Destination is System Register */	1'b0,
 							/* Destination Rename*/					1'b0,
-							/* Execute Module Command */			`EXE_BRANCH_IDTS,
-							/* Execute Module */					`EXE_SELECT_BRANCH
+							/* Execute Module Command */			`EXE_SYS_REG_IDTS,
+							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
 				//Error

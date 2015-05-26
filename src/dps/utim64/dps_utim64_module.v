@@ -1,26 +1,6 @@
 `default_nettype none
 
-/*******************************************
-User Timer
 
-
-Address
-0x0	:	UTIM64xMCFGR
-0x1	:	UTIM64xMCR_31-0
-0x2	:	UTIM64xMCR_63-32
-0x3	:	UTIM64xACC0R_31-0
-0x4	:	UTIM64xACC0R_63-32
-0x5	:	UTIM64xACC1R_31-0
-0x6	:	UTIM64xACC1R_63-32
-0x7	:	UTIM64xACC2R_31-0
-0x8	:	UTIM64xACC2R_63-32
-0x9	:	UTIM64xACC3R_31-0
-0xA	:	UTIM64xACC3R_63-32
-0xB	:	UTIM64xACC0CFRG
-0xC	:	UTIM64xACC1CFRG
-0xD	:	UTIM64xACC2CFRG
-0xE	:	UTIM64xACC3CFRG
-*******************************************/
 
 `define		UTIM6XAMCFGR		4'h0
 `define		UTIM6XAMCR63_32		4'h1

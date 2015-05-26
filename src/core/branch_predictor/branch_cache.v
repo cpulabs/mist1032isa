@@ -12,6 +12,7 @@ module branch_cache #(
 	)(
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		input wire iFLUSH,
 		//Search
 		input wire iSEARCH_STB,
@@ -134,7 +135,7 @@ module branch_cache #(
 				b_tag1_predict[i] <= 2'h0;
 			end
 		end
-		else if(iFLUSH)begin
+		else if(iRESET_SYNC || iFLUSH)begin
 			for(i = 0; i < 8; i = i + 1)begin : FLUSH
 				b_tag0_lru[i] <= 2'h0;
 				b_tag1_lru[i] <= 2'h0; 
@@ -189,7 +190,7 @@ module branch_cache #(
 		if(!inRESET)begin
 			b_lru_timer <= {LRU_TIMER_N{1'b0}};
 		end
-		else if(iFLUSH)begin
+		else if(iRESET_SYNC || iFLUSH)begin
 			b_lru_timer <= {LRU_TIMER_N{1'b0}};
 		end
 		else begin

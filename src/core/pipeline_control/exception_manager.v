@@ -8,7 +8,13 @@ Exception Manager
 module exception_manager(
 		input wire iCLOCK,
 		input wire inRESET,
-		//Free
+		//Core internal Event
+		output wire oEVENT_HOLD,
+		output wire oEVENT_START,
+		output wire oEVENT_IRQ_FRONT2BACK,		//
+		output wire oEVENT_IRQ_BACK2FRONT,		//
+		output wire oEVENT_END,
+		//Free - Legacy
 		output wire oFREE_REGISTER_LOCK,
 		output wire oFREE_PIPELINE_STOP,
 		output wire oFREE_REFRESH,
@@ -188,7 +194,8 @@ module exception_manager(
 	reg [31:0] b_sysr_ppcr;
 	reg [31:0] b_sysr_idtr;
 
-	wire interrupt_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LOCK && iSYSREG_PSR[2];
+	wire interrupt_condition = iEXCEPT_IRQ_REQ &&  !iINTERRUPT_LOCK && iSYSREG_PSR[2];
+	//wire interrupt_condition = iEXCEPT_IRQ_REQ && iSYSREG_PSR[2];
 	wire interrupt_and_branch_condition = iEXCEPT_IRQ_REQ && !iINTERRUPT_LDST_LOCK && iSYSREG_PSR[2];
 	reg b_irq_request_test;
 
@@ -753,6 +760,150 @@ module exception_manager(
 
 	//IRQ Busy
 	assign oEXCEPT_IRQ_BUSY = 1'b0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/******************************************************
+	Legacy
+
+	New - Test
+	******************************************************/
+
+	reg b_event_hold;
+	reg b_event_start;
+	reg b_event_irq_front2back;
+	reg b_event_irq_back2front;
+
+
+
+	assign oEVENT_HOLD = b_event_hold;
+	assign oEVENT_START = b_event_start;
+	assign oEVENT_IRQ_FRONT2BACK = b_event_irq_front2back;
+	assign oEVENT_IRQ_BACK2FRONT = b_event_irq_back2front;
+	assign oEVENT_END = 1'b0;
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_event_hold <= 1'b0;
+		end
+		else begin
+			case(b_main_state)
+				L_PARAM_MAINSTT_IDLE:
+					begin
+						if(iEXCEPT_JUMP || interrupt_condition || iEXCEPT_PDTS || iEXCEPT_PSRS || iEXCEPT_IB || iEXCEPT_IDTS)begin
+							b_event_hold <= 1'b1;
+						end
+						else begin
+							b_event_hold <= 1'b0;
+						end
+					end
+				default:
+					begin
+						b_event_hold <= b_event_hold;
+					end
+			endcase
+		end
+	end
+
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_event_start <= 1'b0;
+		end
+		else begin
+			case(b_main_state)
+				L_PARAM_MAINSTT_IDLE:
+					begin
+						if(iEXCEPT_JUMP || interrupt_condition || iEXCEPT_PDTS || iEXCEPT_PSRS || iEXCEPT_IB || iEXCEPT_IDTS)begin
+							b_event_start <= 1'b1;
+						end
+					end
+				L_PARAM_MAINSTT_ALU_JUMP,
+				L_PARAM_MAINSTT_AUTO_TSWITCH,
+				L_PARAM_MAINSTT_IRQ_SET,
+				L_PARAM_MAINSTT_IRQ_RET,
+				L_PARAM_MAINSTT_IDTS,
+				L_PARAM_MAINSTT_PDTS:
+					begin
+						b_event_start <= 1'b0;
+					end
+				default:
+					begin
+						b_event_start <= b_event_start;
+					end
+			endcase
+		end
+	end
+
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_event_irq_front2back <= 1'b0;
+		end
+		else begin
+			case(b_main_state)
+				L_PARAM_MAINSTT_IDLE:
+					begin
+						//Interrupt
+						if(interrupt_condition)begin
+							b_event_irq_front2back <= 1'b1;
+						end
+						else begin
+							b_event_irq_front2back <= 1'b0;
+						end
+					end
+				default:
+					begin
+						b_event_irq_front2back <= 1'b0;
+					end
+			endcase
+		end
+	end
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_event_irq_back2front <= 1'b0;
+		end
+		else begin
+			case(b_main_state)
+				L_PARAM_MAINSTT_IDLE:
+					begin
+						//Interrupt Return Instruction
+						if(iEXCEPT_IB)begin
+							b_event_irq_back2front <= 1'b1;
+						end
+						else begin
+							b_event_irq_back2front <= 1'b0;
+						end
+					end
+				default:
+					begin
+						b_event_irq_back2front <= 1'b0;
+					end
+			endcase
+		end
+	end
+
+
+
+
+
+
+
 
 
 endmodule

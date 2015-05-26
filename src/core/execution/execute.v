@@ -11,6 +11,13 @@ module execute(
 		input wire iCLOCK,
 		input wire inRESET,
 		input wire iRESET_SYNC,
+		//Event CTRL
+		input wire iEVENT_HOLD,
+		input wire iEVENT_START,
+		input wire iEVENT_IRQ_FRONT2BACK,
+		input wire iEVENT_IRQ_BACK2FRONT,
+		input wire iEVENT_END,
+		//Legacy
 		input wire iFREE_REGISTER_LOCK,
 		input wire iFREE_PIPELINE_STOP,
 		input wire iFREE_REFRESH,
@@ -31,7 +38,7 @@ module execute(
 		input wire [31:0] iPREVIOUS_SYSREG_PSR,
 		input wire [31:0] iPREVIOUS_SYSREG_TIDR,
 		input wire [31:0] iPREVIOUS_SYSREG_PDTR,
-		input wire [31:0] iPREVIOUS_SYSREG_KPDTR,	///////////////////////
+		input wire [31:0] iPREVIOUS_SYSREG_KPDTR,
 		input wire iPREVIOUS_DESTINATION_SYSREG,
 		input wire [4:0] iPREVIOUS_DESTINATION,
 		input wire iPREVIOUS_WRITEBACK,
@@ -114,22 +121,27 @@ module execute(
 		output wire [31:0] oDEBUG_REG_OUT_FLAGR
 	);
 
+
+
+
+
+
+
+	/*********************************************************************************************************
+	Wire
+	*********************************************************************************************************/
 	localparam L_PARAM_STT_NORMAL =  3'h0;
 	localparam L_PARAM_STT_DIV_WAIT = 3'h1;
 	localparam L_PARAM_STT_LOAD = 3'h2;
 	localparam L_PARAM_STT_STORE = 3'h3;
 	localparam L_PARAM_STT_BRANCH = 3'h4;
-	localparam L_PARAM_STT_EXCEPTION = 3'h5;
-	localparam L_PARAM_STT_HALT = 3'h6;
+	localparam L_PARAM_STT_RELOAD = 3'h5;
+	localparam L_PARAM_STT_EXCEPTION = 3'h6;
+	localparam L_PARAM_STT_HALT = 3'h7;
 
-	//Debugger
-	reg [1:0] b_debug_state;
-	reg b_debug_stop;
-	reg b_debug_cmd_ack;
+
 
 	reg b_valid;
-	reg b_paging_ena;
-	reg b_kernel_access;
 	reg [31:0] b_sysreg_psr;
 	reg [31:0] b_sysreg_tidr;
 	reg [31:0] b_sysreg_pdt;
@@ -164,26 +176,14 @@ module execute(
 	reg [31:0] b_branch_predict_addr;
 	reg [31:0] b_pc;
 
-	reg b_ex_kind_adder;
-	reg b_ex_kind_logic;
-	reg b_ex_kind_mul;
-	reg b_ex_kind_sdiv;
-	reg b_ex_kind_udiv;
-	reg b_ex_kind_ldst;
-	reg b_ex_kind_shift;
-	reg b_ex_kind_branch;
-	reg b_ex_kind_sys_reg;
-	reg b_ex_kind_sys_ldst;
 
 
-	reg b_div_wait;
-	reg b_div_q_r_condition;
+	wire div_wait;
+	wire debugger_pipeline_stop;
 
-
-
-	wire lock_condition = (b_state != L_PARAM_STT_NORMAL) || b_div_wait || b_debug_stop;// || iDATAIO_BUSY;
+	wire lock_condition = (b_state != L_PARAM_STT_NORMAL) || div_wait || debugger_pipeline_stop;// || iDATAIO_BUSY;
 	wire io_lock_condition = iDATAIO_BUSY;
-	assign oPREVIOUS_LOCK = lock_condition || iFREE_PIPELINE_STOP;
+	assign oPREVIOUS_LOCK = lock_condition || iEVENT_HOLD || iFREE_PIPELINE_STOP;
 
 
 	wire [31:0] ex_module_source0;
@@ -230,36 +230,62 @@ module execute(
 	wire [4:0] mul_flags;
 	wire [31:0] mul_data;
 	//Div
-	wire [31:0] divider_out_q;
-	wire [31:0] divider_out_r;
-	wire divider_condition;
-	wire divider_out_valid;
+	wire [31:0] div_out_data;
+	wire div_out_valid;
+	/*
 	//Load Store
 	wire ldst_spr_valid;
 	wire [31:0] ldst_spr;
-	wire [31:0] ldst_data;
 	wire ldst_pipe_rw;
 	wire [31:0] ldst_pipe_addr;
 	wire [31:0] ldst_pipe_pdt;
 	wire [31:0] ldst_pipe_data;
 	wire [1:0] ldst_pipe_order;
 	wire [1:0] load_pipe_shift;
-	wire [3:0] load_pipe_mask;
+	wire [3:0] ldst_pipe_mask;
+	*/
 	//Branch
 	wire [31:0] branch_branch_addr;
 	wire branch_jump_valid;
 	wire branch_not_jump_valid;
 	wire branch_ib_valid;
-	wire branch_idts_valid;
 	wire branch_halt_valid;
 
 	//AFE
 	wire [31:0] result_data_with_afe;
 
+	//Flag
+	wire [4:0] sysreg_flags_register;
+
+
+	/*********************************************************************************************************
+	Debug Module
+	*********************************************************************************************************/
+	execute_debugger DEBUGGER(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
+		//Debugger Port
+		.iDEBUG_CTRL_REQ(iDEBUG_CTRL_REQ),
+		.iDEBUG_CTRL_STOP(iDEBUG_CTRL_STOP),
+		.iDEBUG_CTRL_START(iDEBUG_CTRL_START),
+		.oDEBUG_CTRL_ACK(oDEBUG_CTRL_ACK),
+		.oDEBUG_REG_OUT_FLAGR(oDEBUG_REG_OUT_FLAGR),
+		//Pipeline
+		.oPIPELINE_STOP(debugger_pipeline_stop),
+		//Registers
+		.iREGISTER_FLAGR(sysreg_flags_register),
+		//Busy
+		.iBUSY(lock_condition)
+	);
+
+	/*********************************************************************************************************
+	Forwarding
+	*********************************************************************************************************/
 	execute_forwarding_register FORWARDING_REGISTER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
+		.iRESET_SYNC(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -288,7 +314,7 @@ module execute(
 	execute_forwarding FORWARDING_RS0(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
+		.iRESET_SYNC(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -332,7 +358,7 @@ module execute(
 	execute_forwarding FORWARDING_RS1(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
+		.iRESET_SYNC(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -371,14 +397,12 @@ module execute(
 	/****************************************
 	Flag Register
 	****************************************/
-	wire [4:0] sysreg_flags_register;
-
 	execute_flag_register REG_FLAG(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
 		//Control
-		.iCTRL_HOLD(iFREE_PIPELINE_STOP || iFREE_REFRESH || iFREE_REGISTER_LOCK),
+		.iCTRL_HOLD(iEVENT_HOLD || iFREE_PIPELINE_STOP || iFREE_REFRESH || iFREE_REGISTER_LOCK),
 		//Prev
 		.iPREV_INST_VALID(iPREVIOUS_VALID),
 		.iPREV_BUSY(lock_condition),
@@ -399,16 +423,12 @@ module execute(
 		.oFLAG(sysreg_flags_register)
 	);
 
-	/****************************************
-	System Register
-	****************************************/
-	execute_sys_reg EXE_SYS_REG(
-		.iCMD(iPREVIOUS_CMD),
-		.iSOURCE0(ex_module_source0),
-		.iSOURCE1(ex_module_source1),
-		.oOUT(sys_reg_data)
-	);
 
+
+
+	/*********************************************************************************************************
+	Execute
+	*********************************************************************************************************/
 	/****************************************
 	Logic
 	****************************************/
@@ -508,56 +528,42 @@ module execute(
 	/****************************************
 	Div
 	****************************************/
-	assign divider_condition = iPREVIOUS_VALID && (iPREVIOUS_EX_UDIV || iPREVIOUS_EX_SDIV) && !lock_condition;
-
-	pipelined_div_radix2 EXE_DIV(
-		//System
+	execute_div EXE_DIV(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iREMOVE(iFREE_REFRESH || iRESET_SYNC),
-		//Source
-		.oSOURCE_BUSY(/* Not Use*/),
-		.iSOURCE_VALID(divider_condition),
-		.iSOURCE_SIGN(iPREVIOUS_EX_SDIV),
-		.iSOURCE_DIVIDEND(ex_module_source0),
-		.iSOURCE_DIVISOR(ex_module_source1),
-		//Output
-		.iOUT_BUSY(1'b0),
-		.oOUT_VALID(divider_out_valid),
-		.oOUT_DATA_Q(divider_out_q),
-		.oOUT_DATA_R(divider_out_r)
+		.iRESET_SYNC(iEVENT_HOLD || iFREE_REFRESH || iRESET_SYNC),
+		//FLAG
+		.oFLAG_WAITING_DIV(div_wait),
+		//Prev
+		.iPREV_VALID(iPREVIOUS_VALID),
+		.iPREV_UDIV(iPREVIOUS_EX_UDIV),
+		.iPREV_SDIV(iPREVIOUS_EX_SDIV),
+		.iCMD(iPREVIOUS_CMD),
+		//iDATA
+		.iDATA_0(ex_module_source0),
+		.iDATA_1(ex_module_source1),
+		//oDATA
+		.iBUSY(lock_condition),
+		.oDATA_VALID(div_out_valid),
+		.oDATA(div_out_data)
 	);
-
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_div_wait <= 1'b0;
-			b_div_q_r_condition <= 1'b0;
-		end
-		else if(iRESET_SYNC)begin
-			b_div_wait <= 1'b0;
-			b_div_q_r_condition <= 1'b0;
-		end
-		else begin
-			if(!b_div_wait)begin
-				if(divider_condition)begin
-					b_div_wait <= 1'b1;
-					b_div_q_r_condition <= ((iPREVIOUS_EX_UDIV && iPREVIOUS_CMD == `EXE_DIV_UMOD || iPREVIOUS_EX_SDIV && iPREVIOUS_CMD == `EXE_DIV_MOD))? 1'b0 : 1'b1;	//0:R 1:Q
-				end
-			end
-			else begin
-				if(divider_out_valid)begin
-					b_div_wait <= 1'b0;
-				end
-			end
-		end
-	end
-
 
 
 	/****************************************
-	Load Store(Addr calculation)
+	Address calculate(Load Store)
 	****************************************/
-	execute_load_store LDST(
+	//Load Store
+	wire ldst_spr_valid;
+	wire [31:0] ldst_spr;
+	wire ldst_pipe_rw;
+	wire [31:0] ldst_pipe_pdt;
+	wire [31:0] ldst_pipe_addr;
+	wire [31:0] ldst_pipe_data;
+	wire [1:0] ldst_pipe_order;
+	wire [1:0] load_pipe_shift;
+	wire [3:0] ldst_pipe_mask;
+
+	execute_adder_calc LDST_CALC_ADDR(
 		//Prev
 		.iCMD(iPREVIOUS_CMD),
 		.iLOADSTORE_MODE(iPREVIOUS_EX_LDST),
@@ -574,20 +580,116 @@ module execute(
 		//Output - Writeback
 		.oOUT_SPR_VALID(ldst_spr_valid),
 		.oOUT_SPR(ldst_spr),
-		.oOUT_DATA(ldst_data),
+		.oOUT_DATA(),
 		//Output - LDST Pipe
 		.oLDST_RW(ldst_pipe_rw),
 		.oLDST_PDT(ldst_pipe_pdt),
 		.oLDST_ADDR(ldst_pipe_addr),
 		.oLDST_DATA(ldst_pipe_data),
 		.oLDST_ORDER(ldst_pipe_order),
-		.oLOAD_SHIFT(load_pipe_shift),
-		.oLOAD_MASK(load_pipe_mask)
+		.oLDST_MASK(ldst_pipe_mask),
+		.oLOAD_SHIFT(load_pipe_shift)
+	);
+
+	//Load Store
+	wire [1:0] load_shift;
+	wire [3:0] load_mask;
+	execute_load_store STAGE_LDST(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
+		//Event CTRL
+		.iEVENT_HOLD(iEVENT_HOLD),
+		.iEVENT_START(iEVENT_START),
+		.iEVENT_IRQ_FRONT2BACK(iEVENT_IRQ_FRONT2BACK),
+		.iEVENT_IRQ_BACK2FRONT(iEVENT_IRQ_BACK2FRONT),
+		.iEVENT_END(iEVENT_END),
+		//State
+		.iSTATE_NORMAL(b_state == L_PARAM_STT_NORMAL),
+		.iSTATE_LOAD(b_state == L_PARAM_STT_LOAD),
+		.iSTATE_STORE(b_state == L_PARAM_STT_STORE),
+		/*************************************
+		Previous
+		*************************************/
+		//Previous - PREDICT
+		.iPREV_VALID(iPREVIOUS_VALID),
+		.iPREV_EX_LDST(iPREVIOUS_EX_LDST),
+		//System Register
+		.iPREV_PSR(ex_module_psr),
+		.iPREV_TIDR(ex_module_tidr),
+		//Writeback
+		.iPREV_SPR_VALID(ldst_spr_valid),
+		.iPREV_SPR(ldst_spr),
+		//Output - LDST Pipe
+		.iPREV_LDST_RW(ldst_pipe_rw),
+		.iPREV_LDST_PDT(ldst_pipe_pdt),
+		.iPREV_LDST_ADDR(ldst_pipe_addr),
+		.iPREV_LDST_DATA(ldst_pipe_data),
+		.iPREV_LDST_ORDER(ldst_pipe_order),
+		.iPREV_LDST_MASK(ldst_pipe_mask),
+		.iPREV_LOAD_SHIFT(load_pipe_shift),
+		/*************************************
+		MA
+		*************************************/
+		//Output - LDST Pipe
+		.oLDST_REQ(oDATAIO_REQ),
+		.iLDST_BUSY(iFREE_PIPELINE_STOP || iFREE_REGISTER_LOCK || io_lock_condition),
+		.oLDST_RW(oDATAIO_RW),
+		.oLDST_PDT(oDATAIO_PDT),
+		.oLDST_ADDR(oDATAIO_ADDR),
+		.oLDST_DATA(oDATAIO_DATA),
+		.oLDST_ORDER(oDATAIO_ORDER),
+		.oLDST_MASK(oDATAIO_MASK),
+		.oLDST_ASID(oDATAIO_ASID),
+		.oLDST_MMUMOD(oDATAIO_MMUMOD),
+		.oLDST_MMUPS(oDATAIO_MMUPS),
+		.iLDST_VALID(iDATAIO_REQ),
+		/*************************************
+		Next
+		*************************************/
+		//Next
+		.iNEXT_BUSY(lock_condition),
+		.oNEXT_VALID(),
+		.oNEXT_SPR_VALID(),
+		.oNEXT_SPR(),
+		.oNEXT_SHIFT(load_shift),							//It's for after load data sigals
+		.oNEXT_MASK(load_mask)								//It's for after load data sigals
+	);
+	
+
+	//Load Data Mask and Shft
+	wire [31:0] load_data;
+	execute_load_data LOAD_MASK(
+		.iMASK(load_mask),
+		.iSHIFT(load_shift),
+		.iDATA(iDATAIO_DATA),
+		.oDATA(load_data)
 	);
 
 	/****************************************
-	Branch
+	System Register
 	****************************************/
+	wire sysreg_ctrl_idt_valid;
+	wire sysreg_ctrl_pdt_valid;
+	wire sysreg_ctrl_psr_valid;
+	wire [31:0] sysreg_reload_addr;
+
+	execute_sys_reg EXE_SYS_REG(
+		.iCMD(iPREVIOUS_CMD),
+		.iPC(iPREVIOUS_PC),
+		.iSOURCE0(ex_module_source0),
+		.iSOURCE1(ex_module_source1),
+		.oOUT(sys_reg_data),
+		.oCTRL_IDT_VALID(sysreg_ctrl_idt_valid),
+		.oCTRL_PDT_VALID(sysreg_ctrl_pdt_valid),
+		.oCTRL_PSR_VALID(sysreg_ctrl_psr_valid),
+		.oCTRL_RELOAD_ADDR(sysreg_reload_addr)
+	);
+
+	/****************************************
+	Jump
+	****************************************/
+	//Branch
 	execute_branch EXE_BRANCH(
 		.iDATA_0(ex_module_source0),
 		.iDATA_1(ex_module_source1),
@@ -599,408 +701,217 @@ module execute(
 		.oJUMP_VALID(branch_jump_valid),
 		.oNOT_JUMP_VALID(branch_not_jump_valid),
 		.oIB_VALID(branch_ib_valid),
-		.oIDTS_VALID(branch_idts_valid),
+		//.oIDTS_VALID(branch_idts_valid),
 		.oHALT_VALID(branch_halt_valid)
 	);
 
+	//Branch Predict
+	wire branch_with_predict_predict_ena;
+	wire branch_with_predict_predict_hit;
+	wire branch_with_predict_branch_valid;
+	wire branch_with_predict_ib_valid;
+	wire [31:0] branch_with_predict_jump_addr;
 
-	/****************************************
-	Load Data Mask
-	****************************************/
-	wire [31:0] load_data;
-	execute_load_data LOAD_MASK(
-		.iMASK(b_ldst_pipe_mask),
-		.iSHIFT(b_load_pipe_shift),
-		.iDATA(iDATAIO_DATA),
-		.oDATA(load_data)
+	//Branch Predicter
+	execute_branch_predict EXE_BRANCH_PREDICT(
+		//State
+		.iSTATE_NORMAL(b_state == L_PARAM_STT_NORMAL),
+		//Previous - PREDICT
+		.iPREV_VALID(iPREVIOUS_VALID),
+		.iPREV_EX_BRANCH(iPREVIOUS_EX_BRANCH),
+		.iPREV_BRANCH_PREDICT_ENA(iPREVIOUS_BRANCH_PREDICT),
+		.iPREV_BRANCH_PREDICT_ADDR(iPREVIOUS_BRANCH_PREDICT_ADDR),
+		//BRANCH
+		.iPREV_BRANCH_VALID(branch_jump_valid),
+		.iPREV_BRANCH_IB_VALID(branch_ib_valid),
+		.iPREV_JUMP_ADDR(branch_branch_addr),
+		//Next
+		.iNEXT_BUSY(lock_condition),
+		.oNEXT_PREDICT_HIT(branch_with_predict_predict_hit)
+	);
+
+	wire branch_valid_with_predict_miss = branch_not_jump_valid && iPREVIOUS_BRANCH_PREDICT;											//not need jump, but predict jump
+	wire branch_valid_with_predict_addr_miss = branch_jump_valid && !(iPREVIOUS_BRANCH_PREDICT && branch_with_predict_predict_hit);		//need jump, but predict addr is diffelent (predict address diffelent)
+
+	wire branch_valid_with_predict = branch_valid_with_predict_miss || branch_valid_with_predict_addr_miss;
+
+	//Jump
+	wire jump_stage_predict_ena;
+	wire jump_stage_predict_hit;
+	wire jump_stage_jump_valid;
+	wire [31:0] jump_stage_jump_addr;
+	
+	wire jump_stage_branch_valid;
+	wire jump_stage_branch_ib_valid;
+	wire jump_stage_sysreg_idt_valid;
+	wire jump_stage_sysreg_pdt_valid;
+	wire jump_stage_sysreg_psr_valid;
+	execute_jump STAGE_JUMP(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
+		//Event CTRL
+		.iEVENT_HOLD(iEVENT_HOLD),
+		.iEVENT_START(iEVENT_START),
+		.iEVENT_IRQ_FRONT2BACK(iEVENT_IRQ_FRONT2BACK),
+		.iEVENT_IRQ_BACK2FRONT(iEVENT_IRQ_BACK2FRONT),
+		.iEVENT_END(iEVENT_END),
+		//State
+		.iSTATE_NORMAL(b_state == L_PARAM_STT_NORMAL),
+		//Previous - PREDICT
+		.iPREV_VALID(iPREVIOUS_VALID),
+		.iPREV_EX_BRANCH(iPREVIOUS_EX_BRANCH),
+		.iPREV_EX_SYS_REG(iPREVIOUS_EX_SYS_REG),
+		.iPREV_PC(iPREVIOUS_PC),
+		.iPREV_BRANCH_PREDICT_ENA(iPREVIOUS_BRANCH_PREDICT),
+		.iPREV_BRANCH_PREDICT_HIT(branch_with_predict_predict_hit),
+		//BRANCH
+		.iPREV_BRANCH_PREDICT_MISS_VALID(branch_valid_with_predict_miss),
+		.iPREV_BRANCH_PREDICT_ADDR_MISS_VALID(branch_valid_with_predict_addr_miss),
+		.iPREV_BRANCH_IB_VALID(branch_ib_valid),
+		.iPREV_BRANCH_ADDR(branch_branch_addr),
+		//SYSREG JUMP
+		.iPREV_SYSREG_IDT_VALID(sysreg_ctrl_idt_valid),
+		.iPREV_SYSREG_PDT_VALID(sysreg_ctrl_pdt_valid),
+		.iPREV_SYSREG_PSR_VALID(sysreg_ctrl_psr_valid),
+		.iPREV_SYSREG_ADDR(sysreg_reload_addr),
+		/*************************************
+		Next
+		*************************************/
+		//Next
+		.iNEXT_BUSY(lock_condition),
+		.oNEXT_PREDICT_ENA(jump_stage_predict_ena),
+		.oNEXT_PREDICT_HIT(jump_stage_predict_hit),
+		.oNEXT_JUMP_VALID(jump_stage_jump_valid),
+		.oNEXT_JUMP_ADDR(jump_stage_jump_addr),
+		//Kaind of Jump
+		.oNEXT_TYPE_BRANCH_VALID(jump_stage_branch_valid),
+		.oNEXT_TYPE_BRANCH_IB_VALID(jump_stage_branch_ib_valid),
+		.oNEXT_TYPE_SYSREG_IDT_VALID(jump_stage_sysreg_idt_valid),
+		.oNEXT_TYPE_SYSREG_PDT_VALID(jump_stage_sysreg_pdt_valid),
+		.oNEXT_TYPE_SYSREG_PSR_VALID(jump_stage_sysreg_psr_valid)
 	);
 
 
+	/*********************************************************************************************************
+	Exception
+	*********************************************************************************************************/
+	wire except_inst_valid;
+	wire [6:0] except_inst_num;
 
+	wire except_ldst_valid;
+	wire [6:0] except_ldst_num;
 
+	execute_exception_check_inst EXE_EXCEPTION_INST(
+		//Execute Module State
+		.iPREV_STATE_NORMAL(b_state == L_PARAM_STT_NORMAL),
+		//Previous Instruxtion
+		.iPREV_FAULT_PAGEFAULT(iPREVIOUS_FAULT_PAGEFAULT),
+		.iPREV_FAULT_PRIVILEGE_ERROR(iPREVIOUS_FAULT_PRIVILEGE_ERROR),
+		.iPREV_FAULT_INVALID_INST(iPREVIOUS_FAULT_INVALID_INST),
+		.iPREV_FAULT_DIVIDE_ZERO((iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV) && (ex_module_source1 == 32'h0)),
+		//Output Exception 
+		.oEXCEPT_VALID(except_inst_valid),
+		.oEXCEPT_NUM(except_inst_num)
+	);
 
+	execute_exception_check_ldst EXE_EXCEPTION_LDST(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
+		//Event CTRL
+		.iEVENT_HOLD(iEVENT_HOLD),
+		.iEVENT_START(iEVENT_START),
+		.iEVENT_IRQ_FRONT2BACK(iEVENT_IRQ_FRONT2BACK),
+		.iEVENT_IRQ_BACK2FRONT(iEVENT_IRQ_BACK2FRONT),
+		.iEVENT_END(iEVENT_END),
+		//Execute Module State
+		.iPREV_STATE_NORMAL(b_state == L_PARAM_STT_NORMAL),
+		.iPREV_STATE_LDST(b_state == L_PARAM_STT_LOAD),
+		//Previous Instruxtion
+		.iPREV_VALID(b_state == L_PARAM_STT_NORMAL && iPREVIOUS_VALID && !lock_condition),
+		.iPREV_KERNEL_ACCESS(iPREVIOUS_KERNEL_ACCESS),
+		.iPREV_PAGING_ENA(iPREVIOUS_PAGING_ENA),
+		.iPREV_LDST_RW(ldst_pipe_rw),
+		//Load Store
+		.iLDST_VALID(iDATAIO_REQ),
+		.iLDST_MMU_FLAG(iDATAIO_MMU_FLAGS),
+		//Output Exception 
+		.oEXCEPT_VALID(except_ldst_valid),
+		.oEXCEPT_NUM(except_ldst_num)
+	);
+
+	wire exception_valid;
+	wire [6:0] exception_num;
+	wire [31:0] exception_fi0r;
+	wire [31:0] exception_fi1r;
+
+	execute_exception STAGE_EXCEPTION(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
+		//Event CTRL
+		.iEVENT_HOLD(iEVENT_HOLD),
+		.iEVENT_START(iEVENT_START),
+		.iEVENT_IRQ_FRONT2BACK(iEVENT_IRQ_FRONT2BACK),
+		.iEVENT_IRQ_BACK2FRONT(iEVENT_IRQ_BACK2FRONT),
+		.iEVENT_END(iEVENT_END),
+		//Execute Module State
+		.iPREV_STATE_NORMAL(b_state == L_PARAM_STT_NORMAL),
+		.iPREV_STATE_LDST(b_state == L_PARAM_STT_LOAD),
+		//Previous Instruxtion
+		.iPREV_VALID(b_state == L_PARAM_STT_NORMAL && iPREVIOUS_VALID && !lock_condition),
+		.iPREV_KERNEL_ACCESS(iPREVIOUS_KERNEL_ACCESS),
+		.iPREV_PC(iPREVIOUS_PC),
+		//Instruction Exception
+		.iEXCEPT_INST_VALID(except_inst_valid),
+		.iEXCEPT_INST_NUM(except_inst_num),
+		//Load Store Exception
+		.iEXCEPT_LDST_VALID(except_ldst_valid),
+		.iEXCEPT_LDST_NUM(except_ldst_num),
+		//Output Exception 
+		.oEXCEPT_VALID(exception_valid),
+		.oEXCEPT_NUM(exception_num),
+		.oEXCEPT_FI0R(exception_fi0r),
+		.oEXCEPT_FI1R(exception_fi1r)
+	);
+
+	/*********************************************************************************************************
+	Pipelined Register
+	*********************************************************************************************************/
 	/****************************************
-	Current Execute Kind
+	State
 	****************************************/
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_ex_kind_adder <= 1'b0;
-			b_ex_kind_logic <= 1'b0;
-			b_ex_kind_mul <= 1'b0;
-			b_ex_kind_sdiv <= 1'b0;
-			b_ex_kind_udiv <= 1'b0;
-			b_ex_kind_ldst <= 1'b0;
-			b_ex_kind_shift <= 1'b0;
-			b_ex_kind_branch <= 1'b0;
-			b_ex_kind_sys_reg <= 1'b0;
-			b_ex_kind_sys_ldst <= 1'b0;
-		end
-		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
-			b_ex_kind_adder <= 1'b0;
-			b_ex_kind_logic <= 1'b0;
-			b_ex_kind_mul <= 1'b0;
-			b_ex_kind_sdiv <= 1'b0;
-			b_ex_kind_udiv <= 1'b0;
-			b_ex_kind_ldst <= 1'b0;
-			b_ex_kind_shift <= 1'b0;
-			b_ex_kind_branch <= 1'b0;
-			b_ex_kind_sys_reg <= 1'b0;
-			b_ex_kind_sys_ldst <= 1'b0;
-		end
-		else begin
-			if(b_state == L_PARAM_STT_NORMAL && iPREVIOUS_VALID && !lock_condition)begin
-				b_ex_kind_adder <= iPREVIOUS_EX_ADDER;
-				b_ex_kind_logic <= iPREVIOUS_EX_LOGIC;
-				b_ex_kind_mul <= iPREVIOUS_EX_MUL;
-				b_ex_kind_sdiv <= iPREVIOUS_EX_SDIV;
-				b_ex_kind_udiv <= iPREVIOUS_EX_UDIV;
-				b_ex_kind_ldst <= iPREVIOUS_EX_LDST;
-				b_ex_kind_shift <= iPREVIOUS_EX_SHIFT;
-				b_ex_kind_branch <= iPREVIOUS_EX_BRANCH;
-				b_ex_kind_sys_reg <= iPREVIOUS_EX_SYS_REG;
-				b_ex_kind_sys_ldst <= iPREVIOUS_EX_SYS_LDST;
-			end
-		end
-	end
-
-
-	/****************************************
-	Execution Module Select
-	****************************************/
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_valid <= 1'b0;
-			b_paging_ena <= 1'b0;
-			b_kernel_access <= 1'b0;
-			b_sysreg_psr <= 32'h0;
-			b_sysreg_tidr <= 32'h0;
-			b_sysreg_pdt <= 32'h0;
 			b_state <= L_PARAM_STT_NORMAL;
-			b_load_store <= 1'b0;
-			b_writeback <= 1'b0;
-			b_destination_sysreg  <= 1'b0;
-			b_destination <= 5'h0;
-			b_afe <= 4'h0;
-			b_r_data <= 32'h0;
-			b_spr_writeback <= 1'b0;
-			b_r_spr <= 32'h0;
-			b_ldst_pipe_valid <= 1'b0;
-			b_ldst_pipe_order <= 2'h0;
-			b_ldst_pipe_addr <= 32'h0;
-			b_ldst_pipe_data <= 32'h0;
-			b_ldst_pipe_mask <= 4'h0;
-			b_load_pipe_shift <= 2'h0;
-			b_load_pipe_mask <= 2'h0;
-			b_exception_valid <= 1'b0;
-			b_exception_num <= 7'h0;
-			b_exception_fi0r <= 32'h0;
-			b_exception_fi1r <= 32'h0;
-			b_jump <= 1'b0;
-			b_idts <= 1'b0;
-			b_pdts <= 1'b0;
-			b_psr <= 1'b0;
-			b_ib <= 1'b0;
-			b_branch_addr <= 32'h0;
-			b_branch_predict <= 1'b0;
-			b_branch_predict_hit <= 1'b0;
-			b_branch_predict_addr <= 32'h0;
-			b_pc <= 32'h0;
 		end
-		else if(iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
-			b_valid <= 1'b0;
-			b_paging_ena <= 1'b0;
-			b_kernel_access <= 1'b0;
-			b_sysreg_psr <= 32'h0;
-			b_sysreg_tidr <= 32'h0;
-			b_sysreg_pdt <= 32'h0;
+		else if(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
 			b_state <= L_PARAM_STT_NORMAL;
-			b_load_store <= 1'b0;
-			b_writeback <= 1'b0;
-			b_destination_sysreg  <= 1'b0;
-			b_destination <= 5'h0;
-			b_afe <= 4'h0;
-			b_r_data <= 32'h0;
-			b_spr_writeback <= 1'b0;
-			b_r_spr <= 32'h0;
-			b_ldst_pipe_valid <= 1'b0;
-			b_ldst_pipe_order <= 2'h0;
-			b_ldst_pipe_addr <= 32'h0;
-			b_ldst_pipe_data <= 32'h0;
-			b_ldst_pipe_mask <= 4'h0;
-			b_load_pipe_shift <= 2'h0;
-			b_load_pipe_mask <= 2'h0;
-			b_exception_valid <= 1'b0;
-			b_exception_num <= 7'h0;
-			b_exception_fi0r <= 32'h0;
-			b_exception_fi1r <= 32'h0;
-			b_jump <= 1'b0;
-			b_idts <= 1'b0;
-			b_pdts <= 1'b0;
-			b_psr <= 1'b0;
-			b_ib <= 1'b0;
-			b_branch_addr <= 32'h0;
-			b_branch_predict <= 1'b0;
-			b_branch_predict_hit <= 1'b0;
-			b_branch_predict_addr <= 32'h0;
-			b_pc <= 32'h0;
 		end
 		else begin
 			case(b_state)
 				L_PARAM_STT_NORMAL:
 					begin
-						b_load_store <= 1'b0;
 						if(iPREVIOUS_VALID && !lock_condition)begin
-							b_paging_ena <= iPREVIOUS_PAGING_ENA;
-							b_kernel_access <= iPREVIOUS_KERNEL_ACCESS;
-							b_pc <= iPREVIOUS_PC;
-						end
-						b_valid <= iPREVIOUS_VALID && !lock_condition;
-						if(iPREVIOUS_VALID && !lock_condition)begin
-							//Exception Check(Instruction)
-							if(iPREVIOUS_FAULT_PAGEFAULT)begin
+							//Fault Check
+							if(except_inst_valid)begin
 								b_state <= L_PARAM_STT_EXCEPTION;
-								b_exception_valid <= 1'b1;
-								b_exception_num <= `INT_NUM_PAGEFAULT;
-								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
-								b_exception_fi1r <= {28'h0, 1'b1, !iPREVIOUS_KERNEL_ACCESS, 1'b0, 1'b1};
-								b_branch_predict <= 1'b0;
-								b_branch_predict_hit <= 1'b0;
 							end
-							else if(iPREVIOUS_FAULT_PRIVILEGE_ERROR)begin
-								b_state <= L_PARAM_STT_EXCEPTION;
-								b_exception_valid <= 1'b1;
-								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
-								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
-								b_exception_fi1r <= 32'h0;
-								b_branch_predict <= 1'b0;
-								b_branch_predict_hit <= 1'b0;
-							end
-							else if(iPREVIOUS_FAULT_INVALID_INST)begin
-								b_state <= L_PARAM_STT_EXCEPTION;
-								b_exception_valid <= 1'b1;
-								b_exception_num <= `INT_NUM_INSTRUCTION_INVALID;
-								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
-								b_exception_fi1r <= iPREVIOUS_PC - 32'h4;
-								b_branch_predict <= 1'b0;
-								b_branch_predict_hit <= 1'b0;
-							end
-							else if((iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV) && (ex_module_source1 == 32'h0))begin
-								b_state <= L_PARAM_STT_EXCEPTION;
-								b_exception_valid <= 1'b1;
-								b_exception_num <= `INT_NUM_DIVIDER_ERROR;
-								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
-								b_exception_fi1r <= 32'h0;
-								b_branch_predict <= 1'b0;
-								b_branch_predict_hit <= 1'b0;
-							end
-							//Execute latch
+							//Execute 
 							else begin
+								//Div instruction
 								if(iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV)begin
-									b_valid <= 1'b0;
 									b_state <= L_PARAM_STT_DIV_WAIT;
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= 1'b0;
-									b_destination <= iPREVIOUS_DESTINATION;
-									b_afe <= iPREVIOUS_CC_AFE;
-									b_spr_writeback <= 1'b0;
-									b_r_spr <= 32'h0;
-									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_pdts <= 1'b0;
-									b_psr <= 1'b0;
-									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
-									b_branch_predict <= 1'b0;
-									b_branch_predict_hit <= 1'b0;
 								end
 								//Load Store
 								else if(iPREVIOUS_EX_LDST)begin
-									b_load_store <= 1'b1;
 									if(!ldst_pipe_rw)begin
-										//Load
-										b_valid <= 1'b0;
-										b_sysreg_psr <= ex_module_psr;//iPREVIOUS_SYSREG_PSR;
-										b_sysreg_tidr <= ex_module_tidr;//iPREVIOUS_SYSREG_TIDR;
-										b_sysreg_pdt <= ldst_pipe_pdt;//iPREVIOUS_SYSREG_PDTR;
-										b_writeback <= iPREVIOUS_WRITEBACK;
-										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-										b_destination <= iPREVIOUS_DESTINATION;
-										b_afe <= iPREVIOUS_CC_AFE;
-										b_spr_writeback <= ldst_spr_valid;
-										b_r_spr <= ldst_spr;
-										b_ldst_pipe_valid <= 1'b1;
-										b_ldst_pipe_order <= ldst_pipe_order;
-										b_ldst_pipe_addr <= ldst_pipe_addr;
-										b_ldst_pipe_mask <= load_pipe_mask;
-										b_load_pipe_shift <= load_pipe_shift;
-										b_load_pipe_mask <= load_pipe_mask;
 										b_state <= L_PARAM_STT_LOAD;
-										b_branch_predict <= 1'b0;
-										b_branch_predict_hit <= 1'b0;
 									end
 									else begin
-										//Store
-										b_sysreg_psr <= ex_module_psr;//iPREVIOUS_SYSREG_PSR;
-										b_sysreg_tidr <= ex_module_tidr;//iPREVIOUS_SYSREG_TIDR;
-										b_sysreg_pdt <= ldst_pipe_pdt;//iPREVIOUS_SYSREG_PDTR;
-										b_writeback <= iPREVIOUS_WRITEBACK;
-										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-										b_destination <= 5'h0;
-										b_afe <= iPREVIOUS_CC_AFE;
-										b_r_data <= ldst_spr;
-										b_spr_writeback <= ldst_spr_valid;
-										b_r_spr <= ldst_spr;
-										b_ldst_pipe_valid <= 1'b1;
-										b_ldst_pipe_order <= ldst_pipe_order;
-										b_ldst_pipe_addr <= ldst_pipe_addr;
-										b_ldst_pipe_data <= ldst_pipe_data;
-										b_ldst_pipe_mask <= load_pipe_mask;
-										b_jump <= 1'b0;
-										b_idts <= 1'b0;
-										b_pdts <= 1'b0;
-										b_psr <= 1'b0;
-										b_ib <= 1'b0;
-										b_branch_addr <= 32'h0;
 										b_state <= L_PARAM_STT_STORE;
-										b_branch_predict <= 1'b0;
-										b_branch_predict_hit <= 1'b0;
 									end
-								end
-								else if(iPREVIOUS_EX_SYS_LDST)begin
-									//SPR Store
-									if(!ldst_pipe_rw)begin
-										b_writeback <= iPREVIOUS_WRITEBACK;
-										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-										b_destination <= iPREVIOUS_DESTINATION;
-										b_afe <= iPREVIOUS_CC_AFE;
-										b_r_data <= ldst_spr;
-										b_spr_writeback <= ldst_spr_valid;
-										b_r_spr <= ldst_spr;
-										b_ldst_pipe_valid <= 1'b0;
-										b_jump <= 1'b0;
-										b_idts <= 1'b0;
-										b_pdts <= 1'b0;
-										b_psr <= 1'b0;
-										b_ib <= 1'b0;
-										b_branch_addr <= 32'h0;
-										b_branch_predict <= 1'b0;
-										b_branch_predict_hit <= 1'b0;
-									end
-									//SPR Read
-									else begin
-										b_writeback <= iPREVIOUS_WRITEBACK;
-										b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-										b_destination <= iPREVIOUS_DESTINATION;
-										b_afe <= iPREVIOUS_CC_AFE;
-										b_r_data <= ldst_spr;
-										b_spr_writeback <= ldst_spr_valid;
-										b_r_spr <= ldst_spr;
-										b_ldst_pipe_valid <= 1'b0;
-										b_jump <= 1'b0;
-										b_idts <= 1'b0;
-										b_pdts <= 1'b0;
-										b_psr <= 1'b0;
-										b_ib <= 1'b0;
-										b_branch_addr <= 32'h0;
-										b_branch_predict <= 1'b0;
-										b_branch_predict_hit <= 1'b0;
-									end
-								end
-								//System Register
-								else if(iPREVIOUS_EX_SYS_REG)begin
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
-									b_destination <= iPREVIOUS_DESTINATION;
-									b_afe <= iPREVIOUS_CC_AFE;
-									b_r_data <= sys_reg_data;
-									b_spr_writeback <= 1'b0;
-									b_r_spr <= 32'h0;
-									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_pdts <= iPREVIOUS_WRITEBACK && iPREVIOUS_DESTINATION_SYSREG && (iPREVIOUS_DESTINATION == `SYSREG_PDTR);
-									b_psr <= iPREVIOUS_WRITEBACK && iPREVIOUS_DESTINATION_SYSREG && (iPREVIOUS_DESTINATION == `SYSREG_PSR);
-									b_ib <= 1'b0;
-									b_branch_addr <= iPREVIOUS_PC;
-									b_branch_predict <= 1'b0;
-									b_branch_predict_hit <= 1'b0;
-								end
-								//Logic
-								else if(iPREVIOUS_EX_LOGIC)begin
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= 1'b0;
-									b_destination <= iPREVIOUS_DESTINATION;
-									b_afe <= iPREVIOUS_CC_AFE;
-									b_r_data <= logic_data;
-									b_spr_writeback <= 1'b0;
-									b_r_spr <= 32'h0;
-									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_pdts <= 1'b0;
-									b_psr <= 1'b0;
-									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
-									b_branch_predict <= 1'b0;
-									b_branch_predict_hit <= 1'b0;
-								end
-								//SGHIFT
-								else if(iPREVIOUS_EX_SHIFT)begin
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= 1'b0;
-									b_destination <= iPREVIOUS_DESTINATION;
-									b_afe <= iPREVIOUS_CC_AFE;
-									b_r_data <= shift_data;
-									b_spr_writeback <= 1'b0;
-									b_r_spr <= 32'h0;
-									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_pdts <= 1'b0;
-									b_psr <= 1'b0;
-									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
-									b_branch_predict <= 1'b0;
-									b_branch_predict_hit <= 1'b0;
-								end
-								//ADDER
-								else if(iPREVIOUS_EX_ADDER)begin
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= 1'b0;
-									b_destination <= iPREVIOUS_DESTINATION;
-									b_afe <= iPREVIOUS_CC_AFE;
-									b_r_data <= adder_data;
-									b_spr_writeback <= 1'b0;
-									b_r_spr <= 32'h0;
-									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_pdts <= 1'b0;
-									b_psr <= 1'b0;
-									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
-									b_branch_predict <= 1'b0;
-									b_branch_predict_hit <= 1'b0;
-								end
-								//MUL
-								else if(iPREVIOUS_EX_MUL)begin
-									b_writeback <= iPREVIOUS_WRITEBACK;
-									b_destination_sysreg  <= 1'b0;
-									b_destination <= iPREVIOUS_DESTINATION;
-									b_afe <= iPREVIOUS_CC_AFE;
-									b_r_data <= mul_data;
-									b_spr_writeback <= 1'b0;
-									b_r_spr <= 32'h0;
-									b_ldst_pipe_valid <= 1'b0;
-									b_jump <= 1'b0;
-									b_idts <= 1'b0;
-									b_pdts <= 1'b0;
-									b_psr <= 1'b0;
-									b_ib <= 1'b0;
-									b_branch_addr <= 32'h0;
-									b_branch_predict <= 1'b0;
-									b_branch_predict_hit <= 1'b0;
 								end
 								//Branch
 								else if(iPREVIOUS_EX_BRANCH)begin
@@ -1008,226 +919,50 @@ module execute(
 									if(branch_halt_valid)begin
 										b_state <= L_PARAM_STT_HALT;
 									end
-									else if(branch_jump_valid)begin
-										//Branch Predict Hardware Enable / Disable
-										`ifdef MIST1032ISA_BRANCH_PREDICT
-											//Hit Branch Predict
-											if(iPREVIOUS_BRANCH_PREDICT && iPREVIOUS_BRANCH_PREDICT_ADDR == branch_branch_addr)begin
-												b_writeback <= 1'b0;
-												b_destination_sysreg  <= 1'b0;
-												b_destination <= 5'h0;
-												b_afe <= 4'h0;
-												b_r_data <= 32'h0;
-												b_spr_writeback <= 1'b0;
-												b_r_spr <= 32'h0;
-												b_ldst_pipe_valid <= 1'b0;
-												b_jump <= 1'b0;
-												b_idts <= 1'b0;
-												b_pdts <= 1'b0;
-												b_psr <= 1'b0;
-												b_ib <= 1'b0;
-												b_branch_addr <= branch_branch_addr;
-												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
-												b_branch_predict_hit <= 1'b1;
-												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
-											end
-											//Un Hit
-											else begin
-												b_valid <= 1'b0;
-												b_state <= L_PARAM_STT_BRANCH;
-												b_writeback <= 1'b0;
-												b_destination_sysreg  <= 1'b0;
-												b_destination <= 5'h0;
-												b_afe <= 4'h0;
-												b_r_data <= 32'h0;
-												b_spr_writeback <= 1'b0;
-												b_r_spr <= 32'h0;
-												b_ldst_pipe_valid <= 1'b0;
-												b_jump <= branch_jump_valid;
-												b_idts <= branch_idts_valid;
-												b_pdts <= 1'b0;
-												b_psr <= 1'b0;
-												b_ib <= branch_ib_valid;
-												b_branch_addr <= branch_branch_addr;
-												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
-												b_branch_predict_hit <= 1'b0;
-												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
-											end
-										`else
-											b_valid <= 1'b0;
-											b_state <= L_PARAM_STT_BRANCH;
-											b_writeback <= 1'b0;
-											b_destination_sysreg  <= 1'b0;
-											b_destination <= 5'h0;
-											b_afe <= 4'h0;
-											b_r_data <= 32'h0;
-											b_spr_writeback <= 1'b0;
-											b_r_spr <= 32'h0;
-											b_ldst_pipe_valid <= 1'b0;
-											b_jump <= branch_jump_valid;
-											b_idts <= branch_idts_valid;
-											b_pdts <= 1'b0;
-											b_psr <= 1'b0;
-											b_ib <= branch_ib_valid;
-											b_branch_addr <= branch_branch_addr;
-											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
-											b_branch_predict_hit <= 1'b0;
-											b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
-										`endif
-									end
-									//Other Branch
-									else if(branch_idts_valid || branch_ib_valid)begin
-										b_valid <= 1'b0;
+									//Interrupt Return Branch
+									else if(branch_ib_valid)begin
 										b_state <= L_PARAM_STT_BRANCH;
-										b_writeback <= 1'b0;
-										b_destination_sysreg  <= 1'b0;
-										b_destination <= 5'h0;
-										b_afe <= 4'h0;
-										b_r_data <= 32'h0;
-										b_spr_writeback <= 1'b0;
-										b_r_spr <= 32'h0;
-										b_ldst_pipe_valid <= 1'b0;
-										b_jump <= branch_jump_valid;
-										b_idts <= branch_idts_valid;
-										b_pdts <= 1'b0;
-										b_psr <= 1'b0;
-										b_ib <= branch_ib_valid;
-										b_branch_addr <= branch_branch_addr;
-										b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
-										b_branch_predict_hit <= 1'b0;
-										b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
 									end
-									//Non Branch(Compiler predict instruction)
-									else begin
-										//Branch Predict Enable
-										`ifdef MIST1032ISA_BRANCH_PREDICT
-											//Branch Predict Mis hit
-											if(branch_not_jump_valid && iPREVIOUS_BRANCH_PREDICT)begin
-												b_valid <= 1'b0;
-												b_state <= L_PARAM_STT_BRANCH;
-												b_writeback <= 1'b0;
-												b_destination_sysreg  <= 1'b0;
-												b_destination <= 5'h0;
-												b_afe <= 4'h0;
-												b_r_data <= 32'h0;
-												b_spr_writeback <= 1'b0;
-												b_r_spr <= 32'h0;
-												b_ldst_pipe_valid <= 1'b0;
-												b_jump <= branch_not_jump_valid;	//
-												b_idts <= branch_idts_valid;
-												b_pdts <= 1'b0;
-												b_psr <= 1'b0;
-												b_ib <= branch_ib_valid;
-												b_branch_addr <= iPREVIOUS_PC;		//Re Fetch
-												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
-												b_branch_predict_hit <= 1'b0;
-												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
-											end
-											//Other Branch
-											else begin
-												//b_valid <= 1'b1;/////////////////////////////////// koko kesiteita
-												b_writeback <= 1'b0;
-												b_destination_sysreg  <= 1'b0;
-												b_destination <= 5'h0;
-												b_afe <= 4'h0;
-												b_r_data <= 32'h0;
-												b_spr_writeback <= 1'b0;
-												b_r_spr <= 32'h0;
-												b_ldst_pipe_valid <= 1'b0;
-												b_jump <= branch_jump_valid;
-												b_idts <= branch_idts_valid;
-												b_pdts <= 1'b0;
-												b_psr <= 1'b0;
-												b_ib <= branch_ib_valid;
-												b_branch_addr <= branch_branch_addr;
-												b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
-												b_branch_predict_hit <= 1'b0;
-												b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
-											end
-										`else
-										//Predict Disable
-											//b_valid <= 1'b1;////////////////////////////////// koko kesiteita
-											b_writeback <= 1'b0;
-											b_destination_sysreg  <= 1'b0;
-											b_destination <= 5'h0;
-											b_afe <= 4'h0;
-											b_r_data <= 32'h0;
-											b_spr_writeback <= 1'b0;
-											b_r_spr <= 32'h0;
-											b_ldst_pipe_valid <= 1'b0;
-											b_jump <= branch_jump_valid;
-											b_idts <= branch_idts_valid;
-											b_pdts <= 1'b0;
-											b_psr <= 1'b0;
-											b_ib <= branch_ib_valid;
-											b_branch_addr <= branch_branch_addr;
-											b_branch_predict <= iPREVIOUS_BRANCH_PREDICT;
-											b_branch_predict_hit <= 1'b0;
-											b_branch_predict_addr <= iPREVIOUS_BRANCH_PREDICT_ADDR;
-										`endif
+									//Branch(with Branch predict)
+									else if(branch_valid_with_predict)begin
+										b_state <= L_PARAM_STT_BRANCH;
+									end
+								end
+								//System Register(for need re-load instructions)
+								if(iPREVIOUS_EX_SYS_REG)begin
+									if(sysreg_ctrl_idt_valid || sysreg_ctrl_pdt_valid || sysreg_ctrl_psr_valid)begin
+										b_state <= L_PARAM_STT_RELOAD;
 									end
 								end
 							end
 						end
-						else begin
-							b_ldst_pipe_valid <= 1'b0;
-						end
 					end
 				L_PARAM_STT_DIV_WAIT:
 					begin
-						b_ldst_pipe_valid <= 1'b0;
-						if(divider_out_valid)begin
-							b_valid <= 1'b1;
+						if(div_out_valid)begin
 							b_state <= L_PARAM_STT_NORMAL;
-							b_r_data <= (b_div_q_r_condition)? divider_out_q : divider_out_r;
-						end
-						else begin
-							b_valid <= 1'b0;
 						end
 					end
 				L_PARAM_STT_LOAD:
 					begin
-						if(!io_lock_condition)begin
-							b_ldst_pipe_valid <= 1'b0;
-						end
-
 						if(iDATAIO_REQ)begin
 							//Pagefault || Exception Check(Load)
-							if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b0, iDATAIO_MMU_FLAGS))begin
+							if(except_ldst_valid)begin
 								b_state <= L_PARAM_STT_EXCEPTION;
-								b_exception_valid <= 1'b1;
-								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
-								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
-								b_exception_fi1r <= {28'h0, 1'b0, !b_kernel_access, 1'b0, 1'b0};
 							end
 							//Non Error
 							else begin
-								b_valid <= 1'b1;
 								b_state <= L_PARAM_STT_NORMAL;
-								b_r_data <= load_data;
-								b_spr_writeback <= 1'b1;//1'b0;
-								b_r_spr <= b_r_spr;//ldst_spr;
 							end
-						end
-						else begin
-							b_valid <= 1'b0;
 						end
 					end
 				L_PARAM_STT_STORE:
 					begin
-						if(!io_lock_condition)begin
-							b_ldst_pipe_valid <= 1'b0;
-						end
-
 						if(iDATAIO_REQ)begin
 							//Pagefault
 							//Exception Check(Load)
-							if(func_mmu_flags_fault_check(b_paging_ena, b_kernel_access, 1'b1, iDATAIO_MMU_FLAGS))begin
+							if(except_ldst_valid)begin
 								b_state <= L_PARAM_STT_EXCEPTION;
-								b_exception_valid <= 1'b1;
-								b_exception_num <= `INT_NUM_PRIVILEGE_ERRPR;
-								b_exception_fi0r <= iPREVIOUS_PC - 32'h4;
-								b_exception_fi1r <= {28'h0, 1'b0, !b_kernel_access, 1'b0, 1'b0};
 							end
 							//Non Error
 							else begin
@@ -1238,14 +973,16 @@ module execute(
 				L_PARAM_STT_BRANCH:
 					begin
 						//Branch Wait
-						b_valid <= 1'b0;
-						b_jump <= 1'b0;
-						b_ldst_pipe_valid <= 1'b0;
 						b_state <= L_PARAM_STT_BRANCH;
+					end
+				L_PARAM_STT_RELOAD:
+					begin
+						//Branch Wait
+						b_state <= L_PARAM_STT_RELOAD;
 					end
 				L_PARAM_STT_EXCEPTION:
 					begin
-						b_exception_valid <= 1'b0;
+						b_state <= L_PARAM_STT_EXCEPTION;
 					end
 				L_PARAM_STT_HALT:
 					begin
@@ -1255,243 +992,365 @@ module execute(
 		end
 	end //state always
 
-	/*****************************************************
-	MMU Flag Check
-	[0]	:	IRQ41 Privilege error.(Page)
-	*****************************************************/
-	function func_mmu_flags_fault_check;
-		input func_paging;
-		input func_kernel;				//1:kernel mode
-		input func_rw;
-		input [5:0] func_mmu_flags;
-		begin
-			if(func_paging)begin
-				//Privilege error check
-				if(func_kernel)begin			//Kernell Mode
-					case(func_mmu_flags[5:4])
-						2'h1:
-							begin
-								if(func_rw)begin
-									func_mmu_flags_fault_check = 1'b1;
-								end
-								else begin
-									func_mmu_flags_fault_check = 1'b0;
-								end
-							end
-						2'h0,
-						2'h2,
-						2'h3:
-							begin
-								func_mmu_flags_fault_check = 1'b0;
-							end
-					endcase
-				end
-				else begin	//User Mode
-					case(func_mmu_flags[5:4])
-						2'h0: func_mmu_flags_fault_check = 1'b1;
-						2'h1,
-						2'h2:
-							begin
-								if(func_rw)begin
-									func_mmu_flags_fault_check = 1'b1;
-								end
-								else begin
-									func_mmu_flags_fault_check = 1'b0;
-								end
-							end
-						2'h3: func_mmu_flags_fault_check = 1'b0;
-					endcase
-				end
-			end
-			else begin
-				func_mmu_flags_fault_check = 1'h0;
-			end
+	/****************************************
+	For PC
+	****************************************/
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_pc <= 32'h0;
 		end
-	endfunction
+		else if(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+			b_pc <= 32'h0;
+		end
+		else begin
+			case(b_state)
+				L_PARAM_STT_NORMAL:
+					begin
+						if(iPREVIOUS_VALID && !lock_condition)begin
+							b_pc <= iPREVIOUS_PC;
+						end
+					end
+				default:
+					begin
+						b_pc <= b_pc;
+					end
+			endcase
+		end
+	end
 
-
-	/*****************************************************
-	Debug Module
-	*****************************************************/
-	localparam L_PARAM_DEBUG_IDLE = 2'h0;
-	localparam L_PARAM_DEBUG_START_REQ = 2'h1;
-	localparam L_PARAM_DEBUG_STOP_REQ = 2'h2;
-
-	//Debug Module Enable
-	`ifdef MIST1032ISA_STANDARD_DEBUGGER
-		always@(posedge iCLOCK or negedge inRESET)begin
-			if(!inRESET)begin
-				b_debug_state <= L_PARAM_DEBUG_IDLE;
-				b_debug_stop <= 1'b0;
-				b_debug_cmd_ack <= 1'b0;
-			end
-			else if(iRESET_SYNC)begin
-				b_debug_state <= L_PARAM_DEBUG_IDLE;
-				b_debug_stop <= 1'b0;
-				b_debug_cmd_ack <= 1'b0;
-			end
-			else begin
-				case(b_debug_state)
-					L_PARAM_DEBUG_IDLE:
-						begin
-							b_debug_cmd_ack <= 1'b0;
-							if(iDEBUG_CTRL_REQ && iDEBUG_CTRL_STOP)begin
-								b_debug_state <= L_PARAM_DEBUG_START_REQ;
+	/****************************************
+	Result Data
+	****************************************/
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_r_data <= 32'h0;
+		end
+		else if(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+			b_r_data <= 32'h0;
+		end
+		else begin
+			case(b_state)
+				L_PARAM_STT_NORMAL:
+					begin
+						if(iPREVIOUS_VALID && !lock_condition)begin
+							//SPR Read Store
+							if(iPREVIOUS_EX_SYS_LDST)begin
+								b_r_data <= ldst_spr;
 							end
-							else if(iDEBUG_CTRL_REQ && iDEBUG_CTRL_START)begin
-								b_debug_state <= L_PARAM_DEBUG_STOP_REQ;
+							//System Register
+							else if(iPREVIOUS_EX_SYS_REG)begin
+								b_r_data <= sys_reg_data;
+							end
+							//Logic
+							else if(iPREVIOUS_EX_LOGIC)begin
+								b_r_data <= logic_data;
+							end
+							//SHIFT
+							else if(iPREVIOUS_EX_SHIFT)begin
+								b_r_data <= shift_data;
+							end
+							//ADDER
+							else if(iPREVIOUS_EX_ADDER)begin
+								b_r_data <= adder_data;
+							end
+							//MUL
+							else if(iPREVIOUS_EX_MUL)begin
+								b_r_data <= mul_data;
+							end
+							//Error
+							else begin
+								b_r_data <= 32'h0;
 							end
 						end
-					L_PARAM_DEBUG_START_REQ:
-						begin
-							b_debug_stop <= 1'b0;
-							b_debug_cmd_ack <= 1'b1;
-							b_debug_state <= L_PARAM_DEBUG_IDLE;
+					end
+				L_PARAM_STT_DIV_WAIT:
+					begin
+						if(div_out_valid)begin
+							b_r_data <= div_out_data;
 						end
-					L_PARAM_DEBUG_STOP_REQ:
-						begin
-							if(!lock_condition)begin
-								b_debug_stop <= 1'b1;
-								b_debug_cmd_ack <= 1'b1;
-								b_debug_state <= L_PARAM_DEBUG_IDLE;
-							end
+						else begin
+							b_r_data <= 32'h0;
 						end
-				endcase
-			end
+					end
+				L_PARAM_STT_LOAD:
+					begin
+						if(iDATAIO_REQ)begin
+							b_r_data <= load_data;
+						end
+					end
+				default:
+					begin
+						b_r_data <= 32'h0;
+					end
+			endcase
 		end
-	`else
-		always@(posedge iCLOCK or negedge inRESET)begin
-			if(!inRESET)begin
-				b_debug_state <= L_PARAM_DEBUG_IDLE;
-				b_debug_stop <= 1'b0;
-				b_debug_cmd_ack <= 1'b0;
-			end
-			else if(iRESET_SYNC)begin
-				b_debug_state <= L_PARAM_DEBUG_IDLE;
-				b_debug_stop <= 1'b0;
-				b_debug_cmd_ack <= 1'b0;
-			end
-			else begin
-				b_debug_state <= b_debug_state;
-				b_debug_stop <= b_debug_stop;
-				b_debug_cmd_ack <= b_debug_cmd_ack;
-			end
-		end
-	`endif
+	end
 
-	//Debug Module Enable
-	`ifdef MIST1032ISA_STANDARD_DEBUGGER
-		assign oDEBUG_CTRL_ACK = b_debug_cmd_ack;
-		assign oDEBUG_REG_OUT_FLAGR = {27'h0, sysreg_flags_register};
-	`else
-	//Disable
-		assign oDEBUG_CTRL_ACK = 32'h0;
-		assign oDEBUG_REG_OUT_FLAGR = 32'h0;
-	`endif
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_r_spr <= 32'h0;
+		end
+		else if(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+			b_r_spr <= 32'h0;
+		end
+		else begin
+			case(b_state)
+				L_PARAM_STT_NORMAL:
+					begin
+						if(iPREVIOUS_EX_LDST || iPREVIOUS_EX_SYS_LDST)begin
+							b_r_spr <= ldst_spr;
+						end
+					end
+				default:
+					begin
+						b_r_spr <= b_r_spr;
+					end
+			endcase
+		end
+	end
+
+	/****************************************
+	Execute Category
+	****************************************/
+	reg b_ex_category_ldst;
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_ex_category_ldst <= 1'b0;
+		end
+		else if(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+			b_ex_category_ldst <= 1'b0;
+		end
+		else begin
+			if(b_state == L_PARAM_STT_NORMAL && iPREVIOUS_VALID && !lock_condition)begin
+				b_ex_category_ldst <= iPREVIOUS_EX_LDST;
+			end
+		end
+	end
 
 
 	/****************************************
-	AFE
+	Pass Line
 	****************************************/
-	`ifdef MIST32_AFE_ENA
-		//AFE - Load / Store
-		wire  [31:0] afe_ldst_data_result;
-		//Load Store
-		execute_afe_load_store AFE_LDST(
-			//AFE-Conrtol
-			.iAFE_CODE(b_afe),
-			//Data-In/Out
-			.iDATA(b_r_data),
-			.oDATA(afe_ldst_data_result)
-		);
-
-		//AFE - Output Select
-		function [31:0] func_afe_select;
-			input func_ldst;
-			input [31:0] func_ldst_data;
-			input [31:0] func_non_afe_data;
-			begin
-				if(func_ldst)begin
-					func_afe_select = func_ldst_data;
-				end
-				else begin
-					func_afe_select = func_non_afe_data;
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_writeback <= 1'b0;
+			b_destination_sysreg  <= 1'b0;
+			b_destination <= 5'h0;
+			b_afe <= 4'h0;
+			b_spr_writeback <= 1'b0;
+		end
+		else if(iEVENT_HOLD || iRESET_SYNC || iFREE_REFRESH || iFREE_REGISTER_LOCK)begin
+			b_writeback <= 1'b0;
+			b_destination_sysreg  <= 1'b0;
+			b_destination <= 5'h0;
+			b_afe <= 4'h0;
+			b_spr_writeback <= 1'b0;
+		end
+		else if(b_state == L_PARAM_STT_NORMAL)begin
+			if(iPREVIOUS_VALID && !lock_condition)begin
+				if(iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV || iPREVIOUS_EX_LDST || iPREVIOUS_EX_SYS_LDST || iPREVIOUS_EX_SYS_REG || iPREVIOUS_EX_LOGIC || iPREVIOUS_EX_SHIFT || iPREVIOUS_EX_ADDER || iPREVIOUS_EX_MUL)begin
+					b_writeback <= iPREVIOUS_WRITEBACK && (!except_inst_valid);
+					b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
+					b_destination <= iPREVIOUS_DESTINATION;
+					b_afe <= iPREVIOUS_CC_AFE;
+					b_spr_writeback <= (iPREVIOUS_EX_LDST || iPREVIOUS_EX_SYS_LDST) && ldst_spr_valid;
 				end
 			end
-		endfunction
+		end
+	end
 
-		assign result_data_with_afe = func_afe_select(b_ex_kind_ldst, afe_ldst_data_result, b_r_data);
 
-	`else
-		assign result_data_with_afe = b_r_data;
-	`endif
+	/****************************************
+	Valid
+	****************************************/
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_valid <= 1'b0;
+		end
+		else if(iEVENT_HOLD || iFREE_REFRESH || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+			b_valid <= 1'b0;
+		end
+		else begin
+			case(b_state)
+				L_PARAM_STT_NORMAL:
+					begin
+						//Fault Check
+						if(iPREVIOUS_VALID && !lock_condition && except_inst_valid)begin
+							b_valid <= 1'b1;
+						end
+						else if(iPREVIOUS_VALID && !lock_condition && (iPREVIOUS_EX_SDIV || iPREVIOUS_EX_UDIV || (iPREVIOUS_EX_LDST && !ldst_pipe_rw)))begin
+							b_valid <= 1'b0;
+						end
+						else if(iPREVIOUS_VALID && !lock_condition && iPREVIOUS_EX_BRANCH)begin
+							//Halt
+							if(branch_halt_valid)begin
+								b_valid <= 1'b1;
+							end
+							//Interrupt Return Branch
+							else if(branch_ib_valid)begin
+								b_valid <= 1'b1;
+							end
+							//Branch(with Branch predict) - True
+							else if(branch_valid_with_predict)begin
+								b_valid <= 1'b1;
+								//(20150527)b_valid <= 1'b1;							//-//,===
+							end
+							else begin
+								b_valid <= 1'b0;
+							end
+						end
+						else begin
+							b_valid <= iPREVIOUS_VALID && !lock_condition;
+						end
+					end
+				L_PARAM_STT_DIV_WAIT:
+					begin
+						if(div_out_valid)begin
+							b_valid <= 1'b1;
+						end
+					end
+				L_PARAM_STT_LOAD:
+					begin
+						if(iDATAIO_REQ)begin
+							//not error
+							if(!except_ldst_valid)begin
+								b_valid <= 1'b1;
+							end
+						end
+					end
+				L_PARAM_STT_STORE:
+					begin
+						if(iDATAIO_REQ)begin
+							//not error
+							if(!except_ldst_valid)begin
+								b_valid <= 1'b1;
+							end
+						end
+					end
+				default:
+					begin
+						b_valid <= 1'b0;
+					end
+			endcase
+		end
+	end
 
+
+	/*********************************************************************************************************
+	AFE
+	*********************************************************************************************************/
+	/****************************************
+	AFE - for Load Store
+	****************************************/
+	wire [31:0] afe_ldst_data_result;
+	execute_afe_load_store AFE_LDST(
+		//AFE-Conrtol
+		.iAFE_CODE(b_afe),
+		//Data-In/Out
+		.iDATA(b_r_data),
+		.oDATA(afe_ldst_data_result)
+	);
+
+
+	/****************************************
+	AFE - Select
+	****************************************/
+	execute_afe AFE_SELECT(
+		.iAFE_LDST(b_ex_category_ldst),
+		.iAFE_LDST_DATA(afe_ldst_data_result),
+		.iRAW_DATA(b_r_data),		
+		.oDATA(result_data_with_afe)
+	);
+
+
+	/*********************************************************************************************************
+	Assign
+	*********************************************************************************************************/
+	//Fault
+	assign oFAULT_VALID = exception_valid;
+	assign oFAULT_NUM = exception_num;
+	assign oFAULT_FI0R = exception_fi0r;
+	assign oFAULT_FI1R = exception_fi1r;
+
+	//Branch Predict
+	assign oBPREDICT_PREDICT = jump_stage_predict_ena;
+	assign oBPREDICT_HIT = jump_stage_predict_hit || (!jump_stage_jump_valid && !jump_stage_predict_ena && b_valid);
+	assign oBPREDICT_JUMP = jump_stage_jump_valid;
+	assign oBPREDICT_JUMP_ADDR = jump_stage_jump_addr;
+	assign oBPREDICT_INST_ADDR = b_pc - 32'h00000004;
+
+	//Branch - Next
+	assign oNEXT_PC = b_pc;
+	assign oNEXT_BRANCH = jump_stage_jump_valid;
+	assign oNEXT_BRANCH_PC = jump_stage_jump_addr;
+
+	//Branch - Controller
+	assign oBRANCH_ADDR = jump_stage_jump_addr;
+	assign oJUMP_VALID = jump_stage_jump_valid;
+	assign oINTR_VALID = jump_stage_branch_ib_valid;
+	assign oIDTSET_VALID = jump_stage_sysreg_idt_valid;
+	assign oPDTSET_VALID = jump_stage_sysreg_pdt_valid;
+	assign oPSRSET_VALID = jump_stage_sysreg_psr_valid;
 
 	//Writeback
+	/*
 	assign oNEXT_VALID = b_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
 	assign oNEXT_DATA = result_data_with_afe;
 	assign oNEXT_DESTINATION = b_destination;
 	assign oNEXT_DESTINATION_SYSREG = b_destination_sysreg;
-	assign oNEXT_WRITEBACK = b_writeback;
-	assign oNEXT_SPR_WRITEBACK = b_spr_writeback;
+	assign oNEXT_WRITEBACK = b_writeback && !except_ldst_valid;
+	assign oNEXT_SPR_WRITEBACK = b_spr_writeback && !except_ldst_valid;
+	assign oNEXT_SPR = b_r_spr;
+	*/
+	assign oNEXT_VALID = b_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
+	assign oNEXT_DATA = result_data_with_afe;
+	assign oNEXT_DESTINATION = b_destination;
+	assign oNEXT_DESTINATION_SYSREG = b_destination_sysreg;
+	assign oNEXT_WRITEBACK = b_writeback && !except_ldst_valid && (b_state != L_PARAM_STT_BRANCH);
+	assign oNEXT_SPR_WRITEBACK = b_spr_writeback && !except_ldst_valid && (b_state != L_PARAM_STT_BRANCH);
 	assign oNEXT_SPR = b_r_spr;
 
-	//Load Store Pipe
-	assign oDATAIO_REQ = (b_state == L_PARAM_STT_LOAD || b_state == L_PARAM_STT_STORE)? b_ldst_pipe_valid && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK && !io_lock_condition : 1'b0;
-	assign oDATAIO_ORDER = b_ldst_pipe_order;
-	assign oDATAIO_MASK = b_ldst_pipe_mask;
-	assign oDATAIO_RW = (b_state == L_PARAM_STT_STORE)? 1'b1 : 1'b0;
-	assign oDATAIO_ASID = b_sysreg_tidr[31:18];
-	assign oDATAIO_MMUMOD = b_sysreg_psr[1:0];
-	assign oDATAIO_MMUPS = b_sysreg_psr[9:7];
-	assign oDATAIO_PDT = b_sysreg_pdt;
-	assign oDATAIO_ADDR = b_ldst_pipe_addr;
-	assign oDATAIO_DATA = b_ldst_pipe_data;
 
-	//Exception
-	assign oBRANCH_ADDR = b_branch_addr;
-	assign oJUMP_VALID = b_jump;
-	assign oIDTSET_VALID = b_idts;
-	assign oPDTSET_VALID = b_pdts;
-	assign oPSRSET_VALID = b_psr;
-	assign oINTR_VALID = b_ib;
 
 	//System Register Writeback
 	assign oPDTR_WRITEBACK = b_destination_sysreg && b_writeback && (b_destination == `SYSREG_PDTR);
 
-	assign oEXCEPTION_LOCK = b_load_store || (b_state != L_PARAM_STT_NORMAL)? 1'b1 : 1'b0;
-	assign oEXCEPTION_LDST_LOCK = b_load_store;
+	//assign oEXCEPTION_LOCK = b_ex_category_ldst || (b_state != L_PARAM_STT_NORMAL)? 1'b1 : 1'b0;
+	
 
-	assign oNEXT_PC = b_pc;
-	assign oNEXT_BRANCH = b_jump || b_idts || b_ib;
-	assign oNEXT_BRANCH_PC = b_branch_addr;
+	assign oEXCEPTION_LOCK = (b_state == L_PARAM_STT_DIV_WAIT) ||  (b_state == L_PARAM_STT_LOAD) ||  (b_state == L_PARAM_STT_STORE) ||  (b_state == L_PARAM_STT_RELOAD); //new 20150526
+	
 
-	assign oFAULT_VALID = b_exception_valid;
-	assign oFAULT_NUM = b_exception_num;
-	assign oFAULT_FI0R = b_exception_fi0r;
-	assign oFAULT_FI1R = b_exception_fi1r;
+
+/*
+	localparam L_PARAM_STT_NORMAL =  3'h0;
+	localparam L_PARAM_STT_DIV_WAIT = 3'h1;
+	localparam L_PARAM_STT_LOAD = 3'h2;
+	localparam L_PARAM_STT_STORE = 3'h3;
+	localparam L_PARAM_STT_BRANCH = 3'h4;
+	localparam L_PARAM_STT_RELOAD = 3'h5;
+	localparam L_PARAM_STT_EXCEPTION = 3'h6;
+	localparam L_PARAM_STT_HALT = 3'h7;
+*/
+
+
+
+
+
+
+	assign oEXCEPTION_LDST_LOCK = b_ex_category_ldst;
 
 	assign oSYSREG_FLAGR = {27'h0, sysreg_flags_register};
 
-	wire test_predict = b_branch_predict && b_valid;
-	wire test_hit = b_branch_predict_hit && b_valid;
-	wire test_miss_hit = b_jump && b_valid;
-
-
-
-	assign oBPREDICT_PREDICT = b_branch_predict && b_valid;
-	assign oBPREDICT_HIT = (b_branch_predict_hit && b_valid/* && b_branch_predict && (b_branch_addr == b_branch_predict_addr)*/) || (!b_jump && !b_branch_predict && b_valid);
-	assign oBPREDICT_JUMP = b_jump;
-	assign oBPREDICT_JUMP_ADDR = b_branch_addr;
-	assign oBPREDICT_INST_ADDR = b_pc - 32'h00000004;
-
-
+	/*********************************************************************************************************
+	Assertion
+	*********************************************************************************************************/
 	/*************************************************
 	Assertion - SVA
 	*************************************************/
 	//synthesis translate_off
 	`ifdef MIST1032ISA_SVA_ASSERTION
-
 		property PRO_DATAPIPE_REQ_ACK;
 			@(posedge iCLOCK) disable iff (!inRESET || iFREE_REFRESH || iRESET_SYNC) (oDATAIO_REQ |-> ##[1:50] iDATAIO_REQ);
 		endproperty
@@ -1544,36 +1403,7 @@ module execute(
 
 	wire [31:0] for_assertion_store_real_data = func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA);
 
-	//always@(posedge iCLOCK)begin
-
-		/*
-		//Load
-		if(inRESET && !iRESET_SYNC)begin
-			if(iDATAIO_REQ && !oDATAIO_RW && b_state == L_PARAM_STT_LOAD)begin
-				if(time_ena == 1)begin
-					$display("%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, load_data);
-				end
-				else begin
-					$display("[L], %x, %x, %x, %x", b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, load_data);
-				end
-				//$fdisplay(F_HANDLE, "%d, [L], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr,  b_ldst_pipe_addr, func_load_fairing(b_ldst_pipe_mask, b_load_pipe_shift, iDATAIO_DATA));
-			end
-		end
-		//Store
-		if(inRESET && !iRESET_SYNC)begin
-			if(oDATAIO_REQ && oDATAIO_RW)begin
-				if(time_ena == 1)begin
-					$display("%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
-				end
-				else begin
-					$display("[S], %x, %x, %x, %x", b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
-				end
-				//$fdisplay(F_HANDLE, "%d, [S], %x, %x, %x, %x", $time, b_pc-32'h4, b_r_spr, b_ldst_pipe_addr, func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA));
-			end
-		end
-		*/
-
-
+	//synthesis translate_on
 
 
 
@@ -1585,9 +1415,6 @@ module execute(
 */
 
 
-	//end
-	//`endif
-	//synthesis translate_on
 endmodule
 
 

@@ -9,6 +9,7 @@ module decoder(
 		//System
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		//Free
 		input wire iFREE_DEFAULT,	
 		//Previous
@@ -229,7 +230,7 @@ module decoder(
 			b_error <= 1'b0;
 			b_pc <= 32'h0;
 		end
-		else if(iFREE_DEFAULT)begin
+		else if(iRESET_SYNC || iFREE_DEFAULT)begin
 			b_valid <= 1'b0;	
 			b_fault_pagefault <= 1'b0;
 			b_fault_page_privilege_error <= 1'b0;

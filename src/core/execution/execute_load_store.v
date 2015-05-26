@@ -1,412 +1,270 @@
-/****************************************
-Load Store
-for MIST32 Processor
 
-Takahiro Ito @cpu_labs
-****************************************/
 
 `default_nettype none
-`include "core.h"
-
 
 module execute_load_store(
-		//Prev
-		input wire [4:0] iCMD,
-		input wire iLOADSTORE_MODE,		//0:SYS_LDST | 1:LDST
-		input wire [31:0] iSOURCE0,
-		input wire [31:0] iSOURCE1,
-		input wire iADV_ACTIVE,
-		input wire [31:0] iADV_DATA,
-		input wire [31:0] iSPR,
-		input wire [31:0] iPSR,
-		input wire [31:0] iPDTR,
-		input wire [31:0] iKPDTR,
-		input wire [31:0] iPC,
-		//Output - Writeback
-		output wire oOUT_SPR_VALID,
-		output wire [31:0] oOUT_SPR,
-		output wire [31:0] oOUT_DATA,
+		input wire iCLOCK,
+		input wire inRESET,
+		input wire iRESET_SYNC,
+		//Event CTRL
+		input wire iEVENT_HOLD,
+		input wire iEVENT_START,
+		input wire iEVENT_IRQ_FRONT2BACK,
+		input wire iEVENT_IRQ_BACK2FRONT,
+		input wire iEVENT_END,
+		//State
+		input wire iSTATE_NORMAL,
+		input wire iSTATE_LOAD,
+		input wire iSTATE_STORE,
+		/*************************************
+		Previous
+		*************************************/
+		//Previous - PREDICT
+		input wire iPREV_VALID,
+		input wire iPREV_EX_LDST,
+		//System Register
+		input wire [31:0] iPREV_PSR,
+		input wire [31:0] iPREV_TIDR,
+		//Writeback
+		input wire iPREV_SPR_VALID,
+		input wire [31:0] iPREV_SPR,
 		//Output - LDST Pipe
+		input wire iPREV_LDST_RW,
+		input wire [31:0] iPREV_LDST_PDT,
+		input wire [31:0] iPREV_LDST_ADDR,
+		input wire [31:0] iPREV_LDST_DATA,
+		input wire [1:0] iPREV_LDST_ORDER,
+		input wire [3:0] iPREV_LDST_MASK,
+		input wire [1:0] iPREV_LOAD_SHIFT,
+		/*************************************
+		MA
+		*************************************/
+		//Output - LDST Pipe
+		output wire oLDST_REQ,
+		input wire iLDST_BUSY,
 		output wire oLDST_RW,
 		output wire [31:0] oLDST_PDT,
 		output wire [31:0] oLDST_ADDR,
 		output wire [31:0] oLDST_DATA,
 		output wire [1:0] oLDST_ORDER,
-		output wire [1:0] oLOAD_SHIFT,
-		output wire [3:0] oLOAD_MASK		//2bit -> 4bit
+		output wire [3:0] oLDST_MASK,
+		output wire [13:0] oLDST_ASID,
+		output wire [1:0] oLDST_MMUMOD,
+		output wire [2:0] oLDST_MMUPS,
+		input wire iLDST_VALID,
+		/*************************************
+		Next
+		*************************************/
+		//Next
+		input wire iNEXT_BUSY,
+		output wire oNEXT_VALID,
+		output wire oNEXT_SPR_VALID,
+		output wire [31:0] oNEXT_SPR,
+		output wire [1:0] oNEXT_SHIFT,
+		output wire [3:0] oNEXT_MASK
 	);
 
-	function [3:0] func_bytemask;
-		input [1:0] func_order;
-		input [1:0] func_address;
-		begin
-			case(func_order)
-				2'h0 :
+
+
+
+	/*************************************
+	State
+	*************************************/
+	reg [1:0] b_state;
+
+	localparam PL_STT_IDLE = 2'h0;
+	localparam PL_STT_REQ = 2'h1;
+	localparam PL_STT_WAIT = 2'h2;
+	
+	wire condition_start_load_store = iPREV_VALID && iPREV_EX_LDST && iSTATE_NORMAL && !iNEXT_BUSY;
+	wire condition_req_load_store = ((b_state == PL_STT_IDLE) && condition_start_load_store) || (b_state == PL_STT_REQ);
+
+	/*
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_state <= PL_STT_IDLE;
+		end
+		else if(iRESET_SYNC || iEVENT_HOLD || iEVENT_END)begin
+			b_state <= PL_STT_IDLE;
+		end
+		else begin
+			case(b_state)
+				PL_STT_IDLE:
 					begin
-						if(func_address[1:0] == 2'h0)begin
-							func_bytemask = 4'b0001;
-						end
-						else if(func_address[1:0] == 2'h1)begin
-							func_bytemask = 4'b0010;
-						end
-						else if(func_address[1:0] == 2'h2)begin
-							func_bytemask = 4'b0100;
-						end
-						else begin
-							func_bytemask = 4'b1000;
+						if(condition_start_load_store)begin
+							if(!iLDST_BUSY)begin
+								b_state <= PL_STT_WAIT;
+							end
+							else begin
+								b_state <= PL_STT_REQ;
+							end
 						end
 					end
-				2'h1 :
+				PL_STT_REQ:
 					begin
-						if(func_address[1:0] == 2'h0)begin
-							func_bytemask = 4'b0011;
-						end
-						else if(func_address[1:0] == 2'h2)begin
-							func_bytemask = 4'b1100;
-						end
-						else begin
-							func_bytemask = 4'b0000;
+						if(!iLDST_BUSY)begin
+							b_state <= PL_STT_WAIT;
 						end
 					end
-				2'h2 :
+				PL_STT_WAIT:
 					begin
-						func_bytemask = 4'b1111;
+						if(iLDST_VALID)begin
+							b_state <= PL_STT_IDLE;
+						end
 					end
 				default:
 					begin
-						func_bytemask = 4'b0000;
+						b_state <= PL_STT_IDLE;
 					end
 			endcase
-		end
-	endfunction
-
-	function [31:0] func_store_data8;
-		input [1:0] func_shift;
-		input [31:0] func_data;
-		begin
-			case(func_shift)
-				2'h0 : func_store_data8 = {24'h0, func_data[7:0]};
-				2'h1 : func_store_data8 = {16'h0, func_data[7:0], 8'h0};
-				2'h2 : func_store_data8 = {8'h0, func_data[7:0], 16'h0};
-				2'h3 : func_store_data8 = {func_data[7:0], 24'h0};
-			endcase
-		end
-	endfunction
-
-
-	function [31:0] func_store_data16;
-		input [1:0] func_shift;
-		input [31:0] func_data;
-		begin
-			case(func_shift)
-				2'h0 : func_store_data16 = {16'h0, func_data[15:0]};
-				2'h2 : func_store_data16 = {func_data[15:0], 16'h0};
-				default : func_store_data16 = 32'hxxxxxxxx;
-			endcase
-		end
-	endfunction
-
-
-
-	reg [31:0] ldst_pdt;
-	always @* begin
-		if(iLOADSTORE_MODE)begin
-			if(
-				iCMD == `EXE_LDSW_LD8U ||
-				iCMD == `EXE_LDSW_LD16U ||
-				iCMD == `EXE_LDSW_LD32U ||
-				iCMD == `EXE_LDSW_ST8U ||
-				iCMD == `EXE_LDSW_ST16U ||
-				iCMD == `EXE_LDSW_ST32U
-			)begin
-				ldst_pdt = iPDTR;
-			end
-			else begin
-				ldst_pdt = (iPSR[6:5] == 2'h0)? iKPDTR : iPDTR;
-			end
-		end
-		else begin
-			ldst_pdt = (iPSR[6:5] == 2'h0)? iKPDTR : iPDTR;
 		end
 	end
+	*/
 
-
-	reg spr_valid;
-	reg [31:0] spr;
-	reg [31:0] data;
-	reg [31:0] ldst_addr;
-	reg [31:0] ldst_data;
-	reg ldst_rw;
-	reg [1:0] ldst_order;
-	reg [3:0] ldst_load_mask;
-	reg [1:0] ldst_load_shift;
-	always @* begin
-		if(iLOADSTORE_MODE)begin
-			case(iCMD)
-				`EXE_LDSW_LD8:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1;
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h0;
-						ldst_load_mask = func_bytemask(2'h0, iSOURCE1[1:0]);
-						ldst_load_shift = iSOURCE1[1:0];
-					end
-				`EXE_LDSW_LD16:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1;
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h1;
-						ldst_load_mask = func_bytemask(2'h1, iSOURCE1[1:0]);
-						ldst_load_shift = (iSOURCE1[1:0] == 2'h0)? 2'h0 : 2'h2;
-					end
-				`EXE_LDSW_LD32:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1;
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h2;
-						ldst_load_mask = func_bytemask(2'h2, iSOURCE1[1:0]);
-						ldst_load_shift = 2'h0;
-					end
-				`EXE_LDSW_ST8:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1;
-						ldst_data = func_store_data8(iSOURCE1[1:0], iSOURCE0);
-						ldst_rw = 1'b1;
-						ldst_order = 2'h0;
-						ldst_load_mask = func_bytemask(2'h0, iSOURCE1[1:0]);
-						ldst_load_shift = iSOURCE1[1:0];
-					end
-				`EXE_LDSW_ST16:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1;
-						ldst_data = func_store_data16((iSOURCE1[1:0] == 2'h0)? 2'h0 : 2'h2, iSOURCE0);
-						ldst_rw = 1'b1;
-						ldst_order = 2'h1;
-						ldst_load_mask = func_bytemask(2'h1, iSOURCE1[1:0]);
-						ldst_load_shift = (iSOURCE1[1:0] == 2'h0)? 2'h0 : 2'h2;
-					end
-				`EXE_LDSW_ST32:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1;
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h2;
-						ldst_load_mask = func_bytemask(2'h2, iSOURCE1[1:0]);
-						ldst_load_shift = 2'h0;
-					end
-				`EXE_LDSW_PUSH:
-					begin
-						spr_valid = 1'b1;
-						spr = iSPR - 32'h4;
-						data = 32'h0;
-						ldst_addr = iSPR - 32'h4;
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h2;
-						ldst_load_mask = 4'hf;
-						ldst_load_shift = 2'h0;
-					end
-				`EXE_LDSW_PPUSH:
-					begin
-						spr_valid = 1'b1;
-						spr = iSPR - 32'h4;
-						data = 32'h0;
-						ldst_addr = iSPR - 32'h4;
-						ldst_data = iPC;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h2;
-						ldst_load_mask = 4'hf;
-						ldst_load_shift = 2'h0;
-					end
-				`EXE_LDSW_POP:
-					begin
-						spr_valid = 1'b1;
-						spr = iSPR + 32'h4;
-						data = 32'h0;
-						ldst_addr = iSPR;
-						ldst_data = 32'h0;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h2;
-						ldst_load_mask = 4'hf;
-						ldst_load_shift = 2'h0;
-					end
-				`EXE_LDSW_LDD8:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1 + iADV_DATA;
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h0;
-						ldst_load_mask = func_bytemask(2'h0, (iSOURCE1[1:0] + iADV_DATA[1:0]));
-						ldst_load_shift = iSOURCE1[1:0] + iADV_DATA[1:0];
-					end
-				`EXE_LDSW_LDD16:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1 + {iADV_DATA, 1'b0};
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h1;
-						ldst_load_mask = func_bytemask(2'h1, (iSOURCE1[1:0] + {iADV_DATA[0], 1'b0}));
-						ldst_load_shift = (iSOURCE1[1:0] + {iADV_DATA[0], 1'b0} == 2'h0)? 2'h0 : 2'h2;//2'h3 - iSOURCE1[1:0];
-					end
-				`EXE_LDSW_LDD32:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1 + {iADV_DATA, 2'b00};
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h2;
-						ldst_load_mask = func_bytemask(2'h2, iSOURCE1[1:0]);
-						ldst_load_shift = 2'h0;
-					end
-				`EXE_LDSW_STD8:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1 + iADV_DATA;
-						ldst_data = func_store_data8(iSOURCE1[1:0] + iADV_DATA[1:0], iSOURCE0);//iSOURCE0;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h0;
-						ldst_load_mask = func_bytemask(2'h0, (iSOURCE1[1:0] + iADV_DATA[1:0]));
-						ldst_load_shift = iSOURCE1[1:0] + iADV_DATA[1:0];
-					end
-				`EXE_LDSW_STD16:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1 + {iADV_DATA, 1'b0};
-						ldst_data = func_store_data16((iSOURCE1[1:0] + {iADV_DATA[0], 1'b0} == 2'h0)? 2'h0 : 2'h2, iSOURCE0);//iSOURCE0;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h1;
-						ldst_load_mask = func_bytemask(2'h1, (iSOURCE1[1:0] + {iADV_DATA[0], 1'b0}));
-						ldst_load_shift = (iSOURCE1[1:0] + {iADV_DATA[0], 1'b0} == 2'h0)? 2'h0 : 2'h2;
-					end
-				`EXE_LDSW_STD32:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1 + {iADV_DATA, 2'b00};
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h2;
-						ldst_load_mask = func_bytemask(2'h2, iSOURCE1[1:0]);
-						ldst_load_shift = 2'h0;
-					end
-				default:
-					begin
-						spr_valid = 1'b0;
-						spr = iSPR;
-						data = 32'h0;
-						ldst_addr = iSOURCE1;
-						ldst_data = 32'h0;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h0;
-						ldst_load_mask = 4'h0;
-						ldst_load_shift = 2'h0;
-					end
-			endcase
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_state <= PL_STT_IDLE;
 		end
-		//Sys Load / Store
+		else if(iRESET_SYNC || iEVENT_HOLD || iEVENT_END)begin
+			b_state <= PL_STT_IDLE;
+		end
 		else begin
-			case(iCMD)
-				`EXE_SYS_LDST_READ_SPR:
+			case(b_state)
+				PL_STT_IDLE:
 					begin
-						spr_valid = 1'b1;
-						spr = iSPR;
-						data = iSPR;
-						ldst_addr = iSOURCE1;
-						ldst_data = iSPR;
-						ldst_rw = 1'b0;
-						ldst_order = 2'h2;
-						ldst_load_mask = 4'h0;
-						ldst_load_shift = 2'h0;
+						if(condition_start_load_store)begin
+							b_state <= PL_STT_REQ;
+						end
 					end
-				`EXE_SYS_LDST_WRITE_SPR:
+				PL_STT_REQ:
 					begin
-						spr_valid = 1'b1;
-						spr = iSOURCE0;
-						data = 32'h0;
-						ldst_addr = iSOURCE0;
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h2;
-						ldst_load_mask = 4'h0;
-						ldst_load_shift = 2'h0;
+						if(!iLDST_BUSY)begin
+							b_state <= PL_STT_WAIT;
+						end
 					end
-				`EXE_SYS_LDST_ADD_SPR:
+				PL_STT_WAIT:
 					begin
-						spr_valid = 1'b1;
-						spr = iSOURCE0 + iSOURCE1;
-						data = 32'h0;
-						ldst_addr = iSOURCE0;
-						ldst_data = iSOURCE0;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h2;
-						ldst_load_mask = 4'h0;
-						ldst_load_shift = 2'h0;
+						if(iLDST_VALID)begin
+							b_state <= PL_STT_IDLE;
+						end
 					end
 				default:
 					begin
-						spr_valid = 1'b1;
-						spr = iSOURCE0 + iSOURCE1;
-						data = 32'h0;
-						ldst_addr = iSOURCE0;
-						ldst_data = iSOURCE0 + iSOURCE1;
-						ldst_rw = 1'b1;
-						ldst_order = 2'h2;
-						ldst_load_mask = 4'h0;
-						ldst_load_shift = 2'h0;
+						b_state <= PL_STT_IDLE;
 					end
 			endcase
 		end
 	end
 
+	/*************************************
+	Next
+	*************************************/
+	reg b_spr_valid;
+	reg [31:0] b_spr;
+	reg [1:0] b_shift;
+	reg [3:0] b_mask;
 
-	assign oOUT_SPR_VALID = spr_valid;
-	assign oOUT_SPR = spr;
-	assign oOUT_DATA = data;
-	//Output - LDST Pipe
-	assign oLDST_RW = ldst_rw;
-	assign oLDST_PDT = ldst_pdt;
-	assign oLDST_ADDR = ldst_addr;
-	assign oLDST_DATA = ldst_data;
-	assign oLDST_ORDER = ldst_order;
-	assign oLOAD_SHIFT = ldst_load_shift;
-	assign oLOAD_MASK = ldst_load_mask;
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_spr_valid <= 1'b0;
+			b_spr <= 32'h0;
+			b_shift <= 2'h0;
+			b_mask <= 4'h0;
+		end
+		else if(iRESET_SYNC || iEVENT_HOLD || iEVENT_END)begin
+			b_spr_valid <= 1'b0;
+			b_spr <= 32'h0;
+			b_shift <= 2'h0;
+			b_mask <= 4'h0;
+		end
+		else begin
+			if(condition_start_load_store)begin	
+				b_spr_valid <= iPREV_SPR_VALID;
+				b_spr <= iPREV_SPR;
+				b_shift <= iPREV_LOAD_SHIFT;
+				b_mask <= iPREV_LDST_MASK;
+			end
+		end
+	end
+
+	assign oNEXT_VALID = (b_state == PL_STT_WAIT) && iLDST_VALID;
+
+	assign oNEXT_SPR_VALID = b_spr_valid;
+	assign oNEXT_SPR = b_spr;
+	assign oNEXT_SHIFT = b_shift;
+	assign oNEXT_MASK = b_mask;
+
+	/*************************************
+	LDST
+	*************************************/
+	reg b_ldst_rw;
+	reg [31:0] b_ldst_pdt;
+	reg [31:0] b_ldst_addr;
+	reg [31:0] b_ldst_data;
+	reg [1:0] b_ldst_order;
+	reg [3:0] b_ldst_mask;
+	reg [13:0] b_ldst_asid;
+	reg [1:0] b_ldst_mmumod;
+	reg [2:0] b_ldst_mmups;
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_ldst_rw <= 1'b0;
+			b_ldst_pdt <= 32'h0;
+			b_ldst_addr <= 32'h0;
+			b_ldst_data <= 32'h0;
+			b_ldst_order <= 2'h0;
+			b_ldst_mask <= 4'h0;
+			b_ldst_asid <= 14'h0;
+			b_ldst_mmumod <= 2'h0;
+			b_ldst_mmups <= 3'h0;
+		end
+		else if(iRESET_SYNC || iEVENT_HOLD || iEVENT_END)begin
+			b_ldst_rw <= 1'b0;
+			b_ldst_pdt <= 32'h0;
+			b_ldst_addr <= 32'h0;
+			b_ldst_data <= 32'h0;
+			b_ldst_order <= 2'h0;
+			b_ldst_mask <= 4'h0;
+			b_ldst_asid <= 14'h0;
+			b_ldst_mmumod <= 2'h0;
+			b_ldst_mmups <= 3'h0;
+		end
+		else begin
+			if(iSTATE_NORMAL)begin	
+				if(!iNEXT_BUSY)begin
+					if(iPREV_VALID && iPREV_EX_LDST)begin
+						b_ldst_rw <= iPREV_LDST_RW;
+						b_ldst_pdt <= iPREV_LDST_PDT;
+						b_ldst_addr <= iPREV_LDST_ADDR;
+						b_ldst_data <= iPREV_LDST_DATA;
+						b_ldst_order <= iPREV_LDST_ORDER;
+						b_ldst_mask <= iPREV_LDST_MASK;
+						b_ldst_asid <= iPREV_TIDR[31:18];
+						b_ldst_mmumod <= iPREV_PSR[1:0];
+						b_ldst_mmups <= iPREV_PSR[9:7];
+					end
+				end
+			end
+		end
+	end
+
+	assign oLDST_REQ = (b_state == PL_STT_REQ) && !iLDST_BUSY;
+	assign oLDST_RW = b_ldst_rw;
+	assign oLDST_PDT = b_ldst_pdt;
+	assign oLDST_ADDR = b_ldst_addr;
+	assign oLDST_DATA = b_ldst_data;
+	assign oLDST_ORDER = b_ldst_order;
+	assign oLDST_MASK = b_ldst_mask;
+	assign oLDST_ASID = b_ldst_asid;
+	assign oLDST_MMUMOD = b_ldst_mmumod;
+	assign oLDST_MMUPS = b_ldst_mmups;
 
 
-endmodule
+endmodule // execute_jump
+
 
 `default_nettype wire
+
+
 

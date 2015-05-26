@@ -4,8 +4,9 @@ for MIST32 Processor
 
 Takahiro Ito @cpu_labs
 ****************************************/
-`include "core.h"
+
 `default_nettype none
+`include "core.h"
 
 module execute_branch(
 		input wire [31:0] iDATA_0,
@@ -52,10 +53,10 @@ module execute_branch(
 					begin
 						func_branch_addr = 32'h0;
 					end
-				`EXE_BRANCH_IDTS:
+				/*`EXE_BRANCH_IDTS:
 					begin
 						func_branch_addr = func_pc + 32'h0000004;
-					end
+					end*/
 				default:
 					begin
 						func_branch_addr = 32'h0;
@@ -65,10 +66,10 @@ module execute_branch(
 	endfunction
 	
 	
-	assign oJUMP_VALID = (iCMD != `EXE_BRANCH_INTB && iCMD != `EXE_BRANCH_IDTS)? func_ex_branch_check(iCC, iFLAG) : 1'b0;
-	assign oNOT_JUMP_VALID = (iCMD != `EXE_BRANCH_INTB && iCMD != `EXE_BRANCH_IDTS)? !func_ex_branch_check(iCC, iFLAG) : 1'b0;
+	assign oJUMP_VALID = (iCMD != `EXE_BRANCH_INTB/* && iCMD != `EXE_BRANCH_IDTS*/)? func_ex_branch_check(iCC, iFLAG) : 1'b0;
+	assign oNOT_JUMP_VALID = (iCMD != `EXE_BRANCH_INTB/* && iCMD != `EXE_BRANCH_IDTS*/)? !func_ex_branch_check(iCC, iFLAG) : 1'b0;
 	assign oIB_VALID = (iCMD == `EXE_BRANCH_INTB)? 1'b1 : 1'b0;
-	assign oIDTS_VALID = (iCMD == `EXE_BRANCH_IDTS)? 1'b1 : 1'b0;
+	assign oIDTS_VALID = 1'b0;//(iCMD == `EXE_BRANCH_IDTS)? 1'b1 : 1'b0;
 	assign oHALT_VALID = (iCMD == `EXE_BRANCH_HALT)? 1'b1 : 1'b0;
 	
 	function func_ex_branch_check;

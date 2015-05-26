@@ -15,6 +15,7 @@ module fetch(
 		//System
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		//System Register
 		input wire [31:0] iSYSREG_PSR,
 		input wire [31:0] iSYSREG_PDTR,
@@ -109,6 +110,7 @@ module fetch(
 	branch_predictor BRANCH_PREDICTOR(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(iRESET_SYNC),
 		.iFLUSH(1'b0),
 		//Flush
 		//.oFLUSH_PIPELINE(),
@@ -154,7 +156,7 @@ module fetch(
 				}
 			),				//Data-In
 			.rdreq(iPREVIOUS_INST_VALID),				//Read Data Request
-			.sclr(iEXCEPTION_EVENT || branch_predictor_flush),				//Synchthronous Reset
+			.sclr(iRESET_SYNC || iEXCEPTION_EVENT || branch_predictor_flush),				//Synchthronous Reset
 			.wrreq(!iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),				//Write Req
 			.almost_empty(),
 			.almost_full(),
@@ -175,7 +177,7 @@ module fetch(
 		mist1032isa_sync_fifo #(34, 8, 3) FETCH_REQ_ADDR_QUEUE(
 			.iCLOCK(iCLOCK),
 			.inRESET(inRESET),
-			.iREMOVE(iEXCEPTION_EVENT || branch_predictor_flush),
+			.iREMOVE(iRESET_SYNC || iEXCEPTION_EVENT || branch_predictor_flush),
 			.oCOUNT(/* Not Use */),
 			.iWR_EN(!iEXCEPTION_EVENT && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),
 			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_pc}),
@@ -203,6 +205,11 @@ module fetch(
 
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
+			b_pc <= {32{1'b0}};
+			b_fetch_valid <= 1'b0;
+			b_fetch_state <= 2'b00;
+		end
+		else if(iRESET_SYNC)begin
 			b_pc <= {32{1'b0}};
 			b_fetch_valid <= 1'b0;
 			b_fetch_state <= 2'b00;
@@ -264,7 +271,7 @@ module fetch(
 			b_next_kernel_access <= 1'b0;
 			b_pc_out <= {32{1'b0}};
 		end
-		else if(iEXCEPTION_EVENT || branch_predictor_flush)begin
+		else if(iRESET_SYNC || iEXCEPTION_EVENT || branch_predictor_flush)begin
 			b_next_inst <= {32{1'b0}};
 			b_next_inst_valid <= 1'b0;
 			b_next_mmu_flags <= 12'h0;
