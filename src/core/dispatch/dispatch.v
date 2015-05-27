@@ -44,6 +44,7 @@ module dispatch
 		output wire [31:0] oSYSREG_SPR,
 		output wire [31:0] oSYSREG_PDTR,
 		output wire [31:0] oSYSREG_KPDTR,
+		output wire [31:0] oSYSREG_PFLAGR,
 		//Pipeline
 		input wire iPREVIOUS_VALID,
 		input wire iPREVIOUS_FAULT_PAGEFAULT,
@@ -872,7 +873,7 @@ module dispatch
 		.iREGIST_DATA(w_sysreg_pflagr_regist_data),
 		.oINFO_DATA(w_sysreg_pflagr_info_data)
 	);
-	assign w_sysreg_pflagr_regist_valid	 = iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_pflagr_regist_valid	 = iEVENT_IRQ_FRONT2BACK;		//iFREE_SYSREG_SET_IRQ_MODE;
 	assign w_sysreg_pflagr_regist_data = iSYSREG_FLAGR;
 
 
@@ -1071,6 +1072,7 @@ module dispatch
 	assign oSYSREG_SPR = w_sysreg_spr_info_data;
 	assign oSYSREG_PDTR = w_sysreg_pdtr_info_data;
 	assign oSYSREG_KPDTR = w_sysreg_kpdtr_info_data;
+	assign oSYSREG_PFLAGR = w_sysreg_pflagr_info_data;
 
 	assign oPREVIOUS_LOCK = iNEXT_LOCK;//this_lock;
 

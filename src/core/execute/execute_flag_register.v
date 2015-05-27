@@ -7,6 +7,9 @@ module execute_flag_register(
 		input wire iRESET_SYNC,
 		//Control
 		input wire iCTRL_HOLD,
+		//PFLAGR
+		input wire iPFLAGR_VALID,
+		input wire [4:0] iPFLAGR,
 		//Prev
 		input wire iPREV_INST_VALID,
 		input wire iPREV_BUSY,
@@ -36,6 +39,11 @@ module execute_flag_register(
 		else if(iRESET_SYNC)begin
 			b_sysreg_flags <= 5'h0;
 		end
+		//Copy of PFLAGR
+		else if(iPFLAGR_VALID)begin
+			b_sysreg_flags <= iPFLAGR;
+		end
+		//HOLD
 		else if(iCTRL_HOLD)begin
 			b_sysreg_flags <= b_sysreg_flags;
 		end

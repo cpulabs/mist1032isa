@@ -276,19 +276,19 @@ module exception_manager(
 							b_pipeline_flush_event <= 1'b1;
 							b_sysreg_set <= 1'b0;
 						end
+						//IDT Set Instruction
+						else if(iEXCEPT_IDTS)begin
+							b_main_state <= L_PARAM_MAINSTT_IDTS;
+							b_pipeline_flush_event <= 1'b1;
+							b_branch_addr <= iEXCEPT_JUMP_ADDR;
+							b_sysreg_set <= 1'b0;
+						end
 						//Interrupt Return Instruction
 						else if(iEXCEPT_IB)begin
 							b_main_state <= L_PARAM_MAINSTT_IRQ_RET;
 							b_pipeline_flush_event <= 1'b1;
 							b_cache_flush <= 1'b1;
 							b_tlb_flush <= 1'b1;
-							b_sysreg_set <= 1'b0;
-						end
-						//IDT Set Instruction
-						else if(iEXCEPT_IDTS)begin
-							b_main_state <= L_PARAM_MAINSTT_IDTS;
-							b_pipeline_flush_event <= 1'b1;
-							b_branch_addr <= iEXCEPT_JUMP_ADDR;
 							b_sysreg_set <= 1'b0;
 						end
 						else begin

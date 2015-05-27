@@ -25,6 +25,7 @@ module execute(
 		output wire oEXCEPTION_LOCK,
 		output wire oEXCEPTION_LDST_LOCK,
 		//System Register
+		input wire [31:0] iSYSREG_PFLAGR,
 		output wire [31:0] oSYSREG_FLAGR,
 		//Pipeline
 		input wire iPREVIOUS_VALID,
@@ -403,6 +404,9 @@ module execute(
 		.iRESET_SYNC(iRESET_SYNC),
 		//Control
 		.iCTRL_HOLD(iEVENT_HOLD || iFREE_PIPELINE_STOP || iFREE_REFRESH || iFREE_REGISTER_LOCK),
+		//PFLAGR
+		.iPFLAGR_VALID(iEVENT_IRQ_BACK2FRONT),
+		.iPFLAGR(iSYSREG_PFLAGR[4:0]),
 		//Prev
 		.iPREV_INST_VALID(iPREVIOUS_VALID),
 		.iPREV_BUSY(lock_condition),
@@ -1156,6 +1160,13 @@ module execute(
 					b_afe <= iPREVIOUS_CC_AFE;
 					b_spr_writeback <= (iPREVIOUS_EX_LDST || iPREVIOUS_EX_SYS_LDST) && ldst_spr_valid;
 				end
+				else if(iPREVIOUS_EX_BRANCH)begin
+					b_writeback <= 1'b0;
+					b_destination_sysreg  <= iPREVIOUS_DESTINATION_SYSREG;
+					b_destination <= iPREVIOUS_DESTINATION;
+					b_afe <= iPREVIOUS_CC_AFE;
+					b_spr_writeback <= 1'b0;
+				end
 			end
 		end
 	end
@@ -1194,7 +1205,9 @@ module execute(
 							//Branch(with Branch predict) - True
 							else if(branch_valid_with_predict)begin
 								b_valid <= 1'b1;
-								//(20150527)b_valid <= 1'b1;							//-//,===
+							end
+							else if(branch_with_predict_predict_hit)begin
+								b_valid <= 1'b1;
 							end
 							else begin
 								b_valid <= 1'b0;

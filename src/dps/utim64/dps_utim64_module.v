@@ -195,6 +195,13 @@ module dps_utim64_module(
 	wire [31:0] out_fifo_data;
 	wire out_fifo_read_condition;
 	assign out_fifo_read_condition = !out_fifo_empty;
+
+
+	
+	assign req_fifo_read_condition = !req_fifo_empty && (req_fifo_rw || (!req_fifo_rw && !out_fifo_full));
+	wire out_fifo_write_condition = !req_fifo_empty && !req_fifo_rw && !out_fifo_full;
+
+
 	mist1032isa_async_fifo #(32, 4, 2) FIFO_OUT(
 		//System
 		.inRESET(inRESET),
@@ -202,7 +209,8 @@ module dps_utim64_module(
 		.iREMOVE(1'b0),
 		//WR
 		.iWR_CLOCK(iTIMER_CLOCK),
-		.iWR_EN(req_fifo_read_condition),
+		//.iWR_EN(req_fifo_read_condition),
+		.iWR_EN(out_fifo_write_condition),
 		.iWR_DATA(b_config_register_list[req_fifo_addr]),
 		.oWR_FULL(out_fifo_full),
 		//RD
@@ -213,8 +221,7 @@ module dps_utim64_module(
 	);
 
 	
-	assign req_fifo_read_condition = !req_fifo_empty && (req_fifo_rw || (!req_fifo_rw && !out_fifo_full));
-	
+
 	assign oREQ_VALID = out_fifo_read_condition;
 	assign oREQ_DATA = out_fifo_data;
 	

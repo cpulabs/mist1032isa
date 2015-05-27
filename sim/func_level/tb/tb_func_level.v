@@ -16,6 +16,8 @@ module tb_func_level;
 	reg iCORE_CLOCK;
 	reg iBUS_CLOCK;
 	reg iDPS_CLOCK;
+
+	
 	reg inRESET;
 	/****************************************
 	SCI
@@ -86,9 +88,14 @@ module tb_func_level;
 		/****************************************
 		System
 		****************************************/
+		/*
 		.iCORE_CLOCK(iCORE_CLOCK),
 		.iBUS_CLOCK(iBUS_CLOCK),
 		.iDPS_CLOCK(iDPS_CLOCK),
+		*/
+		.iCORE_CLOCK(iCORE_CLOCK),
+		.iBUS_CLOCK(iCORE_CLOCK),
+		.iDPS_CLOCK(iCORE_CLOCK),
 		.inRESET(inRESET),
 		/****************************************
 		SCI
@@ -166,7 +173,7 @@ module tb_func_level;
 	always#(PL_DPS_CYCLE/2)begin
 		iDPS_CLOCK = !iDPS_CLOCK;
 	end
-	
+
 
 	/******************************************************
 	State

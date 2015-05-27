@@ -287,6 +287,7 @@ module core_pipeline
 	wire [31:0] sysreg_ppcr;
 	wire [31:0] sysreg_pdtr;
 	wire [31:0] sysreg_kpdtr;
+	wire [31:0] sysreg_pflagr;
 
 	//Interrupt Lock
 	wire interrupt_lock;
@@ -738,6 +739,7 @@ module core_pipeline
 		.oSYSREG_SPR(sysreg_spr),
 		.oSYSREG_PDTR(sysreg_pdtr),
 		.oSYSREG_KPDTR(sysreg_kpdtr),
+		.oSYSREG_PFLAGR(sysreg_pflagr),
 		//Pipeline
 		.iPREVIOUS_VALID(decoder2dispatch_valid),
 		.iPREVIOUS_FAULT_PAGEFAULT(decoder2dispatch_fault_pagefault),
@@ -886,6 +888,7 @@ module core_pipeline
 		.oEXCEPTION_LOCK(execute_exception_lock),
 		.oEXCEPTION_LDST_LOCK(interrupt_ldst_lock),
 		//System Register
+		.iSYSREG_PFLAGR(sysreg_pflagr),
 		.oSYSREG_FLAGR(sysreg_flagr),
 		//Pipeline
 		.iPREVIOUS_VALID(dispatch2execution_valid),
