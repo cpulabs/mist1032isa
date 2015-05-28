@@ -130,15 +130,15 @@ module core_pipeline
 	wire free_fi0r_set;
 	wire [31:0] free_fi0r;
 	wire free_register_lock;
-	wire free_pipeline_stop;
-	wire free_pipeline_flush;
+	//wire free_pipeline_stop;
+	//wire free_pipeline_flush;
 	wire free_restart;
 	wire free_set_irq_mode;
 	wire free_clr_irq_mode;
 	wire free_cache_flush;
 	wire free_tlb_flush;
-	wire free_new_spr_valid;
-	wire [31:0] free_new_spr;
+	//wire free_new_spr_valid;
+	//wire [31:0] free_new_spr;
 	//Fetch
 	wire fetch2lbuffer_inst_valid;
 	wire [11:0] fetch2lbuffer_mmu_flags;
@@ -375,7 +375,7 @@ module core_pipeline
 	wire debug_debug2corectrl_start;
 	wire debug_corectrl2debug_ack;
 
-	core_interrupt_manager CORE_INT_M(
+	core_interrupt_manager IRQ_CTRL(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -405,7 +405,7 @@ module core_pipeline
 		.iEXCEPTION_IRQ_ACK(exception2cim_irq_ack)
 	);
 
-	exception_manager CORE_IM(
+	exception_manager PIPELINE_CTRL(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		/************************************
@@ -420,13 +420,13 @@ module core_pipeline
 		Free - Legacy
 		************************************/
 		.oFREE_REGISTER_LOCK(free_register_lock),
-		.oFREE_PIPELINE_STOP(free_pipeline_stop),
-		.oFREE_REFRESH(free_pipeline_flush),
+		//.oFREE_PIPELINE_STOP(free_pipeline_stop),
+		//.oFREE_REFRESH(free_pipeline_flush),
 		.oFREE_RESTART(free_restart),
 		.oFREE_PC_SET(free_pc_set),
 		.oFREE_PC(free_pc),
-		.oFREE_PPCR_SET(),
-		.oFREE_PPCR(),
+		//.oFREE_PPCR_SET(),
+		//.oFREE_PPCR(),
 		.oFREE_FI0R_SET(free_fi0r_set),
 		.oFREE_FI0R(free_fi0r),
 		.oFREE_SET_IRQ_MODE(free_set_irq_mode),
@@ -451,8 +451,8 @@ module core_pipeline
 		.iSYSREG_PPCR(sysreg_ppcr),
 		.iSYSREG_IDTR(sysreg_idtr),
 		//Write
-		.oSYSREG_SPR_WRITE(free_new_spr_valid),
-		.oSYSREG_SPR(free_new_spr),
+		//.oSYSREG_SPR_WRITE(free_new_spr_valid),
+		//.oSYSREG_SPR(free_new_spr),
 		/************************************
 		Load Store
 		************************************/
@@ -520,7 +520,7 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Remove
-		.iREMOVE(free_pipeline_flush || branch_predict_fetch_flush),
+		.iREMOVE(branch_predict_fetch_flush || core_event_start),
 		.iCACHE_FLASH(/*cache_flash || free_cache_flush*/1'b0),
 		/****************************************
 		Memory Port Memory
@@ -570,8 +570,9 @@ module core_pipeline
 		.iSYSREG_PDTR(sysreg_pdtr),
 		.iSYSREG_KPDTR(sysreg_kpdtr),
 		.iSYSREG_TIDR(sysreg_tidr),
-		//Exception
-		.iEXCEPTION_EVENT(free_pipeline_flush),
+		//Pipeline Control
+		.iEVENT_START(core_event_start),
+		//Exception - Legacy
 		.iEXCEPTION_ADDR_SET(free_pc_set),
 		.iEXCEPTION_ADDR(free_pc),
 		.iEXCEPTION_RESTART(free_restart),
@@ -615,7 +616,7 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(1'b0),
-		.iFREE_REFRESH(free_pipeline_flush),
+		.iEVENT_START(core_event_start),
 		//Prev
 		.iPREVIOUS_INST_VALID(fetch2lbuffer_inst_valid),
 		.iPREVIOUS_MMU_FLAGS(fetch2lbuffer_mmu_flags),
@@ -649,7 +650,7 @@ module core_pipeline
 		.inRESET(inRESET),
 		.iRESET_SYNC(1'b0),
 		//Free
-		.iFREE_DEFAULT(free_pipeline_flush),
+		.iEVENT_START(core_event_start),
 		//Previous
 		.iPREVIOUS_INST_VALID(lbuffer2decoder_inst_valid),
 		.iPREVIOUS_FAULT_PAGEFAULT(lbuffer2decoder_fault_pagefault),
@@ -712,6 +713,9 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(1'b0),
+		//Pipeline Controll
+		.iEVENT_HOLD(core_event_hold),
+		.iEVENT_START(core_event_start),
 		.iEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
 		.iEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
 		//Exception Protect
@@ -720,8 +724,6 @@ module core_pipeline
 		.iSYSREGINFO_IOSR_VALID(iSYSINFO_IOSR_VALID),
 		.iSYSREGINFO_IOSR(iSYSINFO_IOSR),
 		.iFREE_REGISTER_LOCK(free_register_lock),
-		.iFREE_PIPELINE_STOP(free_pipeline_stop),
-		.iFREE_REFRESH(free_pipeline_flush),
 		.iFREE_SYSREG_SET_IRQ_MODE(free_set_irq_mode),
 		.iFREE_SYSREG_CLR_IRQ_MODE(free_clr_irq_mode),
 		.iFREE_FI0R_SET(free_fi0r_set),
@@ -883,8 +885,6 @@ module core_pipeline
 		.iEVENT_END(core_event_end),
 		//Legacy
 		.iFREE_REGISTER_LOCK(free_register_lock),
-		.iFREE_PIPELINE_STOP(free_pipeline_stop),
-		.iFREE_REFRESH(free_pipeline_flush),
 		.oEXCEPTION_LOCK(execute_exception_lock),
 		.oEXCEPTION_LDST_LOCK(interrupt_ldst_lock),
 		//System Register
@@ -1055,7 +1055,7 @@ module core_pipeline
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Remove
-		.iREMOVE(free_pipeline_flush),
+		.iREMOVE(core_event_start),
 		.iCACHE_FLASH(/*cache_flash || free_cache_flush*/1'b0),
 		//IOSR
 		.iSYSINFO_IOSR_VALID(iSYSINFO_IOSR_VALID),

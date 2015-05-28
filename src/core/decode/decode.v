@@ -11,7 +11,7 @@ module decoder(
 		input wire inRESET,
 		input wire iRESET_SYNC,
 		//Free
-		input wire iFREE_DEFAULT,	
+		input wire iEVENT_START,	
 		//Previous
 		input wire iPREVIOUS_INST_VALID,
 		input wire iPREVIOUS_FAULT_PAGEFAULT,
@@ -230,7 +230,7 @@ module decoder(
 			b_error <= 1'b0;
 			b_pc <= 32'h0;
 		end
-		else if(iRESET_SYNC || iFREE_DEFAULT)begin
+		else if(iRESET_SYNC || iEVENT_START)begin
 			b_valid <= 1'b0;	
 			b_fault_pagefault <= 1'b0;
 			b_fault_page_privilege_error <= 1'b0;

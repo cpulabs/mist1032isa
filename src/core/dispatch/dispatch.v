@@ -14,12 +14,12 @@ module dispatch
 		input wire inRESET,
 		input wire iRESET_SYNC,
 		//Event Control
+		input wire iEVENT_HOLD,
+		input wire iEVENT_START,
 		input wire iEVENT_IRQ_FRONT2BACK,
 		input wire iEVENT_IRQ_BACK2FRONT,
 		//Legacy
 		input wire iFREE_REGISTER_LOCK,
-		input wire iFREE_PIPELINE_STOP,
-		input wire iFREE_REFRESH,
 		//Exception Lock
 		output wire oEXCEPTION_LOCK,
 		//IOSR
@@ -189,7 +189,7 @@ module dispatch
 		.iREGIST_DATA(w_sysreg_pcr_regist_data),
 		.oINFO_DATA(w_sysreg_pcr_info_data)
 	);
-	assign w_sysreg_pcr_regist_valid = iWB_VALID && !iFREE_PIPELINE_STOP && !iFREE_REGISTER_LOCK;
+	assign w_sysreg_pcr_regist_valid = iWB_VALID && !iEVENT_HOLD && !iFREE_REGISTER_LOCK;
 	assign w_sysreg_pcr_regist_data = (iWB_BRANCH)? iWB_BRANCH_PC : iWB_PC;
 
 	reg b_pcr_valid;
@@ -197,12 +197,12 @@ module dispatch
 		if(!inRESET)begin
 			b_pcr_valid <= 1'b0;
 		end
-		else if(iRESET_SYNC || iFREE_REFRESH)begin
+		else if(iRESET_SYNC || iEVENT_START)begin
 			b_pcr_valid <= 1'b0;
 		end
 		else begin
 			if(!b_pcr_valid)begin
-				if(iWB_VALID && !iFREE_PIPELINE_STOP)begin
+				if(iWB_VALID && !iEVENT_HOLD)begin
 					b_pcr_valid <= 1'b1;
 				end
 			end
@@ -528,7 +528,7 @@ module dispatch
 			b_ex_branch <= 1'b0;
 			b_pc <= 32'h0;
 		end
-		else if(iRESET_SYNC || iFREE_REFRESH)begin
+		else if(iRESET_SYNC || iEVENT_START)begin
 			b_valid <= 1'b0;
 			b_fault_pagefault <= 1'b0;
 			b_fault_privilege_error <= 1'b0;
@@ -694,7 +694,7 @@ module dispatch
 			end
 		end
 		else begin
-			if(iWB_VALID && !iWB_DESTINATION_SYSREG && iWB_WRITEBACK && !iFREE_PIPELINE_STOP)begin
+			if(iWB_VALID && !iWB_DESTINATION_SYSREG && iWB_WRITEBACK && !iEVENT_HOLD)begin
 				b_gr_register [iWB_DESTINATION] <= iWB_DATA;
 			end
 		end
@@ -731,7 +731,7 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_tidr_regist_valid), .iREGIST_DATA(w_sysreg_tidr_regist_data),
 		.oINFO_DATA(w_sysreg_tidr_info_data)
 	);
-	assign w_sysreg_tidr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_TIDR);
+	assign w_sysreg_tidr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_TIDR);
 	assign w_sysreg_tidr_regist_data = iWB_DATA;
 
 
@@ -747,7 +747,7 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_psr_regist_valid), .iREGIST_DATA(w_sysreg_psr_regist_data),
 		.oINFO_DATA(w_sysreg_psr_info_data)
 	);
-	assign w_sysreg_psr_regist_valid = iFREE_SYSREG_SET_IRQ_MODE || iFREE_SYSREG_CLR_IRQ_MODE || (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PSR);
+	assign w_sysreg_psr_regist_valid = iFREE_SYSREG_SET_IRQ_MODE || iFREE_SYSREG_CLR_IRQ_MODE || (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PSR);
 	assign w_sysreg_psr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? {w_sysreg_psr_info_data[31:7], 2'h0, w_sysreg_psr_info_data[4:3], 1'b0, w_sysreg_psr_info_data[1:0]} : (
 															(iFREE_SYSREG_CLR_IRQ_MODE)? w_sysreg_ppsr_info_data : iWB_DATA
 														);
@@ -760,8 +760,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_spr_regist_valid), .iREGIST_DATA(w_sysreg_spr_regist_data),
 		.oINFO_DATA(w_sysreg_spr_info_data)
 	);
-	assign w_sysreg_spr_regist_valid = ((!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_SPR) || !iFREE_PIPELINE_STOP && iWB_SPR_WRITEBACK && iWB_VALID);
-	assign w_sysreg_spr_regist_data = (!iFREE_PIPELINE_STOP && iWB_SPR_WRITEBACK && iWB_VALID)? iWB_SPR : iWB_DATA;
+	assign w_sysreg_spr_regist_valid = ((!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_SPR) || !iEVENT_HOLD && iWB_SPR_WRITEBACK && iWB_VALID);
+	assign w_sysreg_spr_regist_data = (!iEVENT_HOLD && iWB_SPR_WRITEBACK && iWB_VALID)? iWB_SPR : iWB_DATA;
 
 
 	//IDTR
@@ -772,7 +772,7 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_idtr_regist_valid), .iREGIST_DATA(w_sysreg_idtr_regist_data),
 		.oINFO_DATA(w_sysreg_idtr_info_data)
 	);
-	assign w_sysreg_idtr_regist_valid = !iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_IDTR;
+	assign w_sysreg_idtr_regist_valid = !iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_IDTR;
 	assign w_sysreg_idtr_regist_data = iWB_DATA;
 
 	//FI0R
@@ -792,7 +792,7 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_pdtr_regist_valid), .iREGIST_DATA(w_sysreg_pdtr_regist_data),
 		.oINFO_DATA(w_sysreg_pdtr_info_data)
 	);
-	assign w_sysreg_pdtr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PDTR);
+	assign w_sysreg_pdtr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PDTR);
 	assign w_sysreg_pdtr_regist_data = iWB_DATA;
 
 	//TISR
@@ -803,7 +803,7 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_tisr_regist_valid), .iREGIST_DATA(w_sysreg_tisr_regist_data),
 		.oINFO_DATA(w_sysreg_tisr_info_data)
 	);
-	assign w_sysreg_tisr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_TISR);
+	assign w_sysreg_tisr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_TISR);
 	assign w_sysreg_tisr_regist_data = iWB_DATA;
 
 	//KPDTR
@@ -814,7 +814,7 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_kpdtr_regist_valid), .iREGIST_DATA(w_sysreg_kpdtr_regist_data),
 		.oINFO_DATA(w_sysreg_kpdtr_info_data)
 	);
-	assign w_sysreg_kpdtr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_KPDTR);
+	assign w_sysreg_kpdtr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_KPDTR);
 	assign w_sysreg_kpdtr_regist_data = iWB_DATA;
 
 	//IOSR
@@ -835,7 +835,7 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ppsr_regist_valid), .iREGIST_DATA(w_sysreg_ppsr_regist_data),
 		.oINFO_DATA(w_sysreg_ppsr_info_data)
 	);
-	assign w_sysreg_ppsr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPSR) || iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_ppsr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPSR) || iFREE_SYSREG_SET_IRQ_MODE;
 	assign w_sysreg_ppsr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_psr_info_data : iWB_DATA;
 
 
@@ -848,7 +848,7 @@ module dispatch
 		.oINFO_DATA(w_sysreg_ppcr_info_data)
 	);
 
-	assign w_sysreg_ppcr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iEVENT_IRQ_FRONT2BACK;
+	assign w_sysreg_ppcr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iEVENT_IRQ_FRONT2BACK;
 	assign w_sysreg_ppcr_regist_data = (iEVENT_IRQ_FRONT2BACK)? w_sysreg_pcr_info_data : iWB_DATA;
 	
 
@@ -861,7 +861,7 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ppdtr_regist_valid), .iREGIST_DATA(w_sysreg_ppdtr_regist_data),
 		.oINFO_DATA(w_sysreg_ppdtr_info_data)
 	);
-	assign w_sysreg_ppdtr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPDTR) || iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_ppdtr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPDTR) || iFREE_SYSREG_SET_IRQ_MODE;
 	assign w_sysreg_ppdtr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_pdtr_info_data : iWB_DATA;
 
 	//PFLAGR : Previous Flag Register
@@ -885,14 +885,14 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ptidr_regist_valid), .iREGIST_DATA(w_sysreg_ptidr_regist_data),
 		.oINFO_DATA(w_sysreg_ptidr_info_data)
 	);
-	assign w_sysreg_ptidr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PTIDR) || iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_ptidr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PTIDR) || iFREE_SYSREG_SET_IRQ_MODE;
 	assign w_sysreg_ptidr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_tidr_info_data : iWB_DATA;
 
 
 	//FRCR
 	wire frcr_64bit_write_condition;
 	wire [63:0] frcr_64bit_timer;
-	assign frcr_64bit_write_condition = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR);
+	assign frcr_64bit_write_condition = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR);
 
 
 	frcr_timer FRCR(
@@ -915,9 +915,9 @@ module dispatch
 		.oINFO_DATA(w_sysreg_frclr_info_data)
 	);
 
-	assign w_sysreg_frclr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR) ||
-														(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR2FRCXR);
-	assign w_sysreg_frclr_regist_data = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR)? iWB_DATA : frcr_64bit_timer[31:0];
+	assign w_sysreg_frclr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR) ||
+														(!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR2FRCXR);
+	assign w_sysreg_frclr_regist_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR)? iWB_DATA : frcr_64bit_timer[31:0];
 
 
 	//FRCHR
@@ -931,9 +931,9 @@ module dispatch
 	);
 
 
-	assign w_sysreg_frchr_regist_valid = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR) ||
-														(!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR2FRCXR);
-	assign w_sysreg_frchr_regist_data = (!iFREE_PIPELINE_STOP && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR)? iWB_DATA : frcr_64bit_timer[63:32];
+	assign w_sysreg_frchr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR) ||
+														(!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR2FRCXR);
+	assign w_sysreg_frchr_regist_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR)? iWB_DATA : frcr_64bit_timer[63:32];
 
 
 
