@@ -130,7 +130,7 @@ Instruction Set
 `define		OC_SRFRCW		10'h0F4
 `define		OC_SRFCLW		10'h0F5
 `define		OC_SRFCHW		10'h0F6
-`define		OC_SRSPWADD		10'h0ff
+`define		OC_SRSPADD		10'h0ff
 //Other
 `define		OC_NOP			10'h100
 `define		OC_HALT			10'h101

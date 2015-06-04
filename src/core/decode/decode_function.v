@@ -4312,7 +4312,7 @@ module decode_function(
 							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
-				`OC_SRSPWADD :
+				`OC_SRSPADD :
 					begin						//CI16
 						f_decode	=	{
 							/* Decode Error */						1'b0,
@@ -4336,7 +4336,7 @@ module decode_function(
 							/* Destination is System Register */	1'b1,
 							/* Destination Rename*/					1'b0,
 							/* Execute Module Command */			`EXE_SYS_LDST_ADD_SPR,
-							/* Execute Module */					`EXE_SELECT_SYS_REG
+							/* Execute Module */					`EXE_SELECT_SYS_LDST
 						};
 					end
 

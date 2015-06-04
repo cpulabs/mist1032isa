@@ -1412,7 +1412,7 @@ module execute(
 	initial F_HANDLE = $fopen("ldst_time_dump.log");
 	*/
 
-	wire [31:0] for_assertion_store_real_data = func_assert_write_data(b_ldst_pipe_mask, oDATAIO_DATA);
+	wire [31:0] for_assertion_store_real_data = func_assert_write_data(oDATAIO_MASK, oDATAIO_DATA);
 
 	//synthesis translate_on
 
