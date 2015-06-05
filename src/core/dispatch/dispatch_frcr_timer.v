@@ -2,7 +2,7 @@
 `default_nettype none
 
 
-module frcr_timer(
+module dispatch_frcr_timer(
 		input wire iCLOCK,
 		input wire inRESET,
 		input wire iRESET_SYNC,

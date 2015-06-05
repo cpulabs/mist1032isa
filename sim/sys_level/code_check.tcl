@@ -41,9 +41,9 @@ vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+
 
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/dispatch/*.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/execution/*.v
+vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/execute/*.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/execution/divider/*.v
+vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/execute/divider/*.v
 
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/fetch/*.v
 

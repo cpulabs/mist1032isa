@@ -1,4 +1,4 @@
-transcript file sim/mmu.result
+transcript file sim/slideshow.O3.result
 
 vlib work
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ./tb/*.v
@@ -42,9 +42,9 @@ vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+
 
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/dispatch/*.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/execution/*.v
+vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/execute/*.v
 
-vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/execution/divider/*.v
+vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/execute/divider/*.v
 
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/core/fetch/*.v
 

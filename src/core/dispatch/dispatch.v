@@ -181,7 +181,7 @@ module dispatch
 	wire [31:0] w_sysreg_pcr_info_data;
 
 	//PCR
-	system_register PCR	(
+	dispatch_system_register PCR	(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -706,7 +706,7 @@ module dispatch
 	System Register File
 	****************************************/
 	//CPUIDR : Processor ID Register
-	system_register CPUIDR (
+	dispatch_system_register CPUIDR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -715,7 +715,7 @@ module dispatch
 	);
 
 	//COREIDR : Core ID Register
-	system_register COREIDR (
+	dispatch_system_register COREIDR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -724,7 +724,7 @@ module dispatch
 	);
 
 	//TIDR : Task ID Register
-	system_register TIDR (
+	dispatch_system_register TIDR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -740,7 +740,7 @@ module dispatch
 	//PCR : Non Use Register
 
 	//PSR : Program Status Register
-	system_register PSR (
+	dispatch_system_register PSR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -753,7 +753,7 @@ module dispatch
 														);
 
 	//SPR
-	system_register SPR (
+	dispatch_system_register SPR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -765,7 +765,7 @@ module dispatch
 
 
 	//IDTR
-	system_register IDTR (
+	dispatch_system_register IDTR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -776,7 +776,7 @@ module dispatch
 	assign w_sysreg_idtr_regist_data = iWB_DATA;
 
 	//FI0R
-	system_register FI0R (
+	dispatch_system_register FI0R (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -785,7 +785,7 @@ module dispatch
 	);
 
 	//PDTR : Page Directory Table Register
-	system_register PDTR (
+	dispatch_system_register PDTR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -796,7 +796,7 @@ module dispatch
 	assign w_sysreg_pdtr_regist_data = iWB_DATA;
 
 	//TISR
-	system_register TISR (
+	dispatch_system_register TISR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -807,7 +807,7 @@ module dispatch
 	assign w_sysreg_tisr_regist_data = iWB_DATA;
 
 	//KPDTR
-	system_register KPDTR (
+	dispatch_system_register KPDTR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -818,7 +818,7 @@ module dispatch
 	assign w_sysreg_kpdtr_regist_data = iWB_DATA;
 
 	//IOSR
-	system_register IOSR (
+	dispatch_system_register IOSR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -828,7 +828,7 @@ module dispatch
 
 
 	//PPSR : Previous Program Status Register
-	system_register PPSR (
+	dispatch_system_register PPSR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -840,7 +840,7 @@ module dispatch
 
 
 	//PPCR : Previous Program Counter
-	system_register PPCR(
+	dispatch_system_register PPCR(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -854,7 +854,7 @@ module dispatch
 
 
 	//PPDTR : Previous Page Directry Table Register
-	system_register PPDTR(
+	dispatch_system_register PPDTR(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -865,7 +865,7 @@ module dispatch
 	assign w_sysreg_ppdtr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_pdtr_info_data : iWB_DATA;
 
 	//PFLAGR : Previous Flag Register
-	system_register PFLAGR(
+	dispatch_system_register PFLAGR(
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -878,7 +878,7 @@ module dispatch
 
 
 	//PTIDR : Previous Task Id Register
-	system_register PTIDR (
+	dispatch_system_register PTIDR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -895,7 +895,7 @@ module dispatch
 	assign frcr_64bit_write_condition = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR);
 
 
-	frcr_timer FRCR(
+	dispatch_frcr_timer FRCR(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -906,7 +906,7 @@ module dispatch
 
 
 	//FRCLR
-	system_register FRCLR (
+	dispatch_system_register FRCLR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
@@ -921,7 +921,7 @@ module dispatch
 
 
 	//FRCHR
-	system_register FRCHR (
+	dispatch_system_register FRCHR (
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),

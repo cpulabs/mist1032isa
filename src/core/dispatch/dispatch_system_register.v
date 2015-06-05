@@ -2,7 +2,7 @@
 
 
 
-module system_register(
+module dispatch_system_register(
 		//System
 		input wire iCLOCK,
 		input wire inRESET,	
