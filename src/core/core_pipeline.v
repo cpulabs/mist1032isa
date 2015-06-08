@@ -124,21 +124,24 @@ module core_pipeline
 	wire core_event_irq_front2back;
 	wire core_event_irq_back2front;
 	wire core_event_end;
+
+	//Event-Sysreg
+	wire core_event_sysreg_set_pcr_set;
+	wire core_event_sysreg_set_ppcr_set;
+	wire core_event_sysreg_set_spr_set;
+	wire core_event_sysreg_set_fi0r_set;
+	wire core_event_sysreg_set_fi1r_set;
+	
+	wire [31:0] core_event_sysreg_set_ppcr;
+	wire [31:0] core_event_sysreg_set_spr;
+	wire [31:0] core_event_sysreg_set_fi0r;
+	wire [31:0] core_event_sysreg_set_fi1r;
+	wire [31:0] core_event_sysreg_set_pcr;
+
+
 	//Free - Legacy
-	wire free_pc_set;
-	wire [31:0] free_pc;
-	wire free_fi0r_set;
-	wire [31:0] free_fi0r;
-	wire free_register_lock;
-	//wire free_pipeline_stop;
-	//wire free_pipeline_flush;
-	wire free_restart;
-	wire free_set_irq_mode;
-	wire free_clr_irq_mode;
 	wire free_cache_flush;
 	wire free_tlb_flush;
-	//wire free_new_spr_valid;
-	//wire [31:0] free_new_spr;
 	//Fetch
 	wire fetch2lbuffer_inst_valid;
 	wire [11:0] fetch2lbuffer_mmu_flags;
@@ -375,12 +378,10 @@ module core_pipeline
 	wire debug_debug2corectrl_start;
 	wire debug_corectrl2debug_ack;
 
-	core_interrupt_manager IRQ_CTRL(
+	interrupt_control IRQ_CTRL(
 		//System
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		//Exception
-		.iFREE_IRQ_SETCONDITION(free_set_irq_mode),
 		//Core Interrupt Configlation Table
 		.iICT_VALID(exception2cim_ict_req),
 		.iICT_ENTRY(exception2cim_ict_entry),
@@ -405,58 +406,53 @@ module core_pipeline
 		.iEXCEPTION_IRQ_ACK(exception2cim_irq_ack)
 	);
 
-	exception_manager PIPELINE_CTRL(
+
+
+	pipeline_control PIPELINE_CTRL(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
 		/************************************
 		Core internal Event
 		************************************/
+		//Timing
 		.oEVENT_HOLD(core_event_hold),
 		.oEVENT_START(core_event_start),
 		.oEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
 		.oEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
+		.oEVENT_CACHE_ERASE(free_cache_flush),
+		.oEVENT_TLB_ERASE(free_tlb_flush),
 		.oEVENT_END(core_event_end),
+		//System Register
+		.oEVENT_SETREG_PCR_SET(core_event_sysreg_set_pcr_set),
+		.oEVENT_SETREG_PPCR_SET(core_event_sysreg_set_ppcr_set),
+		.oEVENT_SETREG_SPR_SET(core_event_sysreg_set_spr_set),
+		.oEVENT_SETREG_FI0R_SET(core_event_sysreg_set_fi0r_set),
+		.oEVENT_SETREG_FI1R_SET(core_event_sysreg_set_fi1r_set),
+		.oEVENT_SETREG_PCR(core_event_sysreg_set_pcr),
+		.oEVENT_SETREG_PPCR(core_event_sysreg_set_ppcr),
+		.oEVENT_SETREG_SPR(core_event_sysreg_set_spr),
+		.oEVENT_SETREG_FI0R(core_event_sysreg_set_fi0r),
+		.oEVENT_SETREG_FI1R(core_event_sysreg_set_fi1r),
 		/************************************
-		Free - Legacy
+		System Register - Input
 		************************************/
-		.oFREE_REGISTER_LOCK(free_register_lock),
-		//.oFREE_PIPELINE_STOP(free_pipeline_stop),
-		//.oFREE_REFRESH(free_pipeline_flush),
-		.oFREE_RESTART(free_restart),
-		.oFREE_PC_SET(free_pc_set),
-		.oFREE_PC(free_pc),
-		//.oFREE_PPCR_SET(),
-		//.oFREE_PPCR(),
-		.oFREE_FI0R_SET(free_fi0r_set),
-		.oFREE_FI0R(free_fi0r),
-		.oFREE_SET_IRQ_MODE(free_set_irq_mode),
-		.oFREE_CLR_IRQ_MODE(free_clr_irq_mode),
-		.oFREE_CACHE_FLUSH(free_cache_flush),
-		.oFREE_TLB_FLUSH(free_tlb_flush),
+		.iSYSREG_SPR(sysreg_spr),
+		.iSYSREG_TIDR(sysreg_tidr),
+		.iSYSREG_TISR(sysreg_tisr),
+		.iSYSREG_PSR(sysreg_psr),
+		.iSYSREG_PCR(sysreg_pcr),
+		.iSYSREG_PPSR(sysreg_ppsr),
+		.iSYSREG_PPCR(sysreg_ppcr),
+		.iSYSREG_IDTR(sysreg_idtr),
 		/************************************
 		Interrupt Lock
 		************************************/
 		.iINTERRUPT_LOCK(interrupt_lock),
 		.iINTERRUPT_LDST_LOCK(interrupt_ldst_lock),
 		/************************************
-		System Register
-		************************************/
-		//Input
-		.iSYSREG_SPR(sysreg_spr),
-		.iSYSREG_TIDR(sysreg_tidr),
-		.iSYSREG_TISR(sysreg_tisr),
-		.iSYSREG_PSR(sysreg_psr),
-		.iSYSREG_PPSR(sysreg_ppsr),
-		.iSYSREG_PCR(sysreg_pcr),
-		.iSYSREG_PPCR(sysreg_ppcr),
-		.iSYSREG_IDTR(sysreg_idtr),
-		//Write
-		//.oSYSREG_SPR_WRITE(free_new_spr_valid),
-		//.oSYSREG_SPR(free_new_spr),
-		/************************************
 		Load Store
 		************************************/
-		//IO Port
 		.oLDST_USE(exception2ldst_ldst_use),
 		.oLDST_REQ(exception2ldst_ldst_req),
 		.iLDST_BUSY(ldst2exception_ldst_busy),
@@ -485,24 +481,25 @@ module core_pipeline
 		.oICT_CONF_VALID(exception2cim_ict_conf_valid),
 		.oICT_CONF_LEVEL(exception2cim_ict_conf_level),
 		/************************************
-		Exception Input
+		External Exception
 		************************************/
-		//Core Branch
-		.iEXCEPT_JUMP(exception_jump_valid),
-		.iEXCEPT_JUMP_ADDR(exception_branch_addr),
-		.iEXCEPT_IDTS(exception_idtset_valid),
-		.iEXCEPT_IDTS_ADDR(exception_branch_addr),
-		.iEXCEPT_IB(exception_intr_valid),
-		.iEXCEPT_IB_ADDR(exception_branch_addr),
-		.iEXCEPT_PDTS(exception_pdts_valid),
-		.iEXCEPT_PSRS(exception_psr_valid),
-		//External Exception
 		.iEXCEPT_IRQ_REQ(cim2exception_irq_req),
 		.iEXCEPT_IRQ_NUM(cim2exception_irq_num),
 		.iEXCEPT_IRQ_FI0R(cim2exception_irq_fi0r),
+		.iEXCEPT_IRQ_FI1R(),
 		.oEXCEPT_IRQ_ACK(exception2cim_irq_ack),
-		.oEXCEPT_IRQ_BUSY(exception2cim_irq_lock)
+		.oEXCEPT_IRQ_BUSY(exception2cim_irq_lock),
+		/************************************
+		Exception Input
+		************************************/
+		//Core Branch
+		.iEXE_JUMP_ADDR(exception_branch_addr),
+		.iEXE_BRANCH_VALID(exception_jump_valid),
+		.iEXE_IDTS_VALID(exception_idtset_valid),
+		.iEXE_IB_VALID(exception_intr_valid),
+		.iEXE_RELOAD_VALID(exception_pdts_valid || exception_psr_valid)
 	);
+
 
 	assign interrupt_lock = execute_exception_lock || dispatch_exception_lock;
 
@@ -571,11 +568,17 @@ module core_pipeline
 		.iSYSREG_KPDTR(sysreg_kpdtr),
 		.iSYSREG_TIDR(sysreg_tidr),
 		//Pipeline Control
+		.iEVENT_HOLD(core_event_hold),
 		.iEVENT_START(core_event_start),
+		.iEVENT_END(core_event_end),
+		//Pipeline Control - Register Set
+		.iEVENT_SETREG_PCR_SET(core_event_sysreg_set_pcr_set),
+		.iEVENT_SETREG_PCR(core_event_sysreg_set_pcr),
+		
+		
 		//Exception - Legacy
-		.iEXCEPTION_ADDR_SET(free_pc_set),
-		.iEXCEPTION_ADDR(free_pc),
-		.iEXCEPTION_RESTART(free_restart),
+		.iEXCEPTION_ADDR_SET(core_event_sysreg_set_pcr_set),
+		.iEXCEPTION_ADDR(core_event_sysreg_set_pcr),
 		//Branch Predict
 		.oBRANCH_PREDICT_FETCH_FLUSH(branch_predict_fetch_flush),
 		.iBRANCH_PREDICT_RESULT_PREDICT(branch_predict_result_predict),
@@ -707,7 +710,6 @@ module core_pipeline
 	);
 
 
-
 	dispatch DISPATCH(
 		//System
 		.iCLOCK(iCLOCK),
@@ -718,16 +720,20 @@ module core_pipeline
 		.iEVENT_START(core_event_start),
 		.iEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
 		.iEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
+		.iEVENT_END(core_event_end),
 		//Exception Protect
 		.oEXCEPTION_LOCK(dispatch_exception_lock),
 		//IOSR
 		.iSYSREGINFO_IOSR_VALID(iSYSINFO_IOSR_VALID),
 		.iSYSREGINFO_IOSR(iSYSINFO_IOSR),
-		.iFREE_REGISTER_LOCK(free_register_lock),
-		.iFREE_SYSREG_SET_IRQ_MODE(free_set_irq_mode),
-		.iFREE_SYSREG_CLR_IRQ_MODE(free_clr_irq_mode),
-		.iFREE_FI0R_SET(free_fi0r_set),
-		.iFREE_FI0R(free_fi0r),
+		.iEVENT_SETREG_PPCR_SET(core_event_sysreg_set_ppcr_set),
+		//.iEVENT_SETREG_SPR_SET(core_event_sysreg_set_spr_set),
+		.iEVENT_SETREG_FI0R_SET(core_event_sysreg_set_fi0r_set),
+		.iEVENT_SETREG_FI1R_SET(core_event_sysreg_set_fi1r_set),
+		.iEVENT_SETREG_PPCR(core_event_sysreg_set_ppcr),
+		//.iEVENT_SETREG_SPR(core_event_sysreg_set_spr),
+		.iEVENT_SETREG_FI0R(core_event_sysreg_set_fi0r),
+		.iEVENT_SETREG_FI1R(core_event_sysreg_set_fi1r),
 		//System Register Input
 		.iSYSREG_FLAGR(sysreg_flagr),
 		//System Register Output
@@ -883,8 +889,7 @@ module core_pipeline
 		.iEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
 		.iEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
 		.iEVENT_END(core_event_end),
-		//Legacy
-		.iFREE_REGISTER_LOCK(free_register_lock),
+		//Exception LOCK
 		.oEXCEPTION_LOCK(execute_exception_lock),
 		.oEXCEPTION_LDST_LOCK(interrupt_ldst_lock),
 		//System Register

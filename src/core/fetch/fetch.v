@@ -1,10 +1,5 @@
 /****************************************
-	Fetch Unit
-	- 2 instruction multi fetch
-
-
-	Make	:	2010/09/23
-	Update	:	2014/07/07
+MIST1032ISA - Fetch Stage
 ****************************************/
 `default_nettype none
 `include "core.h"
@@ -22,10 +17,16 @@ module fetch(
 		input wire [31:0] iSYSREG_KPDTR,		//
 		input wire [31:0] iSYSREG_TIDR,
 		//Exception
+		input wire iEVENT_HOLD,
 		input wire iEVENT_START,
+		input wire iEVENT_END,
+		//Pipeline Control - Register Set
+		input wire iEVENT_SETREG_PCR_SET,
+		input wire [31:0] iEVENT_SETREG_PCR,
+
+
 		input wire iEXCEPTION_ADDR_SET,
 		input wire [31:0] iEXCEPTION_ADDR,
-		input wire iEXCEPTION_RESTART,
 		//Branch Predict
 		output wire oBRANCH_PREDICT_FETCH_FLUSH,
 		input wire iBRANCH_PREDICT_RESULT_PREDICT,
@@ -69,8 +70,7 @@ module fetch(
 	wire fetch_queue_paging_ena;
 	wire fetch_queue_kernel_access;
 	//PC Request
-	reg [31:0] b_pc;
-	reg b_fetch_valid;
+	reg [31:0] b_fetch_addr;
 	reg [1:0] b_fetch_state;
 	//Next Output Buffer
 	reg [31:0] b_next_inst;
@@ -79,6 +79,101 @@ module fetch(
 	reg b_next_paging_ena;
 	reg b_next_kernel_access;
 	reg [31:0] b_pc_out;
+	//Branch Predict
+	wire branch_predictor_valid;
+	wire branch_predictor_predict_branch;
+	wire [31:0] branch_predictor_addr;
+	wire branch_predictor_flush;
+
+
+	/****************************************
+	State
+	****************************************/
+	localparam PL_STT_IDLE = 2'h0;
+	localparam PL_STT_READ = 2'h1;
+
+	reg [1:0] state;
+	reg [1:0] b_state;
+
+	always@*begin
+		if(iRESET_SYNC)begin
+			state = PL_STT_IDLE;
+		end
+		else if(iEVENT_END && iEVENT_SETREG_PCR_SET)begin		//Jump
+			state = PL_STT_READ;
+		end
+		else if(iEVENT_START)begin
+			state = PL_STT_IDLE;
+		end
+		else if(iEVENT_HOLD)begin
+			state = PL_STT_IDLE;
+		end
+		else if(branch_predictor_flush)begin					//Branch Predictor - Predict Branch 
+			state = branch_predictor_addr;
+		end
+		else begin
+			case(b_state)
+				PL_STT_IDLE:
+					begin
+						state = PL_STT_READ;
+					end
+				PL_STT_READ:
+					begin
+						state = b_state;
+					end
+				default:
+					begin
+						state = PL_STT_IDLE;
+					end
+			endcase
+		end
+	end
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_state <= 32'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_state <= 32'h0;
+		end
+		else begin
+			b_state <= state;
+		end
+	end //always
+
+	wire fetch_valid = b_state == PL_STT_READ;
+
+	/****************************************
+	Program Counter for Fetch
+	****************************************/
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_fetch_addr <= 32'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_fetch_addr <= 32'h0;
+		end
+		else if(iEVENT_END && iEVENT_SETREG_PCR_SET)begin		//Jump
+			b_fetch_addr <= {iEVENT_SETREG_PCR[31:1], 1'b0};
+		end
+		else if(iEVENT_START)begin
+			b_fetch_addr<= 32'h0;
+		end
+		else if(iEVENT_HOLD)begin
+			b_fetch_addr <= b_fetch_addr;
+		end
+		else if(branch_predictor_flush)begin					//Branch Predict
+			b_fetch_addr <= branch_predictor_addr;
+		end
+		else begin
+			if(!iEVENT_START && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP && fetch_valid)begin
+				b_fetch_addr <= b_fetch_addr + 32'h4;
+			end
+		end
+	end //always
+
+
 
 	/****************************************
 	Branch Predictor
@@ -96,13 +191,8 @@ module fetch(
 		end
 	endfunction
 
-	wire branch_predictor_valid;
-	wire branch_predictor_predict_branch;
-	wire [31:0] branch_predictor_addr;
-	wire branch_predictor_flush;
-
 	`ifdef MIST1032ISA_BRANCH_PREDICT
-		assign branch_predictor_flush = !iNEXT_LOCK && branch_predictor_valid && branch_predictor_predict_branch;		//Test
+		assign branch_predictor_flush = !iNEXT_LOCK && branch_predictor_valid && branch_predictor_predict_branch;	
 	`else
 		assign branch_predictor_flush = 1'b0;
 	`endif
@@ -152,12 +242,12 @@ module fetch(
 				{
 					!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/,
 					(iSYSREG_PSR[1] || iSYSREG_PSR[0]),
-					b_pc
+					b_fetch_addr
 				}
 			),				//Data-In
 			.rdreq(iPREVIOUS_INST_VALID),				//Read Data Request
 			.sclr(iRESET_SYNC || iEVENT_START || branch_predictor_flush),				//Synchthronous Reset
-			.wrreq(!iEVENT_START && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),				//Write Req
+			.wrreq(!iEVENT_START && !branch_predictor_flush && fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),				//Write Req
 			.almost_empty(),
 			.almost_full(),
 			.empty(),
@@ -179,8 +269,8 @@ module fetch(
 			.inRESET(inRESET),
 			.iREMOVE(iRESET_SYNC || iEVENT_START || branch_predictor_flush),
 			.oCOUNT(/* Not Use */),
-			.iWR_EN(!iEVENT_START && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),
-			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_pc}),
+			.iWR_EN(!iEVENT_START && !branch_predictor_flush && fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),
+			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_fetch_addr}),
 			.oWR_FULL(fetch_queue_full),
 			.iRD_EN(iPREVIOUS_INST_VALID),
 			.oRD_DATA({fetch_queue_kernel_access, fetch_queue_paging_ena, fetch_queue_addr}),
@@ -189,75 +279,21 @@ module fetch(
 	`endif
 
 	/****************************************
-	This -> Previous
+	Fetch
 	****************************************/
 	wire this_lock = iNEXT_LOCK || fetch_queue_full || iPREVIOUS_FETCH_LOCK;		//iPREVIOUS_FETCH_LOCK ga lock site naitoki nimo fetch ga tomatte simau
 	assign oBRANCH_PREDICT_FETCH_FLUSH = branch_predictor_flush;
 	assign oPREVIOUS_LOCK = iNEXT_LOCK;
 
-	assign oPREVIOUS_FETCH_REQ = !iEVENT_START && !branch_predictor_flush && b_fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP;
+	assign oPREVIOUS_FETCH_REQ = !iEVENT_START && !branch_predictor_flush && fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP;
 	assign oPREVIOUS_MMUMOD = iSYSREG_PSR[1:0];
 	assign oPREVIOUS_MMUPS = iSYSREG_PSR[9:7];
 	assign oPREVIOUS_ASID = iSYSREG_TIDR[31:18];
 	assign oPREVIOUS_PDT = (iSYSREG_PSR[6:5] == 2'h0)? iSYSREG_KPDTR : iSYSREG_PDTR;
-	assign oPREVIOUS_FETCH_ADDR	= b_pc;
+	assign oPREVIOUS_FETCH_ADDR	= b_fetch_addr;
 
 
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_pc <= {32{1'b0}};
-			b_fetch_valid <= 1'b0;
-			b_fetch_state <= 2'b00;
-		end
-		else if(iRESET_SYNC)begin
-			b_pc <= {32{1'b0}};
-			b_fetch_valid <= 1'b0;
-			b_fetch_state <= 2'b00;
-		end
-		else if(iEXCEPTION_ADDR_SET)begin		//Jump
-			b_pc <= {iEXCEPTION_ADDR[31:1], 1'b0};
-			b_fetch_valid <= 1'b1;
-			b_fetch_state <= 2'h1;
-		end
-		else if(iEVENT_START)begin
-			b_fetch_valid <= 1'b0;
-			b_fetch_state <= 2'h2;
-		end
-		else if(branch_predictor_flush)begin
-			b_pc <= branch_predictor_addr;
-			b_fetch_valid <= 1'b1;
-			b_fetch_state <= 2'h1;
-		end
-		else begin
-			case(b_fetch_state)
-				2'h0 :		//Reset Start
-					begin
-						b_fetch_valid <= 1'b1;
-						b_fetch_state <= 2'h1;
-						b_pc <= 32'h00000000;
-					end
-				2'h1 : 		//Fetch State
-					begin
-						if(!iEVENT_START && !branch_predictor_flush && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP)begin
-							b_pc <= b_pc + 32'h4;		//Single Pipeline
-							b_fetch_valid <= 1'b1;
-						end
-					end
-				2'h2:
-					begin
-						if(iEXCEPTION_ADDR_SET)begin		//Jump
-							b_pc <= {iEXCEPTION_ADDR[31:1], 1'b0};
-							b_fetch_valid <= 1'b1;
-							b_fetch_state <= 2'h1;
-						end
-					end
-				default :
-					begin
-						b_pc <= b_pc;
-					end
-			endcase
-		end
-	end //always
+
 
 	/****************************************
 	Previous -> Next

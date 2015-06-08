@@ -18,19 +18,22 @@ module dispatch
 		input wire iEVENT_START,
 		input wire iEVENT_IRQ_FRONT2BACK,
 		input wire iEVENT_IRQ_BACK2FRONT,
-		//Legacy
-		input wire iFREE_REGISTER_LOCK,
+		input wire iEVENT_END,
 		//Exception Lock
 		output wire oEXCEPTION_LOCK,
 		//IOSR
 		input wire iSYSREGINFO_IOSR_VALID,
 		input wire [31:0] iSYSREGINFO_IOSR,
-		//System Register
-		input wire iFREE_SYSREG_SET_IRQ_MODE,
-		input wire iFREE_SYSREG_CLR_IRQ_MODE,
 		//FI0R Set
-		input wire iFREE_FI0R_SET,
-		input wire [31:0] iFREE_FI0R,
+		input wire iEVENT_SETREG_FI0R_SET,
+		input wire iEVENT_SETREG_FI1R_SET,
+		input wire iEVENT_SETREG_PPCR_SET,
+		//input wire iEVENT_SETREG_SPR_SET,
+		input wire [31:0] iEVENT_SETREG_FI0R,
+		input wire [31:0] iEVENT_SETREG_FI1R,
+		input wire [31:0] iEVENT_SETREG_PPCR,
+		//input wire [31:0] iEVENT_SETREG_SPR,
+
 		//System Register Input
 		input wire [31:0] iSYSREG_FLAGR,
 		//System Register Output
@@ -189,7 +192,7 @@ module dispatch
 		.iREGIST_DATA(w_sysreg_pcr_regist_data),
 		.oINFO_DATA(w_sysreg_pcr_info_data)
 	);
-	assign w_sysreg_pcr_regist_valid = iWB_VALID && !iEVENT_HOLD && !iFREE_REGISTER_LOCK;
+	assign w_sysreg_pcr_regist_valid = iWB_VALID && !iEVENT_HOLD;
 	assign w_sysreg_pcr_regist_data = (iWB_BRANCH)? iWB_BRANCH_PC : iWB_PC;
 
 	reg b_pcr_valid;
@@ -747,9 +750,9 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_psr_regist_valid), .iREGIST_DATA(w_sysreg_psr_regist_data),
 		.oINFO_DATA(w_sysreg_psr_info_data)
 	);
-	assign w_sysreg_psr_regist_valid = iFREE_SYSREG_SET_IRQ_MODE || iFREE_SYSREG_CLR_IRQ_MODE || (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PSR);
-	assign w_sysreg_psr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? {w_sysreg_psr_info_data[31:7], 2'h0, w_sysreg_psr_info_data[4:3], 1'b0, w_sysreg_psr_info_data[1:0]} : (
-															(iFREE_SYSREG_CLR_IRQ_MODE)? w_sysreg_ppsr_info_data : iWB_DATA
+	assign w_sysreg_psr_regist_valid = iEVENT_IRQ_FRONT2BACK || iEVENT_IRQ_BACK2FRONT || (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PSR);
+	assign w_sysreg_psr_regist_data = (iEVENT_IRQ_FRONT2BACK)? {w_sysreg_psr_info_data[31:7], 2'h0, w_sysreg_psr_info_data[4:3], 1'b0, w_sysreg_psr_info_data[1:0]} : (
+															(iEVENT_IRQ_BACK2FRONT)? w_sysreg_ppsr_info_data : iWB_DATA
 														);
 
 	//SPR
@@ -760,8 +763,13 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_spr_regist_valid), .iREGIST_DATA(w_sysreg_spr_regist_data),
 		.oINFO_DATA(w_sysreg_spr_info_data)
 	);
+	
+	//assign w_sysreg_spr_regist_valid = ((!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_SPR) || !iEVENT_HOLD && iWB_SPR_WRITEBACK && iWB_VALID);
+	//assign w_sysreg_spr_regist_data = (!iEVENT_HOLD && iWB_SPR_WRITEBACK && iWB_VALID)? iWB_SPR : iWB_DATA;
+
 	assign w_sysreg_spr_regist_valid = ((!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_SPR) || !iEVENT_HOLD && iWB_SPR_WRITEBACK && iWB_VALID);
 	assign w_sysreg_spr_regist_data = (!iEVENT_HOLD && iWB_SPR_WRITEBACK && iWB_VALID)? iWB_SPR : iWB_DATA;
+
 
 
 	//IDTR
@@ -780,7 +788,16 @@ module dispatch
 		.iCLOCK(iCLOCK), 
 		.inRESET(inRESET), 
 		.iRESET_SYNC(iRESET_SYNC),
-		.iREGIST_DATA_VALID(iFREE_FI0R_SET), .iREGIST_DATA(iFREE_FI0R),
+		.iREGIST_DATA_VALID(iEVENT_SETREG_FI0R_SET), .iREGIST_DATA(iEVENT_SETREG_FI0R),
+		.oINFO_DATA()
+	);
+
+	//FI0R
+	dispatch_system_register FI1R (
+		.iCLOCK(iCLOCK), 
+		.inRESET(inRESET), 
+		.iRESET_SYNC(iRESET_SYNC),
+		.iREGIST_DATA_VALID(iEVENT_SETREG_FI1R_SET), .iREGIST_DATA(iEVENT_SETREG_FI1R),
 		.oINFO_DATA()
 	);
 
@@ -835,8 +852,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ppsr_regist_valid), .iREGIST_DATA(w_sysreg_ppsr_regist_data),
 		.oINFO_DATA(w_sysreg_ppsr_info_data)
 	);
-	assign w_sysreg_ppsr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPSR) || iFREE_SYSREG_SET_IRQ_MODE;
-	assign w_sysreg_ppsr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_psr_info_data : iWB_DATA;
+	assign w_sysreg_ppsr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPSR) || iEVENT_IRQ_FRONT2BACK;
+	assign w_sysreg_ppsr_regist_data = (iEVENT_IRQ_FRONT2BACK)? w_sysreg_psr_info_data : iWB_DATA;
 
 
 	//PPCR : Previous Program Counter
@@ -848,8 +865,11 @@ module dispatch
 		.oINFO_DATA(w_sysreg_ppcr_info_data)
 	);
 
-	assign w_sysreg_ppcr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iEVENT_IRQ_FRONT2BACK;
-	assign w_sysreg_ppcr_regist_data = (iEVENT_IRQ_FRONT2BACK)? w_sysreg_pcr_info_data : iWB_DATA;
+	//assign w_sysreg_ppcr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || iEVENT_IRQ_FRONT2BACK;
+	//assign w_sysreg_ppcr_regist_data = (iEVENT_IRQ_FRONT2BACK)? w_sysreg_pcr_info_data : iWB_DATA;
+	
+	assign w_sysreg_ppcr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPCR) || (iEVENT_SETREG_PPCR_SET && iEVENT_END);
+	assign w_sysreg_ppcr_regist_data = (iEVENT_SETREG_PPCR_SET && iEVENT_END)? iEVENT_SETREG_PPCR : iWB_DATA;
 	
 
 
@@ -861,8 +881,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ppdtr_regist_valid), .iREGIST_DATA(w_sysreg_ppdtr_regist_data),
 		.oINFO_DATA(w_sysreg_ppdtr_info_data)
 	);
-	assign w_sysreg_ppdtr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPDTR) || iFREE_SYSREG_SET_IRQ_MODE;
-	assign w_sysreg_ppdtr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_pdtr_info_data : iWB_DATA;
+	assign w_sysreg_ppdtr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PPDTR) || iEVENT_IRQ_FRONT2BACK;
+	assign w_sysreg_ppdtr_regist_data = (iEVENT_IRQ_FRONT2BACK)? w_sysreg_pdtr_info_data : iWB_DATA;
 
 	//PFLAGR : Previous Flag Register
 	dispatch_system_register PFLAGR(
@@ -873,7 +893,7 @@ module dispatch
 		.iREGIST_DATA(w_sysreg_pflagr_regist_data),
 		.oINFO_DATA(w_sysreg_pflagr_info_data)
 	);
-	assign w_sysreg_pflagr_regist_valid	 = iEVENT_IRQ_FRONT2BACK;		//iFREE_SYSREG_SET_IRQ_MODE;
+	assign w_sysreg_pflagr_regist_valid	 = iEVENT_IRQ_FRONT2BACK;		//iEVENT_IRQ_FRONT2BACK;
 	assign w_sysreg_pflagr_regist_data = iSYSREG_FLAGR;
 
 
@@ -885,8 +905,8 @@ module dispatch
 		.iREGIST_DATA_VALID(w_sysreg_ptidr_regist_valid), .iREGIST_DATA(w_sysreg_ptidr_regist_data),
 		.oINFO_DATA(w_sysreg_ptidr_info_data)
 	);
-	assign w_sysreg_ptidr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PTIDR) || iFREE_SYSREG_SET_IRQ_MODE;
-	assign w_sysreg_ptidr_regist_data = (iFREE_SYSREG_SET_IRQ_MODE)? w_sysreg_tidr_info_data : iWB_DATA;
+	assign w_sysreg_ptidr_regist_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_PTIDR) || iEVENT_IRQ_FRONT2BACK;
+	assign w_sysreg_ptidr_regist_data = (iEVENT_IRQ_FRONT2BACK)? w_sysreg_tidr_info_data : iWB_DATA;
 
 
 	//FRCR

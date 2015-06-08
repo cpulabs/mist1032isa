@@ -17,8 +17,6 @@ module execute(
 		input wire iEVENT_IRQ_FRONT2BACK,
 		input wire iEVENT_IRQ_BACK2FRONT,
 		input wire iEVENT_END,
-		//Legacy
-		input wire iFREE_REGISTER_LOCK,
 		//Lock
 		output wire oEXCEPTION_LOCK,
 		output wire oEXCEPTION_LDST_LOCK,
@@ -284,7 +282,7 @@ module execute(
 	execute_forwarding_register FORWARDING_REGISTER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC),
+		.iRESET_SYNC(iEVENT_HOLD || iEVENT_START || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -313,7 +311,7 @@ module execute(
 	execute_forwarding FORWARDING_RS0(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC),
+		.iRESET_SYNC(iEVENT_HOLD || iEVENT_START || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -357,7 +355,7 @@ module execute(
 	execute_forwarding FORWARDING_RS1(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
-		.iRESET_SYNC(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC),
+		.iRESET_SYNC(iEVENT_HOLD || iEVENT_START || iRESET_SYNC),
 		//Writeback - General Register
 		.iWB_GR_VALID(b_valid && b_writeback),
 		.iWB_GR_DATA(result_data_with_afe),
@@ -401,7 +399,7 @@ module execute(
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
 		//Control
-		.iCTRL_HOLD(iEVENT_HOLD || iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK),
+		.iCTRL_HOLD(iEVENT_HOLD || iEVENT_HOLD || iEVENT_START),
 		//PFLAGR
 		.iPFLAGR_VALID(iEVENT_IRQ_BACK2FRONT),
 		.iPFLAGR(iSYSREG_PFLAGR[4:0]),
@@ -635,7 +633,7 @@ module execute(
 		*************************************/
 		//Output - LDST Pipe
 		.oLDST_REQ(oDATAIO_REQ),
-		.iLDST_BUSY(iEVENT_HOLD || iFREE_REGISTER_LOCK || io_lock_condition),
+		.iLDST_BUSY(iEVENT_HOLD || io_lock_condition),
 		.oLDST_RW(oDATAIO_RW),
 		.oLDST_PDT(oDATAIO_PDT),
 		.oLDST_ADDR(oDATAIO_ADDR),
@@ -888,7 +886,7 @@ module execute(
 		if(!inRESET)begin
 			b_state <= L_PARAM_STT_NORMAL;
 		end
-		else if(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+		else if(iEVENT_HOLD || iEVENT_START || iRESET_SYNC)begin
 			b_state <= L_PARAM_STT_NORMAL;
 		end
 		else begin
@@ -1001,7 +999,7 @@ module execute(
 		if(!inRESET)begin
 			b_pc <= 32'h0;
 		end
-		else if(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+		else if(iEVENT_HOLD || iEVENT_START || iRESET_SYNC)begin
 			b_pc <= 32'h0;
 		end
 		else begin
@@ -1027,7 +1025,7 @@ module execute(
 		if(!inRESET)begin
 			b_r_data <= 32'h0;
 		end
-		else if(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+		else if(iEVENT_HOLD || iEVENT_START || iRESET_SYNC)begin
 			b_r_data <= 32'h0;
 		end
 		else begin
@@ -1092,7 +1090,7 @@ module execute(
 		if(!inRESET)begin
 			b_r_spr <= 32'h0;
 		end
-		else if(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+		else if(iEVENT_HOLD || iEVENT_START || iRESET_SYNC)begin
 			b_r_spr <= 32'h0;
 		end
 		else begin
@@ -1120,7 +1118,7 @@ module execute(
 		if(!inRESET)begin
 			b_ex_category_ldst <= 1'b0;
 		end
-		else if(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+		else if(iEVENT_HOLD || iEVENT_START || iRESET_SYNC)begin
 			b_ex_category_ldst <= 1'b0;
 		end
 		else begin
@@ -1142,7 +1140,7 @@ module execute(
 			b_afe <= 4'h0;
 			b_spr_writeback <= 1'b0;
 		end
-		else if(iEVENT_HOLD || iRESET_SYNC || iEVENT_START || iFREE_REGISTER_LOCK)begin
+		else if(iEVENT_HOLD || iRESET_SYNC || iEVENT_START)begin
 			b_writeback <= 1'b0;
 			b_destination_sysreg  <= 1'b0;
 			b_destination <= 5'h0;
@@ -1177,7 +1175,7 @@ module execute(
 		if(!inRESET)begin
 			b_valid <= 1'b0;
 		end
-		else if(iEVENT_HOLD || iEVENT_START || iFREE_REGISTER_LOCK || iRESET_SYNC)begin
+		else if(iEVENT_HOLD || iEVENT_START || iRESET_SYNC)begin
 			b_valid <= 1'b0;
 		end
 		else begin
@@ -1305,16 +1303,7 @@ module execute(
 	assign oPSRSET_VALID = jump_stage_sysreg_psr_valid;
 
 	//Writeback
-	/*
-	assign oNEXT_VALID = b_valid && !iEVENT_HOLD && !iFREE_REGISTER_LOCK;
-	assign oNEXT_DATA = result_data_with_afe;
-	assign oNEXT_DESTINATION = b_destination;
-	assign oNEXT_DESTINATION_SYSREG = b_destination_sysreg;
-	assign oNEXT_WRITEBACK = b_writeback && !except_ldst_valid;
-	assign oNEXT_SPR_WRITEBACK = b_spr_writeback && !except_ldst_valid;
-	assign oNEXT_SPR = b_r_spr;
-	*/
-	assign oNEXT_VALID = b_valid && !iEVENT_HOLD && !iFREE_REGISTER_LOCK;
+	assign oNEXT_VALID = b_valid && !iEVENT_HOLD;
 	assign oNEXT_DATA = result_data_with_afe;
 	assign oNEXT_DESTINATION = b_destination;
 	assign oNEXT_DESTINATION_SYSREG = b_destination_sysreg;

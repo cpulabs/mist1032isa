@@ -1,3 +1,4 @@
+# ** Warning: (vlib-34) Library already exists at "work".
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module tb_sys_level
 # 
@@ -246,8 +247,8 @@
 # 	decoder
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module dispatch
-# -- Compiling module frcr_timer
-# -- Compiling module system_register
+# -- Compiling module dispatch_frcr_timer
+# -- Compiling module dispatch_system_register
 # 
 # Top level modules:
 # 	dispatch
@@ -319,11 +320,16 @@
 # 	l1_instruction_cache
 # 	l1_instruction_cache_counter
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
-# -- Compiling module core_interrupt_manager
 # -- Compiling module core_paging_support
-# -- Compiling module exception_manager
+# -- Compiling module interrupt_control
+# -- Compiling module pipeline_control
+# -- Compiling module pipeline_control_hundler_read
+# -- Compiling module pipeline_control_idt_read
+# -- Compiling module pipeline_control_irq_call
+# -- Compiling module pipeline_control_irq_return
+# -- Compiling module pipeline_control_spr_exchange
 # 
 # Top level modules:
-# 	core_interrupt_manager
 # 	core_paging_support
-# 	exception_manager
+# 	interrupt_control
+# 	pipeline_control

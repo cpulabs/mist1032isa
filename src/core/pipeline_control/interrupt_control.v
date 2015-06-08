@@ -1,12 +1,10 @@
 `default_nettype none
 `include "processor.h"
 
-module core_interrupt_manager(
+module interrupt_control(
 		//System
 		input wire iCLOCK,
 		input wire inRESET,
-		//Free
-		input wire iFREE_IRQ_SETCONDITION,
 		//Interrupt Configlation Table
 		input wire iICT_VALID,
 		input wire [5:0] iICT_ENTRY,
