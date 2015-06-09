@@ -1,8 +1,8 @@
 
-./out/irq_div.out:     ファイル形式 elf32-mist32
+./out/irq_div.out:     file format elf32-mist32
 
 
-セクション .text の逆アセンブル:
+Disassembly of section .text:
 
 00000000 <_start>:
    0:	0d 40 00 00 	wl16	r0,0x0
@@ -117,7 +117,7 @@
 00000170 <test_end>:
  170:	14 30 ff bc 	br	60 <finish>,#al
 
-セクション .assert の逆アセンブル:
+Disassembly of section .assert:
 
 00020000 <CHECK_FLAG>:
    20000:	00 00 00 01 	add	r0,r1
@@ -140,13 +140,13 @@
 00020018 <ERROR_EXPECT>:
    20018:	00 00 00 00 	add	r0,r0
 
-セクション .idt の逆アセンブル:
+Disassembly of section .idt:
 
 00040000 <idt_label>:
    40000:	20 00 00 00 	nop
    40004:	20 00 00 00 	nop
 
-セクション .stack の逆アセンブル:
+Disassembly of section .stack:
 
 000f0000 <STACK_INDEX>:
    f0000:	00 00 00 00 	add	r0,r0

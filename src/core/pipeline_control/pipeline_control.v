@@ -667,7 +667,7 @@ module pipeline_control(
 				L_PARAM_IDLE:
 					begin
 						//Interrupt
-						if(irq_call_start_condition)begin
+						if(irq_call_start_condition || alu_jump_irq_call_start_condition)begin
 							b_event_irq_front2back <= 1'b1;
 						end
 						else begin

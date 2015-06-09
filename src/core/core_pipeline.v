@@ -326,11 +326,13 @@ module core_pipeline
 	wire cim2exception_irq_req;
 	wire [6:0] cim2exception_irq_num;
 	wire [31:0] cim2exception_irq_fi0r;
+	wire [31:0] cim2exception_irq_fi1r;
 	wire exception2cim_irq_ack;
 	wire exception_idtset_valid;
 	wire exception_fault_valid;
 	wire [6:0] exception_fault_num;
 	wire [31:0] exception_fault_fi0r;
+	wire [31:0] exception_fault_fi1r;
 
 	wire sysreg_write_pdtr;
 
@@ -398,11 +400,13 @@ module core_pipeline
 		.iFAULT_ACTIVE(exception_fault_valid),
 		.iFAULT_NUM(exception_fault_num),
 		.iFAULT_FI0R(exception_fault_fi0r),
+		.iFAULT_FI1R(exception_fault_fi1r),
 		//To Exception Manager
 		.iEXCEPTION_LOCK(exception2cim_irq_lock),
 		.oEXCEPTION_ACTIVE(cim2exception_irq_req),
 		.oEXCEPTION_IRQ_NUM(cim2exception_irq_num),
 		.oEXCEPTION_IRQ_FI0R(cim2exception_irq_fi0r),
+		.oEXCEPTION_IRQ_FI1R(cim2exception_irq_fi1r),
 		.iEXCEPTION_IRQ_ACK(exception2cim_irq_ack)
 	);
 
@@ -486,7 +490,7 @@ module core_pipeline
 		.iEXCEPT_IRQ_REQ(cim2exception_irq_req),
 		.iEXCEPT_IRQ_NUM(cim2exception_irq_num),
 		.iEXCEPT_IRQ_FI0R(cim2exception_irq_fi0r),
-		.iEXCEPT_IRQ_FI1R(),
+		.iEXCEPT_IRQ_FI1R(cim2exception_irq_fi1r),
 		.oEXCEPT_IRQ_ACK(exception2cim_irq_ack),
 		.oEXCEPT_IRQ_BUSY(exception2cim_irq_lock),
 		/************************************
@@ -975,6 +979,7 @@ module core_pipeline
 		.oFAULT_VALID(exception_fault_valid),
 		.oFAULT_NUM(exception_fault_num),
 		.oFAULT_FI0R(exception_fault_fi0r),
+		.oFAULT_FI1R(exception_fault_fi1r),
 		//Branch Predictor
 		.oBPREDICT_PREDICT(branch_predict_result_predict),
 		.oBPREDICT_HIT(branch_predict_result_hit),

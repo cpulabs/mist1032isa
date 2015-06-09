@@ -956,8 +956,6 @@ module dispatch
 	assign w_sysreg_frchr_regist_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR)? iWB_DATA : frcr_64bit_timer[63:32];
 
 
-
-
 	//Debug Module Enable
 	`ifdef MIST1032ISA_STANDARD_DEBUGGER
 		assign oDEBUG_REG_OUT_GR0 = b_gr_register[0];
@@ -1099,6 +1097,7 @@ module dispatch
 	assign oSYSREG_PCR = w_sysreg_pcr_info_data;
 	//assign oEXCEPTION_LOCK = !b_pcr_valid || !b_valid || (b_valid && b_ex_branch);
 	assign oEXCEPTION_LOCK = !b_pcr_valid;	//new 20150526
+
 
 endmodule
 

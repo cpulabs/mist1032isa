@@ -1,8 +1,8 @@
 
-./out/branch_predictor.out:     ファイル形式 elf32-mist32
+./out/branch_predictor.out:     file format elf32-mist32
 
 
-セクション .text の逆アセンブル:
+Disassembly of section .text:
 
 00000000 <_start>:
    0:	0d 40 00 00 	wl16	r0,0x0
@@ -128,7 +128,7 @@
  190:	14 38 ff f3 	br	15c <lp0>,#geu
  194:	14 30 ff b3 	br	60 <finish>,#al
 
-セクション .assert の逆アセンブル:
+Disassembly of section .assert:
 
 00020000 <CHECK_FLAG>:
    20000:	00 00 00 01 	add	r0,r1
@@ -151,7 +151,7 @@
 00020018 <ERROR_EXPECT>:
    20018:	00 00 00 00 	add	r0,r0
 
-セクション .stack の逆アセンブル:
+Disassembly of section .stack:
 
 000f0000 <STACK_INDEX>:
    f0000:	00 00 00 00 	add	r0,r0

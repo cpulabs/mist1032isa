@@ -22,11 +22,13 @@ module interrupt_control(
 		input wire iFAULT_ACTIVE,
 		input wire [6:0] iFAULT_NUM,	
 		input wire [31:0] iFAULT_FI0R,
+		input wire [31:0] iFAULT_FI1R,
 		///To Exception Manager
 		input wire iEXCEPTION_LOCK,
 		output wire oEXCEPTION_ACTIVE,
 		output wire [6:0] oEXCEPTION_IRQ_NUM,
 		output wire [31:0] oEXCEPTION_IRQ_FI0R,
+		output wire [31:0] oEXCEPTION_IRQ_FI1R,
 		input wire iEXCEPTION_IRQ_ACK
 	);
 	
@@ -47,9 +49,10 @@ module interrupt_control(
 	//Instruction State
 	reg [1:0] b_state;
 	reg [6:0] b_irq_num;	
-	reg [31:0] b_irq_fi0r;
 	reg b_irq_type;
 	reg b_irq_ack;
+	reg [31:0] b_irq_fi0r;
+	reg [31:0] b_irq_fi1r;
 	//Generate
 	
 	integer i;
@@ -110,8 +113,6 @@ module interrupt_control(
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_state <= STT_IDLE;
-			b_irq_num <= {7{1'b0}};
-			b_irq_fi0r <= 32'h0;
 			b_irq_type <= 1'b0;
 			b_irq_ack <= 1'b0;
 		end
@@ -121,15 +122,11 @@ module interrupt_control(
 					begin
 						if(software_interrupt_valid)begin
 							b_state <= STT_COMP_WAIT;
-							b_irq_num <= iFAULT_NUM;
-							b_irq_fi0r <= iFAULT_FI0R;
 							b_irq_type <= 1'b0;
 							b_irq_ack <= 1'b1;
 						end
 						else if(b_hw_irq_valid && !iEXCEPTION_LOCK)begin
 							b_state <= STT_COMP_WAIT;
-							b_irq_num <= b_hw_irq_num;
-							b_irq_fi0r <= 32'h0;
 							b_irq_type <= 1'b1;
 							b_irq_ack <= 1'b1;
 						end
@@ -148,11 +145,45 @@ module interrupt_control(
 			endcase	
 		end
 	end
+
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_irq_num <= {7{1'b0}};
+			b_irq_fi0r <= 32'h0;
+			b_irq_fi1r <= 32'h0;
+		end
+		else begin
+			case(b_state)
+				STT_IDLE :
+					begin
+						if(software_interrupt_valid)begin
+							b_irq_num <= iFAULT_NUM;
+							b_irq_fi0r <= iFAULT_FI0R;
+							b_irq_fi1r <= iFAULT_FI1R;
+						end
+						else if(b_hw_irq_valid && !iEXCEPTION_LOCK)begin
+							b_irq_num <= b_hw_irq_num;
+							b_irq_fi0r <= 32'h0;
+							b_irq_fi1r <= 32'h0;
+						end
+					end
+				default :
+					begin
+						b_irq_num <= b_irq_num;
+						b_irq_fi0r <= b_irq_fi0r;
+						b_irq_fi1r <= b_irq_fi1r;			
+					end
+			endcase	
+		end
+	end
 	
 	assign oEXT_ACK = b_irq_ack && b_irq_type;//(b_state == `STT_COMP_WAIT && !software_interrupt_valid)? hardware_interrupt_valid : 1'b0;
 	assign oEXCEPTION_ACTIVE = (b_state == STT_COMP_WAIT)? !iEXCEPTION_IRQ_ACK : software_interrupt_valid || hardware_interrupt_valid || b_hw_irq_valid;//(b_state == `STT_COMP_WAIT)? !iFREE_IRQ_SETCONDITION : software_interrupt_valid || hardware_interrupt_valid;
 	assign oEXCEPTION_IRQ_NUM = (b_state == STT_COMP_WAIT)? b_irq_num : ((software_interrupt_valid)? iFAULT_NUM : {1'b0, iEXT_NUM});
 	assign oEXCEPTION_IRQ_FI0R = b_irq_fi0r;
+	assign oEXCEPTION_IRQ_FI1R = b_irq_fi1r;
 
 			
 endmodule

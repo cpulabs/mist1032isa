@@ -1206,7 +1206,8 @@ module execute(
 								b_valid <= 1'b1;
 							end
 							else begin
-								b_valid <= 1'b0;
+								//b_valid <= 1'b0;
+								b_valid <= 1'b1;
 							end
 						end
 						else begin
@@ -1321,20 +1322,6 @@ module execute(
 
 	assign oEXCEPTION_LOCK = (b_state == L_PARAM_STT_DIV_WAIT) ||  (b_state == L_PARAM_STT_LOAD) ||  (b_state == L_PARAM_STT_STORE) ||  (b_state == L_PARAM_STT_RELOAD); //new 20150526
 	
-
-
-/*
-	localparam L_PARAM_STT_NORMAL =  3'h0;
-	localparam L_PARAM_STT_DIV_WAIT = 3'h1;
-	localparam L_PARAM_STT_LOAD = 3'h2;
-	localparam L_PARAM_STT_STORE = 3'h3;
-	localparam L_PARAM_STT_BRANCH = 3'h4;
-	localparam L_PARAM_STT_RELOAD = 3'h5;
-	localparam L_PARAM_STT_EXCEPTION = 3'h6;
-	localparam L_PARAM_STT_HALT = 3'h7;
-*/
-
-
 
 
 
