@@ -1,4 +1,4 @@
-transcript file sim/slideshow.O3.result
+transcript file sim/slideshow.O0.result
 
 vlib work
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ./tb/*.v
