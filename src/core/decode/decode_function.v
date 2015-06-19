@@ -3847,6 +3847,60 @@ module decode_function(
 							/* Execute Module */					`EXE_SELECT_SYS_REG
 						};
 					end
+				`OC_SRFI0R:
+					begin									//O1
+						f_decode	=	{
+							/* Decode Error */						1'b0,
+							/* Commit Wait Instruction */			1'b1,
+							/* Condition Code & AFE */				f_decode_inst[19:16],
+							/* Source0 */							`SYSREG_FI0R,
+							/* Source1 */							{32{1'b0}},
+							/* Source0 Use Flags*/					1'b0,
+							/* Source1-Immediate */					1'b0,
+							/* Source0 Active */					1'b1,
+							/* Source1 Active */					1'b0,
+							/* Source0 System Register */			1'b1,
+							/* Source1 System Register */			1'b0,
+							/* Source0 System Register Rename */	1'b0,
+							/* Source1 System Register Rename */	1'b0,
+							/* Displacement Data -> ADV */			6'h0,
+							/* Displacement Data -> ADV Enable */	1'b0,
+							/* Destination */						f_decode_inst[9:5],
+							/* Write Back Enable */					1'b1,
+							/* Make Flag Instruction */				1'b0,
+							/* Destination is System Register */	1'b0,
+							/* Destination Rename*/					1'b1,
+							/* Execute Module Command */			`EXE_SYS_REG_BUFFER0,
+							/* Execute Module */					`EXE_SELECT_SYS_REG
+						};
+					end
+				`OC_SRFI1R:
+					begin									//O1
+						f_decode	=	{
+							/* Decode Error */						1'b0,
+							/* Commit Wait Instruction */			1'b1,
+							/* Condition Code & AFE */				f_decode_inst[19:16],
+							/* Source0 */							`SYSREG_FI1R,
+							/* Source1 */							{32{1'b0}},
+							/* Source0 Use Flags*/					1'b0,
+							/* Source1-Immediate */					1'b0,
+							/* Source0 Active */					1'b1,
+							/* Source1 Active */					1'b0,
+							/* Source0 System Register */			1'b1,
+							/* Source1 System Register */			1'b0,
+							/* Source0 System Register Rename */	1'b0,
+							/* Source1 System Register Rename */	1'b0,
+							/* Displacement Data -> ADV */			6'h0,
+							/* Displacement Data -> ADV Enable */	1'b0,
+							/* Destination */						f_decode_inst[9:5],
+							/* Write Back Enable */					1'b1,
+							/* Make Flag Instruction */				1'b0,
+							/* Destination is System Register */	1'b0,
+							/* Destination Rename*/					1'b1,
+							/* Execute Module Command */			`EXE_SYS_REG_BUFFER0,
+							/* Execute Module */					`EXE_SELECT_SYS_REG
+						};
+					end
 
 				/*******************
 				System Write

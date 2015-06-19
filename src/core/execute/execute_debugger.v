@@ -10,7 +10,7 @@ module execute_debugger(
 		input wire iDEBUG_CTRL_REQ,
 		input wire iDEBUG_CTRL_STOP,
 		input wire iDEBUG_CTRL_START,
-		output wire [31:0] oDEBUG_CTRL_ACK,
+		output wire oDEBUG_CTRL_ACK,
 		output wire [31:0] oDEBUG_REG_OUT_FLAGR,
 		//Pipeline
 		output wire oPIPELINE_STOP,

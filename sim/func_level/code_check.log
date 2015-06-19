@@ -248,6 +248,7 @@
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module dispatch
 # -- Compiling module dispatch_frcr_timer
+# -- Compiling module dispatch_general_register
 # -- Compiling module dispatch_system_register
 # 
 # Top level modules:

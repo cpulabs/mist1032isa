@@ -114,6 +114,8 @@ Instruction Set
 `define		OC_SRFRCLR		10'h0D5
 `define		OC_SRFRCHR		10'h0D6
 `define 	OC_SRPFLAGR		10'h0d7
+`define		OC_SRFI0R		10'h0d8
+`define		OC_SRFI1R		10'h0d9
 //System Register Write
 `define 	OC_SRSPW		10'h0E0
 `define		OC_SRPDTW		10'h0E1
@@ -340,6 +342,8 @@ System Register Set
 `define		SYSREG_FRCHR		5'h13
 `define		SYSREG_FRCR2FRCXR	5'h14
 `define		SYSREG_PFLAGR		5'h15
+`define		SYSREG_FI0R			5'h16
+`define		SYSREG_FI1R			5'h17
 
 //Microcode Use System Register
 /*

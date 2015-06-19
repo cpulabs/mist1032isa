@@ -19,7 +19,6 @@ module execute_branch(
 		output wire oJUMP_VALID,
 		output wire oNOT_JUMP_VALID,
 		output wire oIB_VALID,
-		output wire oIDTS_VALID,
 		output wire oHALT_VALID
 	);
 	
@@ -69,7 +68,6 @@ module execute_branch(
 	assign oJUMP_VALID = (iCMD != `EXE_BRANCH_INTB/* && iCMD != `EXE_BRANCH_IDTS*/)? func_ex_branch_check(iCC, iFLAG) : 1'b0;
 	assign oNOT_JUMP_VALID = (iCMD != `EXE_BRANCH_INTB/* && iCMD != `EXE_BRANCH_IDTS*/)? !func_ex_branch_check(iCC, iFLAG) : 1'b0;
 	assign oIB_VALID = (iCMD == `EXE_BRANCH_INTB)? 1'b1 : 1'b0;
-	assign oIDTS_VALID = 1'b0;//(iCMD == `EXE_BRANCH_IDTS)? 1'b1 : 1'b0;
 	assign oHALT_VALID = (iCMD == `EXE_BRANCH_HALT)? 1'b1 : 1'b0;
 	
 	function func_ex_branch_check;

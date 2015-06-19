@@ -9,7 +9,7 @@ module execute_mul(
 		input wire [31:0] iDATA_0,
 		input wire [31:0] iDATA_1,
 		//oDATA
-		output wire [63:0] oDATA,
+		output wire [31:0] oDATA,
 		output wire [4:0] oFLAGS
 	);
 

@@ -454,7 +454,7 @@ module execute(
 	/****************************************
 	Shift
 	****************************************/
-	wire [4:0] shift_cmd;
+	wire [2:0] shift_cmd;
 
 	execute_shift_decode EXE_SHIFT_DECODER(
 		.iPREV_INST(iPREVIOUS_CMD),
@@ -701,7 +701,6 @@ module execute(
 		.oJUMP_VALID(branch_jump_valid),
 		.oNOT_JUMP_VALID(branch_not_jump_valid),
 		.oIB_VALID(branch_ib_valid),
-		//.oIDTS_VALID(branch_idts_valid),
 		.oHALT_VALID(branch_halt_valid)
 	);
 

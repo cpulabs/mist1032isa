@@ -32,7 +32,7 @@ module execute_exception_check_ldst(
 		input wire iPREV_LDST_RW,
 		//Load Store
 		input wire iLDST_VALID,
-		input wire [5:0] iLDST_MMU_FLAG,
+		input wire [11:0] iLDST_MMU_FLAG,
 		//Output Exception 
 		output wire oEXCEPT_VALID,
 		output wire [6:0] oEXCEPT_NUM
@@ -76,7 +76,7 @@ module execute_exception_check_ldst(
 		b_paging_ena,
 		b_kernel_access,
 		b_ldst_rw,
-		iLDST_MMU_FLAG
+		iLDST_MMU_FLAG[5:0]
 	);
 
 
