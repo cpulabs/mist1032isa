@@ -313,7 +313,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		);
 		*/
 	//`else
-		cache_ram_16entry_512bit MEMORY_BLOCK0(
+		ram_512bit_16word MEMORY_BLOCK0(
 			.clock(iCLOCK),
 			.data(memory_write_data),				//512bit
 			.rdaddress(read_pointer),				//4bit
@@ -323,7 +323,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.q(memory_way0_out_data)				//512bit
 		);
 			
-		cache_ram_16entry_512bit MEMORY_BLOCK1(
+		ram_512bit_16word MEMORY_BLOCK1(
 			.clock(iCLOCK),
 			.data(memory_write_data),				//512bit
 			.rdaddress(read_pointer),				//4bit
@@ -333,7 +333,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.q(memory_way1_out_data)				//512bit
 		);
 		
-		cache_ram_16entry_512bit MEMORY_BLOCK2(
+		ram_512bit_16word MEMORY_BLOCK2(
 			.clock(iCLOCK),
 			.data(memory_write_data),				//512bit
 			.rdaddress(read_pointer),				//4bit
@@ -343,7 +343,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.q(memory_way2_out_data)				//512bit
 		);
 		
-		cache_ram_16entry_512bit MEMORY_BLOCK3(
+		ram_512bit_16word MEMORY_BLOCK3(
 			.clock(iCLOCK),
 			.data(memory_write_data),				//512bit
 			.rdaddress(read_pointer),				//4bit
@@ -414,7 +414,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 		);
 		
 	`else*/
-		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK0(
+		ram_256bit_16word MEMORY_MMUFLAG_BLOCK0(
 			.clock(iCLOCK),
 			.byteena_a(memory_mmuflag_write_byte_enable),
 			.data(memory_mmuflag_write_data),		//256bit
@@ -424,7 +424,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.q(memory_mmuflag_way0_out_data)		//256bit
 		);
 		
-		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK1(
+		ram_256bit_16word MEMORY_MMUFLAG_BLOCK1(
 			.clock(iCLOCK),
 			.byteena_a(memory_mmuflag_write_byte_enable),
 			.data(memory_mmuflag_write_data),		//256bit
@@ -434,7 +434,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.q(memory_mmuflag_way1_out_data)		//256bit
 		);
 		
-		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK2(
+		ram_256bit_16word MEMORY_MMUFLAG_BLOCK2(
 			.clock(iCLOCK),
 			.byteena_a(memory_mmuflag_write_byte_enable),
 			.data(memory_mmuflag_write_data),		//256bit
@@ -444,7 +444,7 @@ module l1_data_cache_64entry_4way_line64b_bus_8b(
 			.q(memory_mmuflag_way2_out_data)		//256bit
 		);
 		
-		cache_ram_16entry_256bit MEMORY_MMUFLAG_BLOCK3(
+		ram_256bit_16word MEMORY_MMUFLAG_BLOCK3(
 			.clock(iCLOCK),
 			.byteena_a(memory_mmuflag_write_byte_enable),
 			.data(memory_mmuflag_write_data),		//256bit

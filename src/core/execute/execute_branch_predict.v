@@ -32,8 +32,13 @@ module execute_branch_predict(
 					//Branch Predict Hardware Enable / Disable
 					`ifdef MIST1032ISA_BRANCH_PREDICT
 						//Hit Branch Predict
-						if(iPREV_BRANCH_PREDICT_ENA && iPREV_BRANCH_PREDICT_ADDR == iPREV_JUMP_ADDR)begin
-							predict_hit = 1'b1;
+						if(iPREV_BRANCH_PREDICT_ENA)begin
+							if(iPREV_BRANCH_PREDICT_ADDR == iPREV_JUMP_ADDR)begin
+								predict_hit = 1'b1;
+							end
+							else begin
+								predict_hit = 1'b0;
+							end
 						end
 						//Un Hit
 						else begin
@@ -42,6 +47,7 @@ module execute_branch_predict(
 					`else
 						predict_hit = 1'b0;
 					`endif
+
 				end
 				//System Branch
 				else if(iPREV_BRANCH_IB_VALID)begin

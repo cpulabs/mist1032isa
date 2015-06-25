@@ -7,6 +7,8 @@
 `define MIST32_AFE_ENA
 
 
+
+
 module execute(
 		input wire iCLOCK,
 		input wire inRESET,
@@ -105,6 +107,7 @@ module execute(
 		output wire [31:0] oFAULT_FI0R,
 		output wire [31:0] oFAULT_FI1R,
 		//Branch Predictor
+		output wire oBPREDICT_JUMP_INST,
 		output wire oBPREDICT_PREDICT,				//Branch Guess
 		output wire oBPREDICT_HIT,					//Guess Hit!
 		output wire oBPREDICT_JUMP,					//Branch Active
@@ -119,11 +122,6 @@ module execute(
 	);
 
 
-
-
-
-
-
 	/*********************************************************************************************************
 	Wire
 	*********************************************************************************************************/
@@ -135,7 +133,6 @@ module execute(
 	localparam L_PARAM_STT_RELOAD = 3'h5;
 	localparam L_PARAM_STT_EXCEPTION = 3'h6;
 	localparam L_PARAM_STT_HALT = 3'h7;
-
 
 
 	reg b_valid;
@@ -739,6 +736,8 @@ module execute(
 	wire jump_stage_predict_hit;
 	wire jump_stage_jump_valid;
 	wire [31:0] jump_stage_jump_addr;
+
+	wire jump_normal_jump_inst;
 	
 	wire jump_stage_branch_valid;
 	wire jump_stage_branch_ib_valid;
@@ -764,6 +763,7 @@ module execute(
 		.iPREV_PC(iPREVIOUS_PC),
 		.iPREV_BRANCH_PREDICT_ENA(iPREVIOUS_BRANCH_PREDICT),
 		.iPREV_BRANCH_PREDICT_HIT(branch_with_predict_predict_hit),
+		.iPREV_BRANCH_NORMAL_JUMP_INST(branch_jump_valid || branch_not_jump_valid),		//ignore branch predict result
 		//BRANCH
 		.iPREV_BRANCH_PREDICT_MISS_VALID(branch_valid_with_predict_miss),
 		.iPREV_BRANCH_PREDICT_ADDR_MISS_VALID(branch_valid_with_predict_addr_miss),
@@ -783,6 +783,8 @@ module execute(
 		.oNEXT_PREDICT_HIT(jump_stage_predict_hit),
 		.oNEXT_JUMP_VALID(jump_stage_jump_valid),
 		.oNEXT_JUMP_ADDR(jump_stage_jump_addr),
+		//for Branch Predictor
+		.oNEXT_NORMAL_JUMP_INST(jump_normal_jump_inst),			//ignore branch predict result
 		//Kaind of Jump
 		.oNEXT_TYPE_BRANCH_VALID(jump_stage_branch_valid),
 		.oNEXT_TYPE_BRANCH_IB_VALID(jump_stage_branch_ib_valid),
@@ -1112,6 +1114,7 @@ module execute(
 	Execute Category
 	****************************************/
 	reg b_ex_category_ldst;
+	reg b_ex_category_branch;
 
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
@@ -1123,9 +1126,11 @@ module execute(
 		else begin
 			if(b_state == L_PARAM_STT_NORMAL && iPREVIOUS_VALID && !lock_condition)begin
 				b_ex_category_ldst <= iPREVIOUS_EX_LDST;
+				b_ex_category_branch <= iPREVIOUS_EX_BRANCH;
 			end
 		end
 	end
+
 
 
 	/****************************************
@@ -1283,16 +1288,12 @@ module execute(
 	assign oFAULT_FI1R = exception_fi1r;
 
 	//Branch Predict
+	assign oBPREDICT_JUMP_INST = jump_normal_jump_inst;			//Is normal jump Instruction?
 	assign oBPREDICT_PREDICT = jump_stage_predict_ena;
-	assign oBPREDICT_HIT = jump_stage_predict_hit || (!jump_stage_jump_valid && !jump_stage_predict_ena && b_valid);
-	assign oBPREDICT_JUMP = jump_stage_jump_valid;
+	assign oBPREDICT_HIT = b_ex_category_branch && (jump_stage_predict_hit);
+	assign oBPREDICT_JUMP = jump_stage_jump_valid;								//it same of Unhit
 	assign oBPREDICT_JUMP_ADDR = jump_stage_jump_addr;
 	assign oBPREDICT_INST_ADDR = b_pc - 32'h00000004;
-
-	//Branch - Next
-	assign oNEXT_PC = b_pc;
-	assign oNEXT_BRANCH = jump_stage_jump_valid;
-	assign oNEXT_BRANCH_PC = jump_stage_jump_addr;
 
 	//Branch - Controller
 	assign oBRANCH_ADDR = jump_stage_jump_addr;
@@ -1310,22 +1311,17 @@ module execute(
 	assign oNEXT_WRITEBACK = b_writeback && !except_ldst_valid && (b_state != L_PARAM_STT_BRANCH);
 	assign oNEXT_SPR_WRITEBACK = b_spr_writeback && !except_ldst_valid && (b_state != L_PARAM_STT_BRANCH);
 	assign oNEXT_SPR = b_r_spr;
-
+	assign oNEXT_PC = b_pc;
+	assign oNEXT_BRANCH = jump_stage_jump_valid;
+	assign oNEXT_BRANCH_PC = jump_stage_jump_addr;
 
 
 	//System Register Writeback
 	assign oPDTR_WRITEBACK = b_destination_sysreg && b_writeback && (b_destination == `SYSREG_PDTR);
 
-	//assign oEXCEPTION_LOCK = b_ex_category_ldst || (b_state != L_PARAM_STT_NORMAL)? 1'b1 : 1'b0;
-	
+	assign oEXCEPTION_LOCK = (b_state == L_PARAM_STT_DIV_WAIT) ||  (b_state == L_PARAM_STT_LOAD) ||  (b_state == L_PARAM_STT_STORE) ||  (b_state == L_PARAM_STT_RELOAD);
 
-	assign oEXCEPTION_LOCK = (b_state == L_PARAM_STT_DIV_WAIT) ||  (b_state == L_PARAM_STT_LOAD) ||  (b_state == L_PARAM_STT_STORE) ||  (b_state == L_PARAM_STT_RELOAD); //new 20150526
-	
-
-
-
-
-	assign oEXCEPTION_LDST_LOCK = b_ex_category_ldst;
+	assign oEXCEPTION_LDST_LOCK = (b_state == L_PARAM_STT_DIV_WAIT) ||  (b_state == L_PARAM_STT_LOAD) ||  (b_state == L_PARAM_STT_STORE) ||  (b_state == L_PARAM_STT_RELOAD);//b_ex_category_ldst;
 
 	assign oSYSREG_FLAGR = {27'h0, sysreg_flags_register};
 
@@ -1399,6 +1395,7 @@ module execute(
 [L], "PC", "spr", "addr", "data"
 --------------------------------
 */
+
 
 
 endmodule

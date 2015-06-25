@@ -151,6 +151,16 @@
 # Top level modules:
 # 	altera_primitive_sync_fifo_102in_102out_32depth
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# -- Compiling module ram_256bit_16word
+# 
+# Top level modules:
+# 	ram_256bit_16word
+# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
+# -- Compiling module ram_512bit_16word
+# 
+# Top level modules:
+# 	ram_512bit_16word
+# QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module endian_controller
 # -- Compiling module memory_pipe_arbiter
 # -- Compiling module mist1032isa
@@ -247,6 +257,7 @@
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module dispatch
 # -- Compiling module dispatch_frcr_timer
+# -- Compiling module dispatch_general_register
 # -- Compiling module dispatch_system_register
 # 
 # Top level modules:
@@ -306,7 +317,7 @@
 # 
 # Top level modules:
 # 	l1_data_cache
-# 	l1_data_cache_64entry_4way_line64b_bus_8b
+# 	l1_data_cache_64entry_4way_line64b_bus_8b_damy
 # 	l1_data_cache_counter
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module l1_cache_64entry_4way_line64b_bus_8b_damy
@@ -315,7 +326,7 @@
 # -- Compiling module l1_instruction_cache_counter
 # 
 # Top level modules:
-# 	l1_cache_64entry_4way_line64b_bus_8b
+# 	l1_cache_64entry_4way_line64b_bus_8b_damy
 # 	l1_instruction_cache
 # 	l1_instruction_cache_counter
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011

@@ -14,7 +14,7 @@ module fetch(
 		//System Register
 		input wire [31:0] iSYSREG_PSR,
 		input wire [31:0] iSYSREG_PDTR,
-		input wire [31:0] iSYSREG_KPDTR,		//
+		input wire [31:0] iSYSREG_KPDTR,	
 		input wire [31:0] iSYSREG_TIDR,
 		//Exception
 		input wire iEVENT_HOLD,
@@ -29,6 +29,7 @@ module fetch(
 		input wire [31:0] iEXCEPTION_ADDR,
 		//Branch Predict
 		output wire oBRANCH_PREDICT_FETCH_FLUSH,
+		input wire iBRANCH_PREDICT_RESULT_JUMP_INST,
 		input wire iBRANCH_PREDICT_RESULT_PREDICT,
 		input wire iBRANCH_PREDICT_RESULT_HIT,
 		input wire iBRANCH_PREDICT_RESULT_JUMP,
@@ -192,19 +193,17 @@ module fetch(
 	endfunction
 
 	`ifdef MIST1032ISA_BRANCH_PREDICT
-		assign branch_predictor_flush = !iNEXT_LOCK && branch_predictor_valid && branch_predictor_predict_branch;	
+		assign branch_predictor_flush = !iNEXT_LOCK && branch_predictor_valid && branch_predictor_predict_branch && !iEVENT_HOLD;	
 	`else
 		assign branch_predictor_flush = 1'b0;
 	`endif
+
 
 	branch_predictor BRANCH_PREDICTOR(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
 		.iFLUSH(1'b0),
-		//Flush
-		//.oFLUSH_PIPELINE(),
-		//.oFLUSH_
 		//Search
 		.iSEARCH_STB(func_branch_inst_check(iPREVIOUS_INST) && iPREVIOUS_INST_VALID),
 		.iSEARCH_INST_ADDR(fetch_queue_addr),
@@ -213,11 +212,15 @@ module fetch(
 		.oSRARCH_PREDICT_BRANCH(branch_predictor_predict_branch),
 		.oSEARCH_ADDR(branch_predictor_addr),
 		//Jump
-		.iJUMP_STB(iBRANCH_PREDICT_RESULT_JUMP),
-		.iJUMP_HIT(iBRANCH_PREDICT_RESULT_HIT/* && iBRANCH_PREDICT_RESULT_PREDICT*/),
+		.iJUMP_STB(iBRANCH_PREDICT_RESULT_JUMP_INST),
+		.iJUMP_PREDICT(iBRANCH_PREDICT_RESULT_PREDICT),
+		.iJUMP_HIT(iBRANCH_PREDICT_RESULT_HIT),		//hit address (if not predict or not correct addr is 0)
+		.iJUMP_JUMP(iBRANCH_PREDICT_RESULT_JUMP),	//enable predict, if predict miss or not predict is 1
 		.iJUMP_ADDR(iBRANCH_PREDICT_RESULT_JUMP_ADDR),
 		.iJUMP_INST_ADDR(iBRANCH_PREDICT_RESULT_INST_ADDR)	//Tag[31:5]| Cell Address[4:2] | Byte Order[1:0]
 	);
+
+
 
 	/****************************************
 	Fetch Address & Flag Queue

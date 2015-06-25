@@ -238,7 +238,7 @@ module l1_data_cache(
 							if(iDATA_VALID)begin
 								b_get_state <= b_get_state + 4'h1;
 								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
-								b_cache_result_mmu_flags <= {2'h0, iDATA_MMU_FLAGS[27:14], 2'h0, iDATA_MMU_FLAGS[13:0], b_cache_result_mmu_flags[255:31]};
+								b_cache_result_mmu_flags <= {4'h0, iDATA_MMU_FLAGS[23:12], 4'h0, iDATA_MMU_FLAGS[11:0], b_cache_result_mmu_flags[255:31]};
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_data <= iDATA_DATA[31:0];
@@ -265,7 +265,7 @@ module l1_data_cache(
 							if(iDATA_VALID)begin
 								//Latch Data
 								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
-								b_cache_result_mmu_flags <= {2'h0, iDATA_MMU_FLAGS[27:14], 2'h0, iDATA_MMU_FLAGS[13:0], b_cache_result_mmu_flags[255:31]};
+								b_cache_result_mmu_flags <= {4'h0, iDATA_MMU_FLAGS[23:12], 4'h0, iDATA_MMU_FLAGS[11:0], b_cache_result_mmu_flags[255:31]};
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_data <= iDATA_DATA[31:0];

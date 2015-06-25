@@ -108,7 +108,7 @@ module pipeline_control(
 	reg [2:0] b_state;
 
 	//Start Condition
-	wire alu_jump_irq_call_start_condition = (b_state == L_PARAM_IDLE) && ((iEXCEPT_IRQ_REQ && !iINTERRUPT_LDST_LOCK && iSYSREG_PSR[2]) && iEXE_BRANCH_VALID);
+	wire alu_jump_irq_call_start_condition = (b_state == L_PARAM_IDLE) && ((iEXCEPT_IRQ_REQ && !iINTERRUPT_LOCK && iSYSREG_PSR[2]) && iEXE_BRANCH_VALID);
 	wire alu_jump_start_condition = (b_state == L_PARAM_IDLE) && iEXE_BRANCH_VALID;
 	wire irq_call_start_condition = (b_state == L_PARAM_IDLE) && iEXCEPT_IRQ_REQ &&  !iINTERRUPT_LOCK && iSYSREG_PSR[2];
 	wire irq_return_start_condition = (b_state == L_PARAM_IDLE) && iEXE_IB_VALID;
@@ -122,6 +122,9 @@ module pipeline_control(
 	wire irq_return_finish_condition = (b_state == L_PARAM_IRQ_RETURN) && irq_return_finished;
 	wire idt_set_finish_condition = (b_state == L_PARAM_IDT_SET) && idt_read_finished;
 	wire reload_finish_condition = (b_state == L_PARAM_RELOAD);
+
+
+
 
 	always@*begin
 		case(b_state)

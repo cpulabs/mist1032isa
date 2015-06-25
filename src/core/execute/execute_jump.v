@@ -21,10 +21,11 @@ module execute_jump(
 		input wire [31:0] iPREV_PC,
 		input wire iPREV_BRANCH_PREDICT_ENA,
 		input wire iPREV_BRANCH_PREDICT_HIT,
+		//Ignore Predict
+		input wire iPREV_BRANCH_NORMAL_JUMP_INST,
 		//BRANCH
 		input wire iPREV_BRANCH_PREDICT_MISS_VALID,			//not need jump, but predict jump
 		input wire iPREV_BRANCH_PREDICT_ADDR_MISS_VALID,	//need jump, but predict addr is diffelent
-
 		input wire iPREV_BRANCH_IB_VALID,
 		input wire [31:0] iPREV_BRANCH_ADDR,
 		//SYSREG JUMP
@@ -41,6 +42,8 @@ module execute_jump(
 		output wire oNEXT_PREDICT_HIT,
 		output wire oNEXT_JUMP_VALID,
 		output wire [31:0] oNEXT_JUMP_ADDR,
+		//Ignore Predict
+		output wire oNEXT_NORMAL_JUMP_INST,
 		//Kaind of Jump
 		output wire oNEXT_TYPE_BRANCH_VALID,
 		output wire oNEXT_TYPE_BRANCH_IB_VALID,
@@ -159,6 +162,33 @@ module execute_jump(
 		end
 	end
 
+	reg b_branch_normal_jump_inst;
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_branch_normal_jump_inst <= 1'b0;
+		end
+		else if(iRESET_SYNC || iEVENT_HOLD || iEVENT_END)begin
+			b_branch_normal_jump_inst <= 1'b0;
+		end
+		else begin
+			if(iSTATE_NORMAL)begin	
+				if(!iNEXT_BUSY)begin
+					if(iPREV_VALID && iPREV_EX_BRANCH)begin// && (b_state == PL_STT_IDLE))begin	
+						b_branch_normal_jump_inst <= iPREV_BRANCH_NORMAL_JUMP_INST;
+					end
+					else begin
+						b_branch_normal_jump_inst <= 1'b0;
+					end
+				end
+			end
+			else begin
+				b_branch_normal_jump_inst <= 1'b0;
+			end
+		end
+	end
+
+
+
 	reg b_sysreg_idt_valid;
 	reg b_sysreg_pdt_valid;
 	reg b_sysreg_psr_valid;
@@ -203,15 +233,14 @@ module execute_jump(
 	assign oNEXT_JUMP_VALID = b_jump_valid;
 	assign oNEXT_JUMP_ADDR  = b_jump_addr;
 
+	assign oNEXT_NORMAL_JUMP_INST = b_branch_normal_jump_inst;
+
 	//Kaind of Jump
 	assign oNEXT_TYPE_BRANCH_VALID = b_branch_normal_valid;
 	assign oNEXT_TYPE_BRANCH_IB_VALID = b_branch_ib_valid;
 	assign oNEXT_TYPE_SYSREG_IDT_VALID = b_sysreg_idt_valid;
 	assign oNEXT_TYPE_SYSREG_PDT_VALID = b_sysreg_pdt_valid;
 	assign oNEXT_TYPE_SYSREG_PSR_VALID = b_sysreg_psr_valid;
-
-
-
 
 
 endmodule // execute_jump

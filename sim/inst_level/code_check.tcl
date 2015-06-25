@@ -13,6 +13,10 @@ vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+
 
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/primitive/altera/sync_fifo_102in_102out_32depth/altera_primitive_sync_fifo_102in_102out_32depth.v
 
+vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/primitive/altera/ram_256bit_16word/ram_256bit_16word.v
+
+vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/primitive/altera/ram_512bit_16word/ram_512bit_16word.v
+
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/*.v
 
 vlog -work work +incdir+../../src/include +incdir+../../src/mmu/include +incdir+../../src/core/include ../../src/debugger/*.v

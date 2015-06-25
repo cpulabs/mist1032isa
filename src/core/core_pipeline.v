@@ -257,6 +257,7 @@ module core_pipeline
 	wire [31:0] execution2dispatch_branch_pc;
 	//Branch Predict
 	wire branch_predict_fetch_flush;
+	wire branch_predict_result_jump_inst;
 	wire branch_predict_result_predict;
 	wire branch_predict_result_hit;
 	wire branch_predict_result_jump;
@@ -585,6 +586,7 @@ module core_pipeline
 		.iEXCEPTION_ADDR(core_event_sysreg_set_pcr),
 		//Branch Predict
 		.oBRANCH_PREDICT_FETCH_FLUSH(branch_predict_fetch_flush),
+		.iBRANCH_PREDICT_RESULT_JUMP_INST(branch_predict_result_jump_inst),
 		.iBRANCH_PREDICT_RESULT_PREDICT(branch_predict_result_predict),
 		.iBRANCH_PREDICT_RESULT_HIT(branch_predict_result_hit),
 		.iBRANCH_PREDICT_RESULT_JUMP(branch_predict_result_jump),
@@ -981,6 +983,7 @@ module core_pipeline
 		.oFAULT_FI0R(exception_fault_fi0r),
 		.oFAULT_FI1R(exception_fault_fi1r),
 		//Branch Predictor
+		.oBPREDICT_JUMP_INST(branch_predict_result_jump_inst),
 		.oBPREDICT_PREDICT(branch_predict_result_predict),
 		.oBPREDICT_HIT(branch_predict_result_hit),
 		.oBPREDICT_JUMP(branch_predict_result_jump),

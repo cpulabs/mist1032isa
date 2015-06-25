@@ -9,23 +9,25 @@ Open Design Computer Project
   http://open-arch.org
 ********************************************************/
 
-`define MIST32_NEW_TEST
-
 `ifdef MIST1032ISA_SYNTH
+
 	//Synthesize Mode
 	`define MIST1032ISA_INST_L1_CACHE
-	//`define MIST1032ISA_DATA_L1_CACHE
+	`define MIST1032ISA_DATA_L1_CACHE
 	//`define MIST1032ISA_BRANCH_PREDICT
 	`define MIST1032ISA_STANDARD_DEBUGGER
-`elsif MIST1032ISA_SIM_FST
-	//First Simulation Mode
-	`define MIST1032ISA_STANDARD_DEBUGGER
-	`define MIST1032ISA_FIRST_SIM
+	//`define MIST1032ISA_ALTERA_PRIMITIVE 		it have bug?
+
+
 `else
+
 	//Normal Simulation Mode
-	`define MIST1032ISA_STANDARD_DEBUGGER
+	`define MIST1032ISA_INST_L1_CACHE
+	`define MIST1032ISA_DATA_L1_CACHE
 	`define MIST1032ISA_BRANCH_PREDICT
-	`define MIST1032ISA_ALTERA_PRIMITIVE
+	`define MIST1032ISA_STANDARD_DEBUGGER
+	//`define MIST1032ISA_ALTERA_PRIMITIVE
+
 `endif
 
 

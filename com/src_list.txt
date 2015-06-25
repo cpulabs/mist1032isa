@@ -2,6 +2,8 @@
 ../../src/primitive/altera/sync_fifo_24in_24out_16depth/altera_primitive_sync_fifo_24in_24out_16depth.v
 ../../src/primitive/altera/sync_fifo_34in_34out_8depth/altera_primitive_sync_fifo_34in_34out_8depth.v
 ../../src/primitive/altera/sync_fifo_102in_102out_32depth/altera_primitive_sync_fifo_102in_102out_32depth.v
+../../src/primitive/altera/ram_256bit_16word/ram_256bit_16word.v
+../../src/primitive/altera/ram_512bit_16word/ram_512bit_16word.v
 ../../src/*.v
 ../../src/debugger/*.v
 ../../src/dps/mimsr/*.v

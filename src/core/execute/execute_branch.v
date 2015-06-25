@@ -52,10 +52,6 @@ module execute_branch(
 					begin
 						func_branch_addr = 32'h0;
 					end
-				/*`EXE_BRANCH_IDTS:
-					begin
-						func_branch_addr = func_pc + 32'h0000004;
-					end*/
 				default:
 					begin
 						func_branch_addr = 32'h0;
@@ -63,10 +59,30 @@ module execute_branch(
 			endcase
 		end
 	endfunction
+
+	function func_normal_jump_inst;
+		input [4:0] func_cmd;
+		begin
+			case(func_cmd)
+				`EXE_BRANCH_BUR,
+				`EXE_BRANCH_BR,
+				`EXE_BRANCH_B:
+					begin
+						func_normal_jump_inst = 1'b1;
+					end
+				default:
+					begin
+						func_normal_jump_inst = 1'b0;
+					end
+			endcase 
+		end
+	endfunction
+
+
 	
 	
-	assign oJUMP_VALID = (iCMD != `EXE_BRANCH_INTB/* && iCMD != `EXE_BRANCH_IDTS*/)? func_ex_branch_check(iCC, iFLAG) : 1'b0;
-	assign oNOT_JUMP_VALID = (iCMD != `EXE_BRANCH_INTB/* && iCMD != `EXE_BRANCH_IDTS*/)? !func_ex_branch_check(iCC, iFLAG) : 1'b0;
+	assign oJUMP_VALID = func_normal_jump_inst(iCMD) && func_ex_branch_check(iCC, iFLAG);//(iCMD != `EXE_BRANCH_INTB)? func_ex_branch_check(iCC, iFLAG) : 1'b0;
+	assign oNOT_JUMP_VALID = func_normal_jump_inst(iCMD) && !func_ex_branch_check(iCC, iFLAG);//(iCMD != `EXE_BRANCH_INTB)? !func_ex_branch_check(iCC, iFLAG) : 1'b0;
 	assign oIB_VALID = (iCMD == `EXE_BRANCH_INTB)? 1'b1 : 1'b0;
 	assign oHALT_VALID = (iCMD == `EXE_BRANCH_HALT)? 1'b1 : 1'b0;
 	
