@@ -227,26 +227,6 @@ module l1_instruction_cache(
 	end
 
 
-	//Reservation Bridge
-	wire inst_matching_bridge_full;
-	wire inst_matching_bridge_valid;
-	//Matching Queue
-	mist1032isa_arbiter_matching_queue #(16, 4, 1) INST_MATCHING_BRIDGE(
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
-		//Flash
-		.iFLASH(iREMOVE),
-		//Write
-		.iWR_REQ((b_req_main_state == L_PARAM_IDLE) && iNEXT_FETCH_REQ),
-		.iWR_FLAG(1'b0),
-		.oWR_FULL(inst_matching_bridge_full),
-		//Read
-		.iRD_REQ(next_0_inst_valid && !out_lock),
-		.oRD_VALID(inst_matching_bridge_valid),
-		.oRD_FLAG(/* Not Use */),
-		.oRD_EMPTY(/* Not Use */)
-	);
-
 	/*
 	//Cache Hit Counter
 	wire [6:0] cache_hit_counter;
@@ -374,10 +354,10 @@ module l1_instruction_cache(
 
 	//This -> Fetch Module
 	assign oNEXT_FETCH_LOCK = (b_req_main_state != L_PARAM_IDLE) || request_lock || out_lock || (cache_result_valid && !cache_result_hit);
-	assign oNEXT_0_INST_VALID = next_0_inst_valid && !out_lock && inst_matching_bridge_valid;
+	assign oNEXT_0_INST_VALID = next_0_inst_valid && !out_lock;
 	assign oNEXT_0_INST = next_0_inst_inst;
 	assign oNEXT_0_MMU_FLAGS = next_0_inst_mmu_flags;
-	assign oNEXT_1_INST_VALID = next_1_inst_valid && !out_lock && inst_matching_bridge_valid;
+	assign oNEXT_1_INST_VALID = next_1_inst_valid && !out_lock;
 	assign oNEXT_1_INST = next_1_inst_inst;
 	assign oNEXT_1_MMU_FLAGS = next_1_inst_mmu_flags;
 endmodule

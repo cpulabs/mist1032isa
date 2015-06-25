@@ -148,29 +148,7 @@ module execute(
 	reg [31:0] b_r_data;
 	reg b_spr_writeback;
 	reg [31:0] b_r_spr;
-	reg b_ldst_pipe_valid;
-	reg [1:0] b_ldst_pipe_order;
-	reg [31:0] b_ldst_pipe_addr;
-	reg [31:0] b_ldst_pipe_data;
-	reg [3:0] b_ldst_pipe_mask;
-	reg [1:0] b_load_pipe_shift;
-	reg [1:0] b_load_pipe_mask;
-	reg b_exception_valid;
-	reg [6:0] b_exception_num;
-	reg [31:0] b_exception_fi0r;
-	reg [31:0] b_exception_fi1r;
-	reg b_jump;
-	reg b_idts;
-	reg b_pdts;
-	reg b_psr;
-	reg b_ib;
-	reg [31:0] b_branch_addr;
-	reg b_branch_predict;
-	reg b_branch_predict_hit;
-	reg [31:0] b_branch_predict_addr;
 	reg [31:0] b_pc;
-
-
 
 	wire div_wait;
 	wire debugger_pipeline_stop;

@@ -110,7 +110,7 @@ module fetch(
 			state = PL_STT_IDLE;
 		end
 		else if(branch_predictor_flush)begin					//Branch Predictor - Predict Branch 
-			state = branch_predictor_addr;
+			state = PL_STT_IDLE;
 		end
 		else begin
 			case(b_state)
@@ -225,6 +225,9 @@ module fetch(
 	/****************************************
 	Fetch Address & Flag Queue
 	****************************************/
+	wire inst_matching_queue_full;
+	wire inst_matching_queue_valid;
+	
 	`ifdef MIST1032ISA_ALTERA_PRIMITIVE
 		//FIFO Mode				: Show Ahead Synchronous FIFO Mode
 		//Width					: 34bit
@@ -248,7 +251,7 @@ module fetch(
 					b_fetch_addr
 				}
 			),				//Data-In
-			.rdreq(iPREVIOUS_INST_VALID),				//Read Data Request
+			.rdreq(iPREVIOUS_INST_VALID && !iNEXT_LOCK),				//Read Data Request
 			.sclr(iRESET_SYNC || iEVENT_START || branch_predictor_flush),				//Synchthronous Reset
 			.wrreq(!iEVENT_START && !branch_predictor_flush && fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),				//Write Req
 			.almost_empty(),
@@ -275,11 +278,30 @@ module fetch(
 			.iWR_EN(!iEVENT_START && !branch_predictor_flush && fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),
 			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_fetch_addr}),
 			.oWR_FULL(fetch_queue_full),
-			.iRD_EN(iPREVIOUS_INST_VALID),
+			.iRD_EN(iPREVIOUS_INST_VALID && !iNEXT_LOCK && inst_matching_queue_valid),
 			.oRD_DATA({fetch_queue_kernel_access, fetch_queue_paging_ena, fetch_queue_addr}),
 			.oRD_EMPTY(/* Not Use */)
 		);
 	`endif
+
+
+	//Issue & Fetch control
+	//Matching Queue
+	mist1032isa_arbiter_matching_queue #(16, 4, 1) INST_MATCHING_QUEUE(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		//Flash
+		.iFLASH(iRESET_SYNC || iEVENT_START || branch_predictor_flush),
+		//Write
+		.iWR_REQ(oPREVIOUS_FETCH_REQ),
+		.iWR_FLAG(1'b0),
+		.oWR_FULL(inst_matching_queue_full),
+		//Read
+		.iRD_REQ(iPREVIOUS_INST_VALID && !iNEXT_LOCK),
+		.oRD_VALID(inst_matching_queue_valid),
+		.oRD_FLAG(),
+		.oRD_EMPTY()
+	);
 
 	/****************************************
 	Fetch
@@ -321,7 +343,7 @@ module fetch(
 		else begin
 			if(!iNEXT_LOCK)begin
 				b_next_inst <= iPREVIOUS_INST;
-				b_next_inst_valid <= iPREVIOUS_INST_VALID;
+				b_next_inst_valid <= iPREVIOUS_INST_VALID && inst_matching_queue_valid;
 				b_next_mmu_flags <= iPREVIOUS_MMU_FLAGS;
 				b_next_paging_ena <= fetch_queue_paging_ena;
 				b_next_kernel_access <= fetch_queue_kernel_access;
@@ -330,8 +352,8 @@ module fetch(
 		end
 	end	//always
 
-	assign oNEXT_INST = b_next_inst;
 	assign oNEXT_INST_VALID = b_next_inst_valid;
+	assign oNEXT_INST = b_next_inst;
 	assign oNEXT_MMU_FLAGS = b_next_mmu_flags;
 	assign oNEXT_PAGING_ENA = b_next_paging_ena;
 	assign oNEXT_KERNEL_ACCESS = b_next_kernel_access;
