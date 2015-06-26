@@ -4,9 +4,10 @@
 `include "common.h"
 
 
-module l1_instruction_cache(
+module l1_inst_cache(
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		//Remove
 		input wire iREMOVE,
 		input wire iCACHE_FLASH,
@@ -89,32 +90,15 @@ module l1_instruction_cache(
 	reg [31:0] next_1_inst_inst;
 	reg [11:0] next_1_inst_mmu_flags;
 
+
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_req_main_state <= 2'b0;
-			b_req_state <= 4'h0;
-			b_get_state <= 4'h0;
-			b_req_addr <= {32{1'b0}};
-			b_req_mmumod <= 2'h0;
-			b_req_mmups <= 3'h0;
-			b_req_pdt <= 32'h0;
-			b_req_asid <= 14'h0;
-			b_mem_result_0_valid <= 1'b0;
-			b_mem_result_1_valid <= 1'b0;
-			b_mem_result_data <= 64'h0;
-			b_mem_result_mmu_flags <= 24'h0;
-			b_cache_write_data <= 512'h0;
-			b_cache_write_mmu_flags <= 256'h0;
+			b_req_main_state <= L_PARAM_IDLE;
+		end
+		else if(iRESET_SYNC)begin
+			b_req_main_state <= L_PARAM_IDLE;
 		end
 		else begin
-			//Buffer
-			if(!request_lock && iNEXT_FETCH_REQ && (b_req_main_state == L_PARAM_IDLE) && !out_lock)begin
-				b_req_addr <= iNEXT_FETCH_ADDR;
-				b_req_mmumod <= iNEXT_MMUMOD;
-				b_req_mmups <= iNEXT_MMUPS;
-				b_req_pdt <= iNEXT_PDT;
-				b_req_asid <= iNEXT_ASID;
-			end
 			//Memory State
 			case(b_req_main_state)
 				L_PARAM_IDLE:	//Idle
@@ -130,39 +114,176 @@ module l1_instruction_cache(
 							//Next Stage Check
 							if(!load_lock && (b_req_state == 4'h7))begin
 								b_req_main_state <= L_PARAM_MEMGET;
-								b_req_state <= 4'h0;
-							end
-							//Request
-							else if(!load_lock)begin
-								b_req_state <= b_req_state + 4'h1;
-							end
-							//Get Check
-							if(iINST_VALID)begin
-								b_get_state <= b_get_state + 4'h1;
-								b_cache_write_data <= {iINST_DATA, b_cache_write_data[511:64]};
-								b_cache_write_mmu_flags <= {4'h0, iINST_MMU_FLAGS[23:12], 4'h0, iINST_MMU_FLAGS[11:0], b_cache_write_mmu_flags[255:31]};
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_0_valid <= 1'b1;
-										b_mem_result_1_valid <= 1'b1;
-										b_mem_result_data <= iINST_DATA;
-										b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
-									end
-									else begin
-										b_mem_result_0_valid <= 1'b1;
-										b_mem_result_1_valid <= 1'b0;
-										b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
-										b_mem_result_mmu_flags <= {12'h0, iINST_MMU_FLAGS[23:12]};
-									end
-								end
 							end
 						//Cache OFF
 						`else
 							//Load Requset
 							if(!load_lock)begin
 								b_req_main_state <= L_PARAM_MEMGET;
+							end
+						`endif
+					end
+				L_PARAM_MEMGET:	//Get Wait State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_INST_L1_CACHE
+							if(iINST_VALID)begin
+								//State Check
+								if(b_get_state == 4'h7)begin
+									b_req_main_state <= L_PARAM_OUTINST;
+								end
+							end
+						`else
+						//Cache OFF
+							if(iINST_VALID)begin
+								b_req_main_state <= L_PARAM_OUTINST;
+							end
+						`endif
+					end
+				L_PARAM_OUTINST:
+					begin
+						if(!out_lock)begin
+							b_req_main_state <= L_PARAM_IDLE;
+						end
+					end
+			endcase
+		end
+	end
+
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_req_state <= 4'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_req_state <= 4'h0;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_MEMREQ:	//Request State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_INST_L1_CACHE
+							//Next Stage Check
+							if(!load_lock && (b_req_state == 4'h7))begin
 								b_req_state <= 4'h0;
 							end
+							//Request
+							else if(!load_lock)begin
+								b_req_state <= b_req_state + 4'h1;
+							end
+						//Cache OFF
+						`else
+							//Load Requset
+							if(!load_lock)begin
+								b_req_state <= 4'h0;
+							end
+						`endif
+					end
+			endcase
+		end
+	end
+
+always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_get_state <= 4'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_get_state <= 4'h0;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_MEMREQ:	//Request State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_INST_L1_CACHE
+							//Get Check
+							if(iINST_VALID)begin
+								b_get_state <= b_get_state + 4'h1;
+							end
+						//Cache OFF
+						`else
+						
+						`endif
+					end
+				L_PARAM_MEMGET:	//Get Wait State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_INST_L1_CACHE
+							if(iINST_VALID)begin
+								//State Check
+								if(b_get_state == 4'h7)begin
+									b_get_state <= 4'h0;
+								end
+								else begin
+									b_get_state <= b_get_state + 4'h1;
+								end
+							end
+						`else
+						//Cache OFF
+							if(iINST_VALID)begin
+								b_get_state <= 4'h0;
+							end
+						`endif
+					end
+			endcase
+		end
+	end
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_req_addr <= {32{1'b0}};
+			b_req_mmumod <= 2'h0;
+			b_req_mmups <= 3'h0;
+			b_req_pdt <= 32'h0;
+			b_req_asid <= 14'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_req_addr <= {32{1'b0}};
+			b_req_mmumod <= 2'h0;
+			b_req_mmups <= 3'h0;
+			b_req_pdt <= 32'h0;
+			b_req_asid <= 14'h0;
+		end
+		else begin
+			//Buffer
+			if(!request_lock && iNEXT_FETCH_REQ && (b_req_main_state == L_PARAM_IDLE) && !out_lock)begin
+				b_req_addr <= iNEXT_FETCH_ADDR;
+				b_req_mmumod <= iNEXT_MMUMOD;
+				b_req_mmups <= iNEXT_MMUPS;
+				b_req_pdt <= iNEXT_PDT;
+				b_req_asid <= iNEXT_ASID;
+			end
+		end
+	end
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_cache_write_data <= 512'h0;
+			b_cache_write_mmu_flags <= 256'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_cache_write_data <= 512'h0;
+			b_cache_write_mmu_flags <= 256'h0;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_MEMREQ:	//Request State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_INST_L1_CACHE
+							//Get Check
+							if(iINST_VALID)begin
+								b_cache_write_data <= {iINST_DATA, b_cache_write_data[511:64]};
+								b_cache_write_mmu_flags <= {4'h0, iINST_MMU_FLAGS[23:12], 4'h0, iINST_MMU_FLAGS[11:0], b_cache_write_mmu_flags[255:31]};
+							end
+						//Cache OFF
+						`else
+
 						`endif
 					end
 				L_PARAM_MEMGET:	//Get Wait State
@@ -173,6 +294,39 @@ module l1_instruction_cache(
 								//Data Check
 								b_cache_write_data <= {iINST_DATA, b_cache_write_data[511:64]};
 								b_cache_write_mmu_flags <= {4'h0, iINST_MMU_FLAGS[23:12], 4'h0, iINST_MMU_FLAGS[11:0], b_cache_write_mmu_flags[255:31]};
+							end
+						`else
+						//Cache OFF
+
+						`endif
+					end
+			endcase
+		end
+	end
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_mem_result_0_valid <= 1'b0;
+			b_mem_result_1_valid <= 1'b0;
+			b_mem_result_data <= 64'h0;
+			b_mem_result_mmu_flags <= 24'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_mem_result_0_valid <= 1'b0;
+			b_mem_result_1_valid <= 1'b0;
+			b_mem_result_data <= 64'h0;
+			b_mem_result_mmu_flags <= 24'h0;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_MEMREQ:	//Request State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_INST_L1_CACHE
+							//Get Check
+							if(iINST_VALID)begin
 								if(b_req_addr[5:3] == b_get_state[3:0])begin
 									if(!b_req_addr[2])begin
 										b_mem_result_0_valid <= 1'b1;
@@ -187,20 +341,36 @@ module l1_instruction_cache(
 										b_mem_result_mmu_flags <= {12'h0, iINST_MMU_FLAGS[23:12]};
 									end
 								end
-								//State Check
-								if(b_get_state == 4'h7)begin
-									b_get_state <= 4'h0;
-									b_req_main_state <= L_PARAM_OUTINST;
-								end
-								else begin
-									b_get_state <= b_get_state + 4'h1;
+							end
+						//Cache OFF
+						`else
+
+						`endif
+					end
+				L_PARAM_MEMGET:	//Get Wait State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_INST_L1_CACHE
+							if(iINST_VALID)begin
+								//Data Check
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b1;
+										b_mem_result_data <= iINST_DATA;
+										b_mem_result_mmu_flags <= iINST_MMU_FLAGS;
+									end
+									else begin
+										b_mem_result_0_valid <= 1'b1;
+										b_mem_result_1_valid <= 1'b0;
+										b_mem_result_data <= {32'h0, iINST_DATA[62:32]};
+										b_mem_result_mmu_flags <= {12'h0, iINST_MMU_FLAGS[23:12]};
+									end
 								end
 							end
 						`else
 						//Cache OFF
 							if(iINST_VALID)begin
-								b_get_state <= 4'h0;
-								b_req_main_state <= L_PARAM_OUTINST;
 								if(!b_req_addr[2])begin
 									b_mem_result_0_valid <= 1'b1;
 									b_mem_result_1_valid <= 1'b1;
@@ -216,12 +386,6 @@ module l1_instruction_cache(
 							end
 						`endif
 					end
-				L_PARAM_OUTINST:
-					begin
-						if(!out_lock)begin
-							b_req_main_state <= L_PARAM_IDLE;
-						end
-					end
 			endcase
 		end
 	end
@@ -230,7 +394,7 @@ module l1_instruction_cache(
 	/*
 	//Cache Hit Counter
 	wire [6:0] cache_hit_counter;
-	l1_instruction_cache_counter L1_CACHE_HIT_COUNTER(
+	l1_inst_cache_counter L1_CACHE_HIT_COUNTER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		//Hit Infomation
@@ -243,12 +407,13 @@ module l1_instruction_cache(
 
 
 	`ifdef MIST1032ISA_INST_L1_CACHE
-		l1_cache_64entry_4way_line64b_bus_8b CACHE_MODULE(
+		l1_inst_cache_64entry_4way_line64b_bus_8b CACHE_MODULE(
 			/********************************
 			System
 			********************************/
 			.iCLOCK(iCLOCK),
 			.inRESET(inRESET),
+			.iRESET_SYNC(iRESET_SYNC),
 			//Remove
 			.iREMOVE(iCACHE_FLASH),
 			/********************************
@@ -276,12 +441,13 @@ module l1_instruction_cache(
 			.iWR_MMU_FLAGS(b_cache_write_mmu_flags)
 		);
 	`else
-		l1_cache_64entry_4way_line64b_bus_8b_damy CACHE_MODULE(
+		l1_inst_cache_64entry_4way_line64b_bus_8b_disable_cache CACHE_MODULE(
 			/********************************
 			System
 			********************************/
 			.iCLOCK(iCLOCK),
 			.inRESET(inRESET),
+			.iRESET_SYNC(iRESET_SYNC),
 			//Remove
 			.iREMOVE(iCACHE_FLASH),
 			/********************************

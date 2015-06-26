@@ -1,6 +1,6 @@
 `default_nettype none 
 
-module l1_instruction_cache_counter(
+module l1_inst_cache_counter(
 		input wire iCLOCK,
 		input wire inRESET,
 		//Hit Infomation

@@ -312,24 +312,24 @@
 # 	instruction_buffer
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module l1_data_cache
-# -- Compiling module l1_data_cache_64entry_4way_line64b_bus_8b_damy
 # -- Compiling module l1_data_cache_64entry_4way_line64b_bus_8b
+# -- Compiling module l1_data_cache_64entry_4way_line64b_bus_8b_disable_cache
 # -- Compiling module l1_data_cache_counter
 # 
 # Top level modules:
 # 	l1_data_cache
-# 	l1_data_cache_64entry_4way_line64b_bus_8b_damy
+# 	l1_data_cache_64entry_4way_line64b_bus_8b_disable_cache
 # 	l1_data_cache_counter
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
-# -- Compiling module l1_cache_64entry_4way_line64b_bus_8b_damy
-# -- Compiling module l1_cache_64entry_4way_line64b_bus_8b
-# -- Compiling module l1_instruction_cache
-# -- Compiling module l1_instruction_cache_counter
+# -- Compiling module l1_inst_cache
+# -- Compiling module l1_inst_cache_64entry_4way_line64b_bus_8b
+# -- Compiling module l1_inst_cache_64entry_4way_line64b_bus_8b_disable_cache
+# -- Compiling module l1_inst_cache_counter
 # 
 # Top level modules:
-# 	l1_cache_64entry_4way_line64b_bus_8b_damy
-# 	l1_instruction_cache
-# 	l1_instruction_cache_counter
+# 	l1_inst_cache
+# 	l1_inst_cache_64entry_4way_line64b_bus_8b_disable_cache
+# 	l1_inst_cache_counter
 # QuestaSim-64 vlog 10.0c Compiler 2011.07 Jul 21 2011
 # -- Compiling module core_paging_support
 # -- Compiling module interrupt_control

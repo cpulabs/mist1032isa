@@ -6,6 +6,7 @@
 module l1_data_cache(
 		input wire iCLOCK,
 		input wire inRESET,
+		input wire iRESET_SYNC,
 		//Remove
 		input wire iREMOVE,
 		input wire iCACHE_FLASH,
@@ -72,6 +73,10 @@ module l1_data_cache(
 	reg [31:0] b_io_startaddr;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
+			b_io_startaddr_valid <= 1'b0;
+			b_io_startaddr <= {32{1'b0}};
+		end
+		else if(iRESET_SYNC)begin
 			b_io_startaddr_valid <= 1'b0;
 			b_io_startaddr <= {32{1'b0}};
 		end
@@ -147,12 +152,183 @@ module l1_data_cache(
 	wire [11:0] cache_result_mmu_flags;
 
 
+always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_req_main_state <= L_PARAM_IDLE;
+		end
+		else if(iRESET_SYNC)begin
+			b_req_main_state <= L_PARAM_IDLE;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_IDLE:	//Idle
+					begin
+						//Read
+						if(cache_result_valid && !cache_result_hit)begin
+							b_req_main_state <= L_PARAM_MEMREQ;
+						end
+						//Write
+						else if(b_cache_req_rw && /*b_req_valid*/b_cache_req_valid)begin
+							b_req_main_state <= L_PARAM_WR_MEMREQ;
+						end
+					end
+				L_PARAM_MEMREQ:	//Request State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_DATA_L1_CACHE
+							//IO Address Check			--iranai?
+							if(b_io_startaddr-32'h4 <= {b_req_addr[31:6], b_req_state[2:0], 3'h0})begin
+								b_req_main_state <= L_PARAM_MEMGET;
+							end
+							//Next State Check
+							else if(b_req_state == 4'h7 && !data_request_lock)begin
+								b_req_main_state <= L_PARAM_MEMGET;
+							end
+						//Cache OFF
+						`else
+							if(!data_request_lock)begin
+								b_req_main_state <= L_PARAM_MEMGET;
+							end
+						`endif
+					end
+				L_PARAM_MEMGET:	//Get Wait State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_DATA_L1_CACHE
+							if(iDATA_VALID)begin
+								//State Check
+								if(b_get_state == 4'h7)begin
+									b_req_main_state <= L_PARAM_OUTDATA;
+								end
+								//IO Address Check			--iranai?
+								else if(b_io_startaddr-32'h4 <= {b_req_addr[31:6], b_get_state[2:0], 3'h0})begin
+									b_req_main_state <= L_PARAM_OUTDATA;
+								end
+							end
+						`else
+						//Cache OFF
+							if(iDATA_VALID)begin
+								b_req_main_state <= L_PARAM_OUTDATA;
+							end
+						`endif
+					end
+				L_PARAM_OUTDATA:
+					begin
+						b_req_main_state <= L_PARAM_IDLE;
+					end
+				//Write
+				L_PARAM_WR_MEMREQ:
+					begin
+						if(!data_request_lock)begin
+							b_req_main_state <= L_PARAM_WR_MEMGET;
+						end
+					end
+				L_PARAM_WR_MEMGET:
+					begin
+						if(iDATA_VALID)begin
+							b_req_main_state <= L_PARAM_WR_OUTDATA;
+						end
+					end
+				L_PARAM_WR_OUTDATA:
+					begin
+						b_req_main_state <= L_PARAM_IDLE;
+					end
+			endcase
+		end
+	end
+
 
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
-			b_req_main_state <= 3'b0;
 			b_req_state <= 4'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_req_state <= 4'h0;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_MEMREQ:	//Request State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_DATA_L1_CACHE
+							//IO Address Check			--iranai?
+							if(b_io_startaddr-32'h4 <= {b_req_addr[31:6], b_req_state[2:0], 3'h0})begin
+								b_req_state <= 4'h0;
+							end
+							//Next State Check
+							else if(b_req_state == 4'h7 && !data_request_lock)begin
+								b_req_state <= 4'h0;
+							end
+							//Request
+							else if(!data_request_lock) begin
+								b_req_state <= b_req_state + 4'h1;
+							end
+						//Cache OFF
+						`else
+							if(!data_request_lock)begin
+								b_req_state <= 4'h0;
+							end
+						`endif
+					end
+			endcase
+		end
+	end
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
 			b_get_state <= 4'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_get_state <= 4'h0;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_MEMREQ:	//Request State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_DATA_L1_CACHE
+							//Get Check
+							if(iDATA_VALID)begin
+								b_get_state <= b_get_state + 4'h1;
+							end
+						//Cache OFF
+						`else
+							
+						`endif
+					end
+				L_PARAM_MEMGET:	//Get Wait State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_DATA_L1_CACHE
+							if(iDATA_VALID)begin
+								//State Check
+								if(b_get_state == 4'h7)begin
+									b_get_state <= 4'h0;
+								end
+								//IO Address Check			--iranai?
+								else if(b_io_startaddr-32'h4 <= {b_req_addr[31:6], b_get_state[2:0], 3'h0})begin
+									b_get_state <= 4'h0;
+								end
+								else begin
+									b_get_state <= b_get_state + 4'h1;
+								end
+							end
+						`else
+						//Cache OFF
+							if(iDATA_VALID)begin
+								b_get_state <= 4'h0;
+							end
+						`endif
+					end
+			endcase
+		end
+	end
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
 			b_req_valid <= 1'b0;
 			b_req_order <= 2'h0;
 			b_req_mask <= 4'h0;
@@ -162,8 +338,133 @@ module l1_data_cache(
 			b_req_pdt <= 32'h0;
 			b_req_addr <= {32{1'b0}};
 			b_req_data <= 32'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_req_valid <= 1'b0;
+			b_req_order <= 2'h0;
+			b_req_mask <= 4'h0;
+			b_req_rw <= 1'b0;
+			b_req_asid <= 14'h0;
+			b_req_mmumod <= 2'h0;
+			b_req_pdt <= 32'h0;
+			b_req_addr <= {32{1'b0}};
+			b_req_data <= 32'h0;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_IDLE:	//Idle
+					begin
+						b_req_valid <= b_cache_req_valid;
+						b_req_order <= b_cache_req_order;
+						b_req_mask <= b_cache_req_mask;
+						b_req_rw <= b_cache_req_rw;
+						b_req_asid <= b_cache_req_asid;
+						b_req_mmumod <= b_cache_req_mmumod;
+						b_req_mmups <= b_cache_req_mmups;
+						b_req_pdt <= b_cache_req_pdt;
+						b_req_addr <= b_cache_req_addr;
+						b_req_data <= b_cache_req_data;
+					end
+				L_PARAM_OUTDATA:
+					begin
+						b_req_valid <= 1'b0;
+					end
+				L_PARAM_WR_OUTDATA:
+					begin
+						b_req_valid <= 1'b0;
+					end
+			endcase
+		end
+	end
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
 			b_mem_result_data <= 32'h0;
 			b_mem_result_mmu_flags <= 12'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_mem_result_data <= 32'h0;
+			b_mem_result_mmu_flags <= 12'h0;
+		end
+		else begin
+			//Memory State
+			case(b_req_main_state)
+				L_PARAM_MEMREQ:	//Request State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_DATA_L1_CACHE
+							//Get Check
+							if(iDATA_VALID)begin
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_data <= iDATA_DATA[31:0];
+										b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[11:0];
+									end
+									else begin
+										b_mem_result_data <= iDATA_DATA[63:32];
+										b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[23:12];
+									end
+								end
+							end
+						//Cache OFF
+						`else
+
+						`endif
+					end
+				L_PARAM_MEMGET:	//Get Wait State
+					begin
+						//Cache ON
+						`ifdef MIST1032ISA_DATA_L1_CACHE
+							if(iDATA_VALID)begin
+								//Latch Data
+								if(b_req_addr[5:3] == b_get_state[3:0])begin
+									if(!b_req_addr[2])begin
+										b_mem_result_data <= iDATA_DATA[31:0];
+										b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[11:0];
+									end
+									else begin
+										b_mem_result_data <= iDATA_DATA[63:32];
+										b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[23:12];
+									end
+								end
+							end
+						`else
+						//Cache OFF
+							if(iDATA_VALID)begin
+								if(!b_req_addr[2])begin
+									b_mem_result_data <= iDATA_DATA[31:0];
+									b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[11:0];
+								end
+								else begin
+									b_mem_result_data <= iDATA_DATA[63:32];
+									b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[23:12];
+								end
+							end
+						`endif
+					end
+			endcase
+		end
+	end
+
+
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			//Cache
+			b_cache_req_valid <= 1'b0;
+			b_cache_req_order <= 2'h0;
+			b_cache_req_mask <= 4'h0;
+			b_cache_req_rw <= 1'b0;
+			b_cache_req_asid <= 14'h0;
+			b_cache_req_mmumod <= 2'h0;
+			b_cache_req_pdt <= 32'h0;
+			b_cache_req_addr <= 32'h0;
+			b_cache_req_data <= 32'h0;
+			b_cache_result_data <= 512'h0;
+			b_cache_result_mmu_flags <= 256'h0;
+		end
+		else if(iRESET_SYNC)begin
 			//Cache
 			b_cache_req_valid <= 1'b0;
 			b_cache_req_order <= 2'h0;
@@ -182,15 +483,6 @@ module l1_data_cache(
 			case(b_req_main_state)
 				L_PARAM_IDLE:	//Idle
 					begin
-						//Read
-						if(cache_result_valid && !cache_result_hit)begin
-							b_req_main_state <= L_PARAM_MEMREQ;
-						end
-						//Write
-						else if(b_cache_req_rw && /*b_req_valid*/b_cache_req_valid)begin
-							b_req_main_state <= L_PARAM_WR_MEMREQ;
-						end
-
 						if(!data_request_lock && data_request && !cache_req_busy)begin
 							b_cache_req_valid <= iLDST_REQ;
 							b_cache_req_order <= iLDST_ORDER;
@@ -203,59 +495,19 @@ module l1_data_cache(
 							b_cache_req_addr <= iLDST_ADDR;
 							b_cache_req_data <= iLDST_DATA;
 						end
-
-
-						b_req_valid <= b_cache_req_valid;
-						b_req_order <= b_cache_req_order;
-						b_req_mask <= b_cache_req_mask;
-						b_req_rw <= b_cache_req_rw;
-						b_req_asid <= b_cache_req_asid;
-						b_req_mmumod <= b_cache_req_mmumod;
-						b_req_mmups <= b_cache_req_mmups;
-						b_req_pdt <= b_cache_req_pdt;
-						b_req_addr <= b_cache_req_addr;
-						b_req_data <= b_cache_req_data;
 					end
 				L_PARAM_MEMREQ:	//Request State
 					begin
 						//Cache ON
 						`ifdef MIST1032ISA_DATA_L1_CACHE
-							//IO Address Check			--iranai?
-							if(b_io_startaddr-32'h4 <= {b_req_addr[31:6], b_req_state[2:0], 3'h0})begin
-								b_req_main_state <= L_PARAM_MEMGET;
-								b_req_state <= 4'h0;
-							end
-							//Next State Check
-							else if(b_req_state == 4'h7 && !data_request_lock)begin
-								b_req_main_state <= L_PARAM_MEMGET;
-								b_req_state <= 4'h0;
-							end
-							//Request
-							else if(!data_request_lock) begin
-								b_req_state <= b_req_state + 4'h1;
-							end
 							//Get Check
 							if(iDATA_VALID)begin
-								b_get_state <= b_get_state + 4'h1;
 								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
 								b_cache_result_mmu_flags <= {4'h0, iDATA_MMU_FLAGS[23:12], 4'h0, iDATA_MMU_FLAGS[11:0], b_cache_result_mmu_flags[255:31]};
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_data <= iDATA_DATA[31:0];
-										b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[11:0];
-									end
-									else begin
-										b_mem_result_data <= iDATA_DATA[63:32];
-										b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[23:12];
-									end
-								end
 							end
 						//Cache OFF
 						`else
-							if(!data_request_lock)begin
-								b_req_main_state <= L_PARAM_MEMGET;
-								b_req_state <= 4'h0;
-							end
+
 						`endif
 					end
 				L_PARAM_MEMGET:	//Get Wait State
@@ -266,69 +518,18 @@ module l1_data_cache(
 								//Latch Data
 								b_cache_result_data <= {iDATA_DATA, b_cache_result_data[511:64]};
 								b_cache_result_mmu_flags <= {4'h0, iDATA_MMU_FLAGS[23:12], 4'h0, iDATA_MMU_FLAGS[11:0], b_cache_result_mmu_flags[255:31]};
-								if(b_req_addr[5:3] == b_get_state[3:0])begin
-									if(!b_req_addr[2])begin
-										b_mem_result_data <= iDATA_DATA[31:0];
-										b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[11:0];
-									end
-									else begin
-										b_mem_result_data <= iDATA_DATA[63:32];
-										b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[23:12];
-									end
-								end
-								//State Check
-								if(b_get_state == 4'h7)begin
-									b_get_state <= 4'h0;
-									b_req_main_state <= L_PARAM_OUTDATA;
-								end
-								//IO Address Check			--iranai?
-								else if(b_io_startaddr-32'h4 <= {b_req_addr[31:6], b_get_state[2:0], 3'h0})begin
-									b_get_state <= 4'h0;
-									b_req_main_state <= L_PARAM_OUTDATA;
-								end
-								else begin
-									b_get_state <= b_get_state + 4'h1;
-								end
 							end
 						`else
 						//Cache OFF
-							if(iDATA_VALID)begin
-								b_get_state <= 4'h0;
-								b_req_main_state <= L_PARAM_OUTDATA;
-								if(!b_req_addr[2])begin
-									b_mem_result_data <= iDATA_DATA[31:0];
-									b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[11:0];
-								end
-								else begin
-									b_mem_result_data <= iDATA_DATA[63:32];
-									b_mem_result_mmu_flags <= iDATA_MMU_FLAGS[23:12];
-								end
-							end
+							
 						`endif
 					end
 				L_PARAM_OUTDATA:
 					begin
-						b_req_main_state <= L_PARAM_IDLE;
-						b_req_valid <= 1'b0;
 						b_cache_req_valid <= 1'b0;
-					end
-				//Write
-				L_PARAM_WR_MEMREQ:
-					begin
-						if(!data_request_lock)begin
-							b_req_main_state <= L_PARAM_WR_MEMGET;
-						end
-					end
-				L_PARAM_WR_MEMGET:
-					begin
-						if(iDATA_VALID)begin
-							b_req_main_state <= L_PARAM_WR_OUTDATA;
-						end
 					end
 				L_PARAM_WR_OUTDATA:
 					begin
-						b_req_main_state <= L_PARAM_IDLE;
-						b_req_valid <= 1'b0;
 						b_cache_req_valid <= 1'b0;
 					end
 			endcase
@@ -358,6 +559,7 @@ module l1_data_cache(
 			********************************/
 			.iCLOCK(iCLOCK),
 			.inRESET(inRESET),
+			.iRESET_SYNC(iRESET_SYNC),
 			//Remove
 			.iREMOVE(iCACHE_FLASH),
 			/********************************
@@ -392,12 +594,13 @@ module l1_data_cache(
 			.iWR_MMU_FLAGS(b_cache_result_mmu_flags)
 		);
 	`else
-		l1_data_cache_64entry_4way_line64b_bus_8b_damy CACHE_MODULE_DAMY(
+		l1_data_cache_64entry_4way_line64b_bus_8b_disable_cache CACHE_MODULE_DAMY(
 			/********************************
 			System
 			********************************/
 			.iCLOCK(iCLOCK),
 			.inRESET(inRESET),
+			.iRESET_SYNC(iRESET_SYNC),
 			//Remove
 			.iREMOVE(iCACHE_FLASH),
 			/********************************

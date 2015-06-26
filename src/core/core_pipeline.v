@@ -518,9 +518,10 @@ module core_pipeline
 
 
 	//Cache
-	l1_instruction_cache L1_INST_CACHE(
+	l1_inst_cache L1_INST_CACHE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
+		.iRESET_SYNC(1'b0),
 		//Remove
 		.iREMOVE(branch_predict_fetch_flush || core_event_start),
 		.iCACHE_FLASH(/*cache_flash || free_cache_flush*/1'b0),
