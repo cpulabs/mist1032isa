@@ -23,8 +23,6 @@ module fetch(
 		//Pipeline Control - Register Set
 		input wire iEVENT_SETREG_PCR_SET,
 		input wire [31:0] iEVENT_SETREG_PCR,
-
-
 		input wire iEXCEPTION_ADDR_SET,
 		input wire [31:0] iEXCEPTION_ADDR,
 		//Branch Predict
@@ -85,7 +83,9 @@ module fetch(
 	wire branch_predictor_predict_branch;
 	wire [31:0] branch_predictor_addr;
 	wire branch_predictor_flush;
-
+	//Req Control
+	wire inst_matching_queue_full;
+	wire inst_matching_queue_valid;
 
 	/****************************************
 	State
@@ -143,7 +143,10 @@ module fetch(
 		end
 	end //always
 
+
 	wire fetch_valid = b_state == PL_STT_READ;
+
+	wire fetch_request_condition = !iEVENT_START && !branch_predictor_flush && fetch_valid && !inst_matching_queue_full && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP;
 
 	/****************************************
 	Program Counter for Fetch
@@ -168,12 +171,11 @@ module fetch(
 			b_fetch_addr <= branch_predictor_addr;
 		end
 		else begin
-			if(!iEVENT_START && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP && fetch_valid)begin
+			if(fetch_request_condition)begin
 				b_fetch_addr <= b_fetch_addr + 32'h4;
 			end
 		end
 	end //always
-
 
 
 	/****************************************
@@ -221,13 +223,30 @@ module fetch(
 	);
 
 
+	/****************************************
+	Issue & Fetch control
+	****************************************/	
+
+	//Matching Queue
+	mist1032isa_arbiter_matching_queue #(16, 4, 1) INST_MATCHING_QUEUE(
+		.iCLOCK(iCLOCK),
+		.inRESET(inRESET),
+		//Flash
+		.iFLASH(iRESET_SYNC || iEVENT_START || branch_predictor_flush),
+		//Write
+		.iWR_REQ(oPREVIOUS_FETCH_REQ),
+		.iWR_FLAG(1'b0),
+		.oWR_FULL(inst_matching_queue_full),
+		//Read
+		.iRD_REQ(iPREVIOUS_INST_VALID && !iNEXT_LOCK),
+		.oRD_VALID(inst_matching_queue_valid),
+		.oRD_FLAG(),
+		.oRD_EMPTY()
+	);
 
 	/****************************************
 	Fetch Address & Flag Queue
-	****************************************/
-	wire inst_matching_queue_full;
-	wire inst_matching_queue_valid;
-	
+	****************************************/	
 	`ifdef MIST1032ISA_ALTERA_PRIMITIVE
 		//FIFO Mode				: Show Ahead Synchronous FIFO Mode
 		//Width					: 34bit
@@ -253,7 +272,7 @@ module fetch(
 			),				//Data-In
 			.rdreq(iPREVIOUS_INST_VALID && !iNEXT_LOCK),				//Read Data Request
 			.sclr(iRESET_SYNC || iEVENT_START || branch_predictor_flush),				//Synchthronous Reset
-			.wrreq(!iEVENT_START && !branch_predictor_flush && fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),				//Write Req
+			.wrreq(fetch_request_condition),				//Write Req
 			.almost_empty(),
 			.almost_full(),
 			.empty(),
@@ -274,51 +293,29 @@ module fetch(
 			.iCLOCK(iCLOCK),
 			.inRESET(inRESET),
 			.iREMOVE(iRESET_SYNC || iEVENT_START || branch_predictor_flush),
-			.oCOUNT(/* Not Use */),
-			.iWR_EN(!iEVENT_START && !branch_predictor_flush && fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP),
-			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5])/*User mode Test 1'b1*/, (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_fetch_addr}),
+			.oCOUNT(),
+			.iWR_EN(fetch_request_condition),
+			.iWR_DATA({!(iSYSREG_PSR[6] || iSYSREG_PSR[5]), (iSYSREG_PSR[1] || iSYSREG_PSR[0]), b_fetch_addr}),
 			.oWR_FULL(fetch_queue_full),
 			.iRD_EN(iPREVIOUS_INST_VALID && !iNEXT_LOCK && inst_matching_queue_valid),
 			.oRD_DATA({fetch_queue_kernel_access, fetch_queue_paging_ena, fetch_queue_addr}),
-			.oRD_EMPTY(/* Not Use */)
+			.oRD_EMPTY()
 		);
 	`endif
 
 
-	//Issue & Fetch control
-	//Matching Queue
-	mist1032isa_arbiter_matching_queue #(16, 4, 1) INST_MATCHING_QUEUE(
-		.iCLOCK(iCLOCK),
-		.inRESET(inRESET),
-		//Flash
-		.iFLASH(iRESET_SYNC || iEVENT_START || branch_predictor_flush),
-		//Write
-		.iWR_REQ(oPREVIOUS_FETCH_REQ),
-		.iWR_FLAG(1'b0),
-		.oWR_FULL(inst_matching_queue_full),
-		//Read
-		.iRD_REQ(iPREVIOUS_INST_VALID && !iNEXT_LOCK),
-		.oRD_VALID(inst_matching_queue_valid),
-		.oRD_FLAG(),
-		.oRD_EMPTY()
-	);
-
 	/****************************************
 	Fetch
 	****************************************/
-	wire this_lock = iNEXT_LOCK || fetch_queue_full || iPREVIOUS_FETCH_LOCK;		//iPREVIOUS_FETCH_LOCK ga lock site naitoki nimo fetch ga tomatte simau
 	assign oBRANCH_PREDICT_FETCH_FLUSH = branch_predictor_flush;
 	assign oPREVIOUS_LOCK = iNEXT_LOCK;
 
-	assign oPREVIOUS_FETCH_REQ = !iEVENT_START && !branch_predictor_flush && fetch_valid && !fetch_queue_full && !iPREVIOUS_FETCH_LOCK && !iNEXT_FETCH_STOP;
+	assign oPREVIOUS_FETCH_REQ = fetch_request_condition;
 	assign oPREVIOUS_MMUMOD = iSYSREG_PSR[1:0];
 	assign oPREVIOUS_MMUPS = iSYSREG_PSR[9:7];
 	assign oPREVIOUS_ASID = iSYSREG_TIDR[31:18];
 	assign oPREVIOUS_PDT = (iSYSREG_PSR[6:5] == 2'h0)? iSYSREG_KPDTR : iSYSREG_PDTR;
 	assign oPREVIOUS_FETCH_ADDR	= b_fetch_addr;
-
-
-
 
 	/****************************************
 	Previous -> Next
