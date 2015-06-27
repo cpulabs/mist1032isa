@@ -18,8 +18,6 @@ module dispatch #(
 		input wire iEVENT_IRQ_FRONT2BACK,
 		input wire iEVENT_IRQ_BACK2FRONT,
 		input wire iEVENT_END,
-		//Exception Lock
-		output wire oEXCEPTION_LOCK,
 		//IOSR
 		input wire iSYSREGINFO_IOSR_VALID,
 		input wire [31:0] iSYSREGINFO_IOSR,
@@ -27,12 +25,11 @@ module dispatch #(
 		input wire iEVENT_SETREG_FI0R_SET,
 		input wire iEVENT_SETREG_FI1R_SET,
 		input wire iEVENT_SETREG_PPCR_SET,
-		//input wire iEVENT_SETREG_SPR_SET,
+		input wire iEVENT_SETREG_PCR_SET,
 		input wire [31:0] iEVENT_SETREG_FI0R,
 		input wire [31:0] iEVENT_SETREG_FI1R,
 		input wire [31:0] iEVENT_SETREG_PPCR,
-		//input wire [31:0] iEVENT_SETREG_SPR,
-
+		input wire [31:0] iEVENT_SETREG_PCR,
 		//System Register Input
 		input wire [31:0] iSYSREG_FLAGR,
 		//System Register Output
@@ -529,25 +526,9 @@ module dispatch #(
 		.iREGIST_DATA(w_sysreg_pcr_register_data),
 		.oINFO_DATA(w_sysreg_pcr_info_data)
 	);
-	assign w_sysreg_pcr_register_valid = iWB_VALID && !iEVENT_HOLD;
-	assign w_sysreg_pcr_register_data = (iWB_BRANCH)? iWB_BRANCH_PC : iWB_PC;
+	assign w_sysreg_pcr_register_valid = (iWB_VALID && !iEVENT_HOLD) || (iEVENT_SETREG_PCR_SET || iEVENT_END);
+	assign w_sysreg_pcr_register_data = (iEVENT_SETREG_PCR_SET || iEVENT_END)? iEVENT_SETREG_PCR : iWB_PC;
 
-	reg b_pcr_valid;
-	always@(posedge iCLOCK or negedge inRESET)begin
-		if(!inRESET)begin
-			b_pcr_valid <= 1'b0;
-		end
-		else if(iRESET_SYNC || iEVENT_START)begin
-			b_pcr_valid <= 1'b0;
-		end
-		else begin
-			if(!b_pcr_valid)begin
-				if(iWB_VALID && !iEVENT_HOLD)begin
-					b_pcr_valid <= 1'b1;
-				end
-			end
-		end
-	end
 
 	//PSR : Program Status Register
 	dispatch_system_register PSR (
@@ -1023,13 +1004,9 @@ module dispatch #(
 	assign oSYSREG_PDTR = w_sysreg_pdtr_info_data;
 	assign oSYSREG_KPDTR = w_sysreg_kpdtr_info_data;
 	assign oSYSREG_PFLAGR = w_sysreg_pflagr_info_data;
+	assign oSYSREG_PCR = w_sysreg_pcr_info_data;
 
 	assign oPREVIOUS_LOCK = iNEXT_LOCK;//this_lock;
-
-	assign oSYSREG_PCR = w_sysreg_pcr_info_data;
-	assign oEXCEPTION_LOCK = !b_pcr_valid;
-
-
 
 	/*************************************************************************************
 	Debugger

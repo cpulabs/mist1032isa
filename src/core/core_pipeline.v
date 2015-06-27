@@ -294,9 +294,6 @@ module core_pipeline
 	wire [31:0] sysreg_pflagr;
 
 	//Interrupt Lock
-	wire interrupt_lock;
-	wire interrupt_ldst_lock;
-	wire dispatch_exception_lock;
 	wire execute_exception_lock;
 
 	//Exception Manager
@@ -453,8 +450,7 @@ module core_pipeline
 		/************************************
 		Interrupt Lock
 		************************************/
-		.iINTERRUPT_LOCK(interrupt_lock),
-		.iINTERRUPT_LDST_LOCK(interrupt_ldst_lock),
+		.iINTERRUPT_LOCK(execute_exception_lock),
 		/************************************
 		Load Store
 		************************************/
@@ -504,9 +500,6 @@ module core_pipeline
 		.iEXE_IB_VALID(exception_intr_valid),
 		.iEXE_RELOAD_VALID(exception_pdts_valid || exception_psr_valid)
 	);
-
-
-	assign interrupt_lock = execute_exception_lock || dispatch_exception_lock;
 
 
 	core_paging_support PAGING_SUPPORT(
@@ -728,8 +721,6 @@ module core_pipeline
 		.iEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
 		.iEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
 		.iEVENT_END(core_event_end),
-		//Exception Protect
-		.oEXCEPTION_LOCK(dispatch_exception_lock),
 		//IOSR
 		.iSYSREGINFO_IOSR_VALID(iSYSINFO_IOSR_VALID),
 		.iSYSREGINFO_IOSR(iSYSINFO_IOSR),
@@ -737,10 +728,12 @@ module core_pipeline
 		//.iEVENT_SETREG_SPR_SET(core_event_sysreg_set_spr_set),
 		.iEVENT_SETREG_FI0R_SET(core_event_sysreg_set_fi0r_set),
 		.iEVENT_SETREG_FI1R_SET(core_event_sysreg_set_fi1r_set),
+		.iEVENT_SETREG_PCR_SET(core_event_sysreg_set_pcr_set),
 		.iEVENT_SETREG_PPCR(core_event_sysreg_set_ppcr),
 		//.iEVENT_SETREG_SPR(core_event_sysreg_set_spr),
 		.iEVENT_SETREG_FI0R(core_event_sysreg_set_fi0r),
 		.iEVENT_SETREG_FI1R(core_event_sysreg_set_fi1r),
+		.iEVENT_SETREG_PCR(core_event_sysreg_set_pcr),
 		//System Register Input
 		.iSYSREG_FLAGR(sysreg_flagr),
 		//System Register Output
@@ -898,7 +891,6 @@ module core_pipeline
 		.iEVENT_END(core_event_end),
 		//Exception LOCK
 		.oEXCEPTION_LOCK(execute_exception_lock),
-		.oEXCEPTION_LDST_LOCK(interrupt_ldst_lock),
 		//System Register
 		.iSYSREG_PFLAGR(sysreg_pflagr),
 		.oSYSREG_FLAGR(sysreg_flagr),

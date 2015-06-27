@@ -21,7 +21,6 @@ module execute(
 		input wire iEVENT_END,
 		//Lock
 		output wire oEXCEPTION_LOCK,
-		output wire oEXCEPTION_LDST_LOCK,
 		//System Register
 		input wire [31:0] iSYSREG_PFLAGR,
 		output wire [31:0] oSYSREG_FLAGR,
@@ -1298,8 +1297,6 @@ module execute(
 	assign oPDTR_WRITEBACK = b_destination_sysreg && b_writeback && (b_destination == `SYSREG_PDTR);
 
 	assign oEXCEPTION_LOCK = (b_state == L_PARAM_STT_DIV_WAIT) ||  (b_state == L_PARAM_STT_LOAD) ||  (b_state == L_PARAM_STT_STORE) ||  (b_state == L_PARAM_STT_RELOAD);
-
-	assign oEXCEPTION_LDST_LOCK = (b_state == L_PARAM_STT_DIV_WAIT) ||  (b_state == L_PARAM_STT_LOAD) ||  (b_state == L_PARAM_STT_STORE) ||  (b_state == L_PARAM_STT_RELOAD);//b_ex_category_ldst;
 
 	assign oSYSREG_FLAGR = {27'h0, sysreg_flags_register};
 

@@ -9,8 +9,8 @@ module pipeline_control(
 		//Core Internal Event
 		output wire oEVENT_HOLD,
 		output wire oEVENT_START,
-		output wire oEVENT_IRQ_FRONT2BACK,		//
-		output wire oEVENT_IRQ_BACK2FRONT,		//
+		output wire oEVENT_IRQ_FRONT2BACK,		
+		output wire oEVENT_IRQ_BACK2FRONT,		
 		output wire oEVENT_CACHE_ERASE,
 		output wire oEVENT_TLB_ERASE,
 		output wire oEVENT_END,					//Set Register
@@ -36,7 +36,6 @@ module pipeline_control(
 		input wire [31:0] iSYSREG_IDTR,
 		//Interrupt Lock
 		input wire iINTERRUPT_LOCK,
-		input wire iINTERRUPT_LDST_LOCK,
 		//IO Port
 		output wire oLDST_USE,
 		output wire oLDST_REQ,

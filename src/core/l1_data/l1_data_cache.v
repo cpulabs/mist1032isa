@@ -39,7 +39,7 @@ module l1_data_cache(
 		output wire oDATA_REQ,
 		input wire iDATA_LOCK,
 		output wire [1:0] oDATA_ORDER,
-		output wire [3:0] oDATA_MASK,		//
+		output wire [3:0] oDATA_MASK,		
 		output wire oDATA_RW,		//0=Write 1=Read
 		output wire [13:0] oDATA_ASID,
 		output wire [1:0] oDATA_MMUMOD,
