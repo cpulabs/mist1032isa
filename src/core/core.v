@@ -93,7 +93,6 @@ module core
 		Debug
 		****************************************/
 		output wire [31:0] oDEBUG_PC,
-		output wire [31:0] oDEBUG0,
 		input wire iDEBUG_CMD_REQ,
 		output wire oDEBUG_CMD_BUSY,
 		input wire [3:0] iDEBUG_CMD_COMMAND,
@@ -179,7 +178,6 @@ module core
 		.iSYSINFO_IOSR_VALID(iSYSINFO_IOSR_VALID),
 		.iSYSINFO_IOSR(iSYSINFO_IOSR),
 		.oDEBUG_PC(oDEBUG_PC),
-		.oDEBUG0(debug0),
 		/****************************************
 		Debug
 		****************************************/
@@ -193,9 +191,6 @@ module core
 		.oDEBUG_CMD_DATA(oDEBUG_CMD_DATA)
 	);
 
-
-
-	assign oDEBUG0 = debug0;
 
 endmodule
 

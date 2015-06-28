@@ -274,7 +274,6 @@ module mist1032isa(
 		.iSYSINFO_IOSR_VALID(io2cpu_sysinfo_iosr_valid),
 		.iSYSINFO_IOSR(io2cpu_sysinfo_iosr),
 		.oDEBUG_PC(oDEBUG_PC),
-		.oDEBUG0(oDEBUG0),
 		/****************************************
 		Debug
 		****************************************/
@@ -288,6 +287,7 @@ module mist1032isa(
 		.oDEBUG_CMD_DATA(processor2debuger_cmd_data)
 	);
 
+	assign oDEBUG0 = 32'h0;
 
 	sdi_debugger SDI_DEBUGGER(
 		//Clock

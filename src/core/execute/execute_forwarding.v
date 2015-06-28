@@ -198,7 +198,7 @@ module execute_forwarding(
 	//TIDR
 	wire [31:0] prev_forwarding_tidr = func_forwarding_rewrite_sysreg(
 		`SYSREG_TIDR,
-		iPREVIOUS_SOURCE_PDTR,
+		iPREVIOUS_SOURCE_TIDR,
 		iWB_GR_VALID,
 		iWB_GR_DEST_SYSREG,
 		iWB_GR_DEST,
@@ -217,7 +217,7 @@ module execute_forwarding(
 	//PSR
 	wire [31:0] prev_forwarding_psr = func_forwarding_rewrite_sysreg(
 		`SYSREG_PSR,
-		iPREVIOUS_SOURCE_PDTR,
+		iPREVIOUS_SOURCE_PSR,
 		iWB_GR_VALID,
 		iWB_GR_DEST_SYSREG,
 		iWB_GR_DEST,

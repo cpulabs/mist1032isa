@@ -88,7 +88,6 @@ module core_pipeline
 		input wire iSYSINFO_IOSR_VALID,
 		input wire [31:0] iSYSINFO_IOSR,
 		output wire [31:0] oDEBUG_PC,
-		output wire [31:0] oDEBUG0,
 		/****************************************
 		Debug Module
 		****************************************/
@@ -101,9 +100,6 @@ module core_pipeline
 		output wire oDEBUG_CMD_ERROR,
 		output wire [31:0] oDEBUG_CMD_DATA
 	);
-
-
-
 
 	//Cache
 	wire icache2fetch_valid;
@@ -124,24 +120,17 @@ module core_pipeline
 	wire core_event_irq_front2back;
 	wire core_event_irq_back2front;
 	wire core_event_end;
-
 	//Event-Sysreg
 	wire core_event_sysreg_set_pcr_set;
 	wire core_event_sysreg_set_ppcr_set;
 	wire core_event_sysreg_set_spr_set;
 	wire core_event_sysreg_set_fi0r_set;
 	wire core_event_sysreg_set_fi1r_set;
-	
 	wire [31:0] core_event_sysreg_set_ppcr;
 	wire [31:0] core_event_sysreg_set_spr;
 	wire [31:0] core_event_sysreg_set_fi0r;
 	wire [31:0] core_event_sysreg_set_fi1r;
 	wire [31:0] core_event_sysreg_set_pcr;
-
-
-	//Free - Legacy
-	wire free_cache_flush;
-	wire free_tlb_flush;
 	//Fetch
 	wire fetch2lbuffer_inst_valid;
 	wire [11:0] fetch2lbuffer_mmu_flags;
@@ -278,7 +267,21 @@ module core_pipeline
 	wire ldst2execution_ldst_req;
 	wire [11:0] ldst2execution_ldst_mmu_flags;
 	wire [31:0] ldst2execution_ldst_data;
-
+	//Data Cache to Memory Pipe
+	wire ldst_arbiter2d_cache_req;
+	wire d_cache2ldst_arbiter_busy;
+	wire [1:0] ldst_arbiter2d_cache_order;
+	wire [3:0] ldst_arbiter2d_cache_mask;
+	wire ldst_arbiter2d_cache_rw;
+	wire [13:0] ldst_arbiter2d_cache_asid;
+	wire [1:0] ldst_arbiter2d_cache_mmumod;
+	wire [2:0] ldst_arbiter2d_cache_mmups;
+	wire [31:0] ldst_arbiter2d_cache_pdt;
+	wire [31:0] ldst_arbiter2d_cache_addr;
+	wire [31:0] ldst_arbiter2d_cache_data;
+	wire d_cache2ldst_arbiter_valid;
+	wire [11:0] d_cache2ldst_arbiter_mmu_flags;
+	wire [31:0] d_cache2ldst_arbiter_data;
 	//System Register
 	wire [31:0] sysreg_flagr;
 	wire [31:0] sysreg_spr;
@@ -292,10 +295,8 @@ module core_pipeline
 	wire [31:0] sysreg_pdtr;
 	wire [31:0] sysreg_kpdtr;
 	wire [31:0] sysreg_pflagr;
-
 	//Interrupt Lock
 	wire execute_exception_lock;
-
 	//Exception Manager
 	wire exception2ldst_ldst_use;
 	wire exception2ldst_ldst_req;
@@ -319,7 +320,6 @@ module core_pipeline
 	wire exception2cim_ict_conf_mask;
 	wire exception2cim_ict_conf_valid;
 	wire [1:0] exception2cim_ict_conf_level;
-
 	wire exception2cim_irq_lock;
 	wire cim2exception_irq_req;
 	wire [6:0] cim2exception_irq_num;
@@ -408,8 +408,6 @@ module core_pipeline
 		.iEXCEPTION_IRQ_ACK(exception2cim_irq_ack)
 	);
 
-
-
 	pipeline_control PIPELINE_CTRL(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -422,8 +420,8 @@ module core_pipeline
 		.oEVENT_START(core_event_start),
 		.oEVENT_IRQ_FRONT2BACK(core_event_irq_front2back),
 		.oEVENT_IRQ_BACK2FRONT(core_event_irq_back2front),
-		.oEVENT_CACHE_ERASE(free_cache_flush),
-		.oEVENT_TLB_ERASE(free_tlb_flush),
+		.oEVENT_CACHE_ERASE(),
+		.oEVENT_TLB_ERASE(),
 		.oEVENT_END(core_event_end),
 		//System Register
 		.oEVENT_SETREG_PCR_SET(core_event_sysreg_set_pcr_set),
@@ -501,14 +499,12 @@ module core_pipeline
 		.iEXE_RELOAD_VALID(exception_pdts_valid || exception_psr_valid)
 	);
 
-
 	core_paging_support PAGING_SUPPORT(
 		.iSYSREG_PSR(sysreg_psr),
 		.iPDTR_WRITEBACK(sysreg_write_pdtr),
 		//Cache
 		.oCACHE_FLASH(cache_flash)
 	);
-
 
 	//Cache
 	l1_inst_cache L1_INST_CACHE(
@@ -554,7 +550,8 @@ module core_pipeline
 		.oNEXT_1_INST(),
 		.iNEXT_LOCK(fetch2icache_lock)
 	);
-
+	
+	assign branch_predict_fetch_flush = 1'b0;
 
 	fetch FETCH(
 		//System
@@ -573,13 +570,11 @@ module core_pipeline
 		//Pipeline Control - Register Set
 		.iEVENT_SETREG_PCR_SET(core_event_sysreg_set_pcr_set),
 		.iEVENT_SETREG_PCR(core_event_sysreg_set_pcr),
-		
-		
 		//Exception - Legacy
 		.iEXCEPTION_ADDR_SET(core_event_sysreg_set_pcr_set),
 		.iEXCEPTION_ADDR(core_event_sysreg_set_pcr),
 		//Branch Predict
-		.oBRANCH_PREDICT_FETCH_FLUSH(branch_predict_fetch_flush),
+		.oBRANCH_PREDICT_FETCH_FLUSH(),
 		.iBRANCH_PREDICT_RESULT_JUMP_INST(branch_predict_result_jump_inst),
 		.iBRANCH_PREDICT_RESULT_PREDICT(branch_predict_result_predict),
 		.iBRANCH_PREDICT_RESULT_HIT(branch_predict_result_hit),
@@ -612,9 +607,6 @@ module core_pipeline
 		.iNEXT_LOCK(lbuffer2fetch_fetch_lock)
 	);
 
-
-
-
 	instruction_buffer LOOPBUFFER(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -644,8 +636,6 @@ module core_pipeline
 		.oNEXT_PC(lbuffer2decoder_pc),
 		.iNEXT_LOCK(decoder2lbuffer_lock)
 	);
-
-
 
 	decoder DECODER(
 		//System
@@ -708,7 +698,6 @@ module core_pipeline
 		.oNEXT_PC(decoder2dispatch_pc),
 		.iNEXT_LOCK(dispatch2decoder_lock)
 	);
-
 
 	dispatch DISPATCH(
 		//System
@@ -878,7 +867,6 @@ module core_pipeline
 		.oDEBUG_REG_OUT_PPSR(debug_register2debug_ppsr)
 	);
 
-
 	execute EXECUTE(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -990,25 +978,6 @@ module core_pipeline
 		.oDEBUG_REG_OUT_FLAGR(debug_register2debug_flagr)
 	);
 
-
-
-
-	wire ldst_arbiter2d_cache_req;
-	wire d_cache2ldst_arbiter_busy;
-	wire [1:0] ldst_arbiter2d_cache_order;
-	wire [3:0] ldst_arbiter2d_cache_mask;
-	wire ldst_arbiter2d_cache_rw;
-	wire [13:0] ldst_arbiter2d_cache_asid;
-	wire [1:0] ldst_arbiter2d_cache_mmumod;
-	wire [2:0] ldst_arbiter2d_cache_mmups;
-	wire [31:0] ldst_arbiter2d_cache_pdt;
-	wire [31:0] ldst_arbiter2d_cache_addr;
-	wire [31:0] ldst_arbiter2d_cache_data;
-	wire d_cache2ldst_arbiter_valid;
-	wire [11:0] d_cache2ldst_arbiter_mmu_flags;
-	wire [31:0] d_cache2ldst_arbiter_data;
-
-
 	load_store_pipe_arbiter LDST_PIPE_ARBITOR(
 		.oLDST_REQ(ldst_arbiter2d_cache_req),
 		.iLDST_BUSY(d_cache2ldst_arbiter_busy),
@@ -1055,7 +1024,6 @@ module core_pipeline
 		.oEXCEPT_REQ(ldst2exception_ldst_req),
 		.oEXCEPT_DATA(ldst2exception_ldst_data)
 	);
-
 
 	l1_data_cache L1_DATA_CACHE(
 		.iCLOCK(iCLOCK),
@@ -1120,7 +1088,6 @@ module core_pipeline
 		.iIO_VALID(iIO_VALID),
 		.iIO_DATA(iIO_DATA)
 	);
-
 
 	core_debug CORE_DEBUG_MODULE(
 		.iCLOCK(iCLOCK),
@@ -1193,16 +1160,9 @@ module core_pipeline
 		.iREG_R_PPDTR(32'h0)
 	);
 
-	/*
-	assign oINST_FETCH_PDT = {32{1'b0}};
-	assign oINST_FETCH_TID = 14'h0;
-	*/
-
 	//System
 	assign oFREE_TLB_FLUSH = 1'b0;//free_tlb_flush;
 
-
-	assign oDEBUG0 = sysreg_ppcr;//{iINST_FETCH_BUSY, oINST_BUSY, icache2fetch_lock, fetch2icache_lock, lbuffer2fetch_fetch_lock, decoder2lbuffer_lock, dispatch2decoder_lock, execution2dispatch_lock, iLDST_BUSY, ldst2execution_ldst_busy, ldst2exception_ldst_busy};
 	assign oDEBUG_PC = debug_register2debug_pcr;
 
 endmodule
