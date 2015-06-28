@@ -242,8 +242,6 @@ module core_pipeline
 	wire execution2dispatch_spr_writeback;
 	wire [31:0] execution2dispatch_spr;
 	wire [31:0] execution2dispatch_pc;
-	wire execution2dispatch_branch;
-	wire [31:0] execution2dispatch_branch_pc;
 	//Branch Predict
 	wire branch_predict_fetch_flush;
 	wire branch_predict_result_jump_inst;
@@ -825,8 +823,6 @@ module core_pipeline
 		.iWB_SPR_WRITEBACK(execution2dispatch_spr_writeback),
 		.iWB_SPR(execution2dispatch_spr),
 		.iWB_PC(execution2dispatch_pc),
-		.iWB_BRANCH(execution2dispatch_branch),
-		.iWB_BRANCH_PC(execution2dispatch_branch_pc),
 		//Debug
 		.oDEBUG_REG_OUT_GR0(debug_register2debug_gr0),
 		.oDEBUG_REG_OUT_GR1(debug_register2debug_gr1),
@@ -948,8 +944,6 @@ module core_pipeline
 		.oNEXT_SPR_WRITEBACK(execution2dispatch_spr_writeback),
 		.oNEXT_SPR(execution2dispatch_spr),
 		.oNEXT_PC(execution2dispatch_pc),
-		.oNEXT_BRANCH(execution2dispatch_branch),
-		.oNEXT_BRANCH_PC(execution2dispatch_branch_pc),
 		//System Register Write
 		.oPDTR_WRITEBACK(sysreg_write_pdtr),
 		//Branch

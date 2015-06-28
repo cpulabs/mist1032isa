@@ -132,8 +132,6 @@ module dispatch #(
 		input wire iWB_SPR_WRITEBACK,
 		input wire [31:0] iWB_SPR,
 		input wire [31:0] iWB_PC,
-		input wire iWB_BRANCH,
-		input wire [31:0] iWB_BRANCH_PC,
 		//Debug Module
 		output wire [31:0] oDEBUG_REG_OUT_GR0,
 		output wire [31:0] oDEBUG_REG_OUT_GR1,

@@ -4,10 +4,6 @@
 `include "irq.h"
 `include "common.h"
 
-`define MIST32_AFE_ENA
-
-
-
 
 module execute(
 		input wire iCLOCK,
@@ -90,8 +86,6 @@ module execute(
 		output wire oNEXT_SPR_WRITEBACK,
 		output wire [31:0] oNEXT_SPR,
 		output wire [31:0] oNEXT_PC,
-		output wire oNEXT_BRANCH,
-		output wire [31:0] oNEXT_BRANCH_PC,
 		//System Register Write
 		output wire oPDTR_WRITEBACK,
 		//Branch
@@ -1289,8 +1283,6 @@ module execute(
 	assign oNEXT_SPR_WRITEBACK = b_spr_writeback && !except_ldst_valid && (b_state != L_PARAM_STT_BRANCH);
 	assign oNEXT_SPR = b_r_spr;
 	assign oNEXT_PC = b_pc;
-	assign oNEXT_BRANCH = jump_stage_jump_valid;
-	assign oNEXT_BRANCH_PC = jump_stage_jump_addr;
 
 
 	//System Register Writeback
