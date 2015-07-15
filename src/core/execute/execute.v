@@ -30,6 +30,7 @@ module execute(
 		input wire iPREVIOUS_BRANCH_PREDICT,
 		input wire [31:0] iPREVIOUS_BRANCH_PREDICT_ADDR,
 		input wire [31:0] iPREVIOUS_SYSREG_PSR,
+		input wire [63:0] iPREVIOUS_SYSREG_FRCR,
 		input wire [31:0] iPREVIOUS_SYSREG_TIDR,
 		input wire [31:0] iPREVIOUS_SYSREG_PDTR,
 		input wire [31:0] iPREVIOUS_SYSREG_KPDTR,
@@ -85,6 +86,7 @@ module execute(
 		output wire oNEXT_WRITEBACK,
 		output wire oNEXT_SPR_WRITEBACK,
 		output wire [31:0] oNEXT_SPR,
+		output wire [63:0] oNEXT_FRCR,
 		output wire [31:0] oNEXT_PC,
 		//System Register Write
 		output wire oPDTR_WRITEBACK,
@@ -142,6 +144,7 @@ module execute(
 	reg b_spr_writeback;
 	reg [31:0] b_r_spr;
 	reg [31:0] b_pc;
+	reg [63:0] b_frcr;
 
 	wire div_wait;
 	wire debugger_pipeline_stop;
@@ -161,6 +164,8 @@ module execute(
 	wire forwarding_reg_gr_dest_sysreg;
 	wire forwarding_reg_spr_valid;
 	wire [31:0] forwarding_reg_spr_data;
+	wire forwarding_reg_frcr_valid;
+	wire [63:0] forwarding_reg_frcr_data;
 	wire [31:0] ex_module_spr;// = forwarding_reg_spr_data;
 	wire [31:0] ex_module_pdtr;
 	wire [31:0] ex_module_kpdtr;
@@ -264,6 +269,11 @@ module execute(
 		.iWB_AUTO_SPR_DATA(result_data_with_afe),
 		//Current -Stak Point Register
 		.iCUUR_SPR_DATA(iPREVIOUS_SPR),
+		//Writeback - FRCR
+		.iWB_FRCR_VALID(b_valid),	
+		.iWB_FRCR_DATA(b_frcr),		
+		//Current - FRCR
+		.iCUUR_FRCR_DATA(iPREVIOUS_SYSREG_FRCR),
 		//Fowerding Register Output
 		.oFDR_GR_VALID(forwarding_reg_gr_valid),
 		.oFDR_GR_DATA(forwarding_reg_gr_data),
@@ -271,7 +281,10 @@ module execute(
 		.oFDR_GR_DEST_SYSREG(forwarding_reg_gr_dest_sysreg),
 		//Fowerding Register Output
 		.oFDR_SPR_VALID(forwarding_reg_spr_valid),
-		.oFDR_SPR_DATA(forwarding_reg_spr_data)
+		.oFDR_SPR_DATA(forwarding_reg_spr_data),
+		//Forwerding Register Output
+		.oFDR_FRCR_VALID(forwarding_reg_frcr_valid),	
+		.oFDR_FRCR_DATA(forwarding_reg_frcr_data)
 	);
 
 
@@ -288,6 +301,9 @@ module execute(
 		//Writeback - Stack Point Register
 		.iWB_SPR_VALID(b_valid && b_spr_writeback),
 		.iWB_SPR_DATA(b_r_spr),
+		//Writeback - FRCR
+		.iWR_FRCR_VALID(b_valid),			
+		.iWR_FRCR_DATA(b_frcr),	
 		//Previous Writeback - General Register
 		.iPREV_WB_GR_VALID(forwarding_reg_gr_valid),
 		.iPREV_WB_GR_DATA(forwarding_reg_gr_data),
@@ -296,6 +312,9 @@ module execute(
 		//Previous Writeback - Stack Point Register
 		.iPREV_WB_SPR_VALID(forwarding_reg_spr_valid),
 		.iPREV_WB_SPR_DATA(forwarding_reg_spr_data),
+		//Previous Writeback - FRCR
+		.iPREV_WB_FRCR_VALID(forwarding_reg_frcr_valid),			
+		.iPREV_WB_FRCR_DATA(forwarding_reg_frcr_data),
 		//Source
 		.iPREVIOUS_SOURCE_SYSREG(iPREVIOUS_SOURCE0_SYSREG),
 		.iPREVIOUS_SOURCE_POINTER(iPREVIOUS_SOURCE0_POINTER),
@@ -332,6 +351,9 @@ module execute(
 		//Writeback - Stack Point Register
 		.iWB_SPR_VALID(b_valid && b_spr_writeback),
 		.iWB_SPR_DATA(b_r_spr),
+		//Writeback - FRCR
+		.iWR_FRCR_VALID(b_valid),			
+		.iWR_FRCR_DATA(b_frcr),	
 		//Previous Writeback - General Register
 		.iPREV_WB_GR_VALID(forwarding_reg_gr_valid),
 		.iPREV_WB_GR_DATA(forwarding_reg_gr_data),
@@ -340,6 +362,9 @@ module execute(
 		//Previous Writeback - Stack Point Register
 		.iPREV_WB_SPR_VALID(forwarding_reg_spr_valid),
 		.iPREV_WB_SPR_DATA(forwarding_reg_spr_data),
+		//Previous Writeback - FRCR
+		.iPREV_WB_FRCR_VALID(forwarding_reg_frcr_valid),			
+		.iPREV_WB_FRCR_DATA(forwarding_reg_frcr_data),
 		//Source
 		.iPREVIOUS_SOURCE_SYSREG(iPREVIOUS_SOURCE1_SYSREG),
 		.iPREVIOUS_SOURCE_POINTER(iPREVIOUS_SOURCE1_POINTER),
@@ -991,6 +1016,32 @@ module execute(
 	end
 
 	/****************************************
+	For FRCR
+	****************************************/
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_frcr <= 64'h0;
+		end
+		else if(iEVENT_HOLD || iEVENT_START || iRESET_SYNC)begin
+			b_frcr <= 64'h0;
+		end
+		else begin
+			case(b_state)
+				L_PARAM_STT_NORMAL:
+					begin
+						if(iPREVIOUS_VALID && !lock_condition)begin
+							b_frcr <= iPREVIOUS_SYSREG_FRCR;
+						end
+					end
+				default:
+					begin
+						b_frcr <= b_frcr;
+					end
+			endcase
+		end
+	end
+
+	/****************************************
 	Result Data
 	****************************************/
 	always@(posedge iCLOCK or negedge inRESET)begin
@@ -1282,6 +1333,7 @@ module execute(
 	assign oNEXT_WRITEBACK = b_writeback && !except_ldst_valid && (b_state != L_PARAM_STT_BRANCH);
 	assign oNEXT_SPR_WRITEBACK = b_spr_writeback && !except_ldst_valid && (b_state != L_PARAM_STT_BRANCH);
 	assign oNEXT_SPR = b_r_spr;
+	assign oNEXT_FRCR = b_frcr;
 	assign oNEXT_PC = b_pc;
 
 

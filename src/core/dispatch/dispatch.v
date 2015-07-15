@@ -91,6 +91,7 @@ module dispatch #(
 		output wire oNEXT_BRANCH_PREDICT,
 		output wire [31:0] oNEXT_BRANCH_PREDICT_ADDR,
 		output wire [31:0] oNEXT_SYSREG_PSR,
+		output wire [63:0] oNEXT_SYSREG_FRCR,
 		output wire [31:0] oNEXT_SYSREG_TIDR,
 		output wire [31:0] oNEXT_SYSREG_PDTR,
 		output wire [31:0] oNEXT_SYSREG_KPDTR,
@@ -131,6 +132,7 @@ module dispatch #(
 		input wire iWB_WRITEBACK,
 		input wire iWB_SPR_WRITEBACK,
 		input wire [31:0] iWB_SPR,
+		input wire [63:0] iWB_FRCR,
 		input wire [31:0] iWB_PC,
 		//Debug Module
 		output wire [31:0] oDEBUG_REG_OUT_GR0,
@@ -726,8 +728,8 @@ module dispatch #(
 
 	assign w_sysreg_frclr_register_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR) ||
 														(!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR2FRCXR);
-	assign w_sysreg_frclr_register_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR)? iWB_DATA : frcr_64bit_timer[31:0];
-
+	//assign w_sysreg_frclr_register_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR)? iWB_DATA : frcr_64bit_timer[31:0];
+	assign w_sysreg_frclr_register_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCLR)? iWB_DATA : /*frcr_64bit_timer*/iWB_FRCR[31:0];
 
 	//FRCHR
 	dispatch_system_register FRCHR (
@@ -742,8 +744,8 @@ module dispatch #(
 
 	assign w_sysreg_frchr_register_valid = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR) ||
 														(!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCR2FRCXR);
-	assign w_sysreg_frchr_register_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR)? iWB_DATA : frcr_64bit_timer[63:32];
-
+	//assign w_sysreg_frchr_register_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR)? iWB_DATA : frcr_64bit_timer[63:32];
+	assign w_sysreg_frchr_register_data = (!iEVENT_HOLD && iWB_VALID && iWB_DESTINATION_SYSREG && iWB_WRITEBACK && iWB_DESTINATION == `SYSREG_FRCHR)? iWB_DATA : /*frcr_64bit_timer*/iWB_FRCR[63:32];
 
 	/*************************************************************************************
 	Pipline Stage
@@ -958,6 +960,7 @@ module dispatch #(
 	assign oNEXT_BRANCH_PREDICT = b_branch_predict;
 	assign oNEXT_BRANCH_PREDICT_ADDR = b_branch_predict_addr;
 	assign oNEXT_SYSREG_PSR = w_sysreg_psr_info_data;
+	assign oNEXT_SYSREG_FRCR = frcr_64bit_timer;
 	assign oNEXT_SYSREG_TIDR = w_sysreg_tidr_info_data;
 	assign oNEXT_SYSREG_PDTR = w_sysreg_pdtr_info_data;
 	assign oNEXT_SYSREG_KPDTR = w_sysreg_kpdtr_info_data;

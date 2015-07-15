@@ -18,6 +18,11 @@ module execute_forwarding_register(
 		input wire [31:0] iWB_AUTO_SPR_DATA,
 		//Current - Stack Point Register
 		input wire [31:0] iCUUR_SPR_DATA,
+		//Writeback - FRCR
+		input wire iWB_FRCR_VALID,			
+		input wire [63:0] iWB_FRCR_DATA,	
+		//Current - FRCR
+		input wire [63:0] iCUUR_FRCR_DATA,
 		//Fowerding Register Output
 		output wire oFDR_GR_VALID,
 		output wire [31:0] oFDR_GR_DATA,
@@ -25,7 +30,10 @@ module execute_forwarding_register(
 		output wire oFDR_GR_DEST_SYSREG,
 		//Fowerding Register Output
 		output wire oFDR_SPR_VALID,
-		output wire [31:0] oFDR_SPR_DATA
+		output wire [31:0] oFDR_SPR_DATA,
+		//Forwerding Register Output
+		output wire oFDR_FRCR_VALID,			
+		output wire [63:0] oFDR_FRCR_DATA
 	);
 
 	//Fowarding General Register
@@ -38,6 +46,10 @@ module execute_forwarding_register(
 	//Fowarding Stack Point Register
 	reg b_fwdng_spr_valid;
 	reg [31:0] b_fwdng_spr;
+
+	//FRCR
+	reg b_fwdng_frcr_valid;
+	reg [63:0] b_fwdng_frcr;
 
 
 	/************************************************************************
@@ -96,6 +108,28 @@ module execute_forwarding_register(
 		end
 	end
 
+	//FRCR
+	always@(posedge iCLOCK or negedge inRESET)begin
+		if(!inRESET)begin
+			b_fwdng_frcr_valid <= 1'h0;
+			b_fwdng_frcr <= 64'h0;
+		end
+		else if(iRESET_SYNC)begin
+			b_fwdng_frcr_valid <= 1'h0;
+			b_fwdng_frcr <= 64'h0;
+		end
+		else begin
+			if(iWB_FRCR_VALID)begin
+				b_fwdng_frcr_valid <= iWB_FRCR_VALID;
+				b_fwdng_frcr <= iWB_FRCR_DATA;
+			end
+			else begin
+				b_fwdng_frcr_valid <= 1'h1;
+				b_fwdng_frcr <= iCUUR_FRCR_DATA;
+			end
+		end
+	end
+
 
 	/************************************************************************
 	Assign
@@ -108,6 +142,9 @@ module execute_forwarding_register(
 	//SPR Out
 	assign oFDR_SPR_VALID = b_fwdng_spr_valid;
 	assign oFDR_SPR_DATA = b_fwdng_spr;
+	//FRCR Out
+	assign oFDR_FRCR_VALID = b_fwdng_frcr_valid;
+	assign oFDR_FRCR_DATA = b_fwdng_frcr;
 
 
 endmodule

@@ -201,6 +201,7 @@ module core_pipeline
 	wire dispatch2execution_branch_predict;
 	wire [31:0] dispatch2execution_branch_predict_addr;
 	wire [31:0] dispatch2execution_sysreg_psr;
+	wire [63:0] dispatch2execution_sysreg_frcr;
 	wire [31:0] dispatch2execution_sysreg_tidr;
 	wire [31:0] dispatch2execution_sysreg_pdtr;
 	wire [31:0] dispatch2execution_sysreg_kpdtr;
@@ -241,6 +242,7 @@ module core_pipeline
 	wire execution2dispatch_writeback;
 	wire execution2dispatch_spr_writeback;
 	wire [31:0] execution2dispatch_spr;
+	wire [63:0] execution2dispatch_frcr;
 	wire [31:0] execution2dispatch_pc;
 	//Branch Predict
 	wire branch_predict_fetch_flush;
@@ -782,6 +784,7 @@ module core_pipeline
 		.oNEXT_BRANCH_PREDICT(dispatch2execution_branch_predict),
 		.oNEXT_BRANCH_PREDICT_ADDR(dispatch2execution_branch_predict_addr),
 		.oNEXT_SYSREG_PSR(dispatch2execution_sysreg_psr),
+		.oNEXT_SYSREG_FRCR(dispatch2execution_sysreg_frcr),
 		.oNEXT_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.oNEXT_SYSREG_PDTR(dispatch2execution_sysreg_pdtr),
 		.oNEXT_SYSREG_KPDTR(dispatch2execution_sysreg_kpdtr),
@@ -822,6 +825,7 @@ module core_pipeline
 		.iWB_WRITEBACK(execution2dispatch_writeback),
 		.iWB_SPR_WRITEBACK(execution2dispatch_spr_writeback),
 		.iWB_SPR(execution2dispatch_spr),
+		.iWB_FRCR(execution2dispatch_frcr),
 		.iWB_PC(execution2dispatch_pc),
 		//Debug
 		.oDEBUG_REG_OUT_GR0(debug_register2debug_gr0),
@@ -888,6 +892,7 @@ module core_pipeline
 		.iPREVIOUS_BRANCH_PREDICT(dispatch2execution_branch_predict),
 		.iPREVIOUS_BRANCH_PREDICT_ADDR(dispatch2execution_branch_predict_addr),
 		.iPREVIOUS_SYSREG_PSR(dispatch2execution_sysreg_psr),
+		.iPREVIOUS_SYSREG_FRCR(dispatch2execution_sysreg_frcr),
 		.iPREVIOUS_SYSREG_TIDR(dispatch2execution_sysreg_tidr),
 		.iPREVIOUS_SYSREG_PDTR(dispatch2execution_sysreg_pdtr),
 		.iPREVIOUS_SYSREG_KPDTR(dispatch2execution_sysreg_kpdtr),
@@ -943,6 +948,7 @@ module core_pipeline
 		.oNEXT_WRITEBACK(execution2dispatch_writeback),
 		.oNEXT_SPR_WRITEBACK(execution2dispatch_spr_writeback),
 		.oNEXT_SPR(execution2dispatch_spr),
+		.oNEXT_FRCR(execution2dispatch_frcr),
 		.oNEXT_PC(execution2dispatch_pc),
 		//System Register Write
 		.oPDTR_WRITEBACK(sysreg_write_pdtr),

@@ -14,6 +14,9 @@ module execute_forwarding(
 		//Writeback - Stack Point Register
 		input wire iWB_SPR_VALID,
 		input wire [31:0] iWB_SPR_DATA,
+		//Writeback - FRCR
+		input wire iWR_FRCR_VALID,
+		input wire [63:0] iWR_FRCR_DATA,
 		//Previous Writeback - General Register
 		input wire iPREV_WB_GR_VALID,
 		input wire [31:0] iPREV_WB_GR_DATA,
@@ -22,6 +25,9 @@ module execute_forwarding(
 		//Previous Writeback - Stack Point Register
 		input wire iPREV_WB_SPR_VALID,
 		input wire [31:0] iPREV_WB_SPR_DATA,
+		//Previous Writeback - FRCR
+		input wire iPREV_WB_FRCR_VALID,
+		input wire [63:0] iPREV_WB_FRCR_DATA,
 		//Source
 		input wire iPREVIOUS_SOURCE_SYSREG,
 		input wire [4:0] iPREVIOUS_SOURCE_POINTER,
@@ -54,9 +60,11 @@ module execute_forwarding(
 		input func_prev_valid;
 		input func_prev_sysreg;
 		input func_prev_spr_writeback;
+		input func_prev_frcr_writeback;	
 		input [4:0] func_prev_dest_pointer;
 		//input [31:0] func_prev_pcr;
 		input [31:0] func_prev_spr;
+		input [63:0] func_prev_frcr;	
 		input [31:0] func_prev_gr_data;
 		begin
 			//Forwarding Valid
@@ -65,6 +73,14 @@ module execute_forwarding(
 				//Source Sysreg -> Valid, Source Pointer -> SPR, Previous Data -> Valid, Previous SPR Writeback -> Valid
 				if(func_src_sysreg && func_src_pointer == `SYSREG_SPR && (func_prev_spr_writeback || func_prev_dest_pointer == `SYSREG_SPR))begin
 					func_forwarding_rewrite = func_prev_spr;
+				end
+				//FRCLR Forwarding
+				else if(func_src_sysreg && func_src_pointer == `SYSREG_FRCLR && func_prev_dest_pointer == `SYSREG_FRCR2FRCXR)begin
+					func_forwarding_rewrite = func_prev_frcr[31:0];
+				end
+				//FRCHR Forwarding
+				else if(func_src_sysreg && func_src_pointer == `SYSREG_FRCHR && func_prev_dest_pointer == `SYSREG_FRCR2FRCXR)begin
+					func_forwarding_rewrite = func_prev_frcr[63:32];
 				end
 				//General Register Fowerding
 				else if(!func_src_sysreg && !func_prev_sysreg && func_src_pointer == func_prev_dest_pointer)begin
@@ -132,8 +148,10 @@ module execute_forwarding(
 		iPREV_WB_GR_VALID,
 		iPREV_WB_GR_DEST_SYSREG,
 		iPREV_WB_SPR_VALID,
+		iPREV_WB_FRCR_VALID,
 		iPREV_WB_GR_DEST,
 		iPREV_WB_SPR_DATA,
+		iPREV_WB_FRCR_DATA,
 		iPREV_WB_GR_DATA
 	);
 
@@ -145,8 +163,10 @@ module execute_forwarding(
 		iWB_GR_VALID,
 		iWB_GR_DEST_SYSREG,
 		iWB_SPR_VALID,
+		iWR_FRCR_VALID,
 		iWB_GR_DEST,
 		iWB_SPR_DATA,
+		iWR_FRCR_DATA,
 		iWB_GR_DATA
 	);
 
